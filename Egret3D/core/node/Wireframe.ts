@@ -29,7 +29,7 @@
             this.type = "wireframe";
             this.geometry = new Geometry();
 
-            this.material = new ColorMaterial(0xff0000);
+            this.material = new ColorMaterial(0xffffff);
             this.addSubMaterial(0, this.material);
 
             this.material.drawMode = DrawMode.LINES;

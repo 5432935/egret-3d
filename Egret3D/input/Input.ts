@@ -190,12 +190,15 @@
         * @param type {string} 事件的类型。
         * @param callback {Function} 处理事件的侦听器函数。此函数必须接受 Event3D 对象作为其唯一的参数，并且不能返回任何结果，
         * 如下面的示例所示： function(evt:Event3D):void 函数可以有任何名称。
+        * @param param 事件携带参数
+        * @param  priority {number} 事件侦听器的优先级。优先级由一个带符号的 32 位整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在
+        * 优先级为 n -1 的侦听器之前得到处理。如果两个或更多个侦听器共享相同的优先级，则按照它们的添加顺序进行处理。默认优先级为 0。
         * @returns 事件ID 返回值 removeEventListenerAt 时会用到
          * @version Egret 3.0
          * @platform Web,Native
         */
-        public static addEventListener(type: string, callback: Function, thisObject: any): number {
-            return Input.instance.addEventListener(type, callback, thisObject);
+        public static addEventListener(type: string, callback: Function, thisObject: any, param: any = null, priolity: number = 0): number {
+            return Input.instance.addEventListener(type, callback, thisObject, param, priolity);
         }
 
         /**

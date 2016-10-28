@@ -28,7 +28,7 @@
 
         /**
         * @language zh_CN
-        * 总时间
+        * 总时间,计算过速度后的事件
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -76,8 +76,6 @@
         */
         private _play: boolean = false;
 
-       
-
 
         /**
         * @language zh_CN
@@ -105,16 +103,18 @@
 
         public static Reset: boolean;
         public update(time: number, delay: number, geometry: Geometry) {
-            if (!this._play) {
-                return;
-            }
             if (ParticleAnimation.Reset) {
                 this.animTime = 0;
             }
-            this.delay = delay; 
-            this.animTime += this.delay;
-            if (this.particleAnimationState)
-                this.particleAnimationState.update(this.animTime, this.delay, geometry);
+            if (!this._play) {
+                return;
+            }
+            if (this.speed != 0) {
+                this.animTime += delay * this.speed;
+                if (this.particleAnimationState)
+                    this.particleAnimationState.update(this.animTime, delay, geometry);
+            }
+
         }
          /**
         * @private
@@ -132,7 +132,7 @@
         */
         public activeState(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
             if (this.particleAnimationState) {
-                this.particleAnimationState.activeState(time, this.animTime, delay, this.delay, usage, geometry, context3DProxy, camera3D);
+                this.particleAnimationState.activeState(time, this.animTime, delay, delay, usage, geometry, context3DProxy, camera3D);
             }
         }
 
@@ -152,9 +152,8 @@
             if (prewarm){
                 this.animTime = this.particleAnimationState.loopTime;
             }
-
-            this.delay = 0;
-        }
+            this.speed = speed;
+        } 
 
         /**
         * @language zh_CN

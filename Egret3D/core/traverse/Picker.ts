@@ -57,14 +57,10 @@
                             var bound: Bound = renderItem.bound;
                             if (childBox) {
                                 bound = renderItem.currentBound;
-                                if (bound) {
-                                    if (ray.IntersectMesh(bound.vexData, bound.indexData, bound.vexLength, bound.indexData.length / 3, 0, renderItem.modelMatrix, renderItem.pickResult)) {
-                                        target.push(objects[i]);
-                                    }
-                                }
                             }
-                            else {
-                                if (ray.IntersectMesh(bound.vexData, bound.indexData, bound.vexLength, bound.indexData.length / 3, 0, renderItem.modelMatrix, renderItem.pickResult)) {
+
+                            if (bound) {
+                                if (ray.IntersectBound(bound, renderItem.pickResult)) {
                                     target.push(objects[i]);
                                 }
                             }
@@ -92,9 +88,7 @@
                         var boundBox: BoundBox = <BoundBox>renderItem.bound;
                         var ret: number[] = [];
 
-                        renderItem.modelMatrix.transformVector(boundBox.center, MathUtil.CALCULATION_VECTOR3D);
-
-                        if (ray.IntersectSphere(MathUtil.CALCULATION_VECTOR3D, boundBox.radius, ret)) {
+                        if (ray.IntersectSphere(boundBox.center, boundBox.radius, ret, renderItem.modelMatrix)) {
                             if (ray.IntersectMeshEx(renderItem, uvoffset, renderItem.pickResult)) {
                                 target.push(objects[i]);
                             }
@@ -119,7 +113,7 @@
                         if (renderItem.geometry.vertexFormat & VertexFormat.VF_COLOR) {
                             uvoffset += Geometry.colorSize;
                         }
-                        if (ray.IntersectSphere(MathUtil.CALCULATION_VECTOR3D, boundBox.radius, ret)) {
+                        if (ray.IntersectSphere(boundBox.center, boundBox.radius, ret, boundBox.transform)) {
                             if (ray.IntersectMeshEx(renderItem, uvoffset, renderItem.pickResult)) {
                                 target.push(objects[i]);
                             }

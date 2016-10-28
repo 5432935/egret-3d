@@ -26,3 +26,5 @@ Release Notes
 [Egret 3.2.0 Release Notes 2016-09-26](/docs/cn/3.2.0_ReleaseNotes.md)
 
 [Egret 3.2.1 Release Notes 2016-10-17](/docs/cn/3.2.1_ReleaseNotes.md)
+
+[Egret 3.2.2 Release Notes 2016-10-31](/docs/cn/3.2.2_ReleaseNotes.md)

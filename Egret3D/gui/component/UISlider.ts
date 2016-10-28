@@ -4,6 +4,8 @@
     * @private
     * @class egret3d.gui.UISlider
     * @classdesc
+    * 通过使用 Slider 组件，用户可以在滑块轨道的端点之间移动滑块来选择值。 Slider 组件的当前值由滑块端点之间滑块的相对位置确定，端点对应于 Slider 组件的 minimum 和 maximum 值。
+    * 组件样式名为background以及 bar 分别用来设置底部背景条以及顶部的样式
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -33,6 +35,7 @@
             this._snapInterval = 10;
             this.value = 50;
             this.addEventListener(MouseEvent3D.MOUSE_DOWN, this.onMouseDown, this);
+            this.drawTexture();
         }
 
         public setStyle(style: string, value: Texture): void {
@@ -43,6 +46,25 @@
                 this._background.texture = value;
             }
             this.onRender();
+        }
+
+        private drawTexture() {
+                this._bar.texture = this.getStyle("bar");
+                this._background.texture = this.getStyle("background");
+        }
+
+
+        protected getDefaultStyleNameByStyleName(styleName: string): string {
+            var obj = {
+                "bar": DefaultSkinName.DEFAULT_SLIDER_BAR,
+                "background": DefaultSkinName.DEFAULT_SLIDER_BACKGROUND
+            };
+
+            var result: string = obj[styleName];
+            if (!result) {
+                console.log(" ERROR!!! UISlider can't find default style : ", styleName);
+            }
+            return result;
         }
 
         private onMouseUp(event: MouseEvent3D) {
@@ -64,6 +86,12 @@
             this._text.text = this.value.toString();
         }
 
+          /**
+        * @language zh_CN
+        * 获取或设置用户移动滑块时值增加或减小的量。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set snapInterval(value: number) {
             this._snapInterval = value;
         }
@@ -71,7 +99,12 @@
         public get snapInterval(): number {
             return this._snapInterval;
         }
-
+          /**
+        * @language zh_CN
+        * 获取或设置 Slider 组件的当前值。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set value(value: number) {
             if (value % this._snapInterval !== 0) {
                 value = Math.round(value / this._snapInterval) * this._snapInterval;
@@ -83,7 +116,12 @@
             this.dispatchEvent(event);
             this.updateBar();
         }
-
+          /**
+        * @language zh_CN
+        * 获取或设置 Slider 组件的当前值。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get value(): number {
             return this._value;
         }
@@ -105,10 +143,21 @@
             return this._minimum;
         }
 
+         /**
+        * @language zh_CN
+        * Slider 组件实例所允许的最大值。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set maximum(value: number) {
             this._maximum = value;
         }
-
+          /**
+        * @language zh_CN
+        * Slider 组件实例所允许的最小值。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set minimum(value: number) {
             this._minimum = value;
         }

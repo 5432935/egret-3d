@@ -290,5 +290,66 @@
         public static PositionToScreen(value: number, offset: number, max: number): number {
             return (value + 1) * 0.5 * max - offset * 0.5;
         }
+
+        /**
+        * @private
+        */
+        public static mix(value0: number, value1: number, t: number): number {
+            return value0 * (1 - t) + value1 * t;
+        }
+
+
+        private static _tempVector: Vector3D = new Vector3D();
+        public static calcDegree(quat: Quaternion, angleVector: Vector3D): void {
+
+            //计算billboard矩阵x
+            quat.transformVector(Vector3D.Y_AXIS, this._tempVector);
+            this._tempVector.x = 0;
+            this._tempVector.normalize();
+            var dotX: number = Vector3D.Y_AXIS.dotProduct(this._tempVector);
+            var angleX: number = Math.acos(dotX) * MathUtil.RADIANS_TO_DEGREES;
+            if (this._tempVector.z < 0) {
+                angleX = 180 - angleX;
+            }
+
+            //计算billboard矩阵y
+            quat.transformVector(Vector3D.Z_AXIS, this._tempVector);
+            this._tempVector.y = 0;
+            this._tempVector.normalize();
+            var dotY: number = Vector3D.Z_AXIS.dotProduct(this._tempVector);
+            var angleY: number = Math.acos(dotY) * MathUtil.RADIANS_TO_DEGREES;
+            if (this._tempVector.x < 0) {
+                angleY = 360 - angleY;
+            }
+
+
+            //计算billboard矩阵z
+            quat.transformVector(Vector3D.X_AXIS, this._tempVector);
+            this._tempVector.z = 0;
+            this._tempVector.normalize();
+            var dotZ: number = Vector3D.X_AXIS.dotProduct(this._tempVector);
+            var angleZ: number = Math.acos(dotZ) * MathUtil.RADIANS_TO_DEGREES;
+            if (this._tempVector.y < 0) {
+                angleZ = 360 - angleZ;
+            }
+
+
+            angleX = this.clampAngle(angleX);
+            angleY = this.clampAngle(angleY);
+            angleZ = this.clampAngle(angleZ);
+
+            angleVector.setTo(angleX, angleY, angleZ);
+        }
+
+        private static clampAngle(angle: number): number {
+            while (angle < -180) {
+                angle += 360;
+            }
+            while (angle > 180) {
+                angle -= 360;
+            }
+            return angle;
+        }
+
     }
 } 

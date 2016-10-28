@@ -54,6 +54,7 @@
             this._generator = new ParticleLifeGenerator();
             this._particleAnimation.emit = this;
 
+
             this.buildParticle();
             //##FilterEnd##
         }
@@ -124,6 +125,12 @@
             } else {
                 this._geometryShape = this._externalGeometry;
             }
+            var mode: number = this._data.property.renderMode;
+            if (mode == ParticleRenderModeType.Billboard || mode == ParticleRenderModeType.StretchedBillboard) {
+                this.billboard = BillboardType.STANDARD;
+            } else if (mode == ParticleRenderModeType.HorizontalBillboard || mode == ParticleRenderModeType.VerticalBillboard) {
+                this.billboard = BillboardType.Y_AXIS;
+            }
 
             this.initialize();
 
@@ -146,13 +153,6 @@
             var geomData: ParticleDataGeometry = this._data.geometry;
 
             var defaultAxis: Vector3D = Vector3D.Z_AXIS;
-            if (this._data.property.renderMode == ParticleRenderModeType.VerticalBillboard) {
-                defaultAxis = Vector3D.Y_AXIS;
-            } else if (this._data.property.renderMode == ParticleRenderModeType.HorizontalBillboard) {
-                defaultAxis = Vector3D.Y_AXIS;
-            } else {
-                defaultAxis = Vector3D.Z_AXIS;
-            }
             var wCenter: boolean = true;
             var hCenter: boolean = true;
 
@@ -252,17 +252,15 @@
         /**
         * @language zh_CN
         * 播放粒子
+        * @param speed 粒子播放速度
+        * @param reset 是否重置到0位置
         * @param prewarm 是否预热
         * @version Egret 3.0
         * @platform Web,Native 
         */
-        public play(prewarm: boolean = false) {
+        public play(speed:number = 1, reset:boolean = false, prewarm: boolean = false) {
             //##FilterBegin## ##Particle##
-            if (prewarm) {
-                this.animation.play("", 1.0, false, true);
-            } else {
-                this.animation.play("", 1.0, true, false);
-            }
+            this.animation.play("", speed, reset, prewarm);
             //##FilterEnd##
         }
 
@@ -300,11 +298,7 @@
             var vertexArray: Array<number> = new Array<number>();
 
             //根据 动画功能节点初始化 着色器 并初始化粒子顶点结构
-            var vf: number = VertexFormat.VF_POSITION | VertexFormat.VF_UV0 | VertexFormat.VF_COLOR;
-            //包含normal
-            if (this.data.geometry.hasNormalData) {
-                vf = vf | VertexFormat.VF_NORMAL;
-            }
+            var vf: number = VertexFormat.VF_POSITION | VertexFormat.VF_UV0 | VertexFormat.VF_COLOR | VertexFormat.VF_NORMAL;
             this.geometry.vertexFormat = vf;
 
             //根据动画节点，预计算顶点信息，长度，字节总量
@@ -472,23 +466,23 @@
             //materialData
             if (this._data.materialData) {
                 //uvRoll
-                var method: MatMethodData;
+                var method: UnitMatMethodData;
                 for (method of this._data.materialData.methods) {
-                    if (method.type == MatMethodData.methodType.lightmapMethod) {
+                    if (method.type == UnitMatMethodData.methodType.lightmapMethod) {
 
                     }
-                    else if (method.type == MatMethodData.methodType.uvRollMethod) {
+                    else if (method.type == UnitMatMethodData.methodType.uvRollMethod) {
                         var uvNode: ParticleUVRollNode = new ParticleUVRollNode();
                         uvNode.initNode(null, method);
                         nodes.push(uvNode);
                     }
-                    else if (method.type == MatMethodData.methodType.alphaMaskMethod) {
+                    else if (method.type == UnitMatMethodData.methodType.alphaMaskMethod) {
                         //var maskmapMethod: AlphaMaskMethod = new AlphaMaskMethod();
                         //var lightTexture: ITexture = this._sourceLib.getImage(method.texture);
                         //material.diffusePass.addMethod(maskmapMethod);
                         //maskmapMethod.maskTexture = lightTexture ? lightTexture : CheckerboardTexture.texture;
                     }
-                    else if (method.type == MatMethodData.methodType.streamerMethod) {
+                    else if (method.type == UnitMatMethodData.methodType.streamerMethod) {
                         //var streamerMethod: StreamerMethod = new StreamerMethod();
                         //var streamerTexture: ITexture = this._sourceLib.getImage(method.texture);
                         //streamerMethod.speedU = method.uSpeed;

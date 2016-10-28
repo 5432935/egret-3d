@@ -154,8 +154,14 @@
             modelLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onModelLoaded, this);
         }
 
+        private _play: boolean = true;
         protected mouseDown(e: MouseEvent) {
-            this.particle.play();
+            if (this._play) {
+                this.particle.stop();
+            } else {
+                this.particle.play();
+            }
+            this._play = !this._play;
         }
 
         protected onLoadTexture(e: LoaderEvent3D) {

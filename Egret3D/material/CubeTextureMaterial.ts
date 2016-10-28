@@ -22,11 +22,20 @@
         constructor(texture: CubeTexture = null, materialData: MaterialData = null) {
             super(materialData);
             this.initMatPass();
+            if (!texture) {
+                texture = CubeTexture.createCubeTextureByImageTexture(
+                    CheckerboardTexture.texture,
+                    CheckerboardTexture.texture,
+                    CheckerboardTexture.texture,
+                    CheckerboardTexture.texture,
+                    CheckerboardTexture.texture,
+                    CheckerboardTexture.texture);
+            }
             this.materialData["diffuseTexture3D"] = texture ;
         }
 
         protected initMatPass() {
-            this.addPass(PassType.diffusePass);
+            this.creatPass(PassType.diffusePass);
             this.diffusePass.addMethod(new CubeMethod());
         }
 

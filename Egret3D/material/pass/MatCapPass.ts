@@ -78,6 +78,7 @@
                 this.addMethodShaders(this._passUsage.vertexShader, shaderList);
 
             this.addMethodShaders(this._passUsage.vertexShader, ["end_vs"]);
+            this.addMethodShaders(this._passUsage.vertexShader, ["out_vs"]);
 
             //---vs---shadering-------------------------------------------------
 
@@ -108,6 +109,9 @@
 
             this.addMethodShaders(this._passUsage.fragmentShader, ["end_fs"]);
             //---fs---shadering-------------------------------------------------
+
+            this.addMethodShaders(this._passUsage.fragmentShader, ["out_fs"]);
+
         }
     }
 } 

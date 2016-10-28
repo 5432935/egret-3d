@@ -38,6 +38,12 @@ module egret3d {
         */
         public event3D: Event3D = new Event3D();
 
+        /**
+        * @language zh_CN
+        * 是否循环
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public isLoop: boolean = true;
         public delay: number;
         private _currentAnimName: string;
@@ -45,7 +51,7 @@ module egret3d {
         private _animTime: number = 0;
         private _animStateNames: string[] = [];
         private _animStates: SkeletonAnimationState[] = [];
-        private _blendSpeed: number = 0;//300;
+        private _blendSpeed: number = 300;
         private _blendSkeleton: SkeletonPose = null;
         private _blendList: SkeletonAnimationState[] = [];
         private _bindList: { [jointIndex: number]: Array<Object3D> } = {};
@@ -162,6 +168,8 @@ module egret3d {
             if (!playSkeletonAnimationState) {
                 return;
             }
+
+            this.isLoop = playSkeletonAnimationState.skeletonAnimationClip.isLoop;
 
             this._currentAnimName = animName;
 

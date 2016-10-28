@@ -80,6 +80,7 @@ module egret3d {
 			"attribute vec4 attribute_color; \n" +
 			"attribute vec2 attribute_uv0; \n" +
 			"vec3 e_position = vec3(0.0, 0.0, 0.0); \n" +
+			"vec3 e_normal = vec3(0.0, 0.0, 0.0); \n" +
 			"uniform mat4 uniform_ModelMatrix ; \n" +
 			"uniform mat4 uniform_ViewMatrix ; \n" +
 			"uniform mat4 uniform_ProjectionMatrix ; \n" +
@@ -87,6 +88,7 @@ module egret3d {
 			"varying vec2 varying_uv0; \n" +
 			"varying vec4 varying_color; \n" +
 			"vec4 outPosition ; \n" +
+			"mat4 rotVertexMatrix; \n" +
 			"mat4 transpose(mat4 inMatrix) { \n" +
 			"vec4 i0 = inMatrix[0]; \n" +
 			"vec4 i1 = inMatrix[1]; \n" +
@@ -139,6 +141,7 @@ module egret3d {
 			"} \n" +
 			"void main(void){ \n" +
 			"e_position = attribute_position; \n" +
+			"e_normal = attribute_normal; \n" +
 			"varying_color = attribute_color; \n" +
 			"varying_uv0 = attribute_uv0; \n" +
 			"} \n",
@@ -188,16 +191,56 @@ module egret3d {
 			"gl_FragColor = cout ; \n" +
 			"} \n",
 
+			"colorCorrectionRamp_fs":
+			"precision highp float; \n" +
+			"varying vec2 varying_uv0; \n" +
+			"uniform float saturation; \n" +
+			"uniform sampler2D diffuseTexture; \n" +
+			"uniform sampler2D lutTexture; \n" +
+			"float Luminance( vec3 c ){ \n" +
+			"return dot( c , vec3(0.22,0.707,0.071) ); \n" +
+			"} \n" +
+			"void main() \n" +
+			"{ \n" +
+			"vec2 uv = varying_uv0 ; \n" +
+			"vec4 color = texture2D(diffuseTexture, uv); \n" +
+			"float red = texture2D(lutTexture, color.rr).r ; \n" +
+			"float green = texture2D(lutTexture,color.gg ).g ; \n" +
+			"float blue = texture2D(lutTexture, color.bb ).b ; \n" +
+			"color = vec4(red,green,blue, color.a); \n" +
+			"gl_FragColor = color ; \n" +
+			"} \n",
+
+			"colorCorrection_fs":
+			"varying vec2 varying_uv0; \n" +
+			"uniform sampler2D diffuseTexture; \n" +
+			"uniform sampler2D lutTexture; \n" +
+			"uniform float saturation ; \n" +
+			"float Luminance( vec3 c ){ \n" +
+			"return dot( c , vec3(0.22,0.707,0.071) ); \n" +
+			"} \n" +
+			"void main() \n" +
+			"{ \n" +
+			"vec2 uv = varying_uv0 ; \n" +
+			"vec4 color = texture2D(diffuseTexture, uv); \n" +
+			"vec3 red = texture2D(lutTexture, vec2(color.r, 0.5/4.0)).rgb * vec3(1.0,0.0,0.0); \n" +
+			"vec3 green = texture2D(lutTexture, vec2(color.g, 1.5/4.0)).rgb * vec3(0.0,1.0,0.0); \n" +
+			"vec3 blue = texture2D(lutTexture, vec2(color.b, 2.5/4.0)).rgb * vec3(0.0,0.0,1.0); \n" +
+			"color = vec4(red+green+blue, color.a); \n" +
+			"float lum = Luminance(color.rgb); \n" +
+			"gl_FragColor = color ; \n" +
+			"} \n",
+
 			"colorGradients_fs":
-			"varying vec4 varying_pos; \n" +
-			"uniform float uniform_colorGradientsSource[10] ; \n" +
+			"varying vec4 varying_mvPose; \n" +
+			"uniform float uniform_colorGradientsSource[6] ; \n" +
 			"void main(void){ \n" +
-			"vec3 posStart = vec3(uniform_colorGradientsSource[0], uniform_colorGradientsSource[1], uniform_colorGradientsSource[2]); \n" +
-			"vec3 posEnd = vec3(uniform_colorGradientsSource[3], uniform_colorGradientsSource[4], uniform_colorGradientsSource[5]); \n" +
-			"vec4 color = vec4(uniform_colorGradientsSource[6], uniform_colorGradientsSource[7], uniform_colorGradientsSource[8], uniform_colorGradientsSource[9]); \n" +
-			"color.w = color.w * clamp((varying_pos.y - posStart.y) / (posEnd.y - posStart.y), 0.0, 1.0); \n" +
-			"diffuseColor.xyz = clamp(diffuseColor.xyz / diffuseColor.w,0.0,1.0); \n" +
-			"diffuseColor.xyz = diffuseColor.xyz * (1.0 - color.w) + color.xyz * color.w; \n" +
+			"float posStartY = uniform_colorGradientsSource[0]; \n" +
+			"float posEndY = uniform_colorGradientsSource[1]; \n" +
+			"vec4 color = vec4(uniform_colorGradientsSource[2], uniform_colorGradientsSource[3], uniform_colorGradientsSource[4], uniform_colorGradientsSource[5]); \n" +
+			"color.w *= clamp((varying_mvPose.y - posStartY) / (posEndY - posStartY), 0.0, 1.0); \n" +
+			"color.xyz *= color.w; \n" +
+			"outColor.xyz = outColor.xyz * (1.0 - color.w) + color.xyz * color.w; \n" +
 			"} \n" +
 			"  \n",
 
@@ -358,7 +401,7 @@ module egret3d {
 			"directLight.diffuse = vec3(uniform_directLightSource[i*9+3],uniform_directLightSource[i*9+4],uniform_directLightSource[i*9+5]); \n" +
 			"directLight.ambient = vec3(uniform_directLightSource[i*9+6],uniform_directLightSource[i*9+7],uniform_directLightSource[i*9+8]); \n" +
 			"dir = normalize(directLight.direction) ; \n" +
-			"light.xyzw += LightingBlinnPhong(dir,directLight.diffuse,directLight.ambient,normal,viewDir,0.5); \n" +
+			"LightingBlinnPhong(dir,directLight.diffuse,directLight.ambient,normal,viewDir,0.5); \n" +
 			"} \n" +
 			"} \n" +
 			"void main() { \n" +
@@ -390,19 +433,17 @@ module egret3d {
 			"vec4 ambientColor; \n" +
 			"vec4 light ; \n" +
 			"void main() { \n" +
-			"outColor.xyz = (light.xyz+materialSource.ambient) * diffuseColor.xyz * materialSource.diffuse * varying_color.xyz; \n" +
+			"outColor.xyz = (light.xyz+materialSource.ambient) * (diffuseColor.xyz * materialSource.diffuse * varying_color.xyz) + specularColor.xyz ; \n" +
 			"outColor.w = materialSource.alpha * diffuseColor.w * varying_color.w; \n" +
 			"outColor.xyz *= outColor.w; \n" +
-			"gl_FragColor = outColor; \n" +
 			"} \n",
 
 			"end_vs":
 			"vec4 endPosition ; \n" +
 			"uniform float uniform_materialSource[20]; \n" +
 			"void main() { \n" +
-			"gl_PointSize = 50.0; \n" +
 			"gl_PointSize = uniform_materialSource[18]; \n" +
-			"gl_Position = uniform_ProjectionMatrix * outPosition ; \n" +
+			"outPosition = uniform_ProjectionMatrix * outPosition ; \n" +
 			"} \n" +
 			"                       \n",
 
@@ -764,7 +805,7 @@ module egret3d {
 			"uniform sampler2D colorTexture; \n" +
 			"void main() \n" +
 			"{ \n" +
-			"vec2 uv = vec2(varying_uv0.x,1.0-varying_uv0.y); \n" +
+			"vec2 uv = vec2(varying_uv0.x,varying_uv0.y); \n" +
 			"float d = 1.0/float(1024.0); \n" +
 			"vec4 color = vec4(0.0,0.0,0.0,0.0); \n" +
 			"color +=     texture2D(diffuseTexture,uv.xy+vec2(0.0,-8.0*d)) * 0.001; \n" +
@@ -816,6 +857,105 @@ module egret3d {
 			"gl_FragColor = vec4(vec3(varying_position.z),1.0) ; \n" +
 			"} \n",
 
+			"grass_vs":
+			"attribute vec3 attribute_grassOffset; \n" +
+			"attribute float attribute_grassAngleY; \n" +
+			"uniform float uniform_grass_data[10]; \n" +
+			"uniform float uniform_squeeze_data[6]; \n" +
+			"uniform mat4 uniform_cameraMatrix; \n" +
+			"uniform mat4 uniform_billboardMatrix; \n" +
+			"varying vec4 varying_mvPose; \n" +
+			"const float TrueOrFalse = 0.5; \n" +
+			"struct SqueezeData{ \n" +
+			"float enable; \n" +
+			"vec3 position; \n" +
+			"float strength; \n" +
+			"float radius; \n" +
+			"}; \n" +
+			"SqueezeData squeezeData; \n" +
+			"mat4 buildRotMat4(vec3 rot) \n" +
+			"{ \n" +
+			"float s; \n" +
+			"float c; \n" +
+			"s = sin(rot.x); \n" +
+			"c = cos(rot.x); \n" +
+			"mat4 ret = mat4( \n" +
+			"vec4(1.0, 0.0, 0.0, 0.0), \n" +
+			"vec4(0.0, c, s, 0.0), \n" +
+			"vec4(0.0, -s, c, 0.0), \n" +
+			"vec4(0.0, 0.0, 0.0, 1.0) \n" +
+			"); \n" +
+			"s = sin(rot.y); \n" +
+			"c = cos(rot.y); \n" +
+			"ret = mat4( \n" +
+			"vec4(c, 0.0, -s, 0.0), \n" +
+			"vec4(0.0, 1.0, 0.0, 0.0), \n" +
+			"vec4(s, 0.0, c, 0.0), \n" +
+			"vec4(0.0, 0.0, 0.0, 1.0) \n" +
+			") * ret; \n" +
+			"s = sin(rot.z); \n" +
+			"c = cos(rot.z); \n" +
+			"ret = mat4( \n" +
+			"vec4(c, s, 0.0, 0.0), \n" +
+			"vec4(-s, c, 0.0, 0.0), \n" +
+			"vec4(0.0, 0.0, 1.0, 0.0), \n" +
+			"vec4(0.0, 0.0, 0.0, 1.0) \n" +
+			") * ret; \n" +
+			"return ret; \n" +
+			"} \n" +
+			"void main(void){ \n" +
+			"mat4 mvMatrix = mat4(uniform_ViewMatrix * uniform_ModelMatrix); \n" +
+			"if(uniform_grass_data[9] > TrueOrFalse){ \n" +
+			"rotVertexMatrix = uniform_billboardMatrix; \n" +
+			"}else{ \n" +
+			"rotVertexMatrix = buildRotMat4(vec3(0.0, attribute_grassAngleY, 0.0)); \n" +
+			"} \n" +
+			"e_position.xyz = (rotVertexMatrix * vec4(e_position, 1.0)).xyz; \n" +
+			"e_normal.xyz = (rotVertexMatrix * vec4(e_normal, 1.0)).xyz; \n" +
+			"if(e_position.y > 0.0){ \n" +
+			"float grass_wave		= uniform_grass_data[0]; \n" +
+			"float grass_x_span		= uniform_grass_data[1]; \n" +
+			"float grass_y_span		= uniform_grass_data[2]; \n" +
+			"float grass_z_span		= uniform_grass_data[3]; \n" +
+			"float grass_wave_big	= uniform_grass_data[4]; \n" +
+			"float grass_range		= uniform_grass_data[5]; \n" +
+			"float grass_wave_x		= uniform_grass_data[6]; \n" +
+			"float grass_wave_z		= uniform_grass_data[7]; \n" +
+			"float grass_time		= uniform_grass_data[8]; \n" +
+			"squeezeData.enable			= uniform_squeeze_data[0]; \n" +
+			"squeezeData.position.x		= uniform_squeeze_data[1]; \n" +
+			"squeezeData.position.y		= uniform_squeeze_data[2]; \n" +
+			"squeezeData.position.z		= uniform_squeeze_data[3]; \n" +
+			"squeezeData.radius			= uniform_squeeze_data[4]; \n" +
+			"squeezeData.strength		= uniform_squeeze_data[5]; \n" +
+			"float wave_time = grass_time * grass_wave; \n" +
+			"float wave = sin(wave_time + attribute_grassOffset.x * grass_x_span); \n" +
+			"wave += sin(wave_time + attribute_grassOffset.y * grass_y_span); \n" +
+			"wave += sin(wave_time + attribute_grassOffset.z * grass_z_span); \n" +
+			"float waveBig = (1.0 + sin(grass_time * grass_wave_big) * 0.5) * 0.5; \n" +
+			"wave *= waveBig; \n" +
+			"e_position.x += wave * grass_range * grass_wave_x; \n" +
+			"e_position.z += wave * grass_range * grass_wave_z; \n" +
+			"if(squeezeData.enable > TrueOrFalse){ \n" +
+			"vec3 distanceVec3 = squeezeData.position - attribute_grassOffset; \n" +
+			"float distanceFloat = sqrt(dot(distanceVec3, distanceVec3)); \n" +
+			"if(distanceFloat < squeezeData.radius){ \n" +
+			"float ratio = distanceFloat / squeezeData.radius; \n" +
+			"ratio = 1.0 - ratio; \n" +
+			"distanceVec3 = normalize(distanceVec3); \n" +
+			"distanceVec3 *= squeezeData.strength * ratio * abs(e_position.y - squeezeData.position.y); \n" +
+			"e_position -= distanceVec3; \n" +
+			"} \n" +
+			"} \n" +
+			"} \n" +
+			"e_position += attribute_grassOffset; \n" +
+			"varying_mvPose = outPosition = mvMatrix * vec4( e_position , 1.0 ); \n" +
+			"mat4 normalMatrix = inverse(mvMatrix) ; \n" +
+			"normalMatrix = transpose(normalMatrix); \n" +
+			"varying_eyeNormal = mat3(normalMatrix) * - e_normal; \n" +
+			"varying_color = attribute_color; \n" +
+			"} \n",
+
 			"gui_fs":
 			"varying vec4 varying_uv; \n" +
 			"varying vec4 varying_color; \n" +
@@ -860,7 +1000,7 @@ module egret3d {
 			"} \n" +
 			"void main(void){ \n" +
 			"decodeBooleanArray(varying_pos.w); \n" +
-			"if(booleanArray[FLAG_VALLID_QUAD] == false || booleanArray[FLAG_IS_VISIBLE] == false){ \n" +
+			"if(booleanArray[FLAG_VALLID_QUAD] == false || booleanArray[FLAG_IS_VISIBLE] == false || booleanArray[FLAG_HAS_TEXTURE] == false){ \n" +
 			"discard; \n" +
 			"} \n" +
 			"if(booleanArray[FLAG_HAS_MASK]){ \n" +
@@ -988,7 +1128,7 @@ module egret3d {
 			"gl_PointSize = uniform_materialSource[18]; \n" +
 			"varying_pos.zw = attribute_shapePosition.zw; \n" +
 			"decodeBooleanArray(attribute_shapePosition.w); \n" +
-			"if(booleanArray[FLAG_VALLID_QUAD] == false || booleanArray[FLAG_IS_VISIBLE] == false){ \n" +
+			"if(booleanArray[FLAG_VALLID_QUAD] == false || booleanArray[FLAG_IS_VISIBLE] == false || booleanArray[FLAG_HAS_TEXTURE] == false){ \n" +
 			"outPosition = vec4(0.0,0.0,0.0,1.0); \n" +
 			"gl_Position = outPosition; \n" +
 			"return; \n" +
@@ -1066,18 +1206,16 @@ module egret3d {
 			"} \n",
 
 			"lightingBase_fs":
-			"vec4 LightingBlinnPhong(vec3 lightDir, vec3 lightColor , vec3 lightAmbient , vec3 normal , vec3 viewDir, float atten){ \n" +
-			"float NdotL = clamp(dot (normal, lightDir),0.0,1.0); \n" +
+			"void LightingBlinnPhong(vec3 lightDir, vec3 lightColor , vec3 lightAmbient , vec3 normal , vec3 viewDir, float atten){ \n" +
+			"vec3 H = normalize(lightDir + normalize(viewDir)); \n" +
+			"float NdotL = max(dot(normal, lightDir),0.0); \n" +
+			"float NdotH = max(dot(normal,H),0.0); \n" +
 			"vec3 diffuse = lightColor.xyz * NdotL ; \n" +
-			"vec3 h = normalize (lightDir + normalize(viewDir)); \n" +
-			"float nh = clamp(dot (normal, h),0.0,1.0); \n" +
-			"float specPower = pow (nh, materialSource.shininess ) * materialSource.specularScale ; \n" +
+			"float specPower = pow (NdotH, materialSource.shininess ) * materialSource.specularScale ; \n" +
 			"vec3 specular = lightColor.xyz * specPower * materialSource.specular ; \n" +
 			"specularColor.xyz += specular; \n" +
-			"vec4 c; \n" +
-			"c.rgb = (diffuse+specular+lightAmbient) * (atten * 2.0 ); \n" +
-			"c.a = materialSource.alpha + (specPower * atten); \n" +
-			"return c; \n" +
+			"light.xyz += (diffuse+lightAmbient) * (atten * 2.0 ); \n" +
+			"light.w = materialSource.alpha + (specPower * atten); \n" +
 			"} \n" +
 			"void main(void) { \n" +
 			"light.xyzw = vec4(0.0,0.0,0.0,1.0) ; \n" +
@@ -1269,6 +1407,35 @@ module egret3d {
 			"gl_FragColor = vec4(normal,1.0); \n" +
 			"} \n",
 
+			"outLine_fs":
+			"uniform float uniform_ouline[5] ; \n" +
+			"void main(){ \n" +
+			"diffuseColor = vec4(uniform_ouline[1], \n" +
+			"uniform_ouline[2], \n" +
+			"uniform_ouline[3], \n" +
+			"uniform_ouline[4]) ; \n" +
+			"outColor = diffuseColor; \n" +
+			"} \n",
+
+			"outLine_vs":
+			"attribute vec3 attribute_normal; \n" +
+			"attribute vec4 attribute_color; \n" +
+			"varying vec4 varying_mvPose; \n" +
+			"uniform float uniform_ouline[5] ; \n" +
+			"void main(void){ \n" +
+			"outPosition.xy -= normalize(varying_eyeNormal.xyz).xy * uniform_ouline[0]; \n" +
+			"} \n",
+
+			"out_fs":
+			"void main(){ \n" +
+			"gl_FragColor = outColor; \n" +
+			"} \n",
+
+			"out_vs":
+			"void main(){ \n" +
+			"gl_Position = outPosition ; \n" +
+			"} \n",
+
 			"particle_bezier":
 			"const float Tiny = 0.0001; \n" +
 			"float calcBezierArea(float bzData[35], float tCurrent, float tTotal){ \n" +
@@ -1407,6 +1574,7 @@ module egret3d {
 			"particle_end_fs":
 			"const float TrueOrFalse = 0.5; \n" +
 			"uniform float uniform_particleFsData[3]; \n" +
+			"varying vec3 varying_particleData; \n" +
 			"void main() { \n" +
 			"float blendMode = uniform_particleFsData[2]; \n" +
 			"outColor.xyz = diffuseColor.xyz * materialSource.diffuse * varying_color.xyz * globalColor.xyz; \n" +
@@ -1462,9 +1630,6 @@ module egret3d {
 			"} \n" +
 			"return distanceXYZ; \n" +
 			"} \n" +
-			"mat4 getRenderModeMatrix(mat4 cameraMatrix, mat4 modelMatrix){ \n" +
-			"return cameraMatrix; \n" +
-			"} \n" +
 			"float updateStretchedBillBoard(vec4 startPos, vec4 newPos){ \n" +
 			"return 1.0; \n" +
 			"} \n" +
@@ -1499,7 +1664,7 @@ module egret3d {
 			"mat4 followRotQuat = buildMat4Quat(followTargetRotation); \n" +
 			"velocityLocalVec3 = (followRotQuat * vec4(velocityLocalVec3, 1.0)).xyz; \n" +
 			"mat4 modelMatrix = buildModelMatrix(followTargetRotation, followTargetScale, followTargetPosition); \n" +
-			"if(particleStateData.renderMode == 4.0){ \n" +
+			"if(particleStateData.renderMode == Mesh){ \n" +
 			"position_emitter.xyz += localPosition.xyz; \n" +
 			"} \n" +
 			"position_emitter = (modelMatrix * vec4(position_emitter, 1.0)).xyz; \n" +
@@ -1510,20 +1675,19 @@ module egret3d {
 			"position_emitter += velocityMultiVec3; \n" +
 			"float dirEnable = updateStretchedBillBoard(vec4(origPosition, 1.0), vec4(position_emitter, 1.0)); \n" +
 			"if(dirEnable > TrueOrFalse){ \n" +
-			"if(particleStateData.renderMode == 4.0){ \n" +
+			"if(particleStateData.renderMode == Mesh){ \n" +
 			"outPosition.xyz = position_emitter.xyz; \n" +
 			"}else{ \n" +
-			"mat4 billboardMatrix = getRenderModeMatrix(uniform_cameraMatrix, modelMatrix); \n" +
-			"outPosition = billboardMatrix * localPosition; \n" +
+			"outPosition = uniform_billboardMatrix * localPosition; \n" +
 			"outPosition.xyz += position_emitter.xyz; \n" +
 			"} \n" +
 			"outPosition = uniform_ViewMatrix * outPosition; \n" +
+			"e_normal.xyz = (rotVertexMatrix * vec4(e_normal, 1.0)).xyz; \n" +
 			"}else{ \n" +
 			"outPosition = vec4(0.0,0.0,0.0,0.0); \n" +
 			"} \n" +
 			"} \n" +
-			"gl_Position = uniform_ProjectionMatrix * outPosition ; \n" +
-			"varying_pos = gl_Position; \n" +
+			"varying_pos = outPosition = uniform_ProjectionMatrix * outPosition ; \n" +
 			"} \n" +
 			"//##FilterEnd## \n",
 
@@ -1537,35 +1701,59 @@ module egret3d {
 			"} \n" +
 			"//##FilterEnd## \n",
 
-			"particle_rm_billboard":
-			"mat4 getRenderModeMatrix(mat4 cameraMatrix, mat4 modelMatrix) { \n" +
-			"mat4 matrix = mat4( \n" +
-			"cameraMatrix[0], \n" +
-			"cameraMatrix[1], \n" +
-			"cameraMatrix[2], \n" +
-			"vec4(0.0, 0.0, 1.0, 1.0)); \n" +
-			"return matrix; \n" +
+			"particle_rotationConst":
+			"attribute float attribute_rotationZ ; \n" +
+			"void rotateParticleUnit(){ \n" +
+			"float rot = currentTime * attribute_rotationZ * (PI / 180.0); \n" +
+			"mat4 temp = buildRotMat4(vec3(0.0,0.0,rot)); \n" +
+			"rotVertexMatrix = temp * rotVertexMatrix; \n" +
+			"localPosition = temp * localPosition; \n" +
 			"} \n",
 
-			"particle_rm_mesh":
-			"mat4 getRenderModeMatrix(mat4 cameraMatrix, mat4 modelMatrix) { \n" +
-			"return mat4( \n" +
-			"vec4(1.0, 0.0, 0.0, 0.0), \n" +
-			"vec4(0.0, 1.0, 0.0, 0.0), \n" +
-			"vec4(0.0, 0.0, 1.0, 0.0), \n" +
-			"vec4(0.0, 0.0, 0.0, 1.0) \n" +
-			"); \n" +
+			"particle_rotationOneBezier":
+			"uniform float uniform_rotationBezier[35]; \n" +
+			"void rotateParticleUnit(){ \n" +
+			"float rot = calcBezierSize(uniform_rotationBezier, currentTime, curParticle.life); \n" +
+			"rot = currentTime * rot * (PI / 180.0); \n" +
+			"mat4 temp = buildRotMat4(vec3(0.0,0.0,rot)); \n" +
+			"rotVertexMatrix = temp * rotVertexMatrix; \n" +
+			"localPosition = temp * localPosition; \n" +
 			"} \n",
 
-			"particle_rm_stretched":
-			"mat4 getRenderModeMatrix(mat4 cameraMatrix, mat4 modelMatrix) { \n" +
-			"mat4 matrix = mat4( \n" +
-			"cameraMatrix[0], \n" +
-			"cameraMatrix[1], \n" +
-			"cameraMatrix[2], \n" +
-			"vec4(0.0, 0.0, 1.0, 1.0)); \n" +
-			"return matrix; \n" +
-			"} \n" +
+			"particle_rotationTwoBezier":
+			"attribute float attribute_rotationRandomSeed; \n" +
+			"uniform float uniform_rotationBezier[35]; \n" +
+			"uniform float uniform_rotationBezier2[35]; \n" +
+			"void rotateParticleUnit(){ \n" +
+			"vec2 rotationTwoBezier = vec2(0.0); \n" +
+			"rotationTwoBezier.x = calcBezierArea(uniform_rotationBezier, currentTime, curParticle.life); \n" +
+			"rotationTwoBezier.y = calcBezierArea(uniform_rotationBezier2, currentTime, curParticle.life); \n" +
+			"float rot = mix(rotationTwoBezier.x, rotationTwoBezier.y, attribute_rotationRandomSeed); \n" +
+			"rot = currentTime * rot * (PI / 180.0); \n" +
+			"mat4 temp = buildRotMat4(vec3(0.0,0.0,rot)); \n" +
+			"rotVertexMatrix = temp * rotVertexMatrix; \n" +
+			"localPosition = temp * localPosition; \n" +
+			"} \n",
+
+			"particle_rotationXYZConst":
+			"attribute vec3 attribute_rotSpeedXYZ ; \n" +
+			"attribute vec3 attribute_rotBirthXYZ ; \n" +
+			"void rotateParticleUnit(){ \n" +
+			"vec3 rot = (attribute_rotBirthXYZ + particleStateData.time * attribute_rotSpeedXYZ); \n" +
+			"rot = mod(rot, 360.0) * (PI / 180.0); \n" +
+			"mat4 temp = buildRotMat4(rot); \n" +
+			"rotVertexMatrix = temp * rotVertexMatrix; \n" +
+			"localPosition = temp * localPosition; \n" +
+			"} \n",
+
+			"particle_size_vs":
+			"uniform float uniform_bezierSize[35]; \n" +
+			"void main() { \n" +
+			"float bezierSize = calcBezierSize(uniform_bezierSize, currentTime, curParticle.life); \n" +
+			"localPosition.xyz *= bezierSize; \n" +
+			"} \n",
+
+			"particle_stretched_mode":
 			"float updateStretchedBillBoard(vec4 startPos, vec4 newPos){ \n" +
 			"vec3 dirVector = newPos.xyz - startPos.xyz; \n" +
 			"float speedScale = dot(dirVector, dirVector); \n" +
@@ -1597,58 +1785,9 @@ module egret3d {
 			"float acosValue = dot(dirStartVector, dirVector); \n" +
 			"float angle = acos(acosValue) + added; \n" +
 			"temp = buildRotMat4(vec3(0.0, 0.0, angle)); \n" +
+			"rotVertexMatrix = temp * rotVertexMatrix; \n" +
 			"localPosition = temp * localPosition; \n" +
 			"return 1.0; \n" +
-			"} \n",
-
-			"particle_rotationConst":
-			"attribute float attribute_rotationZ ; \n" +
-			"float particle(  ParticleData curParticle ){ \n" +
-			"float rot = currentTime * attribute_rotationZ * (PI / 180.0); \n" +
-			"localPosition = buildRotMat4(vec3(0.0,0.0,rot)) * localPosition; \n" +
-			"} \n",
-
-			"particle_rotationOneBezier":
-			"uniform float uniform_rotationBezier[35]; \n" +
-			"float particle(  ParticleData curParticle ){ \n" +
-			"if(discard_particle < TrueOrFalse){ \n" +
-			"float rot = calcBezierSize(uniform_rotationBezier, currentTime, curParticle.life); \n" +
-			"rot = currentTime * rot * (PI / 180.0); \n" +
-			"localPosition = buildRotMat4(vec3(0.0,0.0,rot)) * localPosition; \n" +
-			"} \n" +
-			"} \n",
-
-			"particle_rotationTwoBezier":
-			"attribute float attribute_rotationRandomSeed; \n" +
-			"uniform float uniform_rotationBezier[35]; \n" +
-			"uniform float uniform_rotationBezier2[35]; \n" +
-			"float particle(  ParticleData curParticle ){ \n" +
-			"if(discard_particle < TrueOrFalse){ \n" +
-			"vec2 rotationTwoBezier = vec2(0.0); \n" +
-			"rotationTwoBezier.x = calcBezierArea(uniform_rotationBezier, currentTime, curParticle.life); \n" +
-			"rotationTwoBezier.y = calcBezierArea(uniform_rotationBezier2, currentTime, curParticle.life); \n" +
-			"float rot = mix(rotationTwoBezier.x, rotationTwoBezier.y, attribute_rotationRandomSeed); \n" +
-			"rot = currentTime * rot * (PI / 180.0); \n" +
-			"localPosition = buildRotMat4(vec3(0.0,0.0,rot)) * localPosition; \n" +
-			"} \n" +
-			"} \n",
-
-			"particle_rotationXYZConst":
-			"attribute vec3 attribute_rotSpeedXYZ ; \n" +
-			"attribute vec3 attribute_rotBirthXYZ ; \n" +
-			"mat4 mat4RotateXYZ; \n" +
-			"float particle(  ParticleData curParticle ){ \n" +
-			"vec3 rot = (attribute_rotBirthXYZ + particleStateData.time * attribute_rotSpeedXYZ); \n" +
-			"rot = mod(rot, 360.0) * (PI / 180.0); \n" +
-			"mat4RotateXYZ = buildRotMat4(rot); \n" +
-			"localPosition = mat4RotateXYZ * localPosition; \n" +
-			"} \n",
-
-			"particle_size_vs":
-			"uniform float uniform_bezierSize[35]; \n" +
-			"void main() { \n" +
-			"float bezierSize = calcBezierSize(uniform_bezierSize, currentTime, curParticle.life); \n" +
-			"localPosition.xyz *= bezierSize; \n" +
 			"} \n",
 
 			"particle_textureSheetConst":
@@ -1734,61 +1873,6 @@ module egret3d {
 			"varying_textureSheetData = attribute_textureSheetData; \n" +
 			"} \n",
 
-			"particle_time_fs":
-			"varying vec3 varying_particleData; \n" +
-			"void main(void) { \n" +
-			"} \n",
-
-			"particle_time_vs":
-			"attribute vec3 attribute_time ; \n" +
-			"float currentTime = 0.0; \n" +
-			"varying vec3 varying_particleData; \n" +
-			"struct ParticleData{ \n" +
-			"float bornTime; \n" +
-			"float life; \n" +
-			"float index; \n" +
-			"}; \n" +
-			"ParticleData curParticle ; \n" +
-			"float particle( ParticleData curParticle ){ \n" +
-			"float time = particleStateData.time - particleStateData.delay; \n" +
-			"currentTime = time - curParticle.bornTime; \n" +
-			"if(currentTime <= 0.0){ \n" +
-			"return currentTime = 0.0; \n" +
-			"} \n" +
-			"if(particleStateData.stayAtEnd > TrueOrFalse){ \n" +
-			"if(currentTime >= curParticle.life){ \n" +
-			"currentTime = curParticle.life * 0.99999; \n" +
-			"} \n" +
-			"} \n" +
-			"if(particleStateData.loop < TrueOrFalse){ \n" +
-			"if(curParticle.bornTime >= particleStateData.duration){ \n" +
-			"return currentTime = 0.0; \n" +
-			"} \n" +
-			"if(time >= curParticle.life + curParticle.bornTime){ \n" +
-			"return currentTime = 0.0; \n" +
-			"} \n" +
-			"} \n" +
-			"currentTime = mod(currentTime, particleStateData.loopTime); \n" +
-			"if(currentTime >= curParticle.life){ \n" +
-			"return currentTime = 0.0; \n" +
-			"} \n" +
-			"if( currentTime <= 0.0 ) \n" +
-			"return currentTime = 0.0; \n" +
-			"} \n" +
-			"void main(void) { \n" +
-			"curParticle.bornTime = attribute_time.x ; \n" +
-			"curParticle.life = attribute_time.y ; \n" +
-			"curParticle.index = attribute_time.z ; \n" +
-			"float active = particle( curParticle ) ; \n" +
-			"varying_particleData.x = currentTime; \n" +
-			"varying_particleData.y = curParticle.life ; \n" +
-			"varying_particleData.z = curParticle.index; \n" +
-			"if( active < TrueOrFalse ){ \n" +
-			"e_discard(); \n" +
-			"}else{ \n" +
-			"} \n" +
-			"} \n",
-
 			"particle_trackPosition":
 			"attribute vec3 attribute_trackPosition; \n" +
 			"void calcCubicPos(float time, float totalTime, vec3 fromPos, vec3 endPos){ \n" +
@@ -1813,7 +1897,7 @@ module egret3d {
 			"t *= 5.0; \n" +
 			"} \n" +
 			"t = 0.5 * (1.0 - cos(t * PI)); \n" +
-			"vec4 nrmVec4 = mat4RotateXYZ * vec4(attribute_normal, 1.0); \n" +
+			"vec4 nrmVec4 = rotVertexMatrix * vec4(attribute_normal, 1.0); \n" +
 			"vec3 nrmPos = normalize(nrmVec4.xyz); \n" +
 			"nrmPos = nrmPos * t * distanceFloat * 0.04; \n" +
 			"t = clamp(time / totalTime, 0.0, 1.0); \n" +
@@ -1837,9 +1921,6 @@ module egret3d {
 			"trackVec3 *= speed * 2.0 * t; \n" +
 			"localPosition.xyz += ratio * trackVec3; \n" +
 			"localPosition.xyz += curOffset; \n" +
-			"} \n" +
-			"float particle( ParticleData curParticle ){ \n" +
-			"trackPosition(); \n" +
 			"} \n",
 
 			"particle_uv_roll_fs":
@@ -2084,16 +2165,22 @@ module egret3d {
 			"} \n",
 
 			"particle_vs":
-			"attribute vec4 attribute_color; \n" +
-			"attribute vec3 attribute_offsetPosition; \n" +
-			"uniform mat4 uniform_cameraMatrix; \n" +
-			"uniform float uniform_particleState[25]; \n" +
-			"uniform mat4 uniform_ViewMatrix; \n" +
-			"const float PI = 3.1415926 ; \n" +
 			"float currentTime = 0.0; \n" +
 			"float totalTime = 0.0; \n" +
+			"float discard_particle = 0.0; \n" +
+			"const float PI = 3.1415926; \n" +
 			"const float TrueOrFalse = 0.5; \n" +
 			"const float Tiny = 0.0001; \n" +
+			"varying vec3 varying_particleData; \n" +
+			"attribute vec3 attribute_time; \n" +
+			"attribute vec4 attribute_color; \n" +
+			"attribute vec3 attribute_offsetPosition; \n" +
+			"attribute float attribute_rotationBirth; \n" +
+			"uniform mat4 uniform_cameraMatrix; \n" +
+			"uniform mat4 uniform_billboardMatrix; \n" +
+			"uniform mat4 uniform_ViewMatrix; \n" +
+			"uniform float uniform_particleState[25]; \n" +
+			"vec3 cubicPos = vec3(1.0,1.0,1.0); \n" +
 			"vec4 localPosition = vec4(0.0,0.0,0.0,1.0); \n" +
 			"vec3 velocityBaseVec3 = vec3(0.0,0.0,0.0); \n" +
 			"vec3 velocityOverVec3 = vec3(0.0,0.0,0.0); \n" +
@@ -2103,12 +2190,17 @@ module egret3d {
 			"vec3 followTargetPosition = vec3(0.0,0.0,0.0); \n" +
 			"vec3 followTargetScale = vec3(1.0,1.0,1.0); \n" +
 			"vec4 followTargetRotation = vec4(0.0,0.0,0.0,0.0); \n" +
-			"varying vec3 varyingViewDir ; \n" +
-			"float discard_particle = 0.0; \n" +
-			"ParticleStateData particleStateData; \n" +
-			"void e_discard(){ \n" +
-			"discard_particle = 1.0; \n" +
-			"} \n" +
+			"const float Billboard				= 0.0; \n" +
+			"const float StretchedBillboard		= 1.0; \n" +
+			"const float HorizontalBillboard		= 2.0; \n" +
+			"const float VerticalBillboard		= 3.0; \n" +
+			"const float Mesh					= 4.0; \n" +
+			"struct ParticleData{ \n" +
+			"float bornTime; \n" +
+			"float life; \n" +
+			"float index; \n" +
+			"}; \n" +
+			"ParticleData curParticle; \n" +
 			"struct ParticleStateData{ \n" +
 			"float time; \n" +
 			"float loop; \n" +
@@ -2136,6 +2228,7 @@ module egret3d {
 			"float renderMode; \n" +
 			"float stayAtEnd; \n" +
 			"}; \n" +
+			"ParticleStateData particleStateData; \n" +
 			"mat4 buildRotMat4(vec3 rot) \n" +
 			"{ \n" +
 			"float s; \n" +
@@ -2166,7 +2259,8 @@ module egret3d {
 			") * ret; \n" +
 			"return ret; \n" +
 			"} \n" +
-			"mat4 buildMat4Quat(vec4 quat){ \n" +
+			"mat4 buildMat4Quat(vec4 quat) \n" +
+			"{ \n" +
 			"float xx = quat.x * quat.x; \n" +
 			"float xy = quat.x * quat.y; \n" +
 			"float xz = quat.x * quat.z; \n" +
@@ -2183,7 +2277,8 @@ module egret3d {
 			"0.0,							0.0,					0.0,					1 \n" +
 			"); \n" +
 			"} \n" +
-			"float easeInOut(float t){ \n" +
+			"float easeInOut(float t) \n" +
+			"{ \n" +
 			"t = clamp(t, 0.0, 1.0); \n" +
 			"float p0; \n" +
 			"float p1; \n" +
@@ -2204,12 +2299,57 @@ module egret3d {
 			"p0 = mix(p0, p1, t); \n" +
 			"return p0; \n" +
 			"} \n" +
-			"vec3 cubicPos; \n" +
-			"void calcCubicPos(float time, float totalTime, vec3 fromPos, vec3 endPos){ \n" +
+			"void e_discard() \n" +
+			"{ \n" +
+			"discard_particle = 1.0; \n" +
 			"} \n" +
-			"void trackPosition(){ \n" +
+			"float particle( ParticleData curParticle ) \n" +
+			"{ \n" +
+			"float time = particleStateData.time - particleStateData.delay; \n" +
+			"currentTime = time - curParticle.bornTime; \n" +
+			"if(currentTime <= 0.0){ \n" +
+			"return currentTime = 0.0; \n" +
 			"} \n" +
-			"void main(void) { \n" +
+			"if(particleStateData.stayAtEnd > TrueOrFalse){ \n" +
+			"if(currentTime >= curParticle.life){ \n" +
+			"currentTime = curParticle.life * 0.99999; \n" +
+			"} \n" +
+			"} \n" +
+			"if(particleStateData.loop < TrueOrFalse){ \n" +
+			"if(curParticle.bornTime >= particleStateData.duration){ \n" +
+			"return currentTime = 0.0; \n" +
+			"} \n" +
+			"if(time >= curParticle.life + curParticle.bornTime){ \n" +
+			"return currentTime = 0.0; \n" +
+			"} \n" +
+			"} \n" +
+			"currentTime = mod(currentTime, particleStateData.loopTime); \n" +
+			"if(currentTime >= curParticle.life){ \n" +
+			"return currentTime = 0.0; \n" +
+			"} \n" +
+			"if( currentTime <= 0.0 ) \n" +
+			"return currentTime = 0.0; \n" +
+			"} \n" +
+			"void calcCubicPos(float time, float totalTime, vec3 fromPos, vec3 endPos) \n" +
+			"{ \n" +
+			"} \n" +
+			"void trackPosition() \n" +
+			"{ \n" +
+			"} \n" +
+			"void rotateParticleUnit() \n" +
+			"{ \n" +
+			"rotVertexMatrix = buildRotMat4(vec3(0.0, 0.0, attribute_rotationBirth * PI / 180.0)); \n" +
+			"if(particleStateData.renderMode == HorizontalBillboard){ \n" +
+			"rotVertexMatrix *= buildRotMat4(vec3(0.5 * PI, 0.0, 0.0)); \n" +
+			"localPosition = rotVertexMatrix * localPosition; \n" +
+			"}else if(particleStateData.renderMode == VerticalBillboard){ \n" +
+			"rotVertexMatrix *= buildRotMat4(vec3(-0.5 * PI, 0.0, 0.0)); \n" +
+			"localPosition = rotVertexMatrix * localPosition; \n" +
+			"} \n" +
+			"} \n" +
+			"void main(void) \n" +
+			"{ \n" +
+			"localPosition = vec4(e_position, 1.0); \n" +
 			"particleStateData.time							= uniform_particleState[0]; \n" +
 			"particleStateData.loop							= uniform_particleState[1]; \n" +
 			"particleStateData.worldSpace					= uniform_particleState[2]; \n" +
@@ -2235,14 +2375,27 @@ module egret3d {
 			"particleStateData.lengthScale					= uniform_particleState[22]; \n" +
 			"particleStateData.renderMode					= uniform_particleState[23]; \n" +
 			"particleStateData.stayAtEnd						= uniform_particleState[24]; \n" +
-			"mat4 modeViewMatrix = mat4(uniform_ViewMatrix * uniform_ModelMatrix); \n" +
-			"outPosition = localPosition = vec4(e_position, 1.0); \n" +
+			"curParticle.bornTime = attribute_time.x ; \n" +
+			"curParticle.life = attribute_time.y ; \n" +
+			"curParticle.index = attribute_time.z ; \n" +
+			"float active = particle( curParticle ) ; \n" +
+			"varying_particleData.x = currentTime; \n" +
+			"varying_particleData.y = curParticle.life ; \n" +
+			"varying_particleData.z = curParticle.index; \n" +
+			"if( active < TrueOrFalse ){ \n" +
+			"e_discard(); \n" +
+			"outPosition = localPosition = vec4(0.0, 0.0, 0.0, 1.0); \n" +
+			"}else{ \n" +
+			"rotateParticleUnit(); \n" +
+			"trackPosition(); \n" +
+			"outPosition = localPosition; \n" +
+			"} \n" +
 			"} \n",
 
 			"pickPass_fs":
-			"uniform vec4 uniform_ObjectId; \n" +
+			"uniform vec3 uniform_ObjectId; \n" +
 			"void main() { \n" +
-			"gl_FragColor = uniform_ObjectId; \n" +
+			"gl_FragColor = vec4(uniform_ObjectId, 1.0); \n" +
 			"} \n",
 
 			"pickPass_skeleton_vs":
@@ -2343,7 +2496,7 @@ module egret3d {
 			"float cutoff = pointLight.cutoff ; \n" +
 			"attenuation = (attenuation - cutoff) / (1.0 - cutoff); \n" +
 			"attenuation = max(attenuation*pointLight.intensity, 0.0); \n" +
-			"light.xyzw += LightingBlinnPhong(normalize(ldir),pointLight.diffuse,pointLight.ambient,N,(viewDir),attenuation); \n" +
+			"LightingBlinnPhong(normalize(ldir),pointLight.diffuse,pointLight.ambient,N,(viewDir),attenuation); \n" +
 			"}; \n" +
 			"} \n" +
 			"void main() { \n" +
@@ -2361,6 +2514,14 @@ module egret3d {
 			"void main(){ \n" +
 			"gl_Position = uniform_ProjectionMatrix * outPosition ; \n" +
 			"varying_position = gl_Position.xyzw; \n" +
+			"} \n",
+
+			"rimlight_fs":
+			"uniform float uniform_rimData[6] ; \n" +
+			"void main(){ \n" +
+			"float rim = 1.0 - clamp(dot (vec3(0.0,0.0,1.0), normal ) ,0.0,1.0); \n" +
+			"vec3 emission = vec3(uniform_rimData[0],uniform_rimData[1],uniform_rimData[2]) * pow(rim, uniform_rimData[4]); \n" +
+			"outColor.xyz += emission * uniform_rimData[3] * uniform_rimData[5] ; \n" +
 			"} \n",
 
 			"secondaryUV_vs":

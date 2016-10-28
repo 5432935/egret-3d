@@ -13,7 +13,7 @@
         }
 
         protected initMatPass() {
-            this.addPass(PassType.diffusePass);
+            this.creatPass(PassType.diffusePass);
             this.diffusePass.addMethod(new ColorMethod());
         }
 

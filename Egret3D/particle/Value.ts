@@ -590,6 +590,9 @@
         public normalList: Vector3D[] = [];
         public geometry: Geometry;
         public type: number = ParticleMeshShapeType.Edge;
+
+        public scale: number = 1;
+
         /**
         * @language zh_CN
         * @param num 
@@ -604,6 +607,12 @@
                 this.trianglePosition(values, num);
             } else if (this.type == ParticleMeshShapeType.Vertex) {
                 this.vertexPosition(values, num);
+            }
+            if (this.scale != 1 && this.scale != 0) {
+                var vec: Vector3D;
+                for (vec of values) {
+                    vec.scaleBy(this.scale);
+                }
             }
             return values;
         }

@@ -6,8 +6,9 @@
     * 实现lightmap渲染方法。
     * 在三维软件里实现打好光，然后渲染把场景各表面的光照输出到贴图上。
     * 然后使用模型的第2UV，渲染出Lightmap效果，lightmap贴图需要自己烘焙。
+     * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
     * @see egret3d.MethodBase
-    * @includeExample material/method/LightmapMethod.ts
+    * @see egret3d.MaterialPass
     * @version Egret 3.0
     * @platform Web,Native
     */

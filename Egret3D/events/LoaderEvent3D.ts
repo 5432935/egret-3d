@@ -47,6 +47,32 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public loader: URLLoader;
+        public loader: ILoader;
+
+          /**
+        * @language zh_CN
+        * 加载对象的总大小
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public total: number;
+
+
+        /**
+        * @language zh_CN
+        * 加载对象的当前的加载大小
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public loaded: number;
+
+       // addEventListener(type: "abort", listener: (ev: Event) => any, useCapture?: boolean): void;
+       // addEventListener(type: "error", listener: (ev: ErrorEvent) => any, useCapture?: boolean): void;
+        //addEventListener(type: "load", listener: (ev: Event) => any, useCapture?: boolean): void;
+        //addEventListener(type: "loadend", listener: (ev: ProgressEvent) => any, useCapture?: boolean): void;
+       // addEventListener(type: "loadstart", listener: (ev: Event) => any, useCapture?: boolean): void;
+       // addEventListener(type: "progress", listener: (ev: ProgressEvent) => any, useCapture?: boolean): void;
+        //addEventListener(type: "readystatechange", listener: (ev: ProgressEvent) => any, useCapture?: boolean): void;
+       // addEventListener(type: "timeout", listener: (ev: ProgressEvent) => any, useCapture?: boolean): void;
     }
 }

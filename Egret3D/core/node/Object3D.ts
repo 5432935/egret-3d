@@ -30,6 +30,40 @@
         UVPick
     };
 
+
+    /**
+    * @class egret3d.Object3D
+    * @classdesc
+    * billboard类型
+    * @see egret3d.Camera3D
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
+    export enum BillboardType {
+
+        /**
+        * 非billboard类型
+        */
+        DISABLE,
+
+        /**
+        * 只允许绕x轴旋转
+        */
+        X_AXIS,
+        /**
+        * 只允许绕y轴旋转
+        */
+        Y_AXIS,
+        /**
+        * 只允许绕z轴旋转
+        */
+        Z_AXIS,
+        /**
+        * 标准的billboard
+        */
+        STANDARD
+    };
+
     /**
     * @class egret3d.Object3D
     * @classdesc
@@ -78,7 +112,16 @@
         protected _isRoot: boolean = true;
         protected _bound: Bound;
 
+        protected static v0: Vector3D = new Vector3D();
+        protected static v1: Vector3D = new Vector3D();
+        protected static v2: Vector3D = new Vector3D();
+
+
         protected _displayList: DisplayObject[];
+
+        protected _proAnimation: IAnimation;
+
+        public billboard: number = BillboardType.DISABLE;
 
         /**
         * @language zh_CN
@@ -86,7 +129,22 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public proAnimation: PropertyAnim;
+        public set proAnimation(animation: IAnimation) {
+            this._proAnimation = animation;
+            if (this._proAnimation) {
+                this._proAnimation.propertyAnimController.target = this;
+            }
+        }
+
+        /**
+        * @language zh_CN
+        * 属性动画对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get proAnimation(): IAnimation {
+            return this._proAnimation;
+        }
 
         /**
         * @language zh_CN
@@ -301,6 +359,9 @@
             this.updateTransformChange(true);
             this._pos.copyFrom(vec);
         }
+
+
+
         
         /**
         * @language zh_CN
@@ -814,10 +875,10 @@
 
                 var parentScale: Vector3D = this.parent.globalScale;
 
-                this._globalSca.copyFrom(parentScale.multiply(this._sca));
+                this._globalSca.copyFrom(parentScale.multiply(this._sca, Object3D.v0));
 
-                parentOrientation.transformVector(parentScale.multiply(this._pos), this._globalPos);
-                this._globalPos.copyFrom(this._globalPos.add(this.parent.globalPosition));
+                parentOrientation.transformVector(parentScale.multiply(this._pos, Object3D.v0), this._globalPos);
+                this._globalPos.copyFrom(this._globalPos.add(this.parent.globalPosition, Object3D.v0));
             }
             else {
                 this._globalOrientation.copyFrom(this._orientation);
@@ -1394,6 +1455,42 @@
         public swapObject(other: Object3D) {
             var parent = other.parent;
 
+            if (this.parent) {
+
+                var index: number = this.parent.getChildIndex(this);
+
+                this.parent.childs[index] = other;
+            }
+
+            if (other.parent) {
+
+                var index: number = other.parent.getChildIndex(other);
+
+                other.parent.childs[index] = this;
+            }
+
+            other.parent = this.parent;
+            this.parent = parent;
+
+            for (var i: number = 0; i < this.childs.length; ++i) {
+                other.addChild(this.childs[i]);
+            }
+
+            this.updateTransformChange(true);
+            other.updateTransformChange(true);
+        }
+
+        /**
+        * @language zh_CN
+        * @private
+        * 交换对象 包括子节点
+        * @param other 交换中的对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public swapObjectAndChilds(other: Object3D) {
+            var parent = other.parent;
+
             var childs: Array<Object3D> = new Array<Object3D>();
 
             for (var i: number = 0; i < other.childs.length; ++i) {
@@ -1611,18 +1708,6 @@
 
         /**
         * @language zh_CN
-        * 绑定一个属性动画对象
-        * @param proAnimation 属性动画对象
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public bindAnimation(proAnimation: PropertyAnim) {
-            this.proAnimation = proAnimation;
-            this.proAnimation.bindObject3D(this);
-        }
-
-        /**
-        * @language zh_CN
         * 当前对象数据更新
         * @private
         * @param camera 当前渲染的摄相机
@@ -1633,7 +1718,7 @@
         */
         public update(time: number, delay: number, camera:Camera3D) {
             if (this.proAnimation) {
-                this.proAnimation.update(delay);
+                this.proAnimation.update(time, delay, null);
             }
             if (this._displayList) {
                 for (var i: number = 0; i < this._displayList.length; i++) {

@@ -97,5 +97,19 @@
             }
         } 
 
+
+        /**
+        * @language zh_CN
+        * 读取image的byteArray数据
+        * @param x 读取的x偏移值
+        * @param y 读取的y偏移值
+        * @param width  读取的宽度
+        * @param height 读取的高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public readPixels(x: number, y: number, width: number, height: number, format: number = ContextConfig.ColorFormat_RGBA8888, type: number = ContextConfig.UNSIGNED_BYTE, pixels: ArrayBufferView = null): any {
+            return Egret3DCanvas.draw2DImage(this.imageData, x, y, width, height);
+        }
     }
 }

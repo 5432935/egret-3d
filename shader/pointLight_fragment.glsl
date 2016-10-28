@@ -40,7 +40,7 @@ void calculatePointLight(MaterialSource materialSource){
 		float cutoff = pointLight.cutoff ;
 		attenuation = (attenuation - cutoff) / (1.0 - cutoff);
 		attenuation = max(attenuation*pointLight.intensity, 0.0);
-		light.xyzw += LightingBlinnPhong(normalize(ldir),pointLight.diffuse,pointLight.ambient,N,(viewDir),attenuation); 
+		LightingBlinnPhong(normalize(ldir),pointLight.diffuse,pointLight.ambient,N,(viewDir),attenuation); 
 	};
 }
 

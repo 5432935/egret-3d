@@ -6,6 +6,8 @@
         protected ctl; HoverController;
         protected textField: gui.UITextField;
 
+        public tempMesh: Mesh;
+
         public constructor() {
             super();
 
@@ -22,139 +24,92 @@
 
             this._egret3DCanvas.start();
             this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
-            var gui: QuadStage = this.view1.getGUIStage();
-            TextureResourceManager.getInstance().loadTexture("resource/ui/fonts.json", "resource/ui/fonts.png", gui);
-            TextureResourceManager.getInstance().loadTexture("resource/ui/GUI.json", "resource/ui/GUI.png", gui);
-            TextureResourceManager.getInstance().addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadFonts, this);
+            //
+            //            this.tempMesh = new Mesh(new CubeGeometry());
+            //            this.view1.addChild3D(this.tempMesh);
+
+
+            //var gui: QuadStage = this.view1.getGUIStage();
+            //TextureResourceManager.getInstance().guiStage = gui;
+            this.view1.openGui(() => {
+                this.onLoadFonts(null)
+            })
+            //TextureResourceManager.getInstance().loadTexture("resource/ui/fonts.json", "resource/ui/fonts.png");
+            //TextureResourceManager.getInstance().loadTexture("resource/ui/GUI.json", "resource/ui/GUI.png");
+            //TextureResourceManager.getInstance().addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.guiInited, this);
+            //TextureResourceManager.getInstance().addEventListener(LoaderEvent3D.LOADER_PROGRESS, this.onLoadProgress, this);
+        }
+
+        private onLoadProgress(e: LoaderEvent3D) {
+         
         }
 
         protected onLoadFonts(e: LoaderEvent3D) {
-            gui.BitmapFont.load(TextureResourceManager.getInstance().getTextureDic());
-            var upState: Texture = TextureResourceManager.getInstance().getTexture("normal.png");
-            var downState: Texture = TextureResourceManager.getInstance().getTexture("pressed.png");
-            var checkUpState: Texture = TextureResourceManager.getInstance().getTexture("default.png");
-            var checkDownState: Texture = TextureResourceManager.getInstance().getTexture("checked.png");
+            gui.BitmapFont.load(textureResMgr.getTextureDic());
+            var upState: Texture = textureResMgr.getTexture("normal.png");
+            var downState: Texture = textureResMgr.getTexture("pressed.png");
+            var overState: Texture = textureResMgr.getTexture("hover.png");
 
-            var whiteBg: Texture = TextureResourceManager.getInstance().getTexture("whitebackground.png");
+            var checkUpState: Texture = textureResMgr.getTexture("default.png");
+            var checkDownState: Texture = textureResMgr.getTexture("checked.png");
 
-            var progressBg: Texture = TextureResourceManager.getInstance().getTexture("backgroundpic.png");
-            var progressBarSkin: Texture = TextureResourceManager.getInstance().getTexture("blue.png");
+            var whiteBg: Texture = textureResMgr.getTexture("whitebackground.png");
 
-            var radioUpState: Texture = TextureResourceManager.getInstance().getTexture("unselected.png");
-            var radioDownState: Texture = TextureResourceManager.getInstance().getTexture("selected.png");
+            var progressBg: Texture = textureResMgr.getTexture("backgroundpic.png");
+            var progressBarSkin: Texture = textureResMgr.getTexture("blue.png");
 
-            var sliderBar: Texture = TextureResourceManager.getInstance().getTexture("bluebackground.png");
-            var sliderBackground: Texture = TextureResourceManager.getInstance().getTexture("whitebackground.png");
+            var radioUpState: Texture = textureResMgr.getTexture("unselected.png");
+            var radioSelected: Texture = textureResMgr.getTexture("selected.png");
+            var radioHover: Texture = textureResMgr.getTexture("hover1.png");
 
-            var con: DisplayObject = new DisplayObject();
-            this.view1.addGUI(con);
-            var btn: gui.UIButton = new gui.UIButton();
-            btn.width = upState.width;
-            btn.height = upState.height;
-            btn.setStyle("up", upState);
-            btn.setStyle("down", downState);
-            con.addChild(btn);
+            var sliderBar: Texture = textureResMgr.getTexture("bluebackground.png");
+            var sliderBackground: Texture = textureResMgr.getTexture("whitebackground.png");
 
-            con.visible = false;
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_UP, upState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_DOWN, downState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_OVER, overState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_LABEL_BUTTON_UP, upState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_LABE_BUTTON_DOWN, downState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_UP, checkUpState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_DOWN, checkUpState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_UP, checkDownState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_DOWN, checkDownState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_UP, radioUpState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_DOWN, radioHover);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_DOWN, radioHover);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_UP, radioSelected);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_SLIDER_BAR, sliderBar);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_SLIDER_BACKGROUND, sliderBackground);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PROGRESS_BAR, progressBarSkin);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PROGRESS_BAR_BACKGROUND, progressBg);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PANEL_BACKGROUND, whiteBg);
 
-            var labelBtn: gui.UILabelButton = new gui.UILabelButton();
-            labelBtn.y = 50;
-            labelBtn.width = upState.width;
-            labelBtn.height = upState.height;
-            labelBtn.setStyle("up", upState);
-            labelBtn.setStyle("down", downState);
-            labelBtn.label = "重置";
-            this.view1.addGUI(labelBtn);
-            labelBtn.addEventListener(MouseEvent3D.MOUSE_CLICK,
-                (e) => {
-                    console.log("click1");
-                },
-                this);
 
-            labelBtn.addEventListener(MouseEvent3D.MOUSE_CLICK,
-                (e) => {
-                    console.log("click2");
-                },
-                this);
 
-            var checkBox: gui.UICheckBox = new gui.UICheckBox();
-            checkBox.width = checkUpState.width;
-            checkBox.height = checkUpState.height;
-            checkBox.setStyle("up", checkUpState);
-            checkBox.setStyle("down", checkUpState);
-            checkBox.setStyle("downAndSelected", checkDownState);
-            checkBox.setStyle("upAndSelected", checkDownState);
-            checkBox.label = "checkbox";
-            checkBox.y = 100;
-            this.view1.addGUI(checkBox);
+            var quad: Quad = this.quad = new Quad();
+            this.view1.addGUI(quad);
+            this.quad.width = this.quad.height = 400;
+            this.tex = gui.BitmapFont.getTexture(("来").charCodeAt(0));
 
-            var radioButtonGroup: gui.UIRadioButtonGroup = new gui.UIRadioButtonGroup();
-            for (var i: number = 0; i < 3; i++) {
-                var radioBtn: gui.UIRadioButton = new gui.UIRadioButton();
-
-                radioBtn.setStyle("up", radioUpState);
-                radioBtn.setStyle("down", radioUpState);
-                radioBtn.setStyle("downAndSelected", radioDownState);
-                radioBtn.setStyle("upAndSelected", radioDownState);
-                radioBtn.width = checkUpState.width;
-                radioBtn.height = checkUpState.height;
-                radioBtn.label = "btn " + i;
-                radioBtn.y = 150;
-                radioBtn.x = i * (radioBtn.buttonAndLabelWidth + 5);
-                this.view1.addGUI(radioBtn);
-                radioButtonGroup.addItem(radioBtn);
-            }
-
-            var progressBar: gui.UIProgressBar = new gui.UIProgressBar();
-            progressBar.height = 29;
-            progressBar.width = 500;
-            progressBar.setStyle("background", progressBg);
-            progressBar.setStyle("bar", progressBarSkin);
-            this.view1.addGUI(progressBar);
-            setInterval(() => {
-                if (progressBar.ratio === 1) {
-                    progressBar.ratio = 0;
-                }
-                progressBar.ratio += 0.001;
-            },
-                16);
-            progressBar.y = 200;
-
-            var slider: gui.UISlider = new gui.UISlider();
-            slider.setStyle("bar", sliderBar);
-            slider.setStyle("background", sliderBackground);
-            slider.width = 100;
-            slider.height = 20;
-            slider.y = 250;
-            slider.addEventListener(Event3D.CHANGE,
-                (e) => {
-                    console.log(slider === e.target);
-                    console.log(slider.value);
-                },
-                this);
-            this.view1.addGUI(slider);
-
-            var list: gui.UIList = new gui.UIList();
-            list.width = 460;
-            list.height = 200;
-            list.setStyle("background", whiteBg);
-            list.y = 300;
-            var texAry = ["14.png", "20.png", "38.png", "56.png", "91.png", "99+.png"];
-            for (var i: number = 0; i < texAry.length; i++) {
-                var tempQuad: Quad = new Quad();
-                tempQuad.width = 460;
-                tempQuad.height = 41;
-                tempQuad.texture = TextureResourceManager.getInstance().getTexture(texAry[i]);
-                list.addItem(tempQuad);
-            }
-            this.view1.addGUI(list);
-
-//            var input: gui.UITextField = new gui.UITextField(gui.UITextFieldType.INPUT);
-//            input
-//            this.view1.addGUI(input);
         }
 
+        private quad: Quad;
+        private tex: Texture;
+
+        private count: number = 0;
         public update(e: Event3D) {
+            if (this.quad) {
+                this.count++;
+                if (this.count == 180) {
+                    this.quad.texture = this.tex;
+                    this.quad.width = this.quad.height = 400;
+
+                } else if (this.count == 360) {
+                    this.quad.texture = null;
+                    this.quad.width = this.quad.height = 400;
+
+                }
+            }
             this.ctl.update();
         }
     }

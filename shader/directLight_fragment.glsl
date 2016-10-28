@@ -77,7 +77,7 @@ void calculateDirectLight( MaterialSource materialSource ){
 		directLight.diffuse = vec3(uniform_directLightSource[i*9+3],uniform_directLightSource[i*9+4],uniform_directLightSource[i*9+5]); 
 		directLight.ambient = vec3(uniform_directLightSource[i*9+6],uniform_directLightSource[i*9+7],uniform_directLightSource[i*9+8]); 
 		dir = normalize(directLight.direction) ; 
-		light.xyzw += LightingBlinnPhong(dir,directLight.diffuse,directLight.ambient,normal,viewDir,0.5); 
+		LightingBlinnPhong(dir,directLight.diffuse,directLight.ambient,normal,viewDir,0.5); 
     }
 }
 

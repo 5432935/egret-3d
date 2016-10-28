@@ -15,7 +15,6 @@
 
         constructor() {
             super();
-            this.instanceStyles = {};
         }
 
         public onRender() {
@@ -26,18 +25,28 @@
         }
 
 
-        public setStyle(style: string, value: Texture): void
-        {
-            if (this.instanceStyles[style] === value)
-            {
+        public setStyle(style: string, value: Texture): void {
+            if (!this.instanceStyles) {
+                this.instanceStyles = {};
+            }
+            if (this.instanceStyles[style] === value) {
                 return;
             }
-                this.instanceStyles[style] = value;
-
+            this.instanceStyles[style] = value;
         }
 
         public getStyle(style: string): Texture {
-            return this.instanceStyles[style];
+            return this.instanceStyles ?  this.instanceStyles[style] : this.getDefaultStyle(style);
+        }
+
+        public getDefaultStyle(style: string): Texture {
+            return SkinManager.instance.getDefaultSkin(this.getDefaultStyleNameByStyleName(style));
+        }
+
+        //用于子类继承重写. 返回默认皮肤名字
+        protected getDefaultStyleNameByStyleName(styleName: string):string {
+            return "";
+
         }
 
 

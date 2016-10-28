@@ -21,7 +21,6 @@
             var view1: View3D = new View3D(0, 0, window.innerWidth, window.innerHeight);
             view1.camera3D.lookAt(new Vector3D(0, 1000, 0), new Vector3D(0, 0, 0));
             view1.camera3D.far = 1000000;
-            view1.post = [new DeferredShadingProcessing()];//, new AmbientOcclusion()];//, 
 
             this._egret3DCanvas.addView3D(view1);
             this.view1 = view1;

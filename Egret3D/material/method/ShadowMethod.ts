@@ -11,9 +11,11 @@
     */
     export class ShadowMethod extends MethodBase {
 
-        constructor(material: MaterialBase) {
+        constructor( matData:MaterialData = null ) {
             super();
-            this.materialData = material.materialData;
+
+            if (matData)
+                this.materialData = matData; 
 
             this.vsShaderList[ShaderPhaseType.local_vertex] = this.vsShaderList[ShaderPhaseType.local_vertex] || [];
             this.vsShaderList[ShaderPhaseType.local_vertex].push("shadowMapping_vs");
@@ -50,7 +52,7 @@
         /**
         * @private
         */
-        public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
+        public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D, renderQuen: RenderQuen) {
 
             if (usage.uniform_ShadowMatrix) {
                 usage.uniform_ShadowMatrix.uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_ShadowMatrix");
@@ -61,14 +63,13 @@
         * @private
         */
 
-        public activeState(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
-            var camera: Camera3D = ShadowCast.instance.shadowCamera;
+        public activeState(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D, renderQuen: RenderQuen) {
+            var camera: Camera3D = renderQuen.renderDictionary[PassType.shadowPass].camera ;
             if (camera) {
                 if (usage.uniform_ShadowMatrix && usage.uniform_ShadowMatrix.uniformIndex) {
                     context3DProxy.uniformMatrix4fv(usage.uniform_ShadowMatrix.uniformIndex, false, camera.viewProjectionMatrix.rawData);
                 }
             }
-
             context3DProxy.uniform4fv(usage.uniform_ShadowColor.uniformIndex, this.materialData.shadowColor);
         }
     }

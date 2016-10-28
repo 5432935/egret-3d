@@ -348,7 +348,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public specularLevel: number = 4.0;
+        public specularLevel: number = 1.0;
 
 
         /**
@@ -358,7 +358,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public gloss: number = 20.0;
+        public gloss: number = 10.0;
 
         /**
         * @language zh_CN
@@ -425,7 +425,6 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public specularScale: number = 1.0;
         public normalScale: number = 1.0;
 
         /**
@@ -510,7 +509,7 @@
         /**
          * @language zh_CN
          */
-        public colorGradientsSource: Float32Array = new Float32Array(10);//10 xyz xyz rgba
+        public colorGradientsSource: Float32Array = new Float32Array(6);//y y rgba
         /**
         * @language zh_CN
         * 颜色变化信息。
@@ -586,7 +585,6 @@
             data.gloss = this.gloss;
             data.albedo = this.albedo;
 
-            data.specularScale = this.specularScale;
             data.materialDataNeedChange = this.materialDataNeedChange;
             data.textureChange = true;
 

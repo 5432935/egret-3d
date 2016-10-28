@@ -14,6 +14,21 @@
             3: (bytes: ByteArray) => EAMVersion.parserVersion_3(bytes),
         };
 
+        public static findNameIndex(nameArray: string[], name: string): number {
+            if ("" == name) {
+                return -1;
+            }
+
+            for (var i: number = 0; i < nameArray.length; ++i) {
+                if (name == nameArray[i]) {
+
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
         public static parserVersion_1(bytes: ByteArray): SkeletonAnimationClip {
 
             var boneCount: number = bytes.readUnsignedByte();
@@ -25,7 +40,7 @@
 
             var skeletonAnimationClip: SkeletonAnimationClip = new SkeletonAnimationClip();
 
-            var boneNameArray: Array<string> = new Array<string>();
+            var boneNameArray: Array<string> = skeletonAnimationClip.boneNameArray;
 
             var parentBoneNameArray: Array<string> = new Array<string>();
 
@@ -55,11 +70,12 @@
 
                 for (var j: number = 0; j < boneCount; j++) {
 
-                    var jointPose: Joint = new Joint(boneNameArray[j]);
+                    var jointPose: Joint = new Joint();
+                    //jointPose.name = boneNameArray[j];
+                    //jointPose.parent = parentBoneNameArray[j];
 
-                    jointPose.parent = parentBoneNameArray[j];
-
-                    jointPose.parentIndex = skeletonPose.findJointIndex(jointPose.parent);
+                    jointPose.index = j;
+                    jointPose.parentIndex = EAMVersion.findNameIndex(boneNameArray, parentBoneNameArray[j]);
 
                     orientation.fromEulerAngles(bytes.readFloat() * MathUtil.RADIANS_TO_DEGREES, bytes.readFloat() * MathUtil.RADIANS_TO_DEGREES, bytes.readFloat() * MathUtil.RADIANS_TO_DEGREES);
 
@@ -97,7 +113,7 @@
 
             var skeletonAnimationClip: SkeletonAnimationClip = new SkeletonAnimationClip();
 
-            var boneNameArray: Array<string> = new Array<string>();
+            var boneNameArray: Array<string> = skeletonAnimationClip.boneNameArray;
 
             var parentBoneNameArray: Array<string> = new Array<string>();
 
@@ -132,17 +148,19 @@
                 for (var i: number = 0; i < nCount; i++) {
 
                     var skeletonPose: SkeletonPose = new SkeletonPose();
+                    skeletonPose.boneNameArray = boneNameArray;
 
                     //读取该帧时刻;
                     skeletonPose.frameTime = bytes.readInt() / 60 / 80 * 1000;
 
                     for (var j: number = 0; j < boneCount; j++) {
 
-                        var jointPose: Joint = new Joint(boneNameArray[j]);
-
-                        jointPose.parent = parentBoneNameArray[j];
-
-                        jointPose.parentIndex = skeletonPose.findJointIndex(jointPose.parent);
+                        var jointPose: Joint = new Joint();
+                        //jointPose.name = boneNameArray[j];
+                        //jointPose.parent = parentBoneNameArray[j];
+                        
+                        jointPose.index = j;
+                        jointPose.parentIndex = EAMVersion.findNameIndex(boneNameArray, parentBoneNameArray[j]);
 
                         //读取旋转四元数分量;
                         orientation.x = bytes.readFloat();

@@ -4,7 +4,16 @@
     * @language zh_CN
     * @class egret3d.UVRollMethod
     * @classdesc
-    * 用来实现UV滚动效果的渲染方法
+    * 用来实现UV滚动效果的渲染方法。
+    * 可实现地图滚轴动画。
+    * 可实现水流动画。
+    * 可实现流动的岩浆特效。
+    * 可实现扩散波纹特效。
+    * 可实现吸血特效。
+    * 根据美术的特效风格使用情况利用 uv roll 动画特效方法
+    * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
+    * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
     * @version Egret 3.0
     * @platform Web,Native
     */

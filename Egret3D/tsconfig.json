@@ -7,6 +7,7 @@
         "out": "./egret3d.js"
     },
     "files": [
+
         "Egret3DLog.ts",
         "Egret3DState.ts",
         "config/TextureMethodType.ts",
@@ -19,7 +20,6 @@
         "geom/Orientation3D.ts",
         "geom/Plane3D.ts",
         "geom/Matrix4_4.ts",
-        "geom/EyesMatrix.ts",
         "geom/PlaneClassification.ts",
         "geom/MathUtil.ts",
         "geom/Ray.ts",
@@ -76,6 +76,7 @@
 
         "anim/PropertyAnimation/AnimCurve.ts",
         "anim/PropertyAnimation/PropertyAnim.ts",
+        "anim/PropertyAnimation/PropertyAnimController.ts",
 
         "anim/SkeletonAnimation/Joint.ts",
         "anim/SkeletonAnimation/Skeleton.ts",
@@ -95,7 +96,7 @@
         "controller/LookAtController.ts",
         "controller/HoverController.ts",
         "controller/PanController.ts",
-
+        
         "core/context/Reference.ts",
         "core/context/ContextConfig.ts",
         "core/context/Context3DProxy.ts",
@@ -128,6 +129,7 @@
         "gui/QuadMesh.ts",
         "gui/GUITextureGroup.ts",
         "gui/QuadStage.ts",
+        "gui/SkinManager.ts",
 
         "gui/component/UILayout.ts",
         "gui/component/UIElement.ts",
@@ -166,16 +168,22 @@
         "geometry/CylinderGeometry.ts",
         "geometry/PlaneGeometry.ts",
         "geometry/SphereGeometry.ts",
+        "geometry/OctahedronSphereGeometry.ts",
         "geometry/GeometryUtil.ts",
         "geometry/ElevationGeometry.ts",
+        "geometry/OctahedronSphereGeometry.ts",
+
+        
         
 
         "input/input.ts",
         "input/OrientationController.ts",
 
+        "loader/ILoader.ts",
         "loader/URLLoader.ts",
         "loader/AssetManager.ts",
         "loader/TextureResourceManager.ts",
+
 
         "loader/parser/DDSParser.ts",
         "loader/parser/PVRParser.ts",
@@ -192,31 +200,36 @@
         "loader/parser/EPA/EPAVersion.ts",
         "loader/parser/XML/XMLParser.ts",
 
-        "loader/parser/map/MapParserUtils.ts",
-        "loader/parser/map/MapParser.ts",
-
-        "loader/parser/map/binary/MapBinParser.ts",
-
-        "loader/parser/map/json/MapJsonParser.ts",
-        "loader/parser/map/json/MapJsonParser_1.ts",
-
-        "loader/parser/map/xml/MapXmlParser.ts",
-        "loader/parser/map/xml/MapXmlParser_1.ts",
-
+        "loader/parser/unit/UnitParserUtils.ts",
+        "loader/parser/unit/UnitParser.ts",
+        "loader/parser/unit/binary/UnitBinParser.ts",
+        "loader/parser/unit/json/UnitJsonParser.ts",
+        "loader/parser/unit/json/UnitJsonParser_1.ts",
+        "loader/parser/unit/xml/UnitXmlParser.ts",
+        "loader/parser/unit/xml/UnitXmlParser_1.ts",
+        "loader/parser/unit/UnitLoader.ts",
+        "loader/parser/unit/UnitNodeData.ts",
+        "loader/parser/unit/IConfigParser.ts",
+        "loader/parser/unit/UnitConfigParser.ts",
+        "loader/parser/unit/UnitMatMethodData.ts",
+        "loader/parser/unit/UnitMatSphereData.ts",
+        "loader/parser/unit/UnitLightData.ts",
+        "loader/parser/unit/UnitHUDData.ts",
 
         "loader/parser/map/MapLoader.ts",
-        "loader/parser/map/MapNodeData.ts",
-        "loader/parser/map/MapConfigParser.ts",
-        "loader/parser/map/MatMethodData.ts",
-        "loader/parser/map/MatSphereData.ts",
-        "loader/parser/map/MapLightData.ts",
-        "loader/parser/map/HUDData.ts",
+
+        "loader/parser/role/Role.ts",
+        "loader/parser/role/RoleLoader.ts",
+
+        "loader/parser/particle/ParticleXmlParser.ts",
+        "loader/parser/particle/ParticleJsonParser.ts",
+        "loader/parser/particle/ParticleParser.ts",
+
+        "loader/parser/texture_packer/TexturePackerParser.ts",
 
         "loader/parser/ParserUtils.ts",
 
-        "loader/Role.ts",
-        "loader/RoleLoader.ts",
-
+        "loader/QueueLoader.ts",
 
         "material/pass/MethodData.ts",
         "material/method/MethodBase.ts",
@@ -241,6 +254,8 @@
         "material/method/WaterWaveMethod.ts",
         "material/method/WaterNormalMethod.ts",
         "material/method/EnvironmentMethod.ts",
+        "material/method/RimlightMethod.ts",
+        
 
         "material/pass/PassUsage.ts",
         "material/MaterialData.ts",
@@ -253,6 +268,7 @@
         "material/pass/NormalPass.ts",
         "material/pass/PositionPass.ts",
         "material/pass/GbufferPass.ts",
+        "material/pass/OutLinePass.ts",
         "material/pass/PickPass.ts",
         
         "material/pass/PassUtil.ts",
@@ -267,9 +283,12 @@
 
         "render/RenderBase.ts",
         "render/MultiRender.ts",
+        "render/RenderQuen.ts",
         "render/PostRender.ts",
 
         "particle/Value.ts",
+
+
         "particle/particleNode/ParticleEndNode.ts",
         "particle/particleNode/ParticleLifeGenerator.ts",
         "particle/particleNode/ParticleTime.ts",
@@ -300,16 +319,15 @@
         "particle/particleNode/ParticleSubEmitterNode.ts",
         "particle/particleNode/ParticleTrackPositionNode.ts",
         
+        "plant/GrassMethod.ts",
+        "plant/GrassMesh.ts",
+
         
         "particle/ParticleAnimationState.ts",
         "particle/ParticleAnimation.ts",
         "particle/ParticleData.ts",
-        "loader/parser/particle/ParticleXmlParser.ts",
-        "loader/parser/particle/ParticleJsonParser.ts",
-        "loader/parser/particle/ParticleParser.ts",
         "particle/ParticleEmitter.ts",
         "particle/EffectGroup.ts",
-        "loader/EffectGroupLoader.ts",
 
         "pick/PickSystem.ts",
 
@@ -328,8 +346,6 @@
         "Util/BooleanArray.ts",
         "Util/Debug.ts",
         "Util/StringUtil.ts",
-
-        "utils/AxisMesh.ts",
 
         "camera/CameraAnimationController.ts",
         "camera/CameraManager.ts",
@@ -361,13 +377,10 @@
         "Egret3DEngine.ts",
 
         "post/IPost.ts",
-
-        "post/AmbientOcclusion.ts",
-
-        "post/postPass/MainPass.ts",
-        "post/postPass/DeferredShadingProcessing.ts",
-        "post/postPass/BloomPass.ts",
-        "post/postPass/GaussPass.ts",
-        "post/PostProcessing.ts"
+        "post/GaussPost.ts",
+        "post/BloomPost.ts",
+        "post/PostProcessing.ts",
+        "post/ColorCorrectionPost.ts"
+        
     ]      
 }	

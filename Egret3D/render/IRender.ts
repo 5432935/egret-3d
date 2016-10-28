@@ -52,19 +52,10 @@
 
         /**
         * @language zh_CN
-        * 材质信息。</p>
-        * 赋予对象节点可供渲染的材质球属性，让对象加入可渲染实体列表，及渲染对象与对象之间的混合，排序。</p>
+        * 对象类型。</p>
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public material: MaterialBase;
-
-        /**
-       * @language zh_CN
-       * 对象类型。</p>
-       * @version Egret 3.0
-       * @platform Web,Native
-       */
         public type: string = "";
 
         /**
@@ -78,11 +69,20 @@
         }
 
         /**
+        * @language zh_CN
+        * 材质信息。</p>
+        * 赋予对象节点可供渲染的材质球属性，让对象加入可渲染实体列表，及渲染对象与对象之间的混合，排序。</p>
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        protected _material: MaterialBase;
+
+        /**
         * @private
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public multiMaterial: { [matID: number]: MaterialBase } = {};
+        protected _multiMaterial: { [matID: number]: MaterialBase } = {};
 
         /**
         * @private
@@ -144,11 +144,31 @@
         * @platform Web,Native
         */
         public addSubMaterial(id: number, material: MaterialBase) {
-            if (!this.multiMaterial[id]) {
+            if (!this._multiMaterial[id]) {
                 this._materialCount++;
             }
-            this.multiMaterial[id] = material;
-            material.lightGroup = this._lightGroup;
+            this.setSubMaterial(id, material);
+        }
+
+        /**
+        * @language zh_CN
+        * 设置材质
+        * @param id 材质id
+        * @param material 模型材质
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public setSubMaterial(id: number, material: MaterialBase) {
+            this._multiMaterial[id] = material;
+            if (!material) {
+                this.removeSubMaterial(id);
+            }
+            if (id == 0) {
+                this._material = material;
+            }
+            if (material) {
+                material.lightGroup = this._lightGroup;
+            }
         }
 
         /**
@@ -159,8 +179,8 @@
         * @platform Web,Native
         */
         public removeSubMaterial(id: number) {
-            if (this.multiMaterial[id]) {
-                delete this.multiMaterial[id];
+            if (this._multiMaterial[id]) {
+                delete this._multiMaterial[id];
                 this._materialCount--;
             }
         }
@@ -173,7 +193,7 @@
         * @platform Web,Native
         */
         public getMaterial(id: number): MaterialBase {
-            return this.multiMaterial[id];
+            return this._multiMaterial[id];
         }
 
         /**
@@ -185,6 +205,45 @@
         */
         public materialCount(): number {
             return this._materialCount;
+        }
+
+        /**
+        * @language zh_CN
+        * 获取材质
+        * @returns MaterialBase 材质
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get material(): MaterialBase {
+            return this._material;
+        }
+
+        /**
+        * @language zh_CN
+        * 设置材质
+        * @param mat 材质
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set material(mat: MaterialBase) {
+            this._material = mat;
+            if (this._multiMaterial[0]) {
+                this.setSubMaterial(0, mat);
+            }
+            else {
+                this.addSubMaterial(0, mat);
+            }
+        }
+
+        /**
+        * @language zh_CN
+        * 获取多材质
+        * @returns { [matID: number]: MaterialBase } 多个材质
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get multiMaterial(): { [matID: number]: MaterialBase } {
+            return this._multiMaterial;
         }
 
         public update(time: number, delay: number, camera: Camera3D) {
@@ -208,6 +267,7 @@
             super.dispose();
             if (this._bound) {
                 this._bound.dispose();
+                this._bound = null;
             }
             this.geometry = null;
 

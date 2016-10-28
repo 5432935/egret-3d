@@ -92,6 +92,16 @@
 
         /**
         * @language zh_CN
+        * 强制设置需要计算
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public forceDirty(): void {
+            this._dirty = true;
+        }
+
+        /**
+        * @language zh_CN
         * 获取压缩后的值
         * @return number 压缩的结果
         * @version Egret 3.0

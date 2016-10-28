@@ -4,7 +4,10 @@
     * @language zh_CN
     * @class egret3d.UVRollMethod
     * @classdesc
-    * 用来实现水面顶点波动效果
+    * 水面模拟特效，用来实现水面顶点波动效果
+    * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
+    * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -202,11 +205,9 @@
         */
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
             //##FilterBegin## ##Water##
-
             usage["waveVSData"] = context3DProxy.getUniformLocation(usage.program3D, "waveVSData");
             usage["waveFSData"] = context3DProxy.getUniformLocation(usage.program3D, "waveFSData");
             usage["time"] = context3DProxy.getUniformLocation(usage.program3D, "time");
-
             //##FilterEnd##
         }
         

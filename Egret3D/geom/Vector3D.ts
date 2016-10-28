@@ -529,6 +529,18 @@
 
         /**
         * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public fromArray(d: Float32Array) {
+            this.x = d[0];
+            this.y = d[1];
+            this.z = d[2];
+        }
+
+        /**
+        * @language zh_CN
         * 当前Vector3D除分量 或者 除Vector3D
         * @param v 如果是number就是除分量 如果为Vector3D 就是除Vector3D
         * @return Vector3D 返回自己，计算之后的结果

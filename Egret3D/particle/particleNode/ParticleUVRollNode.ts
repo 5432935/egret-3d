@@ -15,7 +15,7 @@
         * @private
         * 最大支持的颜色变化数量
         */
-        private _methodData: MatMethodData;
+        private _methodData: UnitMatMethodData;
         private _animationState: ParticleAnimationState;
         private _uvRollData: Float32Array = new Float32Array(2);
         constructor() {

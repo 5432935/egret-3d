@@ -83,7 +83,6 @@
                 this._plane.push(new Plane3D());
             }
             this.box = new BoundBox(null, new Vector3D(), new Vector3D());
-            ///this.box = new CubeBoxBound(new Vector3D(99999.0, 99999.0, 99999.0), new Vector3D(-99999.0, -99999.0, -99999.0));
             this.center = new Vector3D();
             this._frustum.material.diffuseColor = 0xffffff;
             this._frustum.name = "CameraFrustum";
@@ -333,17 +332,17 @@
                 this._plane[i].normalize();
             }
 
-            this.nearCenter.copyFrom(this._tempVertices[0].subtract(this._tempVertices[2]));
+            this.nearCenter.copyFrom(this._tempVertices[0].subtract(this._tempVertices[2], MathUtil.CALCULATION_VECTOR3D_0));
             this.nearCenter.scaleBy(0.5);
-            this.nearCenter.copyFrom(this._tempVertices[2].add(this.nearCenter));
+            this.nearCenter.copyFrom(this._tempVertices[2].add(this.nearCenter, MathUtil.CALCULATION_VECTOR3D_1));
 
-            this.farCenter.copyFrom(this._tempVertices[4].subtract(this._tempVertices[6]));
+            this.farCenter.copyFrom(this._tempVertices[4].subtract(this._tempVertices[6], MathUtil.CALCULATION_VECTOR3D_2));
             this.farCenter.scaleBy(0.5);
-            this.farCenter.copyFrom(this._tempVertices[6].add(this.farCenter));
+            this.farCenter.copyFrom(this._tempVertices[6].add(this.farCenter, MathUtil.CALCULATION_VECTOR3D_0));
 
-            this.center.copyFrom(this.farCenter.subtract(this.nearCenter));
+            this.center.copyFrom(this.farCenter.subtract(this.nearCenter, MathUtil.CALCULATION_VECTOR3D_1));
             this.center.scaleBy(0.5);
-            this.center.copyFrom(this.nearCenter.add(this.center));
+            this.center.copyFrom(this.nearCenter.add(this.center, MathUtil.CALCULATION_VECTOR3D_2));
         }
         
         /**

@@ -87,6 +87,7 @@
 
             property.particleCount = Number(this.getNode(node, "particleCount").textContent);
             property.prewarm = this.getNode(node, "prewarm").textContent == "true";
+            property.playOnAwake = this.getNode(node, "playOnAwake").textContent == "true";
 
             var bounds: Node = this.getNode(node, "bounds");
             property.bounds = this.parseVector3D(bounds, property.bounds);

@@ -1,9 +1,9 @@
 ﻿module egret3d.gui {
 
          /**
-    * @private
     * @class egret3d.gui.UIPanel
     * @classdesc
+    * 基础的面板组件. 内含背景图片,以及矩形显示区域限制
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -23,6 +23,7 @@
             
             this._w = 100;
             this._h = 100;
+            this.drawBackground();
             this.updateMask();
         }
 
@@ -58,6 +59,18 @@
             super.onRender();
             this.drawBackground();
             this.updateMask();
+        }
+
+        protected getDefaultStyleNameByStyleName(styleName: string): string {
+            var obj = {
+                "background": DefaultSkinName.DEFAULT_PANEL_BACKGROUND
+            };
+
+            var result: string = obj[styleName];
+            if (!result) {
+                console.log(" ERROR!!! UIPanel can't find default style : ", styleName);
+            }
+            return result;
         }
 
         private drawBackground() {

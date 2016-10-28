@@ -13,16 +13,25 @@
      * @platform Web,Native
      */
     export class Ray {
+        protected static v0: Vector3D = new Vector3D();
+        protected static v1: Vector3D = new Vector3D();
+        protected static v2: Vector3D = new Vector3D();
+        protected static v3: Vector3D = new Vector3D();
+        protected static v4: Vector3D = new Vector3D();
 
         /**
         * @language zh_CN
         * 射线原点
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public origin: Vector3D = new Vector3D();
 
         /**
         * @language zh_CN
         * 射线方向
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public dir: Vector3D = new Vector3D();
 
@@ -51,19 +60,19 @@
         * @platform Web,Native
         */
         public IntersectTriangle(v0: Vector3D, v1: Vector3D, v2: Vector3D, ret: Array<number> = null): boolean {
-            var edge1: Vector3D = v1.subtract(v0);
-            var edge2: Vector3D = v2.subtract(v0);
+            var edge1: Vector3D = v1.subtract(v0, Ray.v0);
+            var edge2: Vector3D = v2.subtract(v0, Ray.v1);
 
-            var pvec: Vector3D = this.dir.crossProduct(edge2, MathUtil.CALCULATION_VECTOR3D_0);
+            var pvec: Vector3D = this.dir.crossProduct(edge2, Ray.v2);
 
             var det: number = edge1.dotProduct(pvec);
 
             var tvec: Vector3D;
             if (det > 0) {
-                tvec = this.origin.subtract(v0);
+                tvec = this.origin.subtract(v0, Ray.v3);
             }
             else {
-                tvec = v0.subtract(this.origin);
+                tvec = v0.subtract(this.origin, Ray.v3);
                 det = -det;
             }
 
@@ -81,7 +90,7 @@
             }
 
             // Prepare to test V parameter
-            var qvec: Vector3D = tvec.crossProduct(edge1, MathUtil.CALCULATION_VECTOR3D_1);
+            var qvec: Vector3D = tvec.crossProduct(edge1, Ray.v4);
             // Calculate V parameter and test bounds
 
             var v: number = this.dir.dotProduct(qvec);
@@ -112,16 +121,38 @@
             return true;
         }
 
-        public IntersectSphere(center: Vector3D, radius: number, ret: number[]): boolean{
+        /*
+        * @private
+        */
+        protected static transformCenter: Vector3D = new Vector3D();
+
+        /**
+        * @language zh_CN
+        * 计算射线是否和球相交
+        * @param center 球中心点
+        * @param radius 球的半径
+        * @param ret 相交返回 数据
+        * @param transform 是否要变换
+        * @returns number[] 相交返回 数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public IntersectSphere(center: Vector3D, radius: number, ret: number[] = null, transform: Matrix4_4 = null): number[]{
+            ret = ret || [];
+            Ray.transformCenter.copyFrom(center);
+
+            if (transform) {
+                transform.transformVector(center, Ray.transformCenter);
+            }
 
             var t0: number = 0.0;
             var t1: number = 0.0;
-            var oc: Vector3D = center.subtract(this.origin, MathUtil.CALCULATION_VECTOR3D_0);
+            var oc: Vector3D = Ray.transformCenter.subtract(this.origin, MathUtil.CALCULATION_VECTOR3D_0);
 
             var  projoc:number = this.dir.dotProduct(oc);
 
             if (projoc < 0)
-                return false;
+                return null;
 
             var oc2: number = oc.dotProduct(oc);
 
@@ -129,7 +160,7 @@
 
             var radiusSquare: number = radius * radius;
             if (distance2 > radiusSquare)
-                return false;
+                return null;
 
             var discriminant: number = radiusSquare - distance2;  //使用勾股定理，计算出另一条边的长度
             if (discriminant < 0) {   //表明只有一个交点，射线与球相切
@@ -146,9 +177,26 @@
 
             ret.push(t0);
             ret.push(t1);
-            return true;
+            return ret;
         }
-                
+
+        /**
+        * @language zh_CN
+        * 检测射线相交包围盒
+        * @param bound 检测的包围盒
+        * @param result 相交数据 默认为null
+        * @returns PickResult 相交返回PickResult 对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public IntersectBound(bound: Bound, result: PickResult = null): PickResult {
+            result = result || new PickResult();
+            if (this.IntersectMesh(bound.vexData, bound.indexData, bound.vexLength, bound.indexData.length / 3, 0, bound.transform, result)) {
+                return result;
+            }
+            return null;
+        }
+
         /**
         * @language zh_CN
         * 检测射线相交模型
@@ -177,33 +225,26 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
+
+        protected static modletriangle: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
+        protected static uvarray: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
+        protected static triangle: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
+        protected static ret: number[] = [0, 0, 0];
+        protected static pos: Vector3D = new Vector3D();
+        protected static uv: Point = new Point();
+
         public IntersectMesh(verticesData: Float32Array, indexData: Uint16Array, offset: number, faces: number, uv_offset: number, mMat: Matrix4_4, result: PickResult): boolean {
 
-            var modletriangle: Array<Vector3D> = new Array<Vector3D>();
-            modletriangle.push(new Vector3D());
-            modletriangle.push(new Vector3D());
-            modletriangle.push(new Vector3D());
+            var modletriangle: Vector3D[] = Ray.modletriangle;
+            var uvarray: Vector3D[] = Ray.uvarray;
+            var triangle: Vector3D[] = Ray.triangle;
+            var v0: Vector3D = triangle[0];
+            var v1: Vector3D = triangle[1];
+            var v2: Vector3D = triangle[2];
 
-            var uvarray: Array<Vector3D> = new Array<Vector3D>();
-            uvarray.push(new Vector3D());
-            uvarray.push(new Vector3D());
-            uvarray.push(new Vector3D());
-
-            var triangle: Array<Vector3D> = new Array<Vector3D>();
-            var v0: Vector3D = new Vector3D();
-            var v1: Vector3D = new Vector3D();
-            var v2: Vector3D = new Vector3D();
-            triangle.push(v0);
-            triangle.push(v1);
-            triangle.push(v2);
-
-            var pos = new Vector3D();
-            var uv = new Point();
-
-            var ret: Array<number> = new Array<number>();
-            ret.push(0.0);
-            ret.push(0.0);
-            ret.push(0.0);
+            var pos = Ray.pos;
+            var uv = Ray.uv;
+            var ret: number[] = Ray.ret;
 
             var face: number = -1;
             var t: number = MathUtil.MAX_VALUE;
@@ -254,24 +295,24 @@
                 result.v1 = indexData[3 * face + 1];
                 result.v2 = indexData[3 * face + 2];
 
-                var tmp0: Vector3D = v1.subtract(v0);
+                var tmp0: Vector3D = v1.subtract(v0, Ray.v0);
                 tmp0.scaleBy(u);
-                var tmp1: Vector3D = v2.subtract(v0);
+                var tmp1: Vector3D = v2.subtract(v0, Ray.v1);
                 tmp1.scaleBy(v);
-                result.globalPosition.copyFrom(v0.add(tmp0.add(tmp1)));
+                result.globalPosition.copyFrom(v0.add(tmp0.add(tmp1, Ray.v2), Ray.v3));
 
-                tmp0 = modletriangle[1].subtract(modletriangle[0]);
+                tmp0 = modletriangle[1].subtract(modletriangle[0], tmp0);
                 tmp0.scaleBy(u);
-                tmp1 = modletriangle[2].subtract(modletriangle[0]);
+                tmp1 = modletriangle[2].subtract(modletriangle[0], tmp1);
                 tmp1.scaleBy(v);
-                result.localPosition.copyFrom(modletriangle[0].add(tmp0.add(tmp1)));
+                result.localPosition.copyFrom(modletriangle[0].add(tmp0.add(tmp1, Ray.v2), Ray.v3));
 
                 if (uv_offset > 0) {
-                    tmp0 = uvarray[1].subtract(uvarray[0]);
+                    tmp0 = uvarray[1].subtract(uvarray[0], tmp0);
                     tmp0.scaleBy(u);
-                    tmp1 = uvarray[2].subtract(uvarray[0]);
+                    tmp1 = uvarray[2].subtract(uvarray[0], tmp1);
                     tmp1.scaleBy(v);
-                    result.uv.copyFrom(uvarray[0].add(tmp0.add(tmp1)));
+                    result.uv.copyFrom(uvarray[0].add(tmp0.add(tmp1, Ray.v2), Ray.v3));
                 }
 
                 return true;
@@ -300,8 +341,8 @@
             this.dir.z = 1.0;
 
             this.invViewMat.copyFrom(modleMat);
-            this.origin.copyFrom(this.invViewMat.transformVector(this.origin));
-            this.dir.copyFrom(this.invViewMat.deltaTransformVector(this.dir));
+            this.origin.copyFrom(this.invViewMat.transformVector(this.origin, Ray.v0));
+            this.dir.copyFrom(this.invViewMat.deltaTransformVector(this.dir, Ray.v0));
             this.dir.normalize();
         }
 

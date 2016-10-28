@@ -9,8 +9,29 @@ module egret3d {
         */
         public poseArray: Array<SkeletonPose> = [];
 
+        /**
+        * @language zh_CN
+        * 骨骼名字列表
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public boneNameArray: Array<string> = [];
+
+        /**
+        * @language zh_CN
+        * 动画名字
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public animationName: string = "";
 
+        /**
+        * @language zh_CN
+        * 是否循环
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public isLoop: boolean = true;
 
         //流数据解析测试;
         public sampling: number = 0;
@@ -65,14 +86,17 @@ module egret3d {
             this._frameCount = frameCount;
 
             this._skeletonPose = new SkeletonPose();
+            this._skeletonPose.boneNameArray = boneNameArray;
 
             for (var j: number = 0; j < this.boneCount; j++) {
 
-                var jointPose: Joint = new Joint(boneNameArray[j]);
+                var jointPose: Joint = new Joint();
+                //jointPose.name = boneNameArray[j];
+                //jointPose.parent = parentBoneNameArray[j];
+                //jointPose.parentIndex = this._skeletonPose.findJointIndex(jointPose.parent);
 
-                jointPose.parent = parentBoneNameArray[j];
-
-                jointPose.parentIndex = this._skeletonPose.findJointIndex(jointPose.parent);
+                jointPose.index = j;
+                jointPose.parentIndex = EAMVersion.findNameIndex(boneNameArray, parentBoneNameArray[j]);
 
                 this._skeletonPose.joints.push(jointPose);
             }
@@ -167,7 +191,7 @@ module egret3d {
         public clone(): SkeletonAnimationClip {
 
             var skeletonAnimationClip: SkeletonAnimationClip = new SkeletonAnimationClip();
-
+            skeletonAnimationClip.boneNameArray = this.boneNameArray;
             skeletonAnimationClip.animationName = this.animationName;
 
             skeletonAnimationClip.poseArray = this.poseArray;

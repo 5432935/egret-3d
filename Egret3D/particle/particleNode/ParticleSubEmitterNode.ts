@@ -208,7 +208,7 @@
                     newParticle = new ParticleEmitter(bakEmitter.data, bakEmitter.material);
                 }
                 playingArr.push(newParticle);
-                newParticle.play();
+                newParticle.play(1.0, true, bakEmitter.data.property.prewarm);
                 newParticle.position = pos;
                 newParticle.orientation = this._orientation;
                 this._parent.addChild(newParticle);

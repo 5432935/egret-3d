@@ -2,9 +2,12 @@
 
     /**
     * @language zh_CN
-    * @class egret3d.UVRollMethod
+    * @class egret3d.WaterNormalMethod
     * @classdesc
-    * 用来实现水面波光粼粼的效果
+    * 材质中赋予灯光后，可以添加此方法，灯光和法线的变化而产生水面波光粼粼的效果
+    * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
+    * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -25,7 +28,6 @@
 
         private _normal_0_UVScale: number = 4.0; 
         private _normal_1_UVScale: number = 4.0; 
-
 
         /** 
         * @private

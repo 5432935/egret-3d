@@ -14,14 +14,19 @@
         /**
         * @private
         */
-        private _rotations: ConstRandomValueShape;
         private _animationState: ParticleAnimationState;
-        private rotationMat: Matrix4_4 = new Matrix4_4();
         private _node: ParticleDataRotationBirth;
+        private _rotations: ConstRandomValueShape;
+        private attribute_rotationBirth: GLSL.VarRegister;
         constructor() {
             super();
 
             this.name = "ParticleRotation";
+
+            this.attribute_rotationBirth = new GLSL.VarRegister();
+            this.attribute_rotationBirth.name = "attribute_rotationBirth";
+            this.attribute_rotationBirth.size = 1;
+            this.attributes.push(this.attribute_rotationBirth);
         }
 
         /**
@@ -71,7 +76,6 @@
             var bornTime: number;
 
             for (var i: number = 0; i < count; ++i) {
-
                 //
                 if (this._node.type == ParticleValueType.OneBezier || this._node.type == ParticleValueType.TwoBezier) {
                     timeIndex = particleIndex * geometry.vertexAttLength + timeOffsetIndex;
@@ -88,30 +92,13 @@
                     rot = rotationArray[i];
                 }
 
-                if (rot == 0.0) {
-                    continue;
-                }
-
-                this.rotationMat.identity();
-                if (renderMode == ParticleRenderModeType.VerticalBillboard || renderMode == ParticleRenderModeType.HorizontalBillboard) {
-                    this.rotationMat.rotation(0, rot, 0);
-                } else {
-                    this.rotationMat.rotation(0, 0, rot);
-                }
                 for (var j: number = 0; j < vertices; ++j) {
                     index = i * vertices + j;
-                    index = index * geometry.vertexAttLength;
+                    index = index * geometry.vertexAttLength + this.attribute_rotationBirth.offsetIndex;
 
-                    pos.x = geometry.vertexArray[index + 0];
-                    pos.y = geometry.vertexArray[index + 1];
-                    pos.z = geometry.vertexArray[index + 2];
-
-                    this.rotationMat.transformVector4(pos, pos);
-
-                    geometry.vertexArray[index + 0] = pos.x;
-                    geometry.vertexArray[index + 1] = pos.y;
-                    geometry.vertexArray[index + 2] = pos.z;
+                    geometry.vertexArray[index + 0] = rot;
                 }
+                
             }
 
             //##FilterEnd##

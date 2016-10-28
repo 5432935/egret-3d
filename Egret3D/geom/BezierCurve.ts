@@ -23,7 +23,7 @@
                     break;
                 }
             }
-            return this.mix(A0.y, A1.y, (t - A0.x) / (t - A1.x));
+            return MathUtil.mix(A0.y, A1.y, (t - A0.x) / (t - A1.x));
         }
 
         public calcBezierY(pos: Array<Point>, ctrl: Array<Point>, t: number): number {
@@ -79,20 +79,16 @@
 
         private cubic_bezier(p0: number, p1: number, p2: number, p3: number, t: number): number {
             //第一次混合
-            p0 = this.mix(p0, p1, t);
-            p1 = this.mix(p1, p2, t);
-            p2 = this.mix(p2, p3, t);
+            p0 = MathUtil.mix(p0, p1, t);
+            p1 = MathUtil.mix(p1, p2, t);
+            p2 = MathUtil.mix(p2, p3, t);
             //第二次混合
-            p0 = this.mix(p0, p1, t);
-            p1 = this.mix(p1, p2, t);
+            p0 = MathUtil.mix(p0, p1, t);
+            p1 = MathUtil.mix(p1, p2, t);
             //第三次混合
-            p0 = this.mix(p0, p1, t);
+            p0 = MathUtil.mix(p0, p1, t);
             return p0;
 
-        }
-
-        private mix(num0: number, num1: number, t: number): number {
-            return num0 * (1 - t) + num1 * t;
         }
 
 

@@ -34,11 +34,7 @@ vec3 calcParticleMove(vec3 distanceXYZ){
 			return vec3(0.0);
 		}
 
-		
-
 		if(distanceCurrent > distanceLimit){
-			//float ratio = (distanceCurrent - distanceLimit) * (1.0 - particleStateData.velocityLimitDampen) + distanceLimit;
-			//distanceXYZ *= ratio / distanceCurrent;
 
 			float nowFrame = currentTime / 0.017;
 			float dampen = 1.0 - particleStateData.velocityLimitDampen;
@@ -59,9 +55,6 @@ vec3 calcParticleMove(vec3 distanceXYZ){
 	return distanceXYZ;
 }
 
-mat4 getRenderModeMatrix(mat4 cameraMatrix, mat4 modelMatrix){
-	return cameraMatrix;
-}
 
 //rewrite by stretched
 float updateStretchedBillBoard(vec4 startPos, vec4 newPos){
@@ -72,14 +65,7 @@ void main(void) {
 	if(discard_particle > TrueOrFalse){ 
 		outPosition = vec4(0.0,0.0,0.0,0.0); 
 	}else{
-
-		//vec3 velocityBaseVec3
-		//vec3 velocityOverVec3
-		//vec2 velocityLimitVec2
-		//vec3 velocityForceVec3
-		//vec2 velocityBezierWeightVec2
-		//float currentTime
-
+	
 		//相对发射器的位置
 		vec3 position_emitter = attribute_offsetPosition;
 
@@ -124,7 +110,7 @@ void main(void) {
 		velocityLocalVec3 = (followRotQuat * vec4(velocityLocalVec3, 1.0)).xyz;
 
 		mat4 modelMatrix = buildModelMatrix(followTargetRotation, followTargetScale, followTargetPosition);
-		if(particleStateData.renderMode == 4.0){
+		if(particleStateData.renderMode == Mesh){
 			position_emitter.xyz += localPosition.xyz;
 		}
 		position_emitter = (modelMatrix * vec4(position_emitter, 1.0)).xyz; 
@@ -143,20 +129,19 @@ void main(void) {
 
 		float dirEnable = updateStretchedBillBoard(vec4(origPosition, 1.0), vec4(position_emitter, 1.0));
 		if(dirEnable > TrueOrFalse){
-			if(particleStateData.renderMode == 4.0){
+			if(particleStateData.renderMode == Mesh){
 				outPosition.xyz = position_emitter.xyz;
 			}else{
-				mat4 billboardMatrix = getRenderModeMatrix(uniform_cameraMatrix, modelMatrix);
-				outPosition = billboardMatrix * localPosition;
+				outPosition = uniform_billboardMatrix * localPosition;
 				outPosition.xyz += position_emitter.xyz;
 			}
 			outPosition = uniform_ViewMatrix * outPosition;
+			e_normal.xyz = (rotVertexMatrix * vec4(e_normal, 1.0)).xyz;
 		}else{
 			outPosition = vec4(0.0,0.0,0.0,0.0); 
 		}
 	}
-	gl_Position = uniform_ProjectionMatrix * outPosition ; 
-	varying_pos = gl_Position;
+	varying_pos = outPosition = uniform_ProjectionMatrix * outPosition ; 
 }
 	
 //##FilterEnd##

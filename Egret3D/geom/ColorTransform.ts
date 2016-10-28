@@ -91,7 +91,7 @@
             grayFloats[15] = 1;
 
 
-            this.m44.copyRawDataFrom(grayFloats, 0, false);
+            this.m44.copyRawDataFrom(grayFloats);
         }
 
         /**

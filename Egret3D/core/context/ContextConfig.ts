@@ -292,6 +292,8 @@
         * @private
         */
         static FLOAT: number;
+
+        static UNSIGNED_BYTE: number;
                             
         /**
         * @private
@@ -408,7 +410,10 @@
         * @private
         */
         static ColorFormat_RGBA8888: number;
-                                            
+        /**
+        * @private
+        */
+        static ColorFormat_RGB888: number;                               
         /**
         * @private
         */

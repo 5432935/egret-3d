@@ -27,16 +27,38 @@
             super();
         }
 
-        public set texture(value: Texture) {
-            if (value != this._texture) {
+         /**
+        * @language zh_CN
+        * @param value Quad对象中的Texture对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set texture(value: any) {
+            if (!value) {
+                this.setTexture(value);
+                return;
+            }
+            if (value instanceof Texture) {
+                this.setTexture(value);
+            }
+        }
+
+        private setTexture(value: Texture) {
+            if (value !== this._texture) {
                 this._texture = value;
                 this._textureInvalid = true;
             }
         }
 
-        //public get texture(): Texture {
-        //    return this._texture;
-        //}
+            /**
+        * @language zh_CN
+        * @param value Quad对象中的Texture对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get texture(): any {
+            return this._texture;
+        }
 
         /**
         * @language zh_CN
@@ -239,6 +261,12 @@
             }
         }
 
+
+        protected onActiveStage(): void {
+            super.onActiveStage();
+            this._globalIndex = -1;
+        }
+
         /**
         * @language zh_CN
         * 在渲染之前清理某个下标位置的顶点数据，标记为null状态
@@ -257,7 +285,7 @@
                 var positionFrom: number = zIndex * QuadData.quadVertexLen + QuadData.originalOffset;
                 for (var i: number = 0; i < 4; i++) {
                     index = positionFrom + i * geometry.vertexAttLength;
-                    verticesData[index + 2] = 0;
+                    verticesData[index + 3] = 0;
                 }
 
             }

@@ -22,7 +22,6 @@
         protected _viewPort: Rectangle = new Rectangle();
         protected _camera: Camera3D;
         protected _scene: Scene3D = new Scene3D();
-        protected _render: RenderBase;
 
         protected _scissorRect: Rectangle = new Rectangle();
         protected _viewMatrix: Matrix4_4 = new Matrix4_4();
@@ -30,20 +29,25 @@
         protected _entityCollect: EntityCollect;
         protected _backColor: Vector3D = new Vector3D(0.3, 0.3, 0.6, 1.0);
 
-        protected _cleanParmerts: number = Context3DProxy.gl.COLOR_BUFFER_BIT | Context3DProxy.gl.DEPTH_BUFFER_BIT; 
+        protected _cleanParmerts: number = Context3DProxy.gl.COLOR_BUFFER_BIT | Context3DProxy.gl.DEPTH_BUFFER_BIT;
         private _sizeDiry: boolean = false;
 
         protected _backImg: HUD;
         protected _huds: Array<HUD> = new Array<HUD>();
 
-        protected _index: number; 
-        protected _numberEntity: number; 
+        protected _index: number;
+        protected _numberEntity: number;
 
-        protected _postList: IPost[] = []; 
-        protected _postHUD: HUD ; 
-        protected _postProcessing: PostProcessing; 
+        protected _postList: IPost[] = [];
+        protected _postHUD: HUD;
+        protected _postProcessing: PostProcessing;
 
+        protected _renderQuen: RenderQuen;
         protected _quadStage: QuadStage;//= new QuadStage();
+        protected _guiInitFun: Function;
+        protected _guiCallbackThisObj: any;
+
+        protected _shadowCast: ShadowCast;
 
         /**
         * @language zh_CN
@@ -60,11 +64,13 @@
             this._entityCollect = new EntityCollect();
             this._entityCollect.root = this._scene;
 
-            this._render = new MultiRender(PassType.diffusePass);
 
             this._camera = camera || new Camera3D(CameraType.perspective);
             this._camera.name = "MainCamera";
-            this._scene.addChild3D(this._camera);
+            this._scene.addChild(this._camera);
+
+            this._renderQuen = new RenderQuen();
+            this._renderQuen.mainRender.camera = this.camera3D;
 
             //this._viewPort.x = x * window.devicePixelRatio;
             //this._viewPort.y = y * window.devicePixelRatio;
@@ -76,25 +82,23 @@
             this.height = height;
             this._camera.aspectRatio = this._viewPort.width / this._viewPort.height;
             this._camera.updateViewport(this._viewPort.x, this._viewPort.y, this._viewPort.width, this._viewPort.height);
-        }
 
-        public get render(): RenderBase {
-            return this._render; 
-        }
-
-        public set render(render: RenderBase) {
-            this._render = render; 
+            this._shadowCast = new ShadowCast(this);
         }
 
         public get quadStage(): QuadStage {
             return this._quadStage;
         }
 
-        public set post( list:any[] ) {
-            this._postList = list; 
+        public get renderQuen(): RenderQuen {
+            return this._renderQuen;
+        }
+
+        public set post(list: any[]) {
+            this._postList = list;
             if (list.length > 0) {
-                this._postProcessing = this._postProcessing || new PostProcessing();
-                this._postHUD = this._postHUD || new HUD(0,0,512,512);
+                this._postProcessing = this._postProcessing || new PostProcessing(this._renderQuen);
+                this._postHUD = this._postHUD || new HUD(0, 0, 512, 512);
                 this._postHUD.fsShader = "hud_H_fs";
             }
         }
@@ -107,11 +111,11 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public blender(cleanColor:boolean, cleanDepth:boolean) {
+        public blender(cleanColor: boolean, cleanDepth: boolean) {
             this._cleanParmerts = (cleanColor ? Context3DProxy.gl.COLOR_BUFFER_BIT : 0) | (cleanDepth ? Context3DProxy.gl.DEPTH_BUFFER_BIT : 0);
         }
 
-                
+
         /**
         * @language zh_CN
         * 设置view3d背景颜色
@@ -125,7 +129,7 @@
             this._backColor.y = (value >> 8 & 0xff) / 255;
             this._backColor.z = (value & 0xff) / 255;
         }
-                        
+
         /**
         * @language zh_CN
         * 获取view3d背景颜色
@@ -140,7 +144,7 @@
         public set backImage(tex: ITexture) {
             if (tex) {
                 this._backImg = this._backImg || new HUD();
-                this._backImg.diffuseTexture = tex; 
+                this._backImg.diffuseTexture = tex;
                 this._backImg.x = this.x;
                 this._backImg.y = this.y;
                 this._backImg.width = this.width;
@@ -149,7 +153,7 @@
         }
 
         public get backImage(): ITexture {
-            return this._backImg.diffuseTexture ;
+            return this._backImg.diffuseTexture;
         }
 
         /**
@@ -162,7 +166,7 @@
         public get camera3D(): Camera3D {
             return this._camera;
         }
-        
+
         /**
         * @language zh_CN
         * 设置View3d中的渲染摄像机
@@ -179,7 +183,7 @@
             if (this._quadStage)
                 this._quadStage.changeCamera();
         }
-        
+
         /**
         * @language zh_CN
         * 获取View3d中的场景对象
@@ -190,7 +194,7 @@
         public get scene(): Scene3D {
             return this._scene;
         }
-                
+
         /**
         * @language zh_CN
         * 设置View3d中的场景对象
@@ -200,9 +204,9 @@
         */
         public set scene(sc: Scene3D) {
             this._scene = sc;
-         
+
         }
-                
+
         /**
         * @language zh_CN
         * 设置当前视口的屏幕x坐标
@@ -218,8 +222,8 @@
                 this._backImg.x = value;
             }
         }
-                
-                
+
+
         /**
         * @language zh_CN
         * 获得当前视口的屏幕x坐标
@@ -230,7 +234,7 @@
         public get x(): number {
             return this._viewPort.x;
         }
-                
+
         /**
         * @language zh_CN
         * 设置当前视口的屏幕y坐标
@@ -246,8 +250,8 @@
                 this._backImg.y = value;
             }
         }
-                
-                
+
+
         /**
         * @language zh_CN
         * 获得当前视口的屏幕y坐标
@@ -258,7 +262,7 @@
         public get y(): number {
             return this._viewPort.y;
         }
-                
+
         /**
         * @language zh_CN
         * 设置视口的屏幕宽度
@@ -275,7 +279,7 @@
                 this._backImg.width = value;
             }
         }
-                
+
         /**
         * @language zh_CN
         * 获取视口的屏幕宽度
@@ -286,7 +290,7 @@
         public get width(): number {
             return this._viewPort.width;
         }
-                
+
         /**
         * @language zh_CN
         * 设置视口的屏幕高度
@@ -302,7 +306,7 @@
                 this._backImg.height = value;
             }
         }
-                
+
         /**
         * @language zh_CN
         * 获取视口的屏幕高度
@@ -324,7 +328,7 @@
         public get viewPort(): Rectangle {
             return this._viewPort;
         }
-                        
+
         /**
         * @private
         * @language zh_CN
@@ -335,6 +339,99 @@
         */
         public get entityCollect(): EntityCollect {
             return this._entityCollect;
+        }
+
+        /**
+        * @language zh_CN
+        * 开启Gui功能.
+         * @param initedFun Gui初始化完成后要执行的函数
+         * @param thisObj initedFun回调函数的this指向
+         * @param loadDefaultGuiSkin 是否加载默认的组件皮肤
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public openGui(initedFun: Function, thisObj: any = null, loadDefaultGuiSkin: boolean = true) {
+            this._guiInitFun = initedFun;
+            this._guiCallbackThisObj = thisObj;
+            textureResMgr.guiStage = this.getGUIStage();
+            let queueLoader: QueueLoader = new QueueLoader("resource/ui/fonts.json");
+            queueLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onGuiAssetLoaded, this);
+            if (loadDefaultGuiSkin) {
+                queueLoader.load("resource/ui/GUI.json");
+            }
+        }
+
+        private runGuiInitFun() {
+            if (this._guiInitFun) {
+                if (this._guiCallbackThisObj) {
+                    this._guiInitFun.call(this._guiCallbackThisObj);
+                } else {
+                    this._guiInitFun();
+                }
+            }
+        }
+
+        /**
+        * @private
+        * @language zh_CN
+        * Gui所需资源加载完成后的事件处理
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        private onGuiAssetLoaded(event: LoaderEvent3D) {
+            gui.BitmapFont.load(textureResMgr.getTextureDic());
+            this.initDefaultSkin();
+            this.runGuiInitFun();
+
+        }
+
+        /**
+        * @private
+        * @language zh_CN
+        * 初始化Gui默认皮肤
+         * todo 改成json配置表进行处理
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        private initDefaultSkin() {
+//            gui.BitmapFont.load(textureResMgr.getTextureDic());
+            var upState: Texture = textureResMgr.getTexture("normal.png");
+            var downState: Texture = textureResMgr.getTexture("pressed.png");
+            var overState: Texture = textureResMgr.getTexture("hover.png");
+
+            var checkUpState: Texture = textureResMgr.getTexture("default.png");
+            var checkDownState: Texture = textureResMgr.getTexture("checked.png");
+
+            var whiteBg: Texture = textureResMgr.getTexture("whitebackground.png");
+
+            var progressBg: Texture = textureResMgr.getTexture("backgroundpic.png");
+            var progressBarSkin: Texture = textureResMgr.getTexture("blue.png");
+
+            var radioUpState: Texture = textureResMgr.getTexture("unselected.png");
+            var radioSelected: Texture = textureResMgr.getTexture("selected.png");
+            var radioHover: Texture = textureResMgr.getTexture("hover1.png");
+
+            var sliderBar: Texture = textureResMgr.getTexture("bluebackground.png");
+            var sliderBackground: Texture = textureResMgr.getTexture("whitebackground.png");
+
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_UP, upState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_DOWN, downState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_OVER, overState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_LABEL_BUTTON_UP, upState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_LABE_BUTTON_DOWN, downState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_UP, checkUpState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_DOWN, checkUpState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_UP, checkDownState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_DOWN, checkDownState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_UP, radioUpState);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_DOWN, radioHover);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_DOWN, radioHover);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_UP, radioSelected);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_SLIDER_BAR, sliderBar);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_SLIDER_BACKGROUND, sliderBackground);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PROGRESS_BAR, progressBarSkin);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PROGRESS_BAR_BACKGROUND, progressBg);
+            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PANEL_BACKGROUND, whiteBg);
         }
 
         /**
@@ -359,7 +456,7 @@
         */
         public addGUI(displayObject: DisplayObject) {
             if (!this._quadStage) {
-                this._quadStage = new QuadStage( this );
+                this._quadStage = new QuadStage(this);
             }
             this._quadStage.addChild(displayObject);
         }
@@ -383,9 +480,9 @@
         * @platform Web,Native
         */
         public addChild3D(child3d: Object3D) {
-            this._scene.addChild3D(child3d);
+            this._scene.addChild(child3d);
         }
-                
+
         /**
         * @language zh_CN
         * 从场景根节点中移除一个Object3D对象
@@ -394,9 +491,9 @@
         * @platform Web,Native
         */
         public removeChild3D(child3d: Object3D) {
-            this._scene.removeChild3D(child3d);
+            this._scene.removeChild(child3d);
         }
-        
+
         /**
         * @language zh_CN
         * 检测x y 是否在当前视口内
@@ -465,10 +562,10 @@
         public update(time: number, delay: number) {
             this._camera.viewPort = this._viewPort;
             //------------------
-            if (Egret3DEngine.instance.debug) 
+            if (Egret3DEngine.instance.debug)
                 this.a = new Date().getTime();
-            this.updateObject3D(this._scene.root, time, delay);
-            if (Egret3DEngine.instance.debug) 
+            this.updateObject3D(this._scene, time, delay);
+            if (Egret3DEngine.instance.debug)
                 egret3d.Egret3DState.showDataInfo("updateObject3D: " + (new Date().getTime() - this.a) + " ms");
 
 
@@ -477,12 +574,21 @@
 
             if (Egret3DEngine.instance.debug)
                 Egret3DState.help = new Date().getTime();
+
+            //收集器做物体检测,分类
             this._entityCollect.update(this._camera);
+
+            //检测阴影是否存在接收者，如果有就需要渲染阴影，没有就暂停
+            this._shadowCast.shadowRender.enabled = false;
+            if (this._entityCollect.numberAcceptShadow > 0) {
+                this._shadowCast.shadowRender.enabled = true;
+                this._shadowCast.update(this._entityCollect,time,delay);
+            }
+
             if (Egret3DEngine.instance.debug)
                 Egret3DState.showDataInfo("entityCollect" + (new Date().getTime() - Egret3DState.help) + " ms");
 
             if (Egret3DEngine.instance.debug) {
-
                 egret3d.Egret3DState.showDataInfo("drawCall : " + this._entityCollect.numberDraw.toString());
                 egret3d.Egret3DState.showDataInfo("vertex : " + this._entityCollect.numberVertex.toString());
                 egret3d.Egret3DState.showDataInfo("tris : " + this._entityCollect.numberFace.toString());
@@ -492,18 +598,18 @@
 
                 var len: string;
                 for (var i: number = 0; i < Layer.layerType.length; i++) {
-                    len = Layer.layerType[i] + " layer: " + this._entityCollect.softRenderItems[Layer.layerType[i]].length.toString();
+                    len = Layer.layerType[i] + " layer: " + this._entityCollect.softLayerRenderItems[Layer.layerType[i]].length.toString();
                     egret3d.Egret3DState.showDataInfo(len);
                 }
             }
 
-            if (PickSystem.instance.enablePick) {
-                PickSystem.instance.update(this._entityCollect, this._camera, time, delay, this._viewPort);
-            }
+            //if (PickSystem.instance.enablePick) {
+            //    PickSystem.instance.update(this._entityCollect, this._camera, time, delay, this._viewPort);
+            //}
 
-            if (ShadowCast.enableShadow) {
-                ShadowCast.instance.update(this._entityCollect,this._camera, time, delay, this._viewPort);
-            }
+            //if (ShadowCast.enableShadow) {
+            //    ShadowCast.instance.update(this._entityCollect,this._camera, time, delay, this._viewPort);
+            //}
 
             if (this._cleanParmerts & Context3DProxy.gl.COLOR_BUFFER_BIT) {
                 Egret3DCanvas.context3DProxy.clearColor(this._backColor.x, this._backColor.y, this._backColor.z, this._backColor.w);
@@ -515,20 +621,22 @@
                 this._backImg.draw(Egret3DCanvas.context3DProxy);
             }
 
-            if (this._postList.length > 0){
-                this._postProcessing.postItem = this._postList; 
-                this._postProcessing.drawFrameBuffer(time, delay, Egret3DCanvas.context3DProxy, this._entityCollect, this._camera, this._viewPort);
-                //this._postHUD.diffuseTexture = this._postProcessing.endTexture;
-                //this._postHUD.viewPort = this._viewPort ;
-                //this._postHUD.draw(Egret3DCanvas.context3DProxy);
-            } else {
+            if (Egret3DEngine.instance.debug)
+                this.a = new Date().getTime();
 
+            this._renderQuen.mainRender.camera = this.camera3D ;
+            this._renderQuen.draw(time, delay, Egret3DCanvas.context3DProxy, this._entityCollect, this._viewPort);
+
+            if (Egret3DEngine.instance.debug)
+                egret3d.Egret3DState.showDataInfo("draw: " + (new Date().getTime() - this.a) + " ms");
+
+            if (this._postList.length > 0) {
                 if (Egret3DEngine.instance.debug)
                     this.a = new Date().getTime();
-                this._render.draw(time, delay, Egret3DCanvas.context3DProxy, this._entityCollect, this._camera, this._viewPort);
+                this._postProcessing.postArray = this._postList;
+                this._postProcessing.draw(time, delay, Egret3DCanvas.context3DProxy, this._entityCollect, this.camera3D, this._viewPort);
                 if (Egret3DEngine.instance.debug)
-                    egret3d.Egret3DState.showDataInfo("draw: " + (new Date().getTime() - this.a) + " ms");
-
+                    egret3d.Egret3DState.showDataInfo("post: " + (new Date().getTime() - this.a) + " ms");
             }
 
             for (var i: number = 0; i < this._huds.length; ++i) {
@@ -538,7 +646,7 @@
             if (this._quadStage) {
                 if (Egret3DEngine.instance.debug)
                     this.a = new Date().getTime();
-                this._quadStage.update(time, delay, Egret3DCanvas.context3DProxy,this);
+                this._quadStage.update(time, delay, Egret3DCanvas.context3DProxy, this);
                 if (Egret3DEngine.instance.debug)
                     egret3d.Egret3DState.showDataInfo("GUI: " + (new Date().getTime() - this.a) + " ms");
             }

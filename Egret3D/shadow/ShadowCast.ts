@@ -16,7 +16,6 @@
     * @platform Web,Native
     */
     export class ShadowCast {
-        private static _instance: ShadowCast;
 
         private _boundBox: BoundBox = new BoundBox();
         /**
@@ -25,7 +24,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public static enableShadow: boolean = false;
+        public enableShadow: boolean = false;
 
         /**
         * @language zh_CN
@@ -34,7 +33,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public static textureSizeWidth: number = 1024 * 4;
+        public textureSizeWidth: number = 1024 * 4;
 
         /**
         * @language zh_CN
@@ -43,7 +42,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public static textureSizeHeight: number = 1024 * 4;
+        public textureSizeHeight: number = 1024 * 4;
 
         /**
         * @language zh_CN
@@ -63,25 +62,11 @@
 
         /**
         * @language zh_CN
-        * 阴影渲染器
+        * 阴影渲染器z
         * @version Egret 3.0
         * @platform Web,Native
         */
         public directLight: DirectLight;
-
-        /**
-        * @language zh_CN
-        * 单例
-        * @returns ShadowCast 实例返回
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public static get instance(): ShadowCast {
-            if (!ShadowCast._instance) {
-                ShadowCast._instance = new ShadowCast();
-            }
-            return ShadowCast._instance;
-        }
 
         /**
         * @private
@@ -89,10 +74,12 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        constructor() {
+        constructor( view:View3D ) {
             this.shadowCamera = new Camera3D(CameraType.orthogonal);
             this.shadowRender = new MultiRender(PassType.shadowPass);
-            this.shadowRender.setRenderToTexture(ShadowCast.textureSizeWidth, ShadowCast.textureSizeHeight, FrameBufferFormat.UNSIGNED_BYTE_RGBA);
+            this.shadowRender.name = PassType.shadowPass.toString() ;
+            this.shadowRender.camera = this.shadowCamera ; 
+            this.shadowRender.setRenderToTexture(this.textureSizeWidth, this.textureSizeHeight, FrameBufferFormat.UNSIGNED_BYTE_RGBA);
             this.castShadowLight(new DirectLight(new Vector3D(0, -1, 1)));
 
             var v: Vector3D = MathUtil.CALCULATION_VECTOR3D;
@@ -100,6 +87,7 @@
             v.negate();
             v.scaleBy(1000);
             this.shadowCamera.globalPosition = v;
+            view.renderQuen.addRender(this.shadowRender);
         }
 
         /**
@@ -111,9 +99,9 @@
         * @platform Web,Native
         */
         public setTextureSize(width: number, height: number) {
-            ShadowCast.textureSizeWidth = width;
-            ShadowCast.textureSizeHeight = height;
-            this.shadowRender.setRenderToTexture(ShadowCast.textureSizeWidth, ShadowCast.textureSizeHeight, FrameBufferFormat.UNSIGNED_BYTE_RGBA);
+            this.textureSizeWidth = width;
+            this.textureSizeHeight = height;
+            this.shadowRender.setRenderToTexture(this.textureSizeWidth, this.textureSizeHeight, FrameBufferFormat.UNSIGNED_BYTE_RGBA);
         }
 
         /**
@@ -133,20 +121,18 @@
             light.addChild(this.shadowCamera);
         }
 
-        /**
-        * @private
-        * @language zh_CN
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public update(entityCollect: EntityCollect, camera:Camera3D, time:number, delay:number, viewPort:Rectangle ) {
-
-            this.calculateBoundBox(entityCollect);
-
-            Egret3DCanvas.context3DProxy.clearColor(1.0,1.0,1.0,1.0);
-            Egret3DCanvas.context3DProxy.clear(Context3DProxy.gl.COLOR_BUFFER_BIT | Context3DProxy.gl.DEPTH_BUFFER_BIT);
-
-            this.shadowRender.draw(time, delay, Egret3DCanvas.context3DProxy, entityCollect, this.shadowCamera, viewPort);
+        ///**
+        //* @private
+        //* @language zh_CN
+        //* @version Egret 3.0
+        //* @platform Web,Native
+        //*/
+        public update(entityCollect: EntityCollect, time:number, delay:number ) {
+              this.calculateBoundBox(entityCollect);
+              //Egret3DCanvas.context3DProxy.clearColor(1.0,1.0,1.0,1.0);
+              //Egret3DCanvas.context3DProxy.clear(Context3DProxy.gl.COLOR_BUFFER_BIT | Context3DProxy.gl.DEPTH_BUFFER_BIT);
+              //this.shadowRender.camera = this.shadowCamera;
+              //this.shadowRender.draw(time, delay, Egret3DCanvas.context3DProxy, entityCollect);
         }
 
         private calculateBoundBox(entityCollect: EntityCollect) {
@@ -154,13 +140,9 @@
             this._boundBox.min.copyFrom(new Vector3D(MathUtil.MAX_VALUE, MathUtil.MAX_VALUE, MathUtil.MAX_VALUE));
             this._boundBox.max.copyFrom(new Vector3D(-MathUtil.MAX_VALUE, -MathUtil.MAX_VALUE, -MathUtil.MAX_VALUE));
 
-            for (var i: number = 0; i < entityCollect.renderList.length; i++) {
-                var item: IRender = entityCollect.renderList[i];
-                if (!item.material || !item.material.castShadow) {
-                    continue;
-                }
+            for (var i: number = 0; i < entityCollect.specialCastItem[SpecialCast.Shadow].length; i++) {
+                var item: IRender = entityCollect.specialCastItem[SpecialCast.Shadow][i];
                 var boundBox: BoundBox = <BoundBox>item.bound;
-
                 
                 if (this._boundBox.max.x < boundBox.max.x + item.globalX) {
                     this._boundBox.max.x = boundBox.max.x + item.globalX;

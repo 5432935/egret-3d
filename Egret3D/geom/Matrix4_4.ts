@@ -14,6 +14,7 @@
      * @platform Web,Native
      */
     export class Matrix4_4 {
+        public static helpMatrix: Matrix4_4 = new Matrix4_4();
         
         /**
         * @language zh_CN
@@ -22,7 +23,7 @@
         * @platform Web,Native
         */
         public rawData: Float32Array;
-        public static helpMatrix: Matrix4_4 = new Matrix4_4();
+
         /**
         * @language zh_CN
         * 构造
@@ -31,8 +32,7 @@
         * @platform Web,Native
         */
         constructor(datas: Float32Array = null) {
-            if (datas)
-            {
+            if (datas) {
                 this.rawData = datas;
             }
             else
@@ -542,7 +542,7 @@
             if (axis.x == 1) {
                 tmp.rawData[0] = 1.0; tmp.rawData[1] = 0.0; tmp.rawData[2] = 0.0; tmp.rawData[3] = 0.0;
                 tmp.rawData[4] = 0.0; tmp.rawData[5] = c; tmp.rawData[6] = s; tmp.rawData[7] = 0.0;
-                tmp.rawData[8] = 0.0; tmp.rawData[9] = -s; tmp.rawData[10] = c; tmp.rawData[7] = 0.0;
+                tmp.rawData[8] = 0.0; tmp.rawData[9] = -s; tmp.rawData[10] = c; tmp.rawData[11] = 0.0;
                 tmp.rawData[12] = 0.0; tmp.rawData[13] = 0.0; tmp.rawData[14] = 0.0; tmp.rawData[15] = 1.0;
             }
 
@@ -609,13 +609,13 @@
         /**
         * @language zh_CN
         * 给当前矩阵其中一行赋值
-        * @param column 拷贝的行
+        * @param row 拷贝的行
         * @param vector3D 拷贝的值
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public copyColumnFrom(column: number, vector3D: Vector3D) {
-            switch (column) {
+        public copyRowFrom(row: number, vector3D: Vector3D) {
+            switch (row) {
                 case 0:
                     this.rawData[0] = vector3D.x;
                     this.rawData[1] = vector3D.y;
@@ -648,13 +648,13 @@
         /**
         * @language zh_CN
         * 拷贝矩阵中的其中一行 把值存在vector3D.
-        * @param column 拷贝的行
+        * @param row 拷贝的行
         * @param vector3D 拷贝存值目标
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public copyRowTo(column: number, vector3D: Vector3D) {
-            switch (column) {
+        public copyRowTo(row: number, vector3D: Vector3D) {
+            switch (row) {
                 case 0:
                     vector3D.x = this.rawData[0];
                     vector3D.y = this.rawData[1];

@@ -511,7 +511,12 @@
                     this._childs[i].activeStage(stage);
                 }
 
+                this.onActiveStage();
             }
+        }
+
+        protected onActiveStage(): void {
+
         }
 
         public hasChild(display: DisplayObject): number {

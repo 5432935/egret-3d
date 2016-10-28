@@ -108,7 +108,8 @@
             return target ;
         }
 
-        public static RGBAToColor(r: number, g: number, b: number, a: number) {
+        public static RGBAToColor(r: number, g: number, b: number, a: number): number {
+
             return (a << 24) | (r << 16) | (g << 8) | b;
         }
 
@@ -287,5 +288,20 @@
             this.g = Math.floor(this.g);
             this.b = Math.floor(this.b);
         }
+
+        /**
+         * @language zh_CN
+         * 缩放当前颜色
+         * @param value 缩放系数
+         * @version Egret 3.0
+         * @platform Web,Native
+         */
+        public scaleBy(value: number): void {
+            this.a *= value;
+            this.r *= value;
+            this.g *= value;
+            this.b *= value;
+        }
+
     }
 } 

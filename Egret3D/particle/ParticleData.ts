@@ -151,7 +151,7 @@
 
         public textureSheet: ParticleDataTextureSheet;
 
-        public materialData: MatSphereData;
+        public materialData: UnitMatSphereData;
         /**
         * @language zh_CN
         * @version Egret 3.0
@@ -222,6 +222,8 @@
         public gravity: number = 0;
         //是否预热
         public prewarm: boolean = false;
+        //是否自启动
+        public playOnAwake: boolean = true;
 
         public rotation: Vector3D = new Vector3D(0, 0, 0, 1);
         public scale: Vector3D = new Vector3D(1, 1, 1, 1);
@@ -506,7 +508,6 @@
         //粒子模型
         public planeW: number = 10;
         public planeH: number = 10;
-        public hasNormalData: boolean = false;
         constructor() {
             super(ParticleDataNodeType.Geometry);
         }

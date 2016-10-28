@@ -3,9 +3,15 @@
     /**
     * @class egret3d.ColorTransformMethod
     * @classdesc
+    * 继承自 MethodBase,为材质球附加特效的共有基类.
     * 实现偏色渲染方法。
     * 将最终渲染的argb值按照这个transform进行修正。
+    * 也可以用来做颜色的变化特效,实时修改颜色变化,闪烁
+    * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
     * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
+    * @includeExample material/method/AlphaMaskMethod.ts
+    * @see egret3d.texture.ColorTransform
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -25,8 +31,9 @@
 
         /**
         * @language zh_CN
-        * 设置transform数据
+        * 设置ColorTransform数据
         * @param trasform ColorTransform
+        * @see egret3d.texture.ColorTransform
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -34,6 +41,14 @@
             this.materialData.colorTransform = trasform;
         }
 
+        /**
+        * @language zh_CN
+        * 返回ColorTransform数据
+        * @param trasform ColorTransform
+        * @see egret3d.texture.ColorTransform
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get colorTransform(): ColorTransform {
             return this.materialData.colorTransform;
         }

@@ -112,6 +112,7 @@ module egret3d {
                             for (var j: number = 0; j < nCount; j++) {
 
                                 var skeletonPose: SkeletonPose = new SkeletonPose();
+                                skeletonPose.boneNameArray = animationClip.boneNameArray;
 
                                 skeletonPose.lerp(skeletonPoseA, skeletonPoseB, j / nCount);
 

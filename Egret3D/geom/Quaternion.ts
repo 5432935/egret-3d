@@ -129,6 +129,18 @@
         }
 
         /**
+        * @private
+        *  
+        * @returns the magnitude of the quaternion object.
+        */
+        public fromArray(d: Float32Array) {
+            this.x = -d[0];
+            this.y = -d[1];
+            this.z = d[2];
+            this.w = d[3];
+        }
+
+        /**
         * @language en_US
         * Fills the quaternion object with the result from a multiplication of two quaternion objects.
         *

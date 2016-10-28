@@ -17,7 +17,7 @@
 
             var bgImg: HTMLImageElement = <HTMLImageElement>document.getElementById("bg");
             var tex: ImageTexture = new ImageTexture(bgImg);
-            //this.view1.backImage = tex;
+            this.view1.backImage = tex;
 
             this.cameraCtl = new LookAtController(view1.camera3D, new Object3D());
             this.cameraCtl.distance = 1000;
@@ -59,56 +59,25 @@
             geom.setVerticesForIndex(0, egret3d.VertexFormat.VF_POSITION, vb, vb.length / 3);
             geom.setVertexIndices(0, ib);
 
-            //var box: Mesh = new Mesh(new CubeGeometry(), new TextureMaterial());
-            //this.view1.addChild3D(box);
-
-            //var m: Mesh = new Mesh(new PlaneGeometry(), new TextureMaterial());
-            //this.view1.addChild3D(m);
             this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
 
-            //var load: URLLoader = new URLLoader("resource/modle/sunce/body_6.esm");
-            //load.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoad, this);
+            var cube: Mesh = new Mesh(new CubeGeometry(100, 100, 100), new ColorMaterial(0x333333));
+            this.view1.addChild3D(cube);
 
-            //var c: Mesh = new Mesh(new CylinderGeometry());
-            //this.view1.addChild3D(c);
+            cube.x = 100;
+            var cubeWireframe: Wireframe = new Wireframe();
+            cubeWireframe.fromGeometry(cube.geometry);
+            cube.addChild(cubeWireframe);
 
-           // c = new Mesh(new PlaneGeometry());
-           // this.view1.addChild3D(c);
+            var s: Mesh = new Mesh(new SphereGeometry(100, 20, 20), new ColorMaterial(0x333333));
+            this.view1.addChild3D(s);
+            s.bound.visible = true;
+            s.x = -100;
 
-
-
-           // c = new Mesh(new SphereGeometry());
-           // this.view1.addChild3D(c);
-
-           // c.y = 100;
-
-           //c = new Mesh(new CubeGeometry());
-           // this.view1.addChild3D(c);
-
-           // c.z = 200;
-
-            this.mapLoader = new MapLoader("resource/scene/sponza_Demo/MapConfig.json");
-            this.view1.addChild3D(this.mapLoader.container);
-            this.mapLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onMaploader, this);
-            //this._line[0] = this.buildSemicircleLien(egret3d.Vector3D.X_AXIS, 80, 25, 180, 180, 0xffff00);
-            //this.view1.addChild3D(this._line[0]);
-            //this._line[1] = this.buildSemicircleLien(egret3d.Vector3D.Y_AXIS, 80, 25, 180, 180, 0xffffffff);
-            //this.view1.addChild3D(this._line[1]);
-            //this._line[2] = this.buildSemicircleLien(egret3d.Vector3D.Z_AXIS, 80, 25, 180, 270, 0xffffffff);
-            //this.view1.addChild3D(this._line[2]);
+            var sWireframe: Wireframe = new Wireframe();
+            sWireframe.fromGeometry(s.geometry);
+            s.addChild(sWireframe);
         }
-
-        private onMaploader(e: LoaderEvent3D) {
-
-        }
-
-        private _line: Array<egret3d.Wireframe> = new Array<egret3d.Wireframe>();
-    
-        protected onLoad(e: LoaderEvent3D) {
-            var m: Mesh = new Mesh(e.loader.data, new TextureMaterial());
-            this.view1.addChild3D(m);
-        }
-
         public update(e: Event3D) {
             this.cameraCtl.update();
         }

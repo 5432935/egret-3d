@@ -1,5 +1,9 @@
 ﻿module egret3d {
 
+    export enum SpecialCast {
+        Shadow,Pick,
+    }
+
     /**
     * @private
     * @class egret3d.EntityCollect
@@ -14,14 +18,18 @@
     */
     export class EntityCollect extends CollectBase {
 
-        public softRenderItems: { [key: string]: IRender[] } = {};
         public numberVertex: number = 0;
         public numberFace: number = 0;
         public numberDraw: number = 0;
         public numberSkin: number = 0;
         public numberAnimation: number = 0;
         public numberParticle: number = 0;
-        
+        public numberCastShadow: number = 0;
+        public numberAcceptShadow: number = 0;
+        public numberPick: number = 0;
+
+        public softLayerRenderItems: { [key: string]: IRender[] } = {};
+        public specialCastItem: { [key: string]: IRender[] } = {};
         /**
         * @language zh_CN
         * constructor
@@ -31,6 +39,9 @@
         */
         constructor() {
             super();
+
+            this.specialCastItem[SpecialCast.Shadow] = []; 
+            this.specialCastItem[SpecialCast.Pick] = []; 
         }
 
         private applyRender(child: any, camera: Camera3D) {
@@ -62,13 +73,32 @@
             }
            
             if (renderItem.material) {
+
+
+                //检查鼠标能pick
+                if (renderItem.enablePick) {
+                    this.specialCastItem[SpecialCast.Pick].push(renderItem);
+                    this.numberPick++;
+                }
+
+                //检查阴影产生者
+                if (renderItem.material.castShadow) {
+                    this.specialCastItem[SpecialCast.Shadow].push(renderItem);
+                    this.numberCastShadow++;
+                }
+
+                //检查阴影接受者
+                if (renderItem.material.acceptShadow) {
+                    this.numberAcceptShadow++;
+                }
+
                 if (renderItem.tag.name == "normalObject" && renderItem.material.materialData.alphaBlending) {
-                    this.softRenderItems["alphaObject"].push(renderItem);
+                    this.softLayerRenderItems["alphaObject"].push(renderItem);
                 }
                 else {
                     for (var i: number = 0; i < Layer.layerType.length; i++) {
                         if (renderItem.tag.name == Layer.layerType[i]) {
-                            this.softRenderItems[Layer.layerType[i]].push(renderItem);
+                            this.softLayerRenderItems[Layer.layerType[i]].push(renderItem);
                         }
                     }
                 }
@@ -88,11 +118,6 @@
 
             }
 
-       
-
-            if (renderItem.enablePick) {
-                this.mousePickList.push(renderItem);
-            }
         }
                 
         /**
@@ -110,9 +135,12 @@
             this.numberDraw = 0;
             this.numberSkin = 0;
             this.numberAnimation = 0;
-            this.numberParticle = 0 ;
+            this.numberParticle = 0;
+            this.numberCastShadow = 0; 
+            this.numberPick = 0; 
+            this.numberAcceptShadow = 0; 
             
-            this.clearLayerList();
+            this.clearList();
 
             if (this.rootScene.quad) {
                 var box: BoundBox = camera.frustum.box;
@@ -120,22 +148,23 @@
                 this.appendQuadList(quadList, camera);
             }
             else {
-                if (Egret3DEngine.instance.debug)
-                    Egret3DState.help = new Date().getTime();
-                this.applyRender(this.rootScene.root, camera);
-                if (Egret3DEngine.instance.debug)
-                    Egret3DState.showDataInfo("entityCollect applyRender:" + (new Date().getTime() - Egret3DState.help) + " ms");
+                Egret3DState.countStart();
+                this.applyRender(this.rootScene, camera);
+                Egret3DState.countEnd("entityCollect applyRender");
             }
 
             var listLen: number;
+            var renders;
             for (var j: number = 0; j < Layer.layerType.length; j++) {
-                listLen = this.softRenderItems[Layer.layerType[j]].length;
-               
-                this.softRenderItems[Layer.layerType[j]].sort(this.sortByOrder);
-                   
-                for (var i: number = 0; i < listLen; i++) {
-                    this.renderList.push(this.softRenderItems[Layer.layerType[j]][i] );
+                renders = this.softLayerRenderItems[Layer.layerType[j]];
+                if (renders) {
+                    listLen = this.softLayerRenderItems[Layer.layerType[j]].length;
+                    this.softLayerRenderItems[Layer.layerType[j]].sort(this.sortByOrder);
+                    for (var i: number = 0; i < listLen; i++) {
+                        this.renderList.push(this.softLayerRenderItems[Layer.layerType[j]][i]);
+                    }
                 }
+                
             }
         }
 
@@ -178,13 +207,17 @@
         //    return this._tags[0];
         //}
 
-        protected clearLayerList() {
+        protected clearList() {
             for (var i: number = 0; i < Layer.layerType.length; i++) {
-                if (!this.softRenderItems[Layer.layerType[i]]) {
-                    this.softRenderItems[Layer.layerType[i]] = [];
+                if (!this.softLayerRenderItems[Layer.layerType[i]]) {
+                    this.softLayerRenderItems[Layer.layerType[i]] = [];
                 }
                 else
-                    this.softRenderItems[Layer.layerType[i]].length = 0;
+                    this.softLayerRenderItems[Layer.layerType[i]].length = 0;
+            }
+
+            for (var j in this.specialCastItem ) {
+                this.specialCastItem[j].length = 0;
             }
         }
 

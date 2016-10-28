@@ -53,7 +53,7 @@ void main(void){
 	decodeBooleanArray(varying_pos.w);
 	
 	
-	if(booleanArray[FLAG_VALLID_QUAD] == false || booleanArray[FLAG_IS_VISIBLE] == false){
+	if(booleanArray[FLAG_VALLID_QUAD] == false || booleanArray[FLAG_IS_VISIBLE] == false || booleanArray[FLAG_HAS_TEXTURE] == false){
 		discard;
 	}
 

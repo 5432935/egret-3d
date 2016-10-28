@@ -20,8 +20,8 @@
         //public diffusePass: MaterialPass; 
         //public shadowPass: MaterialPass; 
 
-        public passes: { [pass: number]: MaterialPass[] } = [];
-                
+        public passes: { [pass: number]: MaterialPass[] } = {};
+
         /**
          * @language zh_CN
          * @private
@@ -31,7 +31,7 @@
         public materialData: MaterialData;
 
         private _lightGroup: LightGroup;
-        private _shadowMethod: ShadowMethod;
+
          /**
          * @language zh_CN
          * @class egret3d.MaterialBase
@@ -74,7 +74,7 @@
 
         protected initPass() {
             //this.passes[PassType.diffusePass] = new ColorPass(this.materialData);
-            this.addPass(PassType.colorPass);
+            this.creatPass(PassType.colorPass);
             //this.addPass(PassType.normalPass);
             //this.addPass(PassType.depthPass_8);
         }
@@ -223,6 +223,39 @@
         }
 
         /**
+        * @language zh_CN
+        * 设置材质 diffuseTexture3D
+        * @param texture CubeTexutre
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set diffuseTexture3D(texture: CubeTexture) {
+            if (texture) {
+                this.materialData["diffuseTexture3D"] = texture;
+                this.materialData.textureChange = true;
+
+                if (this.materialData.shaderPhaseTypes[PassType.diffusePass] && this.materialData.shaderPhaseTypes[PassType.diffusePass].indexOf(ShaderPhaseType.diffuse_fragment) == -1) {
+                    this.materialData.shaderPhaseTypes[PassType.diffusePass].push(ShaderPhaseType.diffuse_fragment);
+                }
+
+                if (this.materialData.shaderPhaseTypes[PassType.shadowPass] && this.materialData.shaderPhaseTypes[PassType.shadowPass].indexOf(ShaderPhaseType.diffuse_fragment) == -1) {
+                    this.materialData.shaderPhaseTypes[PassType.shadowPass].push(ShaderPhaseType.diffuse_fragment);
+                }
+            }
+        }
+
+        /**
+        * @language zh_CN
+        * 返回材质 diffuseTexture3D
+        * @returns CubeTexture 漫反射贴图
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get diffuseTexture3D(): CubeTexture {
+            return this.materialData["diffuseTexture3D"];
+        }
+
+        /**
          * @language zh_CN
          * 设置材质 normalTexture 。
          * 设置材质球的凹凸法线贴图。
@@ -244,7 +277,6 @@
                     this.materialData.shaderPhaseTypes[PassType.matCapPass].push(ShaderPhaseType.normal_fragment);
                     //this.passes[PassType.matCapPass].passInvalid();
                 }
-
             }
         }
 
@@ -709,14 +741,27 @@
 
          /** m
          * @language zh_CN
-         * 返回材质 normalPower 值。
+         * 引擎内部生成pass渲染通道
          * 返回材质 法线的强度 值。
          * @returns {Number}
          * @version Egret 3.0
          * @platform Web,Native
          */
-        public addPass(pass: PassType) {
+        public creatPass(pass: PassType) {
             this.passes[pass] = PassUtil.CreatPass(pass, this.materialData);
+        }
+
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public addDiffuseChilderPass( pass:MaterialPass ) {
+            if (this.passes[PassType.diffusePass]) {
+                pass.materialData = this.materialData;
+                this.passes[PassType.diffusePass].push(pass);
+            }
         }
 
         /**
@@ -732,8 +777,7 @@
         public set castShadow(value: boolean) {
             this.materialData.castShadow = value; 
             if (value) {
-                ShadowCast.enableShadow = true;
-                this.addPass(PassType.shadowPass);
+                this.creatPass(PassType.shadowPass);
             } else {
                 if (this.passes[PassType.shadowPass]) {
                     this.disposePass(PassType.shadowPass);
@@ -751,7 +795,7 @@
         public set castPick(value: boolean) {
             if (value) {
                 PickSystem.instance.enablePick = true;
-                this.addPass(PassType.PickPass);
+                this.creatPass(PassType.PickPass);
             } else {
                 if (this.passes[PassType.PickPass]) {
                     this.disposePass(PassType.PickPass);
@@ -790,16 +834,8 @@
             }
             this.materialData.acceptShadow = value;
 
-            if (this.materialData.acceptShadow) {
-                this._shadowMethod  = new ShadowMethod(this);
-                this._shadowMethod .shadowMapTexture = ShadowCast.instance.shadowRender.renderTexture;
-                this.diffusePass.addMethod(this._shadowMethod );
-            }
-            else {
-                if (this._shadowMethod) {
-                    this.diffusePass.removeMethod(this._shadowMethod);
-                }
-            }
+            if (this.diffusePass)
+                this.diffusePass.addShadowMethod();
         }
 
         /**

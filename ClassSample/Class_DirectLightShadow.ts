@@ -73,13 +73,13 @@
                 m.material.acceptShadow = true;
             }
 
-            var texture: ITexture = ShadowCast.instance.shadowRender.renderTexture;
-            var gui: QuadStage = this.view1.getGUIStage();
-            gui.registerTexture(texture);
+            //var texture: ITexture = this.view1.renderQuen.renderDictionary[PassType.shadowPass].renderTexture ;
+            //var gui: QuadStage = this.view1.getGUIStage();
+            //gui.registerTexture(texture);
 
-            var quat: Quad = new Quad();
-            quat.texture = texture;
-            this.view1.addGUI(quat);
+            //var quat: Quad = new Quad();
+            //quat.texture = texture;
+            //this.view1.addGUI(quat);
             this.ctl.lookAtObject = this.cube;
 
 

@@ -1,11 +1,15 @@
 ﻿module egret3d {
 
     /**
+    * @private
     * @class egret3d.AlphaMaskMethod
     * @classdesc
     * 实现alpha遮罩渲染方法。
     * 该贴图的r通道被用于赋值到diffuse数据的alpha上面。
+     * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
     * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
+    * @includeExample material/method/AlphaMaskMethod.ts
     * @includeExample material/method/AlphaMaskMethod.ts
     * @version Egret 3.0
     * @platform Web,Native

@@ -1,8 +1,10 @@
 ﻿module egret3d.gui {
          /**
-    * @private
     * @class egret3d.gui.UIProgressBar
     * @classdesc
+    * 基础的进度条组件.</p>
+    * 由底部背景条以及顶部的进度条组成.</p>
+    * 组件样式名为background以及 bar 分别用来设置底部背景条以及顶部进度条的样式
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -19,14 +21,17 @@
             this._bar = new Quad();
             this.addChild(this._bar);
             this._ratio = 0.5;
+            this.updateStyle();
         }
 
-        /**
-         * 0-1;
-         * 
-         * @param value 
-         * @returns {} 
-         */
+         /**
+        * @language zh_CN
+        * 进度条的比例.</p>
+        * 取值范围为0-1,即进度条由空到填满</p>
+        * 小于0 取0, 大于1 取1
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set ratio(value: number) {
             if (value > 1) {
                 value = 1;
@@ -47,6 +52,15 @@
 
         public set height(value: number) {
             this._background.height = this._bar.height = value;
+        }
+
+
+        public get width(): number {
+            return this._background.width;
+        }
+
+        public get height(): number {
+            return this._background.height;
         }
         
         public setBarRect(x: number, y: number, w: number, h: number) {
@@ -74,6 +88,19 @@
             super.setStyle(style, value);
             this.updateStyle();
             this.updateBar();
+        }
+
+        protected getDefaultStyleNameByStyleName(styleName: string): string {
+            var obj = {
+                "bar": DefaultSkinName.DEFAULT_PROGRESS_BAR,
+                "background": DefaultSkinName.DEFAULT_PROGRESS_BAR_BACKGROUND
+            };
+
+            var result: string = obj[styleName];
+            if (!result) {
+                console.log(" ERROR!!! UISlider can't find default style : ", styleName);
+            }
+            return result;
         }
 
         private updateStyle() {

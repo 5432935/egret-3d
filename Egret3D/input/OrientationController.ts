@@ -1,11 +1,12 @@
 ﻿module egret3d {
     
     /**
-     * @private
      * @language zh_CN
      * @class egret3D.OrientationControler
      * @classdesc
      * 陀螺仪控制器
+     * @version Egret 3.0
+     * @platform Web,Native
      */
     export class OrientationController {
         private acc: DeviceAcceleration;
@@ -24,11 +25,15 @@
         /**
         * @language zh_CN
         * 偏移旋转
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public offsetRotation: Vector3D = new Vector3D();
         /**
         * @language zh_CN
         * constructor
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         constructor() {
             if (this.openDebug) {
@@ -56,6 +61,8 @@
         /**
         * @language zh_CN
         * 初始化
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public start() {
 
@@ -68,9 +75,10 @@
         /**
         * @language zh_CN
         * 释放
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public stop() {
-
             window.removeEventListener("orientationchange", () => this.orientationchangeHandler());
             window.removeEventListener("devicemotion", (e: DeviceMotionEvent) => this.motionHandler(e));
             window.removeEventListener("deviceorientation", (e: DeviceOrientationEvent) => this.orientationHandler(e));
@@ -79,7 +87,7 @@
         /**
         * @language zh_CN
         */
-        public orientationchangeHandler() {
+        protected orientationchangeHandler() {
 
             if (window.orientation != undefined)
                 this.screenOrientation = <number>window.orientation;
@@ -91,7 +99,7 @@
         * 
         * @param event 
         */
-        public motionHandler(event: DeviceMotionEvent) {
+        protected motionHandler(event: DeviceMotionEvent) {
 
             this.acc = event.acceleration;
             this.accGravity = event.accelerationIncludingGravity;
@@ -104,7 +112,7 @@
         * @param event 
         * @returns 
         */
-        public orientationHandler(event: DeviceOrientationEvent) {
+        protected orientationHandler(event: DeviceOrientationEvent) {
 
             this.orientation.x = event.alpha;
             this.orientation.y = event.beta;
@@ -119,6 +127,8 @@
         /**
         * @language zh_CN
         * 陀螺仪当前旋转角度
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public fixOritation: Vector3D = new Vector3D();
 
@@ -136,6 +146,8 @@
         * @language zh_CN
         * 
         * @returns number
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public getOrientation(): number {
 
@@ -168,6 +180,8 @@
         * @param beta 
         * @param gamma 
         * @returns 旋转四元数
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public getQuaternion(alpha: number, beta: number, gamma: number): Quaternion {
 
@@ -220,6 +234,8 @@
         * @language zh_CN
         * 数据更新
         * @param camera3D 当前相机
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public update(view3D: View3D) {
 
@@ -297,7 +313,8 @@
             //q0.fromAxisAngle(zee, 90 * this.degtorad);
             //this.q.multiply(this.q, q0);
 
-        return this.q ;
-    }
+
+            return this.q;
+        }
     }
 } 

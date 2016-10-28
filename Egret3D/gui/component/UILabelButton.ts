@@ -3,6 +3,7 @@
     * @private
     * @class egret3d.gui.UILabelButton
     * @classdesc
+    * 含文本组件的按钮, 用于在按钮上显示文字
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -25,6 +26,20 @@
             this._textWidth = -1;
         }
 
+        protected getDefaultStyleNameByStyleName(styleName: string): string {
+            var obj = {
+                "down": DefaultSkinName.DEFAULT_LABE_BUTTON_DOWN,
+                "up": DefaultSkinName.DEFAULT_LABEL_BUTTON_UP,
+                "disable": DefaultSkinName.DEFAULT_LABE_BUTTON_DISABLE
+            };
+
+            var result: string = obj[styleName];
+            if (!result) {
+                console.log(" ERROR!!! UILabelButton can't find default style : ", styleName);
+            }
+            return result;
+        }
+
         public get textHeight(): number {
             return this._textHeight;
         }
@@ -42,15 +57,31 @@
             this._textWidth = value;
             this.onRender();
         }
-
+         /**
+        * @language zh_CN
+        * 获取按钮内的文本组件。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get textField(): UITextField {
             return this._textField;
         }
-
+         /**
+        * @language zh_CN
+        * 获取或设置组件的文本标签。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get label(): string {
             return this._label;
         }	
 
+        /**
+        * @language zh_CN
+        * 获取或设置组件的文本标签。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set label(value: string) {
             this._label = value;
             this._textField.text = this._label;

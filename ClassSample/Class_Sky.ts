@@ -32,7 +32,7 @@
             );
 
             var sky: Sky = new Sky(new CubeGeometry(10000, 10000, 10000), new CubeTextureMaterial(cubeTexture), this.view1.camera3D);
-
+            sky.material.cullMode = ContextConfig.FRONT;
             this.view1.addChild3D(sky);
 
             this._egret3DCanvas.start();

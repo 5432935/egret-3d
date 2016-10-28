@@ -24,7 +24,7 @@ void calcCubicPos(float time, float totalTime, vec3 fromPos, vec3 endPos){
 	t *= 5.0; 
 	} 
 	t = 0.5 * (1.0 - cos(t * PI)); 
-	vec4 nrmVec4 = mat4RotateXYZ * vec4(attribute_normal, 1.0); 
+	vec4 nrmVec4 = rotVertexMatrix * vec4(attribute_normal, 1.0); 
 	vec3 nrmPos = normalize(nrmVec4.xyz); 
 	nrmPos = nrmPos * t * distanceFloat * 0.04; 
 	t = clamp(time / totalTime, 0.0, 1.0); 
@@ -51,10 +51,5 @@ void trackPosition(){
 	localPosition.xyz += curOffset; 
 }
 
-
-
-float particle( ParticleData curParticle ){
-	trackPosition();
-}
 
 //##FilterEnd##

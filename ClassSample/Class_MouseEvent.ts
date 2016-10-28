@@ -6,20 +6,15 @@
         private moveIndex: number = 0;
         private overIndex: number = 0;
         private cube: Mesh;
-        //private mouse3DManager: Mouse3DManager;
+        private cameraCtl: LookAtController;
         private view1: View3D;
         constructor() {
             super();
 
-
-            var img: HTMLImageElement = <HTMLImageElement>document.getElementById("mon");
-            var tex: ImageTexture = new ImageTexture(img);
-            var mat: TextureMaterial = new TextureMaterial(tex);
-            //var mat: ColorMaterial = new ColorMaterial(0xff0000);
             var geometery: SphereGeometry = new SphereGeometry();
-            this.cube = new Mesh(geometery, mat);
+            this.cube = new Mesh(geometery);
 
-
+            this.cube.pickType = PickType.PositionPick;
             this.cube.enablePick = true;
             this.cube.addEventListener(PickEvent3D.PICK_DOWN, this.onMouseDown, this);
             this.cube.addEventListener(PickEvent3D.PICK_UP, this.onMouseUp, this);
@@ -29,8 +24,16 @@
             this.view1 = new View3D(0, 0, window.innerWidth, window.innerHeight);
             this.view1.camera3D.lookAt(new Vector3D(0, 0, -1000), new Vector3D(0, 0, 0));
             this.view1.backColor = 0xff000000;
+
+            this.cameraCtl = new LookAtController(this.view1.camera3D, new Object3D());
+            this.cameraCtl.distance = 1000;
+            this.cameraCtl.rotationX = 60;
+
+
             this._egret3DCanvas.addView3D(this.view1);
             this.view1.addChild3D(this.cube);
+
+
 
             var bgImg: HTMLImageElement = <HTMLImageElement>document.getElementById("bg");
             var tex: ImageTexture = new ImageTexture(bgImg);
@@ -66,6 +69,8 @@
         }
 
         public update(e: Event3D) {
+            this.cameraCtl.update();
+
             //this.mouse3DManager.update(this.view1.entityCollect);
             //this.cube.rotationY = this.cube.rotationY + 0.5;
             //this.cube.rotationX = this.cube.rotationX + 0.5;

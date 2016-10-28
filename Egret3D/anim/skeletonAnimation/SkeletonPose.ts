@@ -24,6 +24,14 @@ module egret3d {
 
         /**
         * @language zh_CN
+        * 骨骼名字列表
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public boneNameArray: Array<string>;
+
+        /**
+        * @language zh_CN
         * 当前骨架的帧时间
         * @version Egret 3.0
         * @platform Web,Native
@@ -53,7 +61,7 @@ module egret3d {
         public clone(): SkeletonPose {
 
             var skeletonPose: SkeletonPose = new SkeletonPose();
-
+            skeletonPose.boneNameArray = this.boneNameArray;
             skeletonPose.frameTime = this.frameTime;
 
             for (var i: number = 0; i < this.joints.length; i++) {
@@ -80,7 +88,7 @@ module egret3d {
 
             if (this.joints.length < skeletonPoseA.joints.length) {
                 for (var i: number = this.joints.length; i <= skeletonPoseA.joints.length; ++i) {
-                    this.joints.push(new Joint(""));
+                    this.joints.push(new Joint());
                 }
             }
 
@@ -97,6 +105,8 @@ module egret3d {
                 joint.name = jointA.name;
 
                 joint.parent = jointA.parent;
+
+                joint.index = jointA.index;
 
                 joint.parentIndex = jointA.parentIndex;
 
@@ -194,8 +204,8 @@ module egret3d {
             for (var i: number = 0; i < skeleton.joints.length; ++i) {
 
                 for (var j: number = 0; j < this.joints.length; ++j) {
-
-                    if (skeleton.joints[i].name != this.joints[j].name)
+                    
+                    if (skeleton.joints[i].name != this.boneNameArray[j])
                         continue;
 
                     SkeletonPose._temp_jointMatrix.copyFrom(skeleton.joints[i].inverseMatrix);
@@ -232,12 +242,10 @@ module egret3d {
         * @platform Web,Native
         */
         public findJoint(name: string): Joint {
-
-            for (var i: number = 0; i < this.joints.length; i++) {
-                if (this.joints[i].name == name)
-                    return this.joints[i];
+            var index: number = this.findJointIndex(name);
+            if (index >= 0) {
+                return this.joints[index];
             }
-
             return null;
         }
 
@@ -254,8 +262,8 @@ module egret3d {
             if ("" == name)
                 return -1;
 
-            for (var i: number = 0; i < this.joints.length; i++) {
-                if (this.joints[i].name == name)
+            for (var i: number = 0; i < this.boneNameArray.length; i++) {
+                if (this.boneNameArray[i] == name)
                     return i;
             }
 

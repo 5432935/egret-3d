@@ -3,8 +3,14 @@
     /**
     * @class egret3d.AOMapMethod
     * @classdesc
-    * AO贴图渲染方法。
-    * 使用渲染好的AO贴图进行渲染，增加渲染表现效果。
+    * 继承自 MethodBase,为材质球附加特效的共有基类.
+    * AO贴图渲染方法,Ambient Occlusion texture 的简称.
+    * 使用第三方软件渲染好的3D模型AO贴图进行mapping,模拟自然环境遮挡效果.增强真实感.
+    * 推荐3Dmax Ambient Occlusion 渲染到贴图的功能,将模型的 AO 渲染成为一张贴图,赋给模型使用,前提需要保证模型第二UV要保证一致
+    * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
+    * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
+    * @includeExample material/method/AlphaMaskMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */

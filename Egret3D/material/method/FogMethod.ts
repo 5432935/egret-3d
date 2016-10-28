@@ -2,8 +2,15 @@
     /**
     * @class egret3d.FogMethod
     * @classdesc
+    * 继承自 MethodBase,为材质球附加特效的共有基类.
+    * 3D物体雾化模式,继续像素的顶点雾化模式 提供几种显示方式
+    * 如果要给场景添加雾化,务必需要将此方法赋予场景中的所有材质中
     * Exponential Height Fog渲染方法。
     * 实现3种fog类型： line、exp、exp height
+    * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
+    * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
+    * @includeExample material/method/AlphaMaskMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */

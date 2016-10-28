@@ -81,14 +81,20 @@
         /**
         * @language zh_CN
         * 创建一个包围
-        * @param owner 绑定的Object3D对象
+        * @param owner 绑定的Object3D对象 
         * @param min 最小点
         * @param max 最大点
         * @version Egret 3.0
         * @platform Web,Native
         */
-        constructor(owner:Object3D = null, min: Vector3D = new Vector3D(), max: Vector3D = new Vector3D()) {
+        constructor(owner:Object3D = null, min: Vector3D = null, max: Vector3D = null) {
             super(owner);
+            if (!min) {
+                min = new Vector3D();
+            }
+            if (!max) {
+                max = new Vector3D();
+            }
 
             this.min.copyFrom(min);
             this.max.copyFrom(max);
@@ -239,7 +245,8 @@
         * @platform Web,Native
         */
         public calculateBox() {
-            var sub: Vector3D = this.max.subtract(this.min);
+            
+            var sub: Vector3D = this.max.subtract(this.min, MathUtil.CALCULATION_VECTOR3D_0);
 
             this.vexData = this.vexData || new Float32Array(24);
             this.indexData = this.indexData || new Uint16Array(36);
@@ -324,12 +331,12 @@
             this.depth = this.max.z - this.min.z;
             this.volume = this.width * this.heigth * this.depth;
 
-            var c: Vector3D = this.max.subtract(this.min);
+            var c: Vector3D = this.max.subtract(this.min, MathUtil.CALCULATION_VECTOR3D_1);
             c.scaleBy(0.5);
 
             this.radius = c.length;
             this.center.copyFrom(this.min);
-            var tmp: Vector3D = this.center.add(c);
+            var tmp: Vector3D = this.center.add(c, MathUtil.CALCULATION_VECTOR3D_2);
             this.center.copyFrom(tmp);
 
             for (var i: number = 0; i < 8; ++i) {

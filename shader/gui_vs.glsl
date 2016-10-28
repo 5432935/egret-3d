@@ -59,7 +59,7 @@ void main(void){
 	gl_PointSize = uniform_materialSource[18];
 	varying_pos.zw = attribute_shapePosition.zw;
 	decodeBooleanArray(attribute_shapePosition.w);
-	if(booleanArray[FLAG_VALLID_QUAD] == false || booleanArray[FLAG_IS_VISIBLE] == false){
+	if(booleanArray[FLAG_VALLID_QUAD] == false || booleanArray[FLAG_IS_VISIBLE] == false || booleanArray[FLAG_HAS_TEXTURE] == false){
 		outPosition = vec4(0.0,0.0,0.0,1.0);
 		gl_Position = outPosition; 
 		return;

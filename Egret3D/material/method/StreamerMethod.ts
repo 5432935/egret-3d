@@ -5,6 +5,10 @@
     * @class egret3d.UVRollMethod
     * @classdesc
     * 用来实现UV流光滚动效果的渲染方法
+    * 在3D游戏中用来制作物体装备流光的特效显示，比如《奇迹》中的装备流光
+        * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
+    * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
     * @version Egret 3.0
     * @platform Web,Native
     */

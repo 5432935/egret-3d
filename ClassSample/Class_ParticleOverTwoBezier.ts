@@ -21,15 +21,16 @@
             this.cameraCrl = new LookAtController(this.view1.camera3D, new Object3D());
             this.cameraCrl.distance = 1000;
 
-            this.cube = new Mesh(new CubeGeometry(10, 40, 10), null);
+            this.cube = new Mesh(new CubeGeometry(10, 10, 10), null);
             this.view1.addChild3D(this.cube);
 
             var mat: TextureMaterial = new TextureMaterial();
             mat.bothside = true;
             mat.ambientColor = 0xffffff;
+            mat.blendMode = BlendMode.ADD;
 
             var data: ParticleData = new ParticleData();
-            data.geometry.planeW = data.geometry.planeH = 30;
+            data.geometry.planeW = data.geometry.planeH = 20;
 
             //var follow: ParticleDataFollowTarget = new ParticleDataFollowTarget();
             //data.followTarget = follow;
@@ -51,11 +52,11 @@
             property.colorConst2.setTo(255, 255, 255, 255);
             //property.gravity = 10;
 
-            property.renderMode = ParticleRenderModeType.StretchedBillboard;
+            property.renderMode = ParticleRenderModeType.Billboard;
 
             var speed: ParticleDataMoveSpeed = data.moveSpeed;
-            speed.max = 50;
-            speed.min = 50;
+            speed.max = 80;
+            speed.min = 80;
 
             var velocityOver: VelocityOverLifeTimeData = new VelocityOverLifeTimeData();
             speed.velocityOver = velocityOver;
@@ -65,13 +66,13 @@
             var xBezier: BezierData = new BezierData();
             xBezier.posPoints.push(new Point(0, 0));
             xBezier.posPoints.push(new Point(0.3, 60));
-            xBezier.posPoints.push(new Point(0.35, 60));
-            xBezier.posPoints.push(new Point(1.0, -40));
+            xBezier.posPoints.push(new Point(0.3, 60));
+            xBezier.posPoints.push(new Point(1.0, -100));
            
             xBezier.ctrlPoints.push(new Point(0, 20));
-            xBezier.ctrlPoints.push(new Point(0.35, 60));
-            xBezier.ctrlPoints.push(new Point(0.36, 60));
-            xBezier.ctrlPoints.push(new Point(1.0, -40));
+            xBezier.ctrlPoints.push(new Point(0.3, 60));
+            xBezier.ctrlPoints.push(new Point(0.3, 60));
+            xBezier.ctrlPoints.push(new Point(1.0, -100));
             speed.velocityOver.xBezier1 = xBezier;
 
             var yBezier: BezierData = new BezierData();
@@ -92,13 +93,13 @@
             var xBezier2: BezierData = new BezierData();
             xBezier2.posPoints.push(new Point(0, 0));
             xBezier2.posPoints.push(new Point(0.3, 15));
-            xBezier2.posPoints.push(new Point(0.35, 15));
-            xBezier2.posPoints.push(new Point(1.0, -10));
+            xBezier2.posPoints.push(new Point(0.3, 15));
+            xBezier2.posPoints.push(new Point(1.0, -40));
 
             xBezier2.ctrlPoints.push(new Point(0, 5));
-            xBezier2.ctrlPoints.push(new Point(0.35, 15));
-            xBezier2.ctrlPoints.push(new Point(0.36, 15));
-            xBezier2.ctrlPoints.push(new Point(1.0, -10));
+            xBezier2.ctrlPoints.push(new Point(0.3, 15));
+            xBezier2.ctrlPoints.push(new Point(0.3, 15));
+            xBezier2.ctrlPoints.push(new Point(1.0, -40));
             speed.velocityOver.xBezier2= xBezier2;
 
             var yBezier2: BezierData = new BezierData();
@@ -129,13 +130,11 @@
             colorOffset.data.colors.push(new Color(255.0, 0.0, 0.0, 128.0));
             colorOffset.data.colors.push(new Color(255.0, 0.0, 0.0, 0.0));
             colorOffset.data.times.push(0.0);
-            colorOffset.data.times.push(0.2);
-            colorOffset.data.times.push(0.4);
-            colorOffset.data.times.push(0.6);
-            colorOffset.data.times.push(0.7);
+            colorOffset.data.times.push(0.3);
+            colorOffset.data.times.push(0.5);
+            colorOffset.data.times.push(0.8);
+            colorOffset.data.times.push(0.9);
             colorOffset.data.times.push(1.0);
-
-            mat.blendMode = BlendMode.ALPHA;
 
             this.particle = new ParticleEmitter(data, mat);
 
@@ -155,7 +154,7 @@
             document.body.appendChild(vv);
             vv.onmousedown = (e: MouseEvent) => this.mouseDown(e);
 
-            var loadtex: URLLoader = new URLLoader("resource/effect/line_0010.png");
+            var loadtex: URLLoader = new URLLoader("resource/effect/ring_0013.png");
             loadtex.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadTexture, this);
             loadtex["mat"] = mat;
         }
@@ -174,12 +173,10 @@
             this.cube.x = Math.cos(this.angle * 0.4) * 200;
             this.cube.z = Math.sin(this.angle * 0.4) * 200;
 
-            //this.cube.rotationY = this.angle * 20;
             this.cube.rotationZ = this.angle * 10;
 
             var scale: number = Math.sin(this.angle * 0.4);
             scale = 2 * Math.abs(scale);
-            //this.cube.scale = new Vector3D(scale, scale, scale);
 
             this.cube.rotationX = 0;
             this.cube.rotationY = 90;

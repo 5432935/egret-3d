@@ -22,15 +22,15 @@
 
             this._egret3DCanvas.start();
             this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
-            TextureResourceManager.getInstance().loadTexture("resource/ui/fonts.json", "resource/ui/fonts.png", this.view1.getGUIStage());
-            TextureResourceManager.getInstance().loadTexture("resource/ui/CommonUIAtlas.json", "resource/ui/CommonUIAtlas.png", this.view1.getGUIStage());
-            TextureResourceManager.getInstance().addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadFonts, this);
+            this.view1.openGui(() => {
+                this.onLoadFonts(null);
+            });
         }
 
         private _quenLoad: QuenLoad = new QuenLoad();
         private _mapLoader: MapLoader;//= new MapLoader("Sponza", "MapConfig.xml", "resource/");
         protected onLoadFonts(e: LoaderEvent3D) {
-            egret3d.gui.BitmapFont.load(TextureResourceManager.getInstance().getTextureDic());
+            egret3d.gui.BitmapFont.load(textureResMgr.getTextureDic());
 
             this._quenLoad.addEventListener(QuenLoad.QUENLOAD_COMPLETE, this.complete, this);
             

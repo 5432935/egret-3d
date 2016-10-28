@@ -5,6 +5,7 @@
 //blendMode
 const float TrueOrFalse = 0.5;
 uniform float uniform_particleFsData[3];
+varying vec3 varying_particleData;
 void main() {
 	float blendMode = uniform_particleFsData[2];
 	outColor.xyz = diffuseColor.xyz * materialSource.diffuse * varying_color.xyz * globalColor.xyz; 

@@ -37,14 +37,12 @@
 
             Input.addEventListener(KeyEvent3D.KEY_DOWN, this.onKeyDown, this);
 
-            var gui: QuadStage = this.view1.getGUIStage();
-            TextureResourceManager.getInstance().loadTexture("resource/ui/fonts.json", "resource/ui/fonts.png", gui);
-            TextureResourceManager.getInstance().addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadFonts, this);
+            this.view1.openGui( this.onLoadFonts , this, false);
 
 
         }
-        protected onLoadFonts(e: LoaderEvent3D) {
-            egret3d.gui.BitmapFont.load(TextureResourceManager.getInstance().getTextureDic());
+        protected onLoadFonts() {
+            egret3d.gui.BitmapFont.load(textureResMgr.getTextureDic());
 
 
             this.textField = new gui.UITextField();

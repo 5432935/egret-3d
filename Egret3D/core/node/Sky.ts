@@ -35,7 +35,6 @@
         constructor(geometry: Geometry, material: MaterialBase, camera: Camera3D = null) {
             super(geometry, material);
             this.camera = camera;
-            material.cullMode = ContextConfig.FRONT;
             if (!this.bound) {
                 this.bound = this.buildBoundBox();
             }
@@ -53,7 +52,7 @@
         public update(time: number, delay: number, camera: Camera3D) {
             super.update(time, delay, camera);
             if (this.camera) {
-                this.position = this.camera.globalPosition;
+                this.globalPosition = this.camera.globalPosition;
             }
         }
     }

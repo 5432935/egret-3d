@@ -1,8 +1,8 @@
 ﻿module egret3d.gui {
          /**
-    * @private
     * @class egret3d.gui.UIRadioButtonGroup
     * @classdesc
+    * RadioButtonGroup 类将一组 RadioButton 组件定义为单个组件。 选中一个单选按钮后，不能再选中同一组中的其它单选按钮
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -16,6 +16,12 @@
             this._enable = true;
         }
 
+           /**
+        * @language zh_CN
+        * 组件是否可用
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set enable(value: boolean) {
             if (this._enable === value) return;
             this._enable = value;
@@ -29,12 +35,26 @@
             return this._enable;
         }
 
+         /**
+        * @language zh_CN
+          * 添加一个UIRadioButton到组件中
+        * @param item 要添加的UIRadioButton组件
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public addItem(item: UIRadioButton) {
             this._items.push(item);
             item.enable = this._enable;
             item.addEventListener(Event3D.CHANGE, this.onItemChange, this);
         }
 
+         /**
+        * @language zh_CN
+          * 移除一个UIRadioButton组件
+        * @param item 要移除的UIRadioButton组件
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public removeItem(item: UIRadioButton) {
             var index: number = this._items.indexOf(item);
             if (index !== -1) {

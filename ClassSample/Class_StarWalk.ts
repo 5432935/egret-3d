@@ -24,22 +24,19 @@
 
             this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
 
-            this.gui = this.view.getGUIStage();
-            TextureResourceManager.getInstance().loadTexture("resource/ui/fonts.json", "resource/ui/fonts.png", this.gui);
-            TextureResourceManager.getInstance().loadTexture("resource/ui/gui.json", "resource/ui/GUI.png", this.gui);
-            TextureResourceManager.getInstance().addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadFonts, this);
+            this.view.openGui(this.onLoadFonts, this);
         }
 
         private onLoadFonts() {
-            gui.BitmapFont.load(TextureResourceManager.getInstance().getTextureDic());
+            gui.BitmapFont.load(textureResMgr.getTextureDic());
             this.quenLoad.addEventListener(QuenLoad.QUENLOAD_COMPLETE, this.loadComplete, this);
             this.quenLoad.addLoaderQuen("resource/StarWalk/sky_nightime.png");
             this.quenLoad.addLoaderQuen("resource/StarWalk/effect.png");
             this.quenLoad.addLoaderQuen("resource/StarWalk/Stars.csv.json");
             this.quenLoad.addLoaderQuen("resource/StarWalk/Constellation.csv.json");
             var labelBtn: gui.UILabelButton = new gui.UILabelButton();
-            var upState: Texture = TextureResourceManager.getInstance().getTexture("normal.png");
-            var downState: Texture = TextureResourceManager.getInstance().getTexture("pressed.png");
+            var upState: Texture = textureResMgr.getTexture("normal.png");
+            var downState: Texture = textureResMgr.getTexture("pressed.png");
             labelBtn.setStyle("up", upState);
             labelBtn.setStyle("down", downState);
             labelBtn.label = "按钮";

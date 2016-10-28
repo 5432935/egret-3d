@@ -5,6 +5,7 @@ attribute vec2 attribute_uv0;
 
 
 vec3 e_position = vec3(0.0, 0.0, 0.0);
+vec3 e_normal = vec3(0.0, 0.0, 0.0);
 
 uniform mat4 uniform_ModelMatrix ;
 uniform mat4 uniform_ViewMatrix ;
@@ -15,6 +16,9 @@ varying vec2 varying_uv0;
 varying vec4 varying_color;
 
 vec4 outPosition ;
+//rotate the vertex,and it be used rotate normal;
+mat4 rotVertexMatrix;
+
 
 mat4 transpose(mat4 inMatrix) {
     vec4 i0 = inMatrix[0];
@@ -76,6 +80,7 @@ mat4 inverse(mat4 m) {
 
 void main(void){
 	e_position = attribute_position;
+	e_normal = attribute_normal;
 	varying_color = attribute_color;
 	varying_uv0 = attribute_uv0;
 }

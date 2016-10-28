@@ -467,6 +467,11 @@
             contextProxy.bindVertexBuffer(this._vertexBuffer3D);
             contextProxy.bindIndexBuffer(this._indexBuffer3D);
 
+            //if (this._viewPort) {
+            //    contextProxy.viewPort(this._viewPort.x, this._viewPort.y, this._viewPort.width, this._viewPort.height);
+            //    contextProxy.setScissorRectangle(this._viewPort.x, this._viewPort.y, this._viewPort.width, this._viewPort.height);
+            //}
+
             for (var i: number = 0; i < 8; i++) {
                 Context3DProxy.gl.disableVertexAttribArray(i);
             }
@@ -483,6 +488,21 @@
             }
 
             //texture 2D
+            //var sampler2D: GLSL.Sampler2D;
+            //for (var index in this._passUsage.sampler2DList) {
+            //    sampler2D = this._passUsage.sampler2DList[index];
+            //    if (!sampler2D.texture) {
+            //        continue;
+            //    }
+            //    sampler2D.texture.upload(contextProxy);
+            //    contextProxy.setTexture2DAt(sampler2D.activeTextureIndex, sampler2D.uniformIndex, sampler2D.index, sampler2D.texture.texture2D);
+            //    if (this._textureStage) {
+            //        sampler2D.texture.activeState(contextProxy);
+            //        this._textureStage = false;
+            //    }
+            //}
+
+            //texture 2D
             var sampler2D: GLSL.Sampler2D;
             for (var index in this._passUsage.sampler2DList) {
                 sampler2D = this._passUsage.sampler2DList[index];
@@ -491,10 +511,9 @@
                 }
                 sampler2D.texture.upload(contextProxy);
                 contextProxy.setTexture2DAt(sampler2D.activeTextureIndex, sampler2D.uniformIndex, sampler2D.index, sampler2D.texture.texture2D);
-                if (this._textureStage) {
-                    sampler2D.texture.activeState(contextProxy);
-                    this._textureStage = false;
-                }
+
+                sampler2D.texture.activeState(contextProxy);
+                this._textureStage = false;
             }
 
             if (this._passUsage.uniform_ViewProjectionMatrix) {

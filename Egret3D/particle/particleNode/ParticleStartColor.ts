@@ -50,7 +50,7 @@
             //##FilterBegin## ##Particle##
             this._animationState = <ParticleAnimationState>this.state;
 
-            var colorOffsetIndex: number = this._animationState.emitter.data.geometry.hasNormalData ? 6 : 3;
+            var colorOffsetIndex: number = 6;//position, normal
 
             var vertices: number = geometry.vertexCount / count;
             var index: number = 0;
@@ -63,7 +63,7 @@
 
             var progress: number = 0;
             var duration: number = this._animationState.emitter.data.life.duration;
-
+            var scaleValue: number = 1 / 0xff;
             for (var i: number = 0; i < count; ++i) {
                 particleIndex = i * vertices;
                 this.timeIndex = particleIndex * geometry.vertexAttLength + timeOffsetIndex;
@@ -73,11 +73,7 @@
                 progress = this.bornTime / duration;
                 progress = progress - Math.floor(progress);                         //取小数部分
                 this.lerpBirthColor(clr1, clr2, progress);
-
-                clr1.a /= 0xff;
-                clr1.r /= 0xff;
-                clr1.g /= 0xff;
-                clr1.b /= 0xff;
+                clr1.scaleBy(scaleValue);
 
                 for (var j: number = 0; j < vertices; ++j) {
                     index = i * vertices + j;

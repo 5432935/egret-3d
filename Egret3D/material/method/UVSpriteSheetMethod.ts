@@ -6,7 +6,10 @@
     * @classdesc
     * 用来实现UV精灵动画的渲染方法 。
     * 一整张贴图中用行列来分割帧动画，然后实现每帧播放。
-    * row * col 是总帧数， frameNum是只播放的帧数. 
+    * row * col 是总帧数， frameNum是只播放的帧数.
+    * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
+    * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
     * @version Egret 3.0
     * @platform Web,Native
     */

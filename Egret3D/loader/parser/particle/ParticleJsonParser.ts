@@ -17,13 +17,6 @@
         public version: string;
 
         private _particleData: ParticleData;
-        /**
-        * @language zh_CN
-        * constructor 
-        */
-        constructor() {
-
-        }
 
         /**
          * @language zh_CN
@@ -76,7 +69,6 @@
             //textureSheet
             var textureSheet: Object = json.textureSheet;
             this.parseTextureSheet(textureSheet);
-
         }
 
         /**
@@ -88,6 +80,9 @@
 
             property.particleCount = Number(node.particleCount);
             property.prewarm = node.prewarm;
+            if (node.playOnAwake != undefined) {
+                property.playOnAwake = node.playOnAwake;
+            }
             property.bounds = this.parseVector3D(node.bounds, property.bounds);
 
             //color

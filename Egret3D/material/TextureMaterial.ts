@@ -11,14 +11,15 @@
     * @platform Web,Native
     */
     export class TextureMaterial extends MaterialBase {
+
         /**
-         * @language zh_CN
-         * 创建一个新的 TextureMaterial 对象。
-         * @param texture 用来渲染的贴图，默认会给出一张棋盘格贴图
-         * @param materialData 材质数据信息，可以不指定
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 创建一个新的 TextureMaterial 对象。
+        * @param texture 用来渲染的贴图，默认会给出一张棋盘格贴图
+        * @param materialData 材质数据信息，可以不指定
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         constructor(texture: ITexture = null, materialData: MaterialData = null) {
             super(materialData);
 
@@ -32,7 +33,7 @@
         }
 
         protected initMatPass() {
-            this.addPass( PassType.diffusePass );
+            this.creatPass( PassType.diffusePass );
         }
 
         /**

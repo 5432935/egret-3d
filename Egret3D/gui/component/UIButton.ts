@@ -1,14 +1,15 @@
 ﻿module egret3d.gui {
          /**
-    * @private
     * @class egret3d.gui.UIButton
     * @classdesc
+    * 常用的矩形按钮组件.</p>
+    * 仅包含图片皮肤.如果要使用文本.请使用UILabelButton组件
     * @version Egret 3.0
     * @platform Web,Native
     */
     export class UIButton extends UIElement {
 
-        public _skin: Quad;
+        protected _skin: Quad;
         private _enable: boolean;
 
         protected _state: string;
@@ -16,6 +17,7 @@
 
         protected static STATE_DOWN: string = "down";
         protected static STATE_UP: string = "up";
+        protected static STATE_OVER:string = "over";
         protected static STATE_DISABLE: string = "disable";
 
         constructor() {
@@ -28,6 +30,22 @@
             this.addEventListener(MouseEvent3D.MOUSE_DOWN, this.mouseEventHandler, this);
             this.addEventListener(MouseEvent3D.MOUSE_OUT, this.mouseEventHandler, this);
             this.addEventListener(MouseEvent3D.MOUSE_OVER, this.mouseEventHandler, this);
+            this.drawBackground();
+        }
+
+        protected getDefaultStyleNameByStyleName(styleName: string): string {
+            var obj = {
+                "down": DefaultSkinName.DEFAULT_BUTTON_DOWN,
+                "up": DefaultSkinName.DEFAULT_BUTTON_UP,
+                "over": DefaultSkinName.DEFAULT_BUTTON_OVER,
+                "disable": DefaultSkinName.DEFAULT_BUTTON_DISABLE
+            };
+
+            var result: string = obj[styleName];
+            if (!result) {
+                console.log(" ERROR!!! UIButton can't find default style : ", styleName);
+            }
+            return result;
         }
 
         public set width(value: number) {
@@ -48,6 +66,14 @@
             return this._skin.height;
         }
 
+         /**
+        * @language zh_CN
+        * 设置皮肤
+        * @param style 皮肤名称, down up over disable
+        * @param value 皮肤贴图
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public setStyle(style: string, value: Texture): void {
             super.setStyle(style, value);
             this.onRender();
@@ -74,6 +100,8 @@
         protected mouseOver() {
             if (this._isDowning) {
                 this.setMouseState(UIButton.STATE_DOWN);
+            } else {
+                this.setMouseState(UIButton.STATE_OVER);
             }
         }
 
@@ -86,7 +114,7 @@
         }
 
         protected onStageEnd(event: MouseEvent3D): void {
-            console.log("stage up");
+//            console.log("stage up");
             this.stage.removeEventListener(MouseEvent3D.MOUSE_UP, this.onStageEnd, this);
             this.removeEventListener(MouseEvent3D.MOUSE_UP, this.mouseEventHandler,this);
             this.setMouseState(UIButton.STATE_UP);
@@ -99,7 +127,12 @@
             this.stage.removeEventListener(MouseEvent3D.MOUSE_UP, this.onStageEnd, this);
             this.removeEventListener(MouseEvent3D.MOUSE_UP, this.mouseEventHandler, this);
         }
-
+         /**
+        * @language zh_CN
+        * 是否可用.默认为true. 当设置为false时.将不相应鼠标输入事件
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get enable(): boolean {
             return this._enable;
         }

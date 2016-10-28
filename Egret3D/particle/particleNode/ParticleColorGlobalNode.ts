@@ -25,8 +25,8 @@
             this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
             this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_color_vs");
 
-            this.fragment_ShaderName[ShaderPhaseType.multi_end_fragment] = this.fragment_ShaderName[ShaderPhaseType.multi_end_fragment] || [];
-            this.fragment_ShaderName[ShaderPhaseType.multi_end_fragment].push("particle_color_fs");
+            this.fragment_ShaderName[ShaderPhaseType.end_fragment] = this.fragment_ShaderName[ShaderPhaseType.end_fragment] || [];
+            this.fragment_ShaderName[ShaderPhaseType.end_fragment].push("particle_color_fs");
             //##FilterEnd##
 
         }

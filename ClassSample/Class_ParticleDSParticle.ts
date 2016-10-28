@@ -5,19 +5,24 @@
         protected cameraCrl: LookAtController;
         private particle: ParticleEmitter;
         private count: number = 2000;
-        private cubeValueShape: CubeVector3DValueShape;
-        private sphereValueShape: BallValueShape;
 
+        private pyramidLoader: URLLoader;
+        private shapeLoader2: URLLoader;
+        private shapeLoader1: URLLoader;
+
+
+        private shape1Value: Mesh3DValueShape;
+        private shape2Value: Mesh3DValueShape;
+        private _modelCount: number = 0;
         constructor() {
             super();
             this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
 
-            var view1: View3D = new View3D(0, 0, 1024, 768);
-            this.view1 = view1;
+            this.view1 = new View3D(0, 0, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
 
-            view1.camera3D.lookAt(new Vector3D(0, 500, -500), new Vector3D(0, 0, 0));
-            view1.backColor = 0xff000000;
-            this._egret3DCanvas.addView3D(view1);
+            this.view1.camera3D.lookAt(new Vector3D(0, 500, -500), new Vector3D(0, 0, 0));
+            this.view1.backColor = 0xff000000;
+            this._egret3DCanvas.addView3D(this.view1);
 
             var bgImg: HTMLImageElement = <HTMLImageElement>document.getElementById("bg");
             var tex: ImageTexture = new ImageTexture(bgImg);
@@ -25,15 +30,34 @@
             this.cameraCrl = new LookAtController(this.view1.camera3D, new Object3D());
             this.cameraCrl.distance = 1000;
 
-            var loadGeom: URLLoader = new URLLoader("resource/effect/chahu/pyramid.esm");
-            loadGeom.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadMesh, this);
 
+            this.pyramidLoader = new URLLoader("resource/scene/particle/pyramid.esm");
+            this.pyramidLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadMesh, this);
 
+            this.shapeLoader1 = new URLLoader("resource/scene/particle/0_Object001.esm");
+            this.shapeLoader1.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadMesh, this);
+
+            this.shapeLoader2 = new URLLoader("resource/scene/particle/pyramid.esm");
+            this.shapeLoader2.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadMesh, this);
         }
+
         protected onLoadMesh(e: LoaderEvent3D) {
-            var geom: Geometry = e.loader.data;
-            //var geom: Geometry = new CubeGeometry(8, 6, 4);
-            this.initParticle(geom);
+            this._modelCount++;
+            if (this._modelCount == 3) {
+
+                this.shape1Value = new Mesh3DValueShape();
+                this.shape1Value.geometry = this.shapeLoader1.data;
+                this.shape1Value.type = ParticleMeshShapeType.Triangle;
+                this.shape1Value.scale = 2;
+
+                this.shape2Value = new Mesh3DValueShape();
+                this.shape2Value.geometry = this.shapeLoader2.data;
+                this.shape2Value.type = ParticleMeshShapeType.Triangle;
+                this.shape2Value.scale = 20;
+
+                //
+                this.initParticle(this.pyramidLoader.data);
+            }
         }
 
         private initParticle(geom: Geometry): void {
@@ -68,8 +92,6 @@
             property.stayAtEnd = true;
             property.trackPosition = true;
 
-            data.geometry.hasNormalData = true;
-
             property.meshFile = "xxx";
             property.geometry = geom;
 
@@ -103,8 +125,6 @@
 
 
 
-
-
             var vv: HTMLInputElement = <HTMLInputElement>document.createElement("input");
             vv.type = "submit";
             vv.value = "rest";
@@ -122,29 +142,18 @@
             var fromCoords: Vector3D[];
             var endCoords: Vector3D[];
 
-            if (this._initialize) {
-                this.cubeValueShape = new CubeVector3DValueShape();
-                this.cubeValueShape.depth = 20;
-                this.cubeValueShape.width = 200;
-                this.cubeValueShape.height = 400;
-
-                this.sphereValueShape = new BallValueShape();
-                this.sphereValueShape.fromShell = false;
-                this.sphereValueShape.r = 200;
-
-            }
 
             if (this._initialize) {
-                fromCoords = this.sphereValueShape.calculate(this.count);
-                endCoords = this.cubeValueShape.calculate(this.count);
+                fromCoords = this.shape1Value.calculate(this.count);
+                endCoords = this.shape2Value.calculate(this.count);
                 this._lastIsCube = true;
 
             } else {
                 fromCoords = this.particle.trackEndCoords;
                 if (this._lastIsCube) {
-                    endCoords = this.sphereValueShape.calculate(this.count);
+                    endCoords = this.shape1Value.calculate(this.count);
                 } else {
-                    endCoords = this.cubeValueShape.calculate(this.count);
+                    endCoords = this.shape2Value.calculate(this.count);
                 }
                 this._lastIsCube = !this._lastIsCube;
 
@@ -153,9 +162,15 @@
             //加入一些随机
             var radius: number = 700;
             for (var i: number = 0, count: number = endCoords.length; i < count; i++) {
-                if (Math.random() > 0.5) {
+                if (Math.random() > 0.7) {
                     endCoords[i].setTo((Math.random() * 2 - 1) * radius, (Math.random() * 2 - 1) * radius, (Math.random() * 2 - 1) * radius);
                 }
+
+                var y: number = endCoords[i].y;
+                var z: number = endCoords[i].z;
+                endCoords[i].z = y;
+                endCoords[i].y = z;
+
             }
 
             this.particle.trackPosition(fromCoords, endCoords);

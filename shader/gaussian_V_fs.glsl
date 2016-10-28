@@ -8,7 +8,7 @@ uniform sampler2D colorTexture;
 // const float delayPos[12] = [-3.0,-2.5,-2.0,-1.5,-1.0,-0.5,0.0,0.5,1.0,1.5,2.0,2.5,3.0];
 void main()
 {
-    vec2 uv = vec2(varying_uv0.x,1.0-varying_uv0.y); 
+    vec2 uv = vec2(varying_uv0.x,varying_uv0.y); 
 	 float d = 1.0/float(1024.0); 
 	 vec4 color = vec4(0.0,0.0,0.0,0.0); 
 	 color +=     texture2D(diffuseTexture,uv.xy+vec2(0.0,-8.0*d)) * 0.001;

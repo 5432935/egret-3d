@@ -116,7 +116,7 @@
 
             for (var i: number = 0; i < nBoneCount; ++i) {
 
-                var joint: Joint = new Joint(null);
+                var joint: Joint = new Joint();
 
                 bytes.readInt();
 
@@ -260,7 +260,7 @@
 
             for (var i: number = 0; i < nBoneCount; ++i) {
 
-                var joint: Joint = new Joint(null);
+                var joint: Joint = new Joint();
 
                 bytes.readInt();
 
@@ -406,7 +406,7 @@
 
             for (var i: number = 0; i < nBoneCount; ++i) {
 
-                var joint: Joint = new Joint(null);
+                var joint: Joint = new Joint();
 
                 bytes.readInt();
 

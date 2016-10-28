@@ -9,25 +9,33 @@
     * Object3D 渲染对象收集器基类
     */
     export class CollectBase {
-        
+
+        public rootScene: Scene3D;
+
         /**
+        * @private
         * @language zh_CN
         * 可渲染对象列表
         */
         public renderList: Array<IRender>;
 
-        /**
-        * @language zh_CN
-        * 拾取列表
-        */
-        public mousePickList: Array<IRender>;
-        public rootScene: Scene3D;
+        ///**
+        //* @private
+        //* @language zh_CN
+        //* 拾取列表
+        //*/
+        //public mousePickList: Array<IRender>;
+
+        ///**
+        //* @private
+        //* @language zh_CN
+        //* 拾取列表
+        //*/
+        //public castShadowList: Array<IRender>;
 
         protected _num: number = 0;
-
-     
-        private _tempRootNode: IRender;
-        private _objDict: { [id: number]: number; } = {};
+        protected _tempRootNode: IRender;
+        protected _objDict: { [id: number]: number; } = {};
 
         /**
         * @language zh_CN
@@ -36,7 +44,7 @@
         */
         constructor(){
             this.renderList = new Array<IRender>();
-            this.mousePickList = new Array<IRender>();
+            //this.mousePickList = new Array<IRender>();
         }
 
         public set root(rootScene: Scene3D) {
@@ -55,7 +63,7 @@
         public update(camera: Camera3D) {
             camera.modelMatrix;
             this.renderList.length = 0;
-            this.mousePickList.length = 0;
+            //this.mousePickList.length = 0;
         }
                         
         /**

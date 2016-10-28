@@ -30,6 +30,16 @@
         */
         particleAnimationController?: ParticleAnimation;
 
+
+        /**
+        * @language zh_CN
+        * 属性动画控制器对象。
+        * 只有属性动画对象才有此接口
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        propertyAnimController?: PropertyAnimController;
+
         /**
         * @language zh_CN
         * 总时间
@@ -79,6 +89,7 @@
         * 播放动画
         * @param animName 动画名称
         * @param speed 播放速度（默认为1）
+        * @param reset 是否从头播放
         * @param prewarm 是否预热
         * @version Egret 3.0
         * @platform Web,Native

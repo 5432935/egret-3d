@@ -6,7 +6,7 @@
 
         private _particle: ParticleEmitter;
         private _cube: Mesh;
-        private _particleLoader: EffectGroupLoader;
+        private _particleLoader: UnitLoader;
 
         public static view: View3D;
         constructor() {
@@ -19,7 +19,7 @@
             var scale: number = 100;
 
             view1.camera3D.lookAt(new Vector3D(0, -500, -500), new Vector3D(0, 0, 0));
-            view1.camera3D.far = 1000 * scale;
+            view1.camera3D.far = 10000 * scale;
 
             view1.backColor = 0xff707070;
             this._egret3DCanvas.addView3D(view1);
@@ -29,9 +29,8 @@
             this._cameraCrl.scaleSpeed(scale);
 
             //this._particleLoader = new EffectGroupLoader("resource/scene/waterwave/MapConfig.json");
-            this._particleLoader = new EffectGroupLoader("resource/scene/Test/MapConfig.json");
+            this._particleLoader = new UnitLoader("resource/scene/ocean/MapConfig.json");
             this._particleLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onParticleLoad, this);
-            this._view3D.addChild3D(this._particleLoader.container);
 
             view1.addChild3D(new AxisMesh(1000));
             Class_ParticleParser.view = this._view3D;
@@ -50,7 +49,9 @@
 
 
         private onParticleLoad(e: LoaderEvent3D): void {
-            this._particleLoader;
+            this._view3D.addChild3D(this._particleLoader.container);
+            var effect: EffectGroup = <EffectGroup>this._particleLoader.container;
+            effect.play();
         }
         
         private angle: number = 0;

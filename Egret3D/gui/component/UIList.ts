@@ -4,6 +4,7 @@
     * @private
     * @class egret3d.gui.UIList
     * @classdesc
+    * 基础的列表组件. 实现了滚动交互
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -63,7 +64,7 @@
             } 
         }
 
-        public updateView() {
+        protected updateView() {
             var sum: number = 0;
             for (var i: number = 0; i < this._items.length; i++) {
                 var child: DisplayObject = this._items[i];
@@ -74,44 +75,63 @@
             this._containerHeight = sum;
         }
 
+         /**
+        * @language zh_CN
+        * 组件内对象的间隔距离
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get gap(): number {
             return this._gap;
         }
 
+           /**
+        * @language zh_CN
+        * 组件内对象的间隔距离
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set gap(value: number) {
             this._gap = value;
             this.updateView();
         }
 
-        public get selectedIndex(): number {
-            return this._selectedIndex;
-        }
+//        public get selectedIndex(): number {
+//            return this._selectedIndex;
+//        }
+//
+//        public set selectedIndex(value: number) {
+//            this._selectedIndex = value;
+//        }
+//         
+//        public get selectedItem(): UIElement {
+//            return this._selectedItem;
+//        }
+//
+//        public set selectedItem(item: UIElement) {
+//            this._selectedItem = item;
+//        }
 
-        public set selectedIndex(value: number) {
-            this._selectedIndex = value;
-        }
-         
-        public get selectedItem(): UIElement {
-            return this._selectedItem;
-        }
-
-        public set selectedItem(item: UIElement) {
-            this._selectedItem = item;
-        }
-
-        /**
-         * 添加item元素. 默认添加到尾部
-         * @param item 
-         * @param index  
-         * @returns {} 
-         */
+         /**
+        * @language zh_CN
+        * 向组件里添加一项, 添加在组件尾部
+        * @param item 需要添加的项
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public addItem(item: DisplayObject) {
             this._items.push(item);
             this.addChildAt(item, this._container.childs.length);
             
             this.updateView();
         }
-
+         /**
+        * @language zh_CN
+        * 移除组件内部的一项
+        * @param item 需要移除的项
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public removeItem(item: DisplayObject) {
             this.removeChild(item);
             this._items.splice(this._items.indexOf(item), 1);

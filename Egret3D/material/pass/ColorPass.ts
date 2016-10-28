@@ -52,6 +52,7 @@
             this._fs_shader_methods[ShaderPhaseType.end_fragment] = this._fs_shader_methods[ShaderPhaseType.end_fragment] || [];
             this._fs_shader_methods[ShaderPhaseType.end_fragment].push("colorPassEnd_fs");
 
+
             this.phaseEnd(animation);
         }
     }

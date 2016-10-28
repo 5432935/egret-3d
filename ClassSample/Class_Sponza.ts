@@ -3,8 +3,6 @@
     export class Class_Sponza extends Class_View3D {
 
         public static RootPath: string = "resource/scene/sponza_Demo/";
-
-
         private view1: View3D;
         private cameraCtl: LookAtController;
         private node: Object3D;
@@ -319,12 +317,19 @@
             }
             for (var i: number = 0; i < this.animations.length; i++) {
 
-                this.nodeObjs[i].bindAnimation(this.animations[i]);
+                this.animations[i].name = "proAnim";
+                this.nodeObjs[i].proAnimation = new PropertyAnimController(this.nodeObjs[i]);
+
+                this.nodeObjs[i].proAnimation.propertyAnimController.addPropertyAnim(this.animations[i]);
+                this.animations[i].isLoop = false;
+
+                //this.nodeObjs[i].bindAnimation(this.animations[i]);
                 if (i == index) {
-                    this.nodeObjs[i].proAnimation.addEventListener(PropertyAnimEvent3D.EVENT_PLAY_COMPLETE, this.OnDataPlayFinished, this);
+                    //this.nodeObjs[i].proAnimation.addEventListener(PropertyAnimEvent3D.EVENT_PLAY_COMPLETE, this.OnDataPlayFinished, this);
+                    this.nodeObjs[i].proAnimation.propertyAnimController.addEventListener(PropertyAnimEvent3D.EVENT_PLAY_COMPLETE, this.OnDataPlayFinished, this);
                 }
-                this.nodeObjs[i].proAnimation.isLoop = false;
-                this.nodeObjs[i].proAnimation.play();
+                //this.nodeObjs[i].proAnimation.isLoop = false;
+                this.nodeObjs[i].proAnimation.play("proAnim");
             }
         }
 
@@ -332,7 +337,7 @@
 
             for (var i: number = 0; i < this.animations.length; i++) {
                 this.nodeObjs[i].proAnimation.stop;
-                this.nodeObjs[i].proAnimation.clearEventListener();
+                this.nodeObjs[i].proAnimation.propertyAnimController.clearEventListener();
             }
             this.OnDataLoadFinished();
         }
@@ -366,17 +371,21 @@
             this._mask.height = 256;
             this._mask.y += 256;
 
-            var gui: QuadStage = this.view1.getGUIStage();
 
-            var josnStr = Class_Sponza.RootPath + "Ui/ui.json";
-            var pngStr = Class_Sponza.RootPath + "Ui/ui.png";
 
-            TextureResourceManager.getInstance().loadTexture(josnStr, pngStr, gui);
-            TextureResourceManager.getInstance().addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoaded, this);
+            this.view1.openGui(() => {
+                var josnStr = Class_Sponza.RootPath + "Ui/ui.json";
+//                var pngStr = Class_Sponza.RootPath + "Ui/ui.png";
+                var queueLoader: QueueLoader = new QueueLoader(josnStr);
+                queueLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoaded, this);
+            }, this, false);
+            
+
+           
         }
-        private onLoaded(e: LoaderEvent3D) {
+        private onLoaded(event:LoaderEvent3D) {
 
-            var tex: Texture = TextureResourceManager.getInstance().getTexture("EgretLoadingPage.png");
+            var tex: Texture =textureResMgr.getTexture("EgretLoadingPage.png");
             this.panel = new gui.UIPanel();
             this.panel.setStyle("background", tex);
             this.panel.width = 2048;
@@ -385,7 +394,7 @@
             this.view1.addGUI(this.panel);
 
             this.guad = new Quad();
-            this.guad.texture = TextureResourceManager.getInstance().getTexture("EgretLogogray.png");
+            this.guad.texture =textureResMgr.getTexture("EgretLogogray.png");
             this.guad.width = 400;
             this.guad.height = 400;
             this.guad.position = this.SetCentre(this.guad.width, this.guad.height);
@@ -393,7 +402,7 @@
             this.view1.addGUI(this.guad);
 
             this.guad_0 = new Quad();
-            this.guad_0.texture = TextureResourceManager.getInstance().getTexture("EgretLogowhite.png");
+            this.guad_0.texture =textureResMgr.getTexture("EgretLogowhite.png");
             this.guad_0.width = 256;
             this.guad_0.height = 256;
             this.guad_0.position = this.SetCentre(this.guad_0.width, this.guad_0.height);

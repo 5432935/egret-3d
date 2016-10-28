@@ -1,21 +1,68 @@
 ﻿module egret3d {
+
     /**
-     * @class egret3d.View3D
-     * @classdesc
-     * VRView3D 会把场景渲染成两个视口。
-     * 两个视口是由不同的摄像机渲染出来的结果，也相当由左右眼。
-     * @see egret3d.Camera3D
-     * @see egret3d.Scene3D
-     * @see egret3d.Egret3DCanvas
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @private
+    */
+    export class EyesCamera {
+
+        public leftCamera: Camera3D;
+        public rightCamera: Camera3D;
+        public mainCamera: Camera3D;
+        public eyeCross: number = 70 ;
+
+
+        public eyeRay: Vector3D = new Vector3D();
+        public dir: Vector3D = new Vector3D();
+        constructor(camera: Camera3D, fov: number = 55, eyeCross: number = 70) {
+            this.mainCamera = camera; 
+            this.leftCamera = new Camera3D();
+            this.rightCamera = new Camera3D();
+        }
+
+        public update() {
+
+            this.mainCamera.globalOrientation.transformVector(Vector3D.X_AXIS, this.dir);
+            this.dir.normalize();
+
+            this.leftCamera.modelMatrix = this.mainCamera.modelMatrix;
+            this.rightCamera.modelMatrix = this.mainCamera.modelMatrix;
+
+            var space: number = this.eyeCross * 0.5;
+
+            this.leftCamera.x += -this.dir.x * space;
+            this.leftCamera.y += -this.dir.y * space;
+            this.leftCamera.z += -this.dir.z * space;
+
+            this.rightCamera.x += this.dir.x * space;
+            this.rightCamera.y += this.dir.y * space;
+            this.rightCamera.z += this.dir.z * space;
+        }
+
+    }
+
+    /**
+    * @class egret3d.View3D
+    * @classdesc
+    * VRView3D 会把场景渲染成两个视口。
+    * 两个视口是由不同的摄像机渲染出来的结果，也相当由左右眼。
+    * @see egret3d.Camera3D
+    * @see egret3d.Scene3D
+    * @see egret3d.Egret3DCanvas
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class VRView3D extends View3D {
 
+        public eyesCamera: EyesCamera;
 
-        protected leftViewPort: Rectangle;
-        protected rightViewPort: Rectangle;
-                
+        private _leftHUD: HUD;
+        private _rightHUD: HUD;
+
+        protected leftRender: MultiRender;
+        protected rightRender: MultiRender;
+
+        private _w: number = 0;
+        private _h: number = 0;
         /**
         * @language zh_CN
         * 构建一个view3d对象
@@ -27,72 +74,40 @@
         * @platform Web,Native
         */
         constructor(x: number, y: number, width: number, height: number) {
-            super(x, y, width, height, new Camera3D(CameraType.VR));
-            this.leftViewPort = new Rectangle();
-            this.rightViewPort = new Rectangle();
-            this.updateViewport();
+            super(x, y, width, height, new Camera3D(CameraType.perspective));
+
+            this._w = width; 
+            this._h = height; 
+            this.init();
         }
 
-        protected updateViewport() {
-            this.leftViewPort.x = this._viewPort.x;
-            this.leftViewPort.y = this._viewPort.y;
-            this.leftViewPort.width = this._viewPort.width / 2;
-            this.leftViewPort.height = this._viewPort.height;
+        private init() {
+            this.eyesCamera = new EyesCamera( this.camera3D );
 
-            this.rightViewPort.x = this._viewPort.x + this.leftViewPort.width;
-            this.rightViewPort.y = this._viewPort.y;
-            this.rightViewPort.width = this.leftViewPort.width;
-            this.rightViewPort.height = this.leftViewPort.height;
-        }
+            //this.leftRender = new MultiRender(PassType.diffusePass);
+            //this.rightRender = new MultiRender(PassType.diffusePass);
 
-        /**
-        * @language zh_CN
-        * 设置当前视口的屏幕x坐标
-        * @param x 视口的屏幕x坐标
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set x(value: number) {
-            this._viewPort.x = value;
-            this.updateViewport();
-        }
-                
-        /**
-        * @language zh_CN
-        * 设置当前视口的屏幕y坐标
-        * @param y 视口的屏幕y坐标
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set y(value: number) {
-            this._viewPort.y = value;
-            this.updateViewport();
-        }
-                
-        /**
-        * @language zh_CN
-        * 设置视口的屏幕宽度
-        * @param width 视口的屏幕宽度
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set width(value: number) {
-            this._viewPort.width = value;
-            this._camera.aspectRatio = this._viewPort.width / this._viewPort.height;
-            this.updateViewport();
-        }
-    
-        /**
-        * @language zh_CN
-        * 设置视口的屏幕高度
-        * @param width 视口的屏幕高度
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set height(value: number) {
-            this._viewPort.height = value;
-            this._camera.aspectRatio = this._viewPort.width / this._viewPort.height;
-            this.updateViewport();
+            //this.leftRender.setRenderToTexture(512, 512);
+            //this.rightRender.setRenderToTexture(512, 512);
+
+            //this.leftRender.name = "VR_left";
+            //this.rightRender.name = "VR_right";
+
+            //this.leftRender.camera = this.eyesCamera.leftCamera;
+            //this.rightRender.camera = this.eyesCamera.rightCamera;
+
+            //this._renderQuen.mainRender.enabled = false;
+            //this._renderQuen.addRender(this.leftRender);
+            //this._renderQuen.addRender(this.rightRender);
+
+            //this._leftHUD = new HUD();
+            //this._rightHUD = new HUD();
+
+            //this._leftHUD.vsShader = "hud_vs";
+            //this._leftHUD.fsShader = "hud_H_fs";
+
+            //this._rightHUD.vsShader = "hud_vs";
+            //this._rightHUD.fsShader = "hud_H_fs";
         }
 
         /**
@@ -102,65 +117,45 @@
         * @platform Web,Native
         */
         public update(time: number, delay: number) {
-            this._entityCollect.update(this._camera);
-          //  this._render.update(time, delay, this._entityCollect, this._camera);
+            this.eyesCamera.update( );
 
-            //------------------
-            this._numberEntity = this._entityCollect.renderList.length;
-            for (this._index = 0; this._index < this._numberEntity; this._index++) {
-                this._entityCollect.renderList[this._index].update(time, delay, this._camera);
-            }
-            //------------------
+            this.viewPort.width = this._w * 0.5;
+            this.viewPort.height = this._h ;
+            this.viewPort.x = this._w * 0.5 - this.viewPort.width - 10 ;
+            this.viewPort.y = this._h * 0.5 - this.viewPort.height * 0.5 ;
+            this.camera3D = this.eyesCamera.leftCamera; 
+            super.update(time, delay);
 
-            var viewPort: Rectangle = this.leftViewPort;
-            this._camera.viewPort = viewPort;
+            this.viewPort.width = this._w * 0.5;
+            this.viewPort.height = this._h;
+            this.viewPort.x = this._w * 0.5 + 10;
+            this.viewPort.y = this._h * 0.5 - this.viewPort.height * 0.5;
+            this.camera3D = this.eyesCamera.rightCamera; 
+            super.update(time, delay);
 
-            this._camera.tap(CameraType.VR, VRType.left);
+            //this._leftHUD.width = this.width * 0.5;
+            //this._leftHUD.height = this.height;
+            //this._leftHUD.x = this.width * 0.5 - this._leftHUD.width - 10;//- this.eyesCamera.eyeCross * 0.5;
+            //this._leftHUD.y = this.height * 0.5 - this._leftHUD.height * 0.5;
 
-            Egret3DCanvas.context3DProxy.viewPort(viewPort.x, viewPort.y, viewPort.width, viewPort.height);
-            Egret3DCanvas.context3DProxy.setScissorRectangle(viewPort.x, viewPort.y, viewPort.width, viewPort.height);
+            //this._rightHUD.width = this.width * 0.5;
+            //this._rightHUD.height = this.height;
+            //this._rightHUD.x = this.width * 0.5 + 10;//this.eyesCamera.eyeCross * 0.5;
+            //this._rightHUD.y = this.height * 0.5 - this._rightHUD.height * 0.5;
 
-            if (this._cleanParmerts & Context3DProxy.gl.COLOR_BUFFER_BIT) {
-                Egret3DCanvas.context3DProxy.clearColor(this._backColor.x, this._backColor.y, this._backColor.z, this._backColor.w);
-            }
-            Egret3DCanvas.context3DProxy.clear(this._cleanParmerts);
-            this._render.draw(time, delay, Egret3DCanvas.context3DProxy, this._entityCollect, this._camera);
+            //Egret3DCanvas.context3DProxy.viewPort(this._leftHUD.x, this._leftHUD.y, this._leftHUD.width, this._leftHUD.height);
+            //Egret3DCanvas.context3DProxy.setScissorRectangle(this._leftHUD.x, this._leftHUD.y, this._leftHUD.width, this._leftHUD.height);
 
+            //this._leftHUD.diffuseTexture = this.leftRender.renderTexture;
+            //this._rightHUD.diffuseTexture = this.rightRender.renderTexture;
 
-            viewPort = this.rightViewPort;
-            this._camera.viewPort = viewPort;
-            this._camera.tap(CameraType.VR, VRType.right);
+            //Egret3DCanvas.context3DProxy.viewPort(this._leftHUD.x, this._leftHUD.y, this._leftHUD.width, this._leftHUD.height);
+            //Egret3DCanvas.context3DProxy.setScissorRectangle(this._leftHUD.x, this._leftHUD.y, this._leftHUD.width, this._leftHUD.height);
+            //this._leftHUD.draw(Egret3DCanvas.context3DProxy, this.camera3D);
 
-            Egret3DCanvas.context3DProxy.viewPort(viewPort.x, viewPort.y, viewPort.width, viewPort.height);
-            Egret3DCanvas.context3DProxy.setScissorRectangle(viewPort.x, viewPort.y, viewPort.width, viewPort.height);
-
-            if (this._cleanParmerts & Context3DProxy.gl.COLOR_BUFFER_BIT) {
-                Egret3DCanvas.context3DProxy.clearColor(this._backColor.x, this._backColor.y, this._backColor.z, this._backColor.w);
-            }
-            Egret3DCanvas.context3DProxy.clear(this._cleanParmerts);
-            this._render.draw(time, delay, Egret3DCanvas.context3DProxy, this._entityCollect, this._camera);
-        }
-                
-        /**
-        * @language zh_CN
-        * 获取两只眼睛之间的距离
-        * @returns number 眼睛之间的距离
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get eyeDistance(): number {
-            return this._camera.eyeMatrix.eyeSpace;
-        }
-                
-        /**
-        * @language zh_CN
-        * 设置两只眼睛之间的距离
-        * @param eyeDis  两只眼睛之间的距离
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set eyeDistance(eyeDis: number) {
-            this._camera.eyeMatrix.eyeSpace = eyeDis;
+            //Egret3DCanvas.context3DProxy.viewPort(this._rightHUD.x, this._rightHUD.y, this._rightHUD.width, this._rightHUD.height);
+            //Egret3DCanvas.context3DProxy.setScissorRectangle(this._rightHUD.x, this._rightHUD.y, this._rightHUD.width, this._rightHUD.height);
+            //this._rightHUD.draw(Egret3DCanvas.context3DProxy, this.camera3D);
         }
     }
 } 

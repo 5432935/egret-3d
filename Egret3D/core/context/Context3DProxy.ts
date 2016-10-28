@@ -121,7 +121,8 @@
             DrawMode.LINES = Context3DProxy.gl.LINES;
             DrawMode.LINE_STRIP = Context3DProxy.gl.LINE_STRIP;
 
-            ContextConfig.FLOAT = Context3DProxy.gl.FLOAT
+            ContextConfig.FLOAT = Context3DProxy.gl.FLOAT;
+            ContextConfig.UNSIGNED_BYTE = Context3DProxy.gl.UNSIGNED_BYTE;
             ContextConfig.VERTEX_SHADER = Context3DProxy.gl.VERTEX_SHADER;
             ContextConfig.FRAGMENT_SHADER = Context3DProxy.gl.FRAGMENT_SHADER;
 
@@ -146,6 +147,7 @@
             ContextConfig.ColorFormat_RGBA5551 = Context3DProxy.gl.RGB5_A1;
             ContextConfig.ColorFormat_RGBA4444 = Context3DProxy.gl.RGBA4;
             ContextConfig.ColorFormat_RGBA8888 = Context3DProxy.gl.RGBA;
+            ContextConfig.ColorFormat_RGB888 = Context3DProxy.gl.RGB;
 
             ContextConfig.DEPTH_TEST = Context3DProxy.gl.DEPTH_TEST;
             ContextConfig.CULL_FACE = Context3DProxy.gl.CULL_FACE;
@@ -428,7 +430,7 @@
             var rttframeBuffer = Context3DProxy.gl.createFramebuffer();
             var texture2D: ContextTexture2D = new ContextTexture2D();
             var depthRenderbuffer = Context3DProxy.gl.createRenderbuffer();
-            texture2D.textureBuffer = texture2D.textureBuffer || Context3DProxy.gl.createTexture(); 
+            texture2D.textureBuffer = texture2D.textureBuffer || Context3DProxy.gl.createTexture();
 
             Context3DProxy.gl.bindTexture(Context3DProxy.gl.TEXTURE_2D, texture2D.textureBuffer);
 
@@ -494,7 +496,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public setRenderToTexture(texture: ContextTexture2D, enableDepthAndStencil: Boolean = false, surfaceSelector: number = 0) {
+        public setRenderToTexture(texture: ContextTexture2D, clean: boolean = false, enableDepthAndStencil: Boolean = false, surfaceSelector: number = 0) {
             if (enableDepthAndStencil) {
                 //Context3DProxy.gl.bindRenderbuffer(Context3DProxy.gl.RENDERBUFFER, texture.renderbuffer);
                 //Context3DProxy.gl.renderbufferStorage(Context3DProxy.gl.RENDERBUFFER, Context3DProxy.gl.DEPTH_COMPONENT16, texture.width, texture.height);
@@ -505,9 +507,10 @@
 
             Context3DProxy.gl.bindFramebuffer(Context3DProxy.gl.FRAMEBUFFER, texture.frameBuffer);
 
-            Context3DProxy.gl.clearColor(0, 0, 0, 0);
-            Context3DProxy.gl.clear(Context3DProxy.gl.COLOR_BUFFER_BIT | Context3DProxy.gl.DEPTH_BUFFER_BIT);
-
+            if (clean) {
+                Context3DProxy.gl.clearColor(0, 0, 0, 0);
+                Context3DProxy.gl.clear(Context3DProxy.gl.COLOR_BUFFER_BIT | Context3DProxy.gl.DEPTH_BUFFER_BIT);
+            }
             Context3DProxy.gl.framebufferTexture2D(Context3DProxy.gl.FRAMEBUFFER, Context3DProxy.gl.COLOR_ATTACHMENT0, Context3DProxy.gl.TEXTURE_2D, texture.textureBuffer, 0);
             Context3DProxy.gl.framebufferRenderbuffer(Context3DProxy.gl.FRAMEBUFFER, Context3DProxy.gl.DEPTH_ATTACHMENT, Context3DProxy.gl.RENDERBUFFER, texture.renderbuffer);
 
@@ -523,7 +526,7 @@
             Context3DProxy.gl.bindTexture(Context3DProxy.gl.TEXTURE_2D, null);
             Context3DProxy.gl.bindFramebuffer(Context3DProxy.gl.FRAMEBUFFER, null);
             Context3DProxy.gl.bindRenderbuffer(Context3DProxy.gl.RENDERBUFFER, null);
-            
+
         }
 
         /**

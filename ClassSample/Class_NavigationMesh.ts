@@ -160,7 +160,7 @@
             console.log("寻路耗时：", new Date().getTime() - time);
 
             if (this._pathWireFrame) {
-                this.view1.scene.removeChild3D(this._pathWireFrame);
+                this.view1.scene.removeChild(this._pathWireFrame);
                 this._pathWireFrame.dispose();
                 this._pathWireFrame = null;
             }

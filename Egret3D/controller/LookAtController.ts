@@ -95,7 +95,7 @@
                 this.lookAtPosition = new Vector3D();
 
             this._eyesPos.copyFrom(targetObject.position);
-            this._lookAtPosition.copyFrom(lookAtObject.position.add(this.lookAtOffset));
+            this._lookAtPosition.copyFrom(lookAtObject.position.add(this.lookAtOffset, MathUtil.CALCULATION_VECTOR3D));
 
             this._target.lookAt(this._eyesPos, this._lookAtPosition);
 
@@ -287,7 +287,7 @@
             if (this._lookAtObject)
                 this._lookAtObject = null;
 
-            this._lookAtPosition.copyFrom(val.add(this.lookAtOffset));
+            this._lookAtPosition.copyFrom(val.add(this.lookAtOffset, MathUtil.CALCULATION_VECTOR3D));
             
             this.notifyUpdate();
         }
@@ -319,7 +319,7 @@
                 return;
 
             this._lookAtObject = val;
-            this._lookAtPosition.copyFrom(this._lookAtObject.position.add(this.lookAtOffset));
+            this._lookAtPosition.copyFrom(this._lookAtObject.position.add(this.lookAtOffset, MathUtil.CALCULATION_VECTOR3D));
 
             this.notifyUpdate();
         }
@@ -433,7 +433,7 @@
                 }
 
                 this._quaRot.fromEulerAngles(this._rotaAngle.x, this._rotaAngle.y, 0);
-                this._rotaEyesLine.copyFrom(this._quaRot.transformVector(Vector3D.Z_AXIS));
+                this._rotaEyesLine.copyFrom(this._quaRot.transformVector(Vector3D.Z_AXIS, MathUtil.CALCULATION_VECTOR3D));
                 this._rotaEyesLine.normalize();
 
                 if (this._keyArray[0]) {
@@ -441,7 +441,7 @@
                     this._tempVec.y = 0;
                     this._tempVec.normalize();
                     this._tempVec.scaleBy(this._speed);
-                    this._tempVec.copyFrom(this._lookAtObject.position.add(this._tempVec));
+                    this._tempVec.copyFrom(this._lookAtObject.position.add(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
 
                 }
@@ -450,11 +450,11 @@
                     this._tempVec.copyFrom(this._rotaEyesLine);
                     this._matTemp.identity();
                     this._matTemp.appendRotation(90, Vector3D.Y_AXIS);
-                    this._tempVec.copyFrom(this._matTemp.transformVector(this._tempVec));
+                    this._tempVec.copyFrom(this._matTemp.transformVector(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._tempVec.y = 0;
                     this._tempVec.normalize();
                     this._tempVec.scaleBy(this._speed);
-                    this._tempVec.copyFrom(this._lookAtObject.position.subtract(this._tempVec));
+                    this._tempVec.copyFrom(this._lookAtObject.position.subtract(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
                 }
 
@@ -464,7 +464,7 @@
                     this._tempVec.normalize();
 
                     this._tempVec.scaleBy(this._speed);
-                    this._tempVec.copyFrom(this._lookAtObject.position.subtract(this._tempVec));
+                    this._tempVec.copyFrom(this._lookAtObject.position.subtract(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
                 }
 
@@ -472,12 +472,12 @@
                     this._tempVec.copyFrom(this._rotaEyesLine);
                     this._matTemp.identity();
                     this._matTemp.appendRotation(90, Vector3D.Y_AXIS);
-                    this._tempVec.copyFrom(this._matTemp.transformVector(this._tempVec));
+                    this._tempVec.copyFrom(this._matTemp.transformVector(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._tempVec.y = 0;
                     this._tempVec.normalize();
 
                     this._tempVec.scaleBy(this._speed);
-                    this._tempVec.copyFrom(this._lookAtObject.position.add(this._tempVec));
+                    this._tempVec.copyFrom(this._lookAtObject.position.add(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
                 }
 
@@ -485,10 +485,10 @@
                 if (this._keyArray[4]) {
 
                     this._quaRot.fromEulerAngles(this._rotaAngle.x, this._rotaAngle.y, 0);
-                    this._tempVec.copyFrom(this._quaRot.transformVector(Vector3D.Y_AXIS));
+                    this._tempVec.copyFrom(this._quaRot.transformVector(Vector3D.Y_AXIS, MathUtil.CALCULATION_VECTOR3D));
                     this._tempVec.normalize();
                     this._tempVec.scaleBy(this._speed);
-                    this._tempVec.copyFrom(this._lookAtObject.position.add(this._tempVec));
+                    this._tempVec.copyFrom(this._lookAtObject.position.add(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
                 }
 
@@ -496,10 +496,10 @@
                 if (this._keyArray[5]) {
 
                     this._quaRot.fromEulerAngles(this._rotaAngle.x, this._rotaAngle.y, 0);
-                    this._tempVec.copyFrom(this._quaRot.transformVector(Vector3D.Y_AXIS));
+                    this._tempVec.copyFrom(this._quaRot.transformVector(Vector3D.Y_AXIS, MathUtil.CALCULATION_VECTOR3D));
                     this._tempVec.normalize();
                     this._tempVec.scaleBy(this._speed);
-                    this._tempVec.copyFrom(this._lookAtObject.position.subtract(this._tempVec));
+                    this._tempVec.copyFrom(this._lookAtObject.position.subtract(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
                 }
 
@@ -507,15 +507,15 @@
 
                 this._tempVec.copyFrom(this._rotaEyesLine);
                 this._tempVec.scaleBy(this._eyesLength);
-                this._eyesPos.copyFrom(this._lookAtPosition.subtract(this._tempVec));
+                this._eyesPos.copyFrom(this._lookAtPosition.subtract(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
 
                 if (this._lookAtObject) {
-                    this._lookAtPosition.copyFrom(this._lookAtObject.position.add(this.lookAtOffset));
+                    this._lookAtPosition.copyFrom(this._lookAtObject.position.add(this.lookAtOffset, MathUtil.CALCULATION_VECTOR3D));
                 }
 
                 this._quaRot.fromEulerAngles(this._rotaAngle.x, this._rotaAngle.y, this._rotaAngle.z);
                 this._tempVec.copyFrom(this._up);
-                this._tempVec.copyFrom(this._quaRot.transformVector(this._tempVec));
+                this._tempVec.copyFrom(this._quaRot.transformVector(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                 this._tempVec.normalize();
 
                 if (this.firstCamera) {

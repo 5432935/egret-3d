@@ -118,6 +118,15 @@
             }
         }
 
+        public static countStart() {
+            if (Egret3DEngine.instance.debug)
+                this.help = new Date().getTime();
+        }
+
+        public static countEnd(console: string) {
+            Egret3DState.showDataInfo( console+":" + (new Date().getTime() - Egret3DState.help) + " ms");
+        }
+
         private static array: Array<String> = [];
 
         public static show() {

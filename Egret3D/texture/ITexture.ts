@@ -259,5 +259,36 @@
             }
             this.texture3D = null;
         }
+
+        /**
+        * @language zh_CN
+        * 
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public readPixels(x: number, y: number, width: number, height: number, format: number = ContextConfig.ColorFormat_RGBA8888, type: number = ContextConfig.UNSIGNED_BYTE, pixels: ArrayBufferView = null): any{
+            if (!pixels) {
+                switch (type) {
+                    case ContextConfig.UNSIGNED_BYTE:
+                        if (format == ContextConfig.ColorFormat_RGBA8888) {
+                            pixels = new Uint8Array(width * height * 4);
+                        }
+                        else if (format == ContextConfig.ColorFormat_RGB888) {
+                            pixels = new Uint8Array(width * height * 3);
+                        }
+                        break;
+                    case ContextConfig.FLOAT:
+                        if (format == ContextConfig.ColorFormat_RGBA8888) {
+                            pixels = new Float32Array(width * height * 4);
+                        }
+                        else if (format == ContextConfig.ColorFormat_RGB888) {
+                            pixels = new Float32Array(width * height * 3);
+                        }
+                        break;
+                }
+            }
+
+            return pixels;
+        }
     }
 }

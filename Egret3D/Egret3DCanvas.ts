@@ -39,7 +39,8 @@
         protected _timeDate: Date = null;
         protected _envetManager: EventManager;
 
-
+        protected static _canvas2D: HTMLCanvasElement;
+        protected static _ctx2D: CanvasRenderingContext2D;
         /**
         * @language zh_CN
         * Egret3DCanvas X 偏移
@@ -63,7 +64,8 @@
         * @platform Web,Native
         */
         public afterRender: Function;
-                            
+
+        protected _start: boolean = false;
         /**
         * @language zh_CN
         * 构造一个Egret3DCanvas对象
@@ -104,6 +106,8 @@
                 //alert("you drivers not suport WEBGL_draw_buffers");
             }
 
+            this.create2dContext();
+
             if (!Context3DProxy.gl)
                 alert("you drivers not suport webgl");
 
@@ -117,8 +121,37 @@
         private initEvent() {
             this._enterFrameEvent3D = new Event3D(Event3D.ENTER_FRAME);
             this._enterFrameEvent3D.target = this;
+
+           
         }
-                                    
+
+
+        private create2dContext(): void {
+            Egret3DCanvas._canvas2D = document.createElement("canvas");
+            Egret3DCanvas._canvas2D.hidden = true;
+            Egret3DCanvas._ctx2D = Egret3DCanvas._canvas2D.getContext("2d");
+        }
+
+         /**
+        * @language zh_CN
+        * 获得一张图片的像素值
+        * @param imageElement图片数据
+        * @param offsetX x方向偏移
+        * @param offsetY y方向偏移
+        * @param width 获取像素宽度
+        * @param height 获取像素高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static draw2DImage(imageElement:HTMLImageElement, offsetX:number = 0, offsetY:number = 0, width:number = 1, height:number = 1): ImageData {
+            document.body.appendChild(this._canvas2D);
+            this._canvas2D.width = imageElement.width;
+            this._canvas2D.height = imageElement.height;
+            this._ctx2D.drawImage(imageElement, offsetX, offsetX, width, height);
+            var imageData:ImageData = this._ctx2D.getImageData(0, 0, width, height);
+            document.body.removeChild(this._canvas2D);
+            return imageData;
+        }
         /**
         * @language zh_CN
         * 设置 Egret3DCanvas 的x坐标
@@ -255,6 +288,7 @@
         * @platform Web,Native
         */
         public start() {
+            this._start = true;
             this.update(0);
 
             Egret3DCanvas.context3DProxy.enableBlend();
@@ -270,6 +304,16 @@
             Context3DProxy.gl.enableVertexAttribArray(6);
         }
 
+        /**
+        * @language zh_CN
+        * Egret3DCanvas 停止启动
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public stop() {
+            this._start = false;
+        }
+
         
         /**
         * @language zh_CN
@@ -278,7 +322,9 @@
         * @platform Web,Native
         */
         public update(delay: number) {
-
+            if (!this._start) {
+                return;
+            }
             this._timeDate = new Date();
             this._delay = this._timeDate.getTime() - this._time;
             this._time = this._timeDate.getTime();

@@ -131,7 +131,7 @@
             data.validate();
             this.particle = new ParticleEmitter(data, mat);
 
-            this.view1.addChild3D(new AxisMesh(200));
+            //this.view1.addChild3D(new AxisMesh(200));
 
             this.particle.play();
             this.view1.addChild3D(this.particle);

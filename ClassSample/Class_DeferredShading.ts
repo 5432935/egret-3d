@@ -18,7 +18,7 @@
             view1.backColor = 0xffffffff;
             //(<MultiRender>view1.render).pass = PassType.depthPass_8 ;
 
-            view1.post = [new DeferredShadingProcessing()];//, new AmbientOcclusion()];//, 
+            //view1.post = [new DeferredShadingProcessing()];//, new AmbientOcclusion()];//, 
 
             var bgImg: HTMLImageElement = <HTMLImageElement>document.getElementById("bg");
             var tex: ImageTexture = new ImageTexture(bgImg);

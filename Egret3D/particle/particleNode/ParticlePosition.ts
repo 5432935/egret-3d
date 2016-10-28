@@ -31,7 +31,7 @@
             //##FilterEnd##
         }
 
-      
+
 
 
         /**
@@ -45,16 +45,10 @@
             //##FilterBegin## ##Particle##
             //根据粒子的属性，选择使用相机方式
             var renderMode: number = (<ParticleDataProperty>arg).renderMode;
-            var renderMode_vs: string;
-            if (renderMode == ParticleRenderModeType.Billboard) {
-                renderMode_vs = "particle_rm_billboard";
-            } else if (renderMode == ParticleRenderModeType.StretchedBillboard) {
-                renderMode_vs = "particle_rm_stretched";
-            }else {
-                renderMode_vs = "particle_rm_mesh";
+            if (renderMode == ParticleRenderModeType.StretchedBillboard) {
+                this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
+                this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_stretched_mode");
             }
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex].push(renderMode_vs);
 
             //初始化顶点数据
             var node: ParticleDataShape = this._node = <ParticleDataShape>data;
@@ -130,7 +124,7 @@
         public build(geometry: Geometry, count: number) {
             //##FilterBegin## ##Particle##
             this._animationState = <ParticleAnimationState>this.state;
-            var positionArray:Vector3D = this._positions.calculate(count);
+            var positionArray: Vector3D = this._positions.calculate(count);
             var directionArray: Vector3D[] = this._animationState.directionArray = [];
             var meshNormalArray: Vector3D[];
             if (this._node.type == ParticleDataShapeType.Mesh) {

@@ -27,7 +27,7 @@
         */
         public static texture: CheckerboardTexture = new CheckerboardTexture();
 
-        private _pixelArray: Float32Array;
+        private _pixelArray: Uint8Array;
 
         /**
         * @language zh_CN

@@ -20,13 +20,13 @@
         private _minElevation: number = 100;
         private _maxElevation: number = 100;
 
-        private _heightmap: ImageTexture; 
-        private _canvas: HTMLCanvasElement; 
+        private _heightmap: ImageTexture;
 
-        private _scaleU: number = 1; 
-        private _scaleV: number = 1; 
-        private imageData: ImageData;
+        private _scaleU: number = 1;
+        private _scaleV: number = 1;
+        private _imageData: ImageData;
 
+        private _positionXYZ: number[];
 
         /**
         * @language zh_CN
@@ -75,16 +75,9 @@
             this._maxElevation = maxElevation;
             this._heightmap = heightmap;
 
-            this._canvas = document.createElement("canvas");
-            var ctx:CanvasRenderingContext2D = this._canvas.getContext("2d");
-            this._canvas.width = heightmap.imageData.width ;
-            this._canvas.height = heightmap.imageData.height;
-            ctx.drawImage(heightmap.imageData, 0, 0, heightmap.width, heightmap.height);
-            document.body.appendChild(this._canvas);
-            this._canvas.hidden = true;
-            this.imageData = ctx.getImageData(0, 0, this._heightmap.imageData.width, this._heightmap.imageData.height);
+            this._imageData = heightmap.readPixels(0, 0, heightmap.width, heightmap.height);
+            this._positionXYZ = [];
 
-            document.body.removeChild(this._canvas);
 
             this.buildGeomtry(true);
         }
@@ -120,13 +113,12 @@
                 for (var xi: number = 0; xi <= this._segmentsW; ++xi) {
                     x = (xi / this._segmentsW - 0.5) * this._width;
                     z = (zi / this._segmentsH - 0.5) * this._depth;
-                    u = Math.floor(xi * uDiv);
-                    v = Math.floor((this._segmentsH - zi) * vDiv);
-
-                    y = this.getHeightBypos(u, v);
+                    u = xi * uDiv;
+                    v = (this._segmentsH - zi) * vDiv;
+                    y = this.getHeightByPixel(u, v);
                     //pos
                     this.vertexArray[numVerts++] = x;
-                    this.vertexArray[numVerts++] = y;//Math.random() * 1000;;
+                    this.vertexArray[numVerts++] = y;
                     this.vertexArray[numVerts++] = z;
                     //normal
                     this.vertexArray[numVerts++] = 1.0;
@@ -163,17 +155,138 @@
             this.buildDefaultSubGeometry();
         }
 
-        public getPixel(x: number, z: number): number {
-            var index: number = (z * this._heightmap.imageData.width + x) * 4;
-            var color: number = this.imageData.data[index + 3] << 24 | this.imageData.data[index + 0] << 16 | this.imageData.data[index + 1] << 8 | this.imageData.data[index + 2];
+
+        /**
+       * @language zh_CN
+       * @private
+       * 根据像素点获取高度
+       * @param intX 像素整形位置X
+       * @param intZ 像素整形位置Z
+       * @return number 指定位置的高度
+       * @version Egret 3.0
+       * @platform Web,Native
+       */
+        private getHeightByPixel(intX: number, intZ: number): number {
+            intX = Math.floor(intX);
+            intZ = Math.floor(intZ);
+            if (intX < 0) {
+                intX = 0;
+            } else if (intX >= this._imageData.width) {
+                intX = this._imageData.width - 1;
+            }
+            if (intZ < 0) {
+                intZ = 0;
+            } else if (intZ > this._imageData.height) {
+                intZ = this._imageData.height - 1;
+            }
+
+            var color: number = this.getPixelColor(intX, intZ) & 0xff;
+            return (color > this._maxElevation) ? (this._maxElevation / 0xff) * this._height : ((color < this._minElevation) ? (this._minElevation / 0xff) * this._height : (color / 0xff) * this._height);
+        }
+
+        /**
+        * @language zh_CN
+        * @private
+        * 获取像素点颜色
+        * @param intX 像素浮点位置X
+        * @param intZ 像素浮点位置Z
+        * @return number 颜色值
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        private getPixelColor(intX: number, intZ: number): number {
+            var index: number = (intZ * this._heightmap.imageData.width + intX) * 4;
+            var color: number = this._imageData.data[index + 3] << 24 | this._imageData.data[index + 0] << 16 | this._imageData.data[index + 1] << 8 | this._imageData.data[index + 2];
             return color;
         }
 
-        public getHeightBypos(x: number, z: number): number {
-            var color: number = this.getPixel(x, z) & 0xff;
 
-            return (color > this._maxElevation) ? (this._maxElevation / 0xff) * this._height : ((color < this._minElevation) ? (this._minElevation / 0xff) * this._height : (color / 0xff) * this._height);
+
+
+
+
+
+
+
+
+        /**
+        * @language zh_CN
+        * 根据像素浮点位置获取3D场景的位置(需要插值计算)
+        * @param floatX 像素浮点位置X
+        * @param floatZ 像素浮点位置Z
+        * @param imageWidth 所在图片的宽度
+        * @param imageHeight 所在图片的高度
+        * @return Vector3D 场景中的3D坐标
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get3DCoordAtPixel(floatX: number, floatZ: number, imageWidth: number, imageHeight: number, target: Vector3D = null): Vector3D {
+            floatZ = imageHeight - floatZ;
+            target = target || new Vector3D();
+            //换算成3d空间的xy位置
+            floatX *= this._width / imageWidth;
+            floatX -= this._width * 0.5;
+
+            floatZ *= this._depth / imageHeight;
+            floatZ -= this._depth * 0.5;
+
+            target.setTo(floatX, 0, floatZ);
+
+            target.y = this.getHeightBySceneCoord(floatX, floatZ);
+            return target;
         }
+
+
+        /**
+        * @language zh_CN
+        * 根据3D场景中的浮点位置X和Z获取高度Y
+        * @param floatX 像素浮点位置X
+        * @param floatZ 像素浮点位置Z
+        * @return number 指定位置的高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public getHeightBySceneCoord(floatX: number, floatZ: number): number {
+            //得到所在网格的index
+
+            floatX += this._width * 0.5;
+            floatZ += this._depth * 0.5;
+
+            if (floatX < 0 || floatZ < 0) {
+                return 0;
+            }
+            if (floatX >= this._width || floatZ >= this._depth) {
+                return 0;
+            }
+
+            //颠倒一下
+            floatZ = this._depth - floatZ;
+
+            floatX *= this._imageData.width / this._width;
+            floatZ *= this._imageData.height / this._depth;
+
+            var pixelX: number = Math.floor(floatX);
+            var pixelY: number = Math.floor(floatZ);
+
+            var y0: number = this.getHeightByPixel(pixelX, pixelY);
+            var y1: number = this.getHeightByPixel(pixelX + 1, pixelY);
+            var y2: number = this.getHeightByPixel(pixelX, pixelY + 1);
+            var y3: number = this.getHeightByPixel(pixelX + 1, pixelY + 1);
+
+            var tx: number = floatX - pixelX;
+            var ty: number = floatZ - pixelY;
+
+            y0 = MathUtil.mix(y0, y1, tx);
+            y1 = MathUtil.mix(y2, y3, tx);
+
+            y0 = MathUtil.mix(y0, y1, ty);
+
+            return y0;
+           
+        }
+
+
+
 
         private updateFaceNormals() {
             var i: number = 0, j: number = 0, k: number = 0;
@@ -188,18 +301,18 @@
             var d: number;
             var posStride: number = 17;
             var posOffset: number = 0;
-            var faceNormals: number[] = []; 
+            var faceNormals: number[] = [];
             while (i < len) {
 
-                index = posOffset + this.indexArray[i+0] * posStride;
+                index = posOffset + this.indexArray[i + 0] * posStride;
                 x1 = this.vertexArray[index];
                 y1 = this.vertexArray[index + 1];
                 z1 = this.vertexArray[index + 2];
-                index = posOffset + this.indexArray[i+1] * posStride;
+                index = posOffset + this.indexArray[i + 1] * posStride;
                 x2 = this.vertexArray[index];
                 y2 = this.vertexArray[index + 1];
                 z2 = this.vertexArray[index + 2];
-                index = posOffset + this.indexArray[i+2] * posStride;
+                index = posOffset + this.indexArray[i + 2] * posStride;
                 x3 = this.vertexArray[index];
                 y3 = this.vertexArray[index + 1];
                 z3 = this.vertexArray[index + 2];

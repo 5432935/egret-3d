@@ -29,12 +29,12 @@
         orthogonalToCenter,
 
 
-        /**
-        * VR投影
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        VR
+        ///**
+        //* VR投影
+        //* @version Egret 3.0
+        //* @platform Web,Native
+        //*/
+        //VR
     };
 
     /**
@@ -101,7 +101,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public eyeMatrix: EyesMatrix;
+        //public eyeMatrix: EyesMatrix;
 
         /**
          * @language zh_CN        
@@ -143,9 +143,18 @@
 
         protected _animation: any = [];
 
-        protected orthProjectChange: boolean = true ;
+        protected orthProjectChange: boolean = true;
 
         protected _mat: Matrix4_4 = new Matrix4_4();
+
+
+        private _angleVector: Vector3D = new Vector3D();
+        public billboardX: Matrix4_4 = new Matrix4_4();
+        public billboardY: Matrix4_4 = new Matrix4_4();
+        public billboardZ: Matrix4_4 = new Matrix4_4();
+        public billboardXYZ: Matrix4_4 = new Matrix4_4();
+
+
         /**
          * @language zh_CN        
          * constructor
@@ -181,10 +190,10 @@
                 case CameraType.perspective:
                     this.projectMatrix.perspective(this._fovY, this._aspectRatio, this._near, this._far);
                     break;
-                case CameraType.VR:
-                    this.projectMatrix.perspective(this._fovY, 1.0, this._near, this._far);
-                    this.eyeMatrix = this.eyeMatrix || new EyesMatrix();
-                    break;
+                //case CameraType.VR:
+                //    this.projectMatrix.perspective(this._fovY, 1.0, this._near, this._far);
+                //    this.eyeMatrix = this.eyeMatrix || new EyesMatrix();
+                //    break;
             }
             this._orthProjectMatrix.ortho(this._viewPort.width, this._viewPort.height, this._near, this._far);
             this.frustum.updateFrustum();
@@ -210,18 +219,18 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public tap(cameraType: CameraType, vrType: VRType = null) {
-            if (cameraType == CameraType.VR) {
-                this.eyeMatrix.update(this);
-                this.orthProjectChange = true;
-                if (vrType == VRType.left) {
-                    this.viewMatrix.copyFrom(this.eyeMatrix.leftEyeMatrix);
-                } else if (vrType == VRType.right) {
-                    this.viewMatrix.copyFrom(this.eyeMatrix.rightEyeMatrix);
-                }
-                this.viewMatrix.invert();
-            }
-        }
+        //public tap(cameraType: CameraType, vrType: VRType = null) {
+        //    if (cameraType == CameraType.VR) {
+        //        this.eyeMatrix.update(this);
+        //        this.orthProjectChange = true;
+        //        if (vrType == VRType.left) {
+        //            this.viewMatrix.copyFrom(this.eyeMatrix.leftEyeMatrix);
+        //        } else if (vrType == VRType.right) {
+        //            this.viewMatrix.copyFrom(this.eyeMatrix.rightEyeMatrix);
+        //        }
+        //        this.viewMatrix.invert();
+        //    }
+        //}
 
         /**
         * @language zh_CN        
@@ -451,6 +460,27 @@
             this.globalOrientation = this._tempQuat;
         }
 
+        protected onMakeTransform() {
+            Vector3D.HELP_1.setTo(1, 1, 1, 1);
+            Vector3D.HELP_0.setTo(0, 0, 0, 1);
+
+            this._modelMatrix3D.makeTransform(this._globalPos, Vector3D.HELP_1, this._globalOrientation);
+
+
+            MathUtil.calcDegree(this._globalOrientation, this._angleVector);
+            //this.billboardX.identity();
+            //this.billboardX.appendRotation(this._angleVector.x, Vector3D.X_AXIS);
+
+            this.billboardY.identity();
+            this.billboardY.appendRotation(this._angleVector.y, Vector3D.Y_AXIS);
+
+            //this.billboardZ.identity();
+            //this.billboardZ.appendRotation(this._angleVector.z, Vector3D.Z_AXIS);
+
+            this.billboardXYZ.makeTransform(Vector3D.HELP_0, Vector3D.HELP_1, this._globalOrientation);
+        }
+
+       
         protected onUpdateTransform() {
             this._viewMatrix.copyFrom(this._modelMatrix3D);
             this._viewMatrix.invert();
@@ -686,14 +716,6 @@
 
             return target;
         }
-
-        protected onMakeTransform() {
-            MathUtil.CALCULATION_VECTOR3D.x = 1;
-            MathUtil.CALCULATION_VECTOR3D.y = 1;
-            MathUtil.CALCULATION_VECTOR3D.z = 1;
-            this._modelMatrix3D.makeTransform(this._globalPos, MathUtil.CALCULATION_VECTOR3D, this._globalOrientation);
-        }
-
 
         /**
         * @language zh_CN

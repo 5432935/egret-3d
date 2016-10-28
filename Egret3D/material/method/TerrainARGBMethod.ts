@@ -5,6 +5,11 @@
     * @classdesc
     * 地形贴图混合渲染方法。
     * 使用一张贴图中的ARGB色来进行4张贴图进行混合。
+    * 总的需要5张纹理贴图，4张地表纹理，一张融合图
+    * 地表最大支持4张地表纹理混合，后期如果需要更多，还可以增加额外的Pass来增加融合地表的纹理数量。
+    * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
+    * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
     * @version Egret 3.0
     * @platform Web,Native
     */

@@ -13,13 +13,12 @@
     * ECA: CameraAnimationController
     * EPA: PropertyAnim
     * @includeExample loader/URLLoader.ts
-    * @see egret3d.EventDispatcher
+    * @see egret3d.ILoader
     *
     * @version Egret 3.0
     * @platform Web,Native
     */
-    export class URLLoader extends EventDispatcher {
-
+    export class URLLoader extends ILoader {
 
         private _xhr: XMLHttpRequest;
         private _event: LoaderEvent3D = new LoaderEvent3D();
@@ -33,15 +32,6 @@
          * @platform Web,Native
          */
         private _dataformat: string = null;
-
-        /**
-         * @language zh_CN
-         * 文件名字
-         * @version Egret 3.0
-         *@platform Web,Native
-         */
-        public fileName: string;
-
 
         /**
          * @language zh_CN
@@ -240,11 +230,10 @@
             }
             if (this._xhr.readyState > 0) {
                 this._xhr.abort();
+                this.disposeXhrEventListener();
             }
 
             this._xhr.open("GET", this.url, true);
-
-            this.disposeXhrEventListener();
 
             this.progress = (e) => this.onProgress(e);
             this.readystatechange = (e) => this.onReadyStateChange(e);
@@ -253,6 +242,7 @@
             this._xhr.addEventListener("progress", this.progress, false);
             this._xhr.addEventListener("readystatechange", this.readystatechange, false);
             this._xhr.addEventListener("error", this.error, false);
+            //this._xhr.addEventListener("loadstart", this.loadstart, false);
 
             if (this.dataformat == URLLoader.DATAFORMAT_BITMAP) {
                 this._xhr.responseType = "blob";
@@ -291,14 +281,6 @@
 
         /**
         * @language zh_CN
-        * 加载的地址
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public url: string = "";
-
-        /**
-        * @language zh_CN
         * 加载的地址的上级目录，为了方便获取资源
         * @version Egret 3.0
         * @platform Web,Native
@@ -320,13 +302,7 @@
         * @platform Web,Native
         */
         public tempData: any;
-        /**
-        * @language zh_CN
-        * 加载的数据.
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public data: any = null;
+
 
         /**
         * @language zh_CN
@@ -409,14 +385,15 @@
                 default:
                     this.data = this._xhr.responseText;
             }
-
-            this.doLoadComplete();
+                this.doLoadComplete();
         }
 
         private onProgress(event: ProgressEvent): void {
             this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
             this._event.target = this;
             this._event.loader = this;
+            this._event.total = event.total; 
+            this._event.loaded = event.loaded; 
             this._progressEvent = event;
             this.dispatchEvent(this._event);
         }
@@ -427,8 +404,15 @@
             this._event.loader = this;
             this.dispatchEvent(this._event);
             console.log("load error", event);
-
             this.disposeXhrEventListener();
+        }
+
+        private onloadstart(event: any) {
+            this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
+            this._event.target = this;
+            this._event.loader = this;
+            this._progressEvent = event;
+            this.dispatchEvent(this._event);
         }
 
         private getXHR(): any {
@@ -468,6 +452,7 @@
         }
 
         protected doLoadComplete() {
+            this.disposeXhrEventListener();
             this.resourceName = StringUtil.getURLName(this.url);
             this._event.eventType = LoaderEvent3D.LOADER_COMPLETE;
             this._event.target = this;
@@ -475,7 +460,6 @@
             this._event.data = this.data;
             this.dispatchEvent(this._event);
 
-            this.disposeXhrEventListener();
         }
 
         private disposeXhrEventListener() {

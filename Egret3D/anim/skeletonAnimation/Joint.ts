@@ -32,6 +32,14 @@ module egret3d {
 
         /**
         * @language zh_CN
+        * 骨骼名称index
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public index: number = 0;
+
+        /**
+        * @language zh_CN
         * 父骨骼索引编号
         * @version Egret 3.0
         * @platform Web,Native
@@ -101,8 +109,7 @@ module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        constructor(name: string) {
-            this.name = name;
+        constructor() {
             this.parentIndex = -1;
             this.scale = new Vector3D(1, 1, 1);
             this.orientation = new Quaternion();
@@ -120,8 +127,10 @@ module egret3d {
         * @platform Web,Native
         */
         public clone(): Joint {
-            var joint: Joint = new Joint(this.name);
+            var joint: Joint = new Joint();
+            joint.name = this.name;
             joint.parent = this.parent;
+            joint.index = this.index;
             joint.parentIndex = this.parentIndex;
             joint.scale.copyFrom(this.scale);
             joint.orientation.copyFrom(this.orientation);

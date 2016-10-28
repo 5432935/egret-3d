@@ -15,6 +15,7 @@
             this.view1.camera3D.lookAt(new Vector3D(0, 1000, -1000), new Vector3D(0, 0, 0));
             this.view1.backColor = 0xff707070;
             this.view1.backImage = new ImageTexture(<HTMLImageElement>document.getElementById("bg"));
+            //this.view1.renderQuen.mainRender = this.view1.renderQuen.renderDictionary["shadowPass"];
             this._egret3DCanvas.addView3D(this.view1);
 
             this.cameraCtl = new LookAtController(this.view1.camera3D, new Object3D());

@@ -12,7 +12,7 @@ module egret3d {
     * @version Egret 3.0
     * @platform Web,Native
     */
-    export class PropertyAnim extends EventDispatcher  {
+    export class PropertyAnim  {
 
         /**
         * @language zh_CN
@@ -21,7 +21,31 @@ module egret3d {
         * @platform Web,Native
         */
         public speed: number = 1;
+
+        /**
+        * @language zh_CN
+        * 是否循环
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public isLoop: boolean = true;
+
+        /**
+        * @language zh_CN
+        * 动画控制器
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public proAnimController: PropertyAnimController;
+
+        /**
+        * @language zh_CN
+        * 动画名字
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public name: string = "";
+
         private _propertyArray: PropertyData[] = [];
         private _play: boolean = false;
         private _timePosition: number = 0;
@@ -29,11 +53,6 @@ module egret3d {
         private _totalTime: number = 0;
         private _changeFrameTime: number = 0;
         private _oldFrameIndex: number = 0;
-        private _event3D: Event3D = new Event3D();
-
-        public constructor() {
-            super();
-        }
 
         /**
         * @language zh_CN
@@ -238,11 +257,10 @@ module egret3d {
 
                     this._timePosition = 0;
 
-                    this._event3D.eventType = PropertyAnimEvent3D.EVENT_PLAY_COMPLETE;
+                    if (this.proAnimController) {
+                        this.proAnimController.doEvent(PropertyAnimEvent3D.EVENT_PLAY_COMPLETE, this);
+                    }
 
-                    this._event3D.target = this;
-
-                    this.dispatchEvent(this._event3D);
 
                     this.stop();
 
@@ -251,11 +269,9 @@ module egret3d {
 
                     this._timePosition = this._totalTime;
 
-                    this._event3D.eventType = PropertyAnimEvent3D.EVENT_PLAY_COMPLETE;
-
-                    this._event3D.target = this;
-
-                    this.dispatchEvent(this._event3D);
+                    if (this.proAnimController) {
+                        this.proAnimController.doEvent(PropertyAnimEvent3D.EVENT_PLAY_COMPLETE, this);
+                    }
 
                     this.stop();
 
@@ -354,7 +370,7 @@ module egret3d {
         */
         public update(delay: number): void {
 
-            if (!this._play) {
+            if (!this._play || !this._target) {
                 return;
             }
 
@@ -364,11 +380,9 @@ module egret3d {
 
             if (this.timePosition < beginTime) {
 
-                this._event3D.eventType = PropertyAnimEvent3D.EVENT_PLAY_COMPLETE;
-
-                this._event3D.target = this;
-
-                this.dispatchEvent(this._event3D);
+                if (this.proAnimController) {
+                    this.proAnimController.doEvent(PropertyAnimEvent3D.EVENT_PLAY_COMPLETE, this);
+                }
             }
         }
 
@@ -383,6 +397,9 @@ module egret3d {
             var pro: PropertyAnim = new PropertyAnim();
             pro._propertyArray = this._propertyArray;
             pro._totalTime = this._totalTime;
+            pro.isLoop = this.isLoop;
+            pro.speed = this.speed;
+            pro.name = this.name;
             return pro;
         }
     }

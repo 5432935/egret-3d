@@ -1,18 +1,16 @@
+void LightingBlinnPhong(vec3 lightDir, vec3 lightColor , vec3 lightAmbient , vec3 normal , vec3 viewDir, float atten){ 
+    vec3 H = normalize(lightDir + normalize(viewDir)); 
+    float NdotL = max(dot(normal, lightDir),0.0); 
+    float NdotH = max(dot(normal,H),0.0); 
 
+    vec3 diffuse = lightColor.xyz * NdotL ; 
 
-vec4 LightingBlinnPhong(vec3 lightDir, vec3 lightColor , vec3 lightAmbient , vec3 normal , vec3 viewDir, float atten){
-	float NdotL = clamp(dot (normal, lightDir),0.0,1.0); 
-	vec3 diffuse = lightColor.xyz * NdotL ; 
-	
-	vec3 h = normalize (lightDir + normalize(viewDir)); 
-	float nh = clamp(dot (normal, h),0.0,1.0); 
-	float specPower = pow (nh, materialSource.shininess ) * materialSource.specularScale ; 
-	vec3 specular = lightColor.xyz * specPower * materialSource.specular ; 
-	specularColor.xyz += specular;
-	vec4 c; 
-	c.rgb = (diffuse+specular+lightAmbient) * (atten * 2.0 ); 
-	c.a = materialSource.alpha + (specPower * atten); 
-	return c;  
+    float specPower = pow (NdotH, materialSource.shininess ) * materialSource.specularScale ; 
+    vec3 specular = lightColor.xyz * specPower * materialSource.specular ; 
+
+    specularColor.xyz += specular;
+    light.xyz += (diffuse+lightAmbient) * (atten * 2.0 ); 
+    light.w = materialSource.alpha + (specPower * atten); 
 }
 
 void main(void) {
