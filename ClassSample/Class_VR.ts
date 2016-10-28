@@ -141,8 +141,8 @@
         }
 
         private OrientationChange() {
-            this.view.width = window.innerWidth; 
-            this.view.height = window.innerHeight; 
+            this.view.w = window.innerWidth; 
+            this.view.h = window.innerHeight; 
         }
 
         public update(e: Event3D) {

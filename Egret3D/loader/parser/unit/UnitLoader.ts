@@ -662,19 +662,20 @@
 
             var terrain: Terrain = <Terrain>mapNodeData.object3d;
             var list: Vector3D[] = this.getGrassPositions(terrain, load.data);
+            if (list.length > 0) {
+                var mat: TextureMaterial = new TextureMaterial();
+                mat.ambientColor = 0xffffff;
+                mat.blendMode = BlendMode.NORMAL;
+                mat.cutAlpha = 0.4;
 
-            var mat: TextureMaterial = new TextureMaterial();
-            mat.ambientColor = 0xffffff;
-            mat.blendMode = BlendMode.NORMAL;
-            mat.cutAlpha = 0.4;
-
-            var grassMesh: GrassMesh = new GrassMesh(list, mat, grassData);
-            terrain.addChild(grassMesh);
-            var data: any = paramData.grassData;
-            if (data.grassTexture) {
-                var path: string = this._pathRoot + data.grassTexture;
-                this.addTask();
-                var loader: URLLoader = assetMgr.loadAsset(path, this.onGrassDiffuseTexture, this, grassMesh.material);
+                var grassMesh: GrassMesh = new GrassMesh(list, mat, grassData);
+                terrain.addChild(grassMesh);
+                var data: any = paramData.grassData;
+                if (data.grassTexture) {
+                    var path: string = this._pathRoot + data.grassTexture;
+                    this.addTask();
+                    var loader: URLLoader = assetMgr.loadAsset(path, this.onGrassDiffuseTexture, this, grassMesh.material);
+                }
             }
 
             this.processTask(load);

@@ -61,8 +61,8 @@
         protected leftRender: MultiRender;
         protected rightRender: MultiRender;
 
-        private _w: number = 0;
-        private _h: number = 0;
+        public w: number = 0;
+        public h: number = 0;
         /**
         * @language zh_CN
         * 构建一个view3d对象
@@ -76,8 +76,8 @@
         constructor(x: number, y: number, width: number, height: number) {
             super(x, y, width, height, new Camera3D(CameraType.perspective));
 
-            this._w = width; 
-            this._h = height; 
+            this.w = width; 
+            this.h = height; 
             this.init();
         }
 
@@ -119,17 +119,17 @@
         public update(time: number, delay: number) {
             this.eyesCamera.update( );
 
-            this.viewPort.width = this._w * 0.5;
-            this.viewPort.height = this._h ;
-            this.viewPort.x = this._w * 0.5 - this.viewPort.width - 10 ;
-            this.viewPort.y = this._h * 0.5 - this.viewPort.height * 0.5 ;
+            this.viewPort.width = this.w * 0.5;
+            this.viewPort.height = this.h ;
+            this.viewPort.x = this.w * 0.5 - this.viewPort.width - 10 ;
+            this.viewPort.y = this.h * 0.5 - this.viewPort.height * 0.5 ;
             this.camera3D = this.eyesCamera.leftCamera; 
             super.update(time, delay);
 
-            this.viewPort.width = this._w * 0.5;
-            this.viewPort.height = this._h;
-            this.viewPort.x = this._w * 0.5 + 10;
-            this.viewPort.y = this._h * 0.5 - this.viewPort.height * 0.5;
+            this.viewPort.width = this.w * 0.5;
+            this.viewPort.height = this.h;
+            this.viewPort.x = this.w * 0.5 + 10;
+            this.viewPort.y = this.h * 0.5 - this.viewPort.height * 0.5;
             this.camera3D = this.eyesCamera.rightCamera; 
             super.update(time, delay);
 

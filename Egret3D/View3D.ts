@@ -19,11 +19,12 @@
      */
     export class View3D {
 
+        public scissorRect: Rectangle = new Rectangle();
         protected _viewPort: Rectangle = new Rectangle();
+
         protected _camera: Camera3D;
         protected _scene: Scene3D = new Scene3D();
 
-        protected _scissorRect: Rectangle = new Rectangle();
         protected _viewMatrix: Matrix4_4 = new Matrix4_4();
 
         protected _entityCollect: EntityCollect;
@@ -82,6 +83,11 @@
             this.height = height;
             this._camera.aspectRatio = this._viewPort.width / this._viewPort.height;
             this._camera.updateViewport(this._viewPort.x, this._viewPort.y, this._viewPort.width, this._viewPort.height);
+
+            this.scissorRect.x = this._viewPort.x;
+            this.scissorRect.y = this._viewPort.y;
+            this.scissorRect.width = this._viewPort.width;
+            this.scissorRect.height = this._viewPort.height;
 
             this._shadowCast = new ShadowCast(this);
         }
@@ -395,43 +401,7 @@
         */
         private initDefaultSkin() {
 //            gui.BitmapFont.load(textureResMgr.getTextureDic());
-            var upState: Texture = textureResMgr.getTexture("normal.png");
-            var downState: Texture = textureResMgr.getTexture("pressed.png");
-            var overState: Texture = textureResMgr.getTexture("hover.png");
-
-            var checkUpState: Texture = textureResMgr.getTexture("default.png");
-            var checkDownState: Texture = textureResMgr.getTexture("checked.png");
-
-            var whiteBg: Texture = textureResMgr.getTexture("whitebackground.png");
-
-            var progressBg: Texture = textureResMgr.getTexture("backgroundpic.png");
-            var progressBarSkin: Texture = textureResMgr.getTexture("blue.png");
-
-            var radioUpState: Texture = textureResMgr.getTexture("unselected.png");
-            var radioSelected: Texture = textureResMgr.getTexture("selected.png");
-            var radioHover: Texture = textureResMgr.getTexture("hover1.png");
-
-            var sliderBar: Texture = textureResMgr.getTexture("bluebackground.png");
-            var sliderBackground: Texture = textureResMgr.getTexture("whitebackground.png");
-
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_UP, upState);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_DOWN, downState);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_OVER, overState);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_LABEL_BUTTON_UP, upState);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_LABE_BUTTON_DOWN, downState);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_UP, checkUpState);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_DOWN, checkUpState);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_UP, checkDownState);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_DOWN, checkDownState);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_UP, radioUpState);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_DOWN, radioHover);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_DOWN, radioHover);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_UP, radioSelected);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_SLIDER_BAR, sliderBar);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_SLIDER_BACKGROUND, sliderBackground);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PROGRESS_BAR, progressBarSkin);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PROGRESS_BAR_BACKGROUND, progressBg);
-            gui.SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PANEL_BACKGROUND, whiteBg);
+           gui.SkinManager.instance.initDefaultSkin();
         }
 
         /**

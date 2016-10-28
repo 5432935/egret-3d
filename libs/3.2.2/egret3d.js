@@ -23275,6 +23275,39 @@ var egret3d;
             SkinManager.prototype.getDefaultSkin = function (skinName) {
                 return this._defaultSkinTexture[skinName];
             };
+            SkinManager.prototype.initDefaultSkin = function () {
+                var upState = egret3d.textureResMgr.getTexture("normal.png");
+                var downState = egret3d.textureResMgr.getTexture("pressed.png");
+                var overState = egret3d.textureResMgr.getTexture("hover.png");
+                var checkUpState = egret3d.textureResMgr.getTexture("default.png");
+                var checkDownState = egret3d.textureResMgr.getTexture("checked.png");
+                var whiteBg = egret3d.textureResMgr.getTexture("whitebackground.png");
+                var progressBg = egret3d.textureResMgr.getTexture("backgroundpic.png");
+                var progressBarSkin = egret3d.textureResMgr.getTexture("blue.png");
+                var radioUpState = egret3d.textureResMgr.getTexture("unselected.png");
+                var radioSelected = egret3d.textureResMgr.getTexture("selected.png");
+                var radioHover = egret3d.textureResMgr.getTexture("hover1.png");
+                var sliderBar = egret3d.textureResMgr.getTexture("bluebackground.png");
+                var sliderBackground = egret3d.textureResMgr.getTexture("whitebackground.png");
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_UP, upState);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_DOWN, downState);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_OVER, overState);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_LABEL_BUTTON_UP, upState);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_LABE_BUTTON_DOWN, downState);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_UP, checkUpState);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_DOWN, checkUpState);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_UP, checkDownState);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_DOWN, checkDownState);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_UP, radioUpState);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_DOWN, radioHover);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_DOWN, radioHover);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_UP, radioSelected);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_SLIDER_BAR, sliderBar);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_SLIDER_BACKGROUND, sliderBackground);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PROGRESS_BAR, progressBarSkin);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PROGRESS_BAR_BACKGROUND, progressBg);
+                SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PANEL_BACKGROUND, whiteBg);
+            };
             SkinManager.prototype.setDefaultSkin = function (skinName, texture) {
                 this._defaultSkinTexture[skinName] = texture;
             };
@@ -34864,17 +34897,19 @@ var egret3d;
             var mapNodeData = paramData.mapNodeData;
             var terrain = mapNodeData.object3d;
             var list = this.getGrassPositions(terrain, load.data);
-            var mat = new egret3d.TextureMaterial();
-            mat.ambientColor = 0xffffff;
-            mat.blendMode = egret3d.BlendMode.NORMAL;
-            mat.cutAlpha = 0.4;
-            var grassMesh = new egret3d.GrassMesh(list, mat, grassData);
-            terrain.addChild(grassMesh);
-            var data = paramData.grassData;
-            if (data.grassTexture) {
-                var path = this._pathRoot + data.grassTexture;
-                this.addTask();
-                var loader = egret3d.assetMgr.loadAsset(path, this.onGrassDiffuseTexture, this, grassMesh.material);
+            if (list.length > 0) {
+                var mat = new egret3d.TextureMaterial();
+                mat.ambientColor = 0xffffff;
+                mat.blendMode = egret3d.BlendMode.NORMAL;
+                mat.cutAlpha = 0.4;
+                var grassMesh = new egret3d.GrassMesh(list, mat, grassData);
+                terrain.addChild(grassMesh);
+                var data = paramData.grassData;
+                if (data.grassTexture) {
+                    var path = this._pathRoot + data.grassTexture;
+                    this.addTask();
+                    var loader = egret3d.assetMgr.loadAsset(path, this.onGrassDiffuseTexture, this, grassMesh.material);
+                }
             }
             this.processTask(load);
         };
@@ -57854,9 +57889,9 @@ var egret3d;
         */
         function View3D(x, y, width, height, camera) {
             if (camera === void 0) { camera = null; }
+            this.scissorRect = new egret3d.Rectangle();
             this._viewPort = new egret3d.Rectangle();
             this._scene = new egret3d.Scene3D();
-            this._scissorRect = new egret3d.Rectangle();
             this._viewMatrix = new egret3d.Matrix4_4();
             this._backColor = new egret3d.Vector3D(0.3, 0.3, 0.6, 1.0);
             this._cleanParmerts = egret3d.Context3DProxy.gl.COLOR_BUFFER_BIT | egret3d.Context3DProxy.gl.DEPTH_BUFFER_BIT;
@@ -57887,6 +57922,10 @@ var egret3d;
             this.height = height;
             this._camera.aspectRatio = this._viewPort.width / this._viewPort.height;
             this._camera.updateViewport(this._viewPort.x, this._viewPort.y, this._viewPort.width, this._viewPort.height);
+            this.scissorRect.x = this._viewPort.x;
+            this.scissorRect.y = this._viewPort.y;
+            this.scissorRect.width = this._viewPort.width;
+            this.scissorRect.height = this._viewPort.height;
             this._shadowCast = new egret3d.ShadowCast(this);
         }
         Object.defineProperty(View3D.prototype, "quadStage", {
@@ -58218,37 +58257,7 @@ var egret3d;
         */
         View3D.prototype.initDefaultSkin = function () {
             //            gui.BitmapFont.load(textureResMgr.getTextureDic());
-            var upState = egret3d.textureResMgr.getTexture("normal.png");
-            var downState = egret3d.textureResMgr.getTexture("pressed.png");
-            var overState = egret3d.textureResMgr.getTexture("hover.png");
-            var checkUpState = egret3d.textureResMgr.getTexture("default.png");
-            var checkDownState = egret3d.textureResMgr.getTexture("checked.png");
-            var whiteBg = egret3d.textureResMgr.getTexture("whitebackground.png");
-            var progressBg = egret3d.textureResMgr.getTexture("backgroundpic.png");
-            var progressBarSkin = egret3d.textureResMgr.getTexture("blue.png");
-            var radioUpState = egret3d.textureResMgr.getTexture("unselected.png");
-            var radioSelected = egret3d.textureResMgr.getTexture("selected.png");
-            var radioHover = egret3d.textureResMgr.getTexture("hover1.png");
-            var sliderBar = egret3d.textureResMgr.getTexture("bluebackground.png");
-            var sliderBackground = egret3d.textureResMgr.getTexture("whitebackground.png");
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_BUTTON_UP, upState);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_BUTTON_DOWN, downState);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_BUTTON_OVER, overState);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_LABEL_BUTTON_UP, upState);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_LABE_BUTTON_DOWN, downState);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_CHECK_BOX_UP, checkUpState);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_CHECK_BOX_DOWN, checkUpState);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_UP, checkDownState);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_DOWN, checkDownState);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_UP, radioUpState);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_DOWN, radioHover);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_DOWN, radioHover);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_UP, radioSelected);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_SLIDER_BAR, sliderBar);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_SLIDER_BACKGROUND, sliderBackground);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_PROGRESS_BAR, progressBarSkin);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_PROGRESS_BAR_BACKGROUND, progressBg);
-            egret3d.gui.SkinManager.instance.setDefaultSkin(egret3d.gui.DefaultSkinName.DEFAULT_PANEL_BACKGROUND, whiteBg);
+            egret3d.gui.SkinManager.instance.initDefaultSkin();
         };
         /**
         * @language zh_CN
@@ -58524,10 +58533,10 @@ var egret3d;
         */
         function VRView3D(x, y, width, height) {
             _super.call(this, x, y, width, height, new egret3d.Camera3D(egret3d.CameraType.perspective));
-            this._w = 0;
-            this._h = 0;
-            this._w = width;
-            this._h = height;
+            this.w = 0;
+            this.h = 0;
+            this.w = width;
+            this.h = height;
             this.init();
         }
         VRView3D.prototype.init = function () {
@@ -58558,16 +58567,16 @@ var egret3d;
         */
         VRView3D.prototype.update = function (time, delay) {
             this.eyesCamera.update();
-            this.viewPort.width = this._w * 0.5;
-            this.viewPort.height = this._h;
-            this.viewPort.x = this._w * 0.5 - this.viewPort.width - 10;
-            this.viewPort.y = this._h * 0.5 - this.viewPort.height * 0.5;
+            this.viewPort.width = this.w * 0.5;
+            this.viewPort.height = this.h;
+            this.viewPort.x = this.w * 0.5 - this.viewPort.width - 10;
+            this.viewPort.y = this.h * 0.5 - this.viewPort.height * 0.5;
             this.camera3D = this.eyesCamera.leftCamera;
             _super.prototype.update.call(this, time, delay);
-            this.viewPort.width = this._w * 0.5;
-            this.viewPort.height = this._h;
-            this.viewPort.x = this._w * 0.5 + 10;
-            this.viewPort.y = this._h * 0.5 - this.viewPort.height * 0.5;
+            this.viewPort.width = this.w * 0.5;
+            this.viewPort.height = this.h;
+            this.viewPort.x = this.w * 0.5 + 10;
+            this.viewPort.y = this.h * 0.5 - this.viewPort.height * 0.5;
             this.camera3D = this.eyesCamera.rightCamera;
             _super.prototype.update.call(this, time, delay);
             //this._leftHUD.width = this.width * 0.5;

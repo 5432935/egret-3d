@@ -10,6 +10,46 @@
             return this._defaultSkinTexture[skinName];
         }
 
+        public initDefaultSkin() {
+            var upState: Texture = textureResMgr.getTexture("normal.png");
+            var downState: Texture = textureResMgr.getTexture("pressed.png");
+            var overState: Texture = textureResMgr.getTexture("hover.png");
+
+            var checkUpState: Texture = textureResMgr.getTexture("default.png");
+            var checkDownState: Texture = textureResMgr.getTexture("checked.png");
+
+            var whiteBg: Texture = textureResMgr.getTexture("whitebackground.png");
+
+            var progressBg: Texture = textureResMgr.getTexture("backgroundpic.png");
+            var progressBarSkin: Texture = textureResMgr.getTexture("blue.png");
+
+            var radioUpState: Texture = textureResMgr.getTexture("unselected.png");
+            var radioSelected: Texture = textureResMgr.getTexture("selected.png");
+            var radioHover: Texture = textureResMgr.getTexture("hover1.png");
+
+            var sliderBar: Texture = textureResMgr.getTexture("bluebackground.png");
+            var sliderBackground: Texture = textureResMgr.getTexture("whitebackground.png");
+
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_UP, upState);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_DOWN, downState);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_BUTTON_OVER, overState);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_LABEL_BUTTON_UP, upState);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_LABE_BUTTON_DOWN, downState);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_UP, checkUpState);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_DOWN, checkUpState);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_UP, checkDownState);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_CHECK_BOX_SELECTED_DOWN, checkDownState);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_UP, radioUpState);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_DOWN, radioHover);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_DOWN, radioHover);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_RADIO_BUTTON_SELECTED_UP, radioSelected);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_SLIDER_BAR, sliderBar);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_SLIDER_BACKGROUND, sliderBackground);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PROGRESS_BAR, progressBarSkin);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PROGRESS_BAR_BACKGROUND, progressBg);
+           SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PANEL_BACKGROUND, whiteBg);
+        }
+
         public setDefaultSkin(skinName: string, texture: Texture) {
             this._defaultSkinTexture[skinName] = texture;
         }

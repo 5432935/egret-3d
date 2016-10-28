@@ -11536,6 +11536,7 @@ declare module egret3d.gui {
         private _defaultSkinTexture;
         constructor();
         getDefaultSkin(skinName: string): Texture;
+        initDefaultSkin(): void;
         setDefaultSkin(skinName: string, texture: Texture): void;
         static instance: SkinManager;
     }
@@ -27410,10 +27411,10 @@ declare module egret3d {
      * @platform Web,Native
      */
     class View3D {
+        scissorRect: Rectangle;
         protected _viewPort: Rectangle;
         protected _camera: Camera3D;
         protected _scene: Scene3D;
-        protected _scissorRect: Rectangle;
         protected _viewMatrix: Matrix4_4;
         protected _entityCollect: EntityCollect;
         protected _backColor: Vector3D;
@@ -27733,8 +27734,8 @@ declare module egret3d {
         private _rightHUD;
         protected leftRender: MultiRender;
         protected rightRender: MultiRender;
-        private _w;
-        private _h;
+        w: number;
+        h: number;
         /**
         * @language zh_CN
         * 构建一个view3d对象
