@@ -454,10 +454,16 @@ module egret3d {
 			"environmentMapping_fragment":
 			"uniform samplerCube environmentMapTex ; \n" +
 			"uniform float reflectValue; \n" +
+			"varying vec3 varying_ViewDir ; \n" +
 			"void main(){ \n" +
-			"vec3 r = reflect(-vec3(0.0,0.0,1.0),  normal  ); \n" +
-			"vec4 reflectiveColor = textureCube(environmentMapTex,r.xyz); \n" +
-			"diffuseColor.xyz = mix( diffuseColor.xyz,reflectiveColor.xyz, specularColor.y + reflectValue ); \n" +
+			"vec3 N = normalize(normal); \n" +
+			"vec3 V = normalize(varying_mvPose.xyz/varying_mvPose.w); \n" +
+			"float dotNV = clamp(dot(N,V), 0.0, 1.0); \n" +
+			"float FV = pow((1.0 - dotNV), 2.0); \n" +
+			"mat4 invViewMatrix = inverse(uniform_ViewMatrix); \n" +
+			"vec3 ecReflected = reflect(normalize(varying_ViewDir.xyz), normalize(mat3(invViewMatrix)*normal)); \n" +
+			"vec4 reflectiveColor = textureCube(environmentMapTex,-normalize(ecReflected.xyz)); \n" +
+			"diffuseColor.xyz = mix( diffuseColor.xyz,reflectiveColor.xyz, reflectValue + FV ); \n" +
 			"} \n" +
 			"          \n",
 
@@ -531,6 +537,7 @@ module egret3d {
 			"uniform sampler2D glossTex; \n" +
 			"uniform sampler2D specularTex; \n" +
 			"uniform sampler2D opacityTex; \n" +
+			"uniform samplerCube reflectionMap; \n" +
 			"uniform mat4 uniform_ViewMatrix; \n" +
 			"mat3 TBN; \n" +
 			"mat4 normalMatrix ; \n" +
@@ -656,7 +663,7 @@ module egret3d {
 			"discard; \n" +
 			"} \n" +
 			"calculateDirectLight(); \n" +
-			"vec4 finalRGBA = vec4(light,1.0) ; \n" +
+			"vec4 finalRGBA = vec4(light,1.0) + textureCube(reflectionMap,varying_mvPose.xyz); \n" +
 			"gl_FragColor = finalRGBA; \n" +
 			"} \n",
 
@@ -1225,14 +1232,14 @@ module egret3d {
 			"uniform sampler2D lightTexture ; \n" +
 			"varying vec2 varying_uv1 ; \n" +
 			"vec4 decode_hdr( vec4 data ){ \n" +
-			"vec4 res = data ; \n" +
-			"res.xyz *= pow(2.2,data.w * 256.0 - 128.0); \n" +
-			"return res ; \n" +
+			"data.w = data.w *256.0 - (128.0) ; \n" +
+			"data.w = pow(1.0*data.w,data.w); \n" +
+			"data.xyz *= data.w; \n" +
+			"return data ; \n" +
 			"} \n" +
 			"void main(void){ \n" +
 			"vec4 lightmap = texture2D( lightTexture , varying_uv1 ); \n" +
 			"lightmap.xyz = decode_hdr(lightmap).xyz; \n" +
-			"lightmap.xyz = pow( 1.8 * lightmap.xyz, vec3(1.1)) ; \n" +
 			"diffuseColor.xyz *= lightmap.xyz ; \n" +
 			"specularColor.xyz *= lightmap.xyz ; \n" +
 			"} \n" +
@@ -1242,14 +1249,14 @@ module egret3d {
 			"uniform sampler2D lightTexture ; \n" +
 			"varying vec2 varying_uv1 ; \n" +
 			"vec4 decode_hdr( vec4 data ){ \n" +
-			"vec4 res = data ; \n" +
-			"res.xyz *= pow(2.2,data.w * 256.0 - 128.0); \n" +
-			"return res ; \n" +
+			"data.w = data.w *256.0 - (128.0) ; \n" +
+			"data.w = pow(1.0*data.w,data.w); \n" +
+			"data.xyz *= data.w; \n" +
+			"return data ; \n" +
 			"} \n" +
 			"void main(void){ \n" +
 			"vec4 lightmap = texture2D( lightTexture , varying_uv1 ); \n" +
 			"lightmap.xyz = decode_hdr(lightmap).xyz; \n" +
-			"lightmap.xyz = pow( 1.8 * lightmap.xyz, vec3(1.1)) ; \n" +
 			"diffuseColor.xyz *= lightmap.xyz ; \n" +
 			"} \n",
 
@@ -2967,16 +2974,18 @@ module egret3d {
 			"return normalize(TBN * map); \n" +
 			"} \n" +
 			"void main(void){ \n" +
+			"TBN = cotangentFrame(normal,varying_mvPose.xyz, varying_uv0) ; \n" +
 			"float tempTime = mod(time,100000.0); \n" +
 			"vec2 uvA = uv_0 * waterNormalData[3].x + waterNormalData[0] * tempTime ; \n" +
 			"vec2 uvB = uv_0 * waterNormalData[3].y + waterNormalData[1] * tempTime  ; \n" +
-			"normal = flatNormals(varying_mvPose.xyz) ; \n" +
-			"TBN = cotangentFrame(normal, -varying_mvPose.xyz, uv_0 ); \n" +
-			"vec3 bump1 = texture2D( normalTextureA, uvA ).rgb; \n" +
-			"vec3 bump2 = texture2D( normalTextureB, uvB ).rgb; \n" +
-			"vec3 bump = bump1 + bump2 - 1.0; \n" +
-			"normal = normalize(TBN * bump) ; \n" +
-			"normal.y *= -1.0; \n" +
+			"vec3 bump1 = texture2D( normalTextureA, uvA ).rgb * 2.0-1.0 ; \n" +
+			"bump1.y *= -1.0; \n" +
+			"bump1.xyz = TBN * bump1 ; \n" +
+			"normal.xyz = bump1.xyz ; \n" +
+			"vec3 bump2 = texture2D( normalTextureB, uvB ).rgb * 2.0-1.0 ; \n" +
+			"bump2.y *= -1.0; \n" +
+			"bump2.xyz = TBN * bump2 ; \n" +
+			"normal.xyz = (normal.xyz + bump2.xyz)*0.5 ; \n" +
 			"}  \n",
 
 			"wave_fs":

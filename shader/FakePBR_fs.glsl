@@ -16,6 +16,7 @@ uniform sampler2D normalTex;
 uniform sampler2D glossTex; 
 uniform sampler2D specularTex; 
 uniform sampler2D opacityTex; 
+uniform samplerCube reflectionMap;
 
 uniform mat4 uniform_ViewMatrix; 
 mat3 TBN; 
@@ -173,6 +174,6 @@ void main(void){
         discard;
      }
      calculateDirectLight();
-     vec4 finalRGBA = vec4(light,1.0) ;
+     vec4 finalRGBA = vec4(light,1.0) + textureCube(reflectionMap,varying_mvPose.xyz);
      gl_FragColor = finalRGBA;    
 }

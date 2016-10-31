@@ -27,6 +27,22 @@
         * @platform Web,Native
         */
         public loadAsset(url: string, callback: Function, thisObject: any, param: any = null): URLLoader {
+            return this.addEventListener(url, LoaderEvent3D.LOADER_COMPLETE, callback, thisObject, param);
+        }
+
+        /**
+        * @language zh_CN
+        * 加载资源接口 并监听事件接口
+        * @param url 资源路径
+        * @param type 事件类型
+        * @param callback 加载完成后的回调
+        * @param thisObject 回调函数的this对象
+        * @param param 附带参数
+        * @returns URLLoader 反回当前加载的URLLoader对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public addEventListener(url: string, type: string, callback: Function, thisObject: any, param: any = null): URLLoader {
             var asset: any = this._loaderDict[url];
 
             if (!asset) {
@@ -37,16 +53,19 @@
             }
 
             var loader: URLLoader = asset.loader;
-            if (loader.data) {
-                setTimeout(()=> {
 
-                    this._loaderEvent.eventType = LoaderEvent3D.LOADER_COMPLETE;
+            if (loader.data) {
+                setTimeout(() => {
+
+                    this._loaderEvent.eventType = type;
                     this._loaderEvent.target = loader;
                     this._loaderEvent.loader = loader;
                     this._loaderEvent.data = loader.data;
                     this._loaderEvent.param = param;
 
-                    callback.call(thisObject, this._loaderEvent);
+                    if (callback) {
+                        callback.call(thisObject, this._loaderEvent);
+                    }
 
                     this._loaderEvent.target = null;
                     this._loaderEvent.loader = null;
@@ -55,7 +74,9 @@
                 }, 0);
             }
             else {
-                loader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, callback, thisObject, param);
+                if (callback) {
+                    loader.addEventListener(type, callback, thisObject, param);
+                }
             }
 
             if (asset.objects.indexOf(thisObject) < 0) {

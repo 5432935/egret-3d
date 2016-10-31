@@ -8402,10 +8402,16 @@ var egret3d;
                 "} \n",
             "environmentMapping_fragment": "uniform samplerCube environmentMapTex ; \n" +
                 "uniform float reflectValue; \n" +
+                "varying vec3 varying_ViewDir ; \n" +
                 "void main(){ \n" +
-                "vec3 r = reflect(-vec3(0.0,0.0,1.0),  normal  ); \n" +
-                "vec4 reflectiveColor = textureCube(environmentMapTex,r.xyz); \n" +
-                "diffuseColor.xyz = mix( diffuseColor.xyz,reflectiveColor.xyz, specularColor.y + reflectValue ); \n" +
+                "vec3 N = normalize(normal); \n" +
+                "vec3 V = normalize(varying_mvPose.xyz/varying_mvPose.w); \n" +
+                "float dotNV = clamp(dot(N,V), 0.0, 1.0); \n" +
+                "float FV = pow((1.0 - dotNV), 2.0); \n" +
+                "mat4 invViewMatrix = inverse(uniform_ViewMatrix); \n" +
+                "vec3 ecReflected = reflect(normalize(varying_ViewDir.xyz), normalize(mat3(invViewMatrix)*normal)); \n" +
+                "vec4 reflectiveColor = textureCube(environmentMapTex,-normalize(ecReflected.xyz)); \n" +
+                "diffuseColor.xyz = mix( diffuseColor.xyz,reflectiveColor.xyz, reflectValue + FV ); \n" +
                 "} \n" +
                 "          \n",
             "expFog_fs": "struct Fog{ \n" +
@@ -8471,6 +8477,7 @@ var egret3d;
                 "uniform sampler2D glossTex; \n" +
                 "uniform sampler2D specularTex; \n" +
                 "uniform sampler2D opacityTex; \n" +
+                "uniform samplerCube reflectionMap; \n" +
                 "uniform mat4 uniform_ViewMatrix; \n" +
                 "mat3 TBN; \n" +
                 "mat4 normalMatrix ; \n" +
@@ -8596,7 +8603,7 @@ var egret3d;
                 "discard; \n" +
                 "} \n" +
                 "calculateDirectLight(); \n" +
-                "vec4 finalRGBA = vec4(light,1.0) ; \n" +
+                "vec4 finalRGBA = vec4(light,1.0) + textureCube(reflectionMap,varying_mvPose.xyz); \n" +
                 "gl_FragColor = finalRGBA; \n" +
                 "} \n",
             "FakePBR_vs": "attribute vec3 attribute_position; \n" +
@@ -9135,14 +9142,14 @@ var egret3d;
             "lightMapSpecularPower_fs": "uniform sampler2D lightTexture ; \n" +
                 "varying vec2 varying_uv1 ; \n" +
                 "vec4 decode_hdr( vec4 data ){ \n" +
-                "vec4 res = data ; \n" +
-                "res.xyz *= pow(2.2,data.w * 256.0 - 128.0); \n" +
-                "return res ; \n" +
+                "data.w = data.w *256.0 - (128.0) ; \n" +
+                "data.w = pow(1.0*data.w,data.w); \n" +
+                "data.xyz *= data.w; \n" +
+                "return data ; \n" +
                 "} \n" +
                 "void main(void){ \n" +
                 "vec4 lightmap = texture2D( lightTexture , varying_uv1 ); \n" +
                 "lightmap.xyz = decode_hdr(lightmap).xyz; \n" +
-                "lightmap.xyz = pow( 1.8 * lightmap.xyz, vec3(1.1)) ; \n" +
                 "diffuseColor.xyz *= lightmap.xyz ; \n" +
                 "specularColor.xyz *= lightmap.xyz ; \n" +
                 "} \n" +
@@ -9150,14 +9157,14 @@ var egret3d;
             "lightMap_fs": "uniform sampler2D lightTexture ; \n" +
                 "varying vec2 varying_uv1 ; \n" +
                 "vec4 decode_hdr( vec4 data ){ \n" +
-                "vec4 res = data ; \n" +
-                "res.xyz *= pow(2.2,data.w * 256.0 - 128.0); \n" +
-                "return res ; \n" +
+                "data.w = data.w *256.0 - (128.0) ; \n" +
+                "data.w = pow(1.0*data.w,data.w); \n" +
+                "data.xyz *= data.w; \n" +
+                "return data ; \n" +
                 "} \n" +
                 "void main(void){ \n" +
                 "vec4 lightmap = texture2D( lightTexture , varying_uv1 ); \n" +
                 "lightmap.xyz = decode_hdr(lightmap).xyz; \n" +
-                "lightmap.xyz = pow( 1.8 * lightmap.xyz, vec3(1.1)) ; \n" +
                 "diffuseColor.xyz *= lightmap.xyz ; \n" +
                 "} \n",
             "lineFog": "struct Fog{ \n" +
@@ -10701,16 +10708,18 @@ var egret3d;
                 "return normalize(TBN * map); \n" +
                 "} \n" +
                 "void main(void){ \n" +
+                "TBN = cotangentFrame(normal,varying_mvPose.xyz, varying_uv0) ; \n" +
                 "float tempTime = mod(time,100000.0); \n" +
                 "vec2 uvA = uv_0 * waterNormalData[3].x + waterNormalData[0] * tempTime ; \n" +
                 "vec2 uvB = uv_0 * waterNormalData[3].y + waterNormalData[1] * tempTime  ; \n" +
-                "normal = flatNormals(varying_mvPose.xyz) ; \n" +
-                "TBN = cotangentFrame(normal, -varying_mvPose.xyz, uv_0 ); \n" +
-                "vec3 bump1 = texture2D( normalTextureA, uvA ).rgb; \n" +
-                "vec3 bump2 = texture2D( normalTextureB, uvB ).rgb; \n" +
-                "vec3 bump = bump1 + bump2 - 1.0; \n" +
-                "normal = normalize(TBN * bump) ; \n" +
-                "normal.y *= -1.0; \n" +
+                "vec3 bump1 = texture2D( normalTextureA, uvA ).rgb * 2.0-1.0 ; \n" +
+                "bump1.y *= -1.0; \n" +
+                "bump1.xyz = TBN * bump1 ; \n" +
+                "normal.xyz = bump1.xyz ; \n" +
+                "vec3 bump2 = texture2D( normalTextureB, uvB ).rgb * 2.0-1.0 ; \n" +
+                "bump2.y *= -1.0; \n" +
+                "bump2.xyz = TBN * bump2 ; \n" +
+                "normal.xyz = (normal.xyz + bump2.xyz)*0.5 ; \n" +
                 "}  \n",
             "wave_fs": "uniform sampler2D diffuseTexture; \n" +
                 "uniform vec3 uniform_eyepos; \n" +
@@ -12042,8 +12051,6 @@ var egret3d;
     * @classdesc
     * PropertyAnim 类为曲线动画驱动器，类中保存了各个属性对应的数值曲线数据，通过时间计算某个属性在某时刻的属性数值
     *
-    * @version Egret 3.0
-    * @platform Web,Native
     * @includeExample animation/PropertyAnimation/PropertyAnim.ts
     * @version Egret 3.0
     * @platform Web,Native
@@ -30778,6 +30785,27 @@ var egret3d;
             * @platform Web,Native
             */
             this.data = null;
+            /**
+            * @language zh_CN
+            * 任务总数
+            * @version Egret 3.0
+            * @platform Web,Native
+            */
+            this.taskTotal = 0;
+            /**
+            * @language zh_CN
+            * 当前完成的任务个数
+            * @version Egret 3.0
+            * @platform Web,Native
+            */
+            this.taskCurrent = 0;
+            /**
+            * @language zh_CN
+            * 当前进度
+            * @version Egret 3.0
+            * @platform Web,Native
+            */
+            this.currentProgress = 0;
         }
         /**
         * @language zh_CN
@@ -31068,6 +31096,8 @@ var egret3d;
             this._event.total = event.total;
             this._event.loaded = event.loaded;
             this._progressEvent = event;
+            this.currentProgress = event.loaded / event.total;
+            this._event.currentProgress = this.currentProgress;
             this.dispatchEvent(this._event);
         };
         URLLoader.prototype.onError = function (event) {
@@ -31124,6 +31154,7 @@ var egret3d;
             this._event.target = this;
             this._event.loader = this;
             this._event.data = this.data;
+            this._event.currentProgress = this.currentProgress;
             this.dispatchEvent(this._event);
         };
         URLLoader.prototype.disposeXhrEventListener = function () {
@@ -31280,6 +31311,22 @@ var egret3d;
         * @platform Web,Native
         */
         AssetManager.prototype.loadAsset = function (url, callback, thisObject, param) {
+            if (param === void 0) { param = null; }
+            return this.addEventListener(url, egret3d.LoaderEvent3D.LOADER_COMPLETE, callback, thisObject, param);
+        };
+        /**
+        * @language zh_CN
+        * 加载资源接口 并监听事件接口
+        * @param url 资源路径
+        * @param type 事件类型
+        * @param callback 加载完成后的回调
+        * @param thisObject 回调函数的this对象
+        * @param param 附带参数
+        * @returns URLLoader 反回当前加载的URLLoader对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        AssetManager.prototype.addEventListener = function (url, type, callback, thisObject, param) {
             var _this = this;
             if (param === void 0) { param = null; }
             var asset = this._loaderDict[url];
@@ -31292,12 +31339,14 @@ var egret3d;
             var loader = asset.loader;
             if (loader.data) {
                 setTimeout(function () {
-                    _this._loaderEvent.eventType = egret3d.LoaderEvent3D.LOADER_COMPLETE;
+                    _this._loaderEvent.eventType = type;
                     _this._loaderEvent.target = loader;
                     _this._loaderEvent.loader = loader;
                     _this._loaderEvent.data = loader.data;
                     _this._loaderEvent.param = param;
-                    callback.call(thisObject, _this._loaderEvent);
+                    if (callback) {
+                        callback.call(thisObject, _this._loaderEvent);
+                    }
                     _this._loaderEvent.target = null;
                     _this._loaderEvent.loader = null;
                     _this._loaderEvent.data = null;
@@ -31305,7 +31354,9 @@ var egret3d;
                 }, 0);
             }
             else {
-                loader.addEventListener(egret3d.LoaderEvent3D.LOADER_COMPLETE, callback, thisObject, param);
+                if (callback) {
+                    loader.addEventListener(type, callback, thisObject, param);
+                }
             }
             if (asset.objects.indexOf(thisObject) < 0) {
                 asset.objects.push(thisObject);
@@ -31378,13 +31429,14 @@ var egret3d;
 var egret3d;
 (function (egret3d) {
     /**
- * @class egret3d.gui.TextureResourceManager
- * @classdesc
- * gui贴图资源加载管理器,</p>
- * 用于加载由TexturePacker生成的贴图资源</p>
- * @version Egret 3.0
- * @platform Web,Native
- */
+    * @private
+    * @class egret3d.gui.TextureResourceManager
+    * @classdesc
+    * gui贴图资源加载管理器,</p>
+    * 用于加载由TexturePacker生成的贴图资源</p>
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     var TextureResourceManager = (function (_super) {
         __extends(TextureResourceManager, _super);
         function TextureResourceManager() {
@@ -33652,6 +33704,9 @@ var egret3d;
                 case 1:
                     parser = new egret3d.UnitJsonParser_1(data, mapConfigParser);
                     break;
+                default:
+                    parser = new egret3d.UnitJsonParser_1(data, mapConfigParser);
+                    break;
             }
             return parser;
         };
@@ -34405,6 +34460,7 @@ var egret3d;
     * 加载完毕后，会派发事件LoaderEvent3D.LOADER_COMPLETE
     * @see egret3d.ILoader
     *
+    * @includeExample loader/UnitLoader.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -34450,20 +34506,6 @@ var egret3d;
             this._taskCount = 0;
             this._event = new egret3d.LoaderEvent3D();
             this._type = "";
-            /**
-            * @language zh_CN
-            * 任务总数
-            * @version Egret 3.0
-            * @platform Web,Native
-            */
-            this.taskTotal = 0;
-            /**
-            * @language zh_CN
-            * 当前完成的任务个数
-            * @version Egret 3.0
-            * @platform Web,Native
-            */
-            this.taskCurrent = 0;
             this._taskDict = {};
             this._textures = {};
             /**
@@ -34565,9 +34607,12 @@ var egret3d;
             s_pos++;
             this._type = url.substr(s_pos, url.length - s_pos);
             this.taskTotal++;
-            this._taskDict[this.url] = 1;
+            this._taskDict[this.url] = {};
+            this._taskDict[this.url].status = 1;
+            this._taskDict[this.url].currentProgress = 0;
             this.addTask();
             this.loader = egret3d.assetMgr.loadAsset(this.url, this.onConfigLoad, this);
+            egret3d.assetMgr.addEventListener(this.url, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
         };
         /**
         * @language zh_CN
@@ -34581,6 +34626,22 @@ var egret3d;
             if (this.container) {
                 this.container.dispose();
                 this.container = null;
+            }
+        };
+        UnitLoader.prototype.onProgress = function (e) {
+            var load = e.loader;
+            if (this._taskDict[load.url]) {
+                this._taskDict[load.url].currentProgress = load.currentProgress;
+                this.currentProgress = 0;
+                for (var key in this._taskDict) {
+                    this.currentProgress += 1 / this.taskTotal * this._taskDict[key].currentProgress;
+                }
+                this._event.eventType = egret3d.LoaderEvent3D.LOADER_PROGRESS;
+                this._event.target = this;
+                this._event.loader = load;
+                this._event.data = load.data;
+                this._event.currentProgress = this.currentProgress;
+                this.dispatchEvent(this._event);
             }
         };
         UnitLoader.prototype.reset = function () {
@@ -34619,6 +34680,7 @@ var egret3d;
                 parData.particle = this._particleParser.data;
                 parData.type = "shape";
                 var loader = egret3d.assetMgr.loadAsset(path, this.onParticleEsmLoad1, this, parData);
+                egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
             if (this._particleParser.data.property.meshFile) {
                 var path = this._pathRoot + this._particleParser.data.property.meshFile;
@@ -34627,6 +34689,7 @@ var egret3d;
                 parData.particle = this._particleParser.data;
                 parData.type = "property";
                 var loader = egret3d.assetMgr.loadAsset(path, this.onParticleEsmLoad1, this, parData);
+                egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
         };
         UnitLoader.prototype.parseUnit = function () {
@@ -34650,6 +34713,7 @@ var egret3d;
                             var path = this._pathRoot + mapNodeData.path;
                             this.addTask();
                             var loader = egret3d.assetMgr.loadAsset(path, this.onEsmLoad, this, mapNodeData);
+                            egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                         }
                         else if (mapNodeData.geometry) {
                             this.processMesh(mapNodeData, egret3d.GeometryUtil.createGemetryForType(mapNodeData.geometry.type, mapNodeData.geometry));
@@ -34660,9 +34724,24 @@ var egret3d;
                             var path = this._pathRoot + mapNodeData.path;
                             this.addTask();
                             var loader = egret3d.assetMgr.loadAsset(path, this.onHeightImg, this, mapNodeData);
+                            egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                         }
                         break;
                     case "ParticleEmitter":
+                        if (mapNodeData.path) {
+                            var path = this._pathRoot + mapNodeData.path;
+                            //this.addTask();
+                            //var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleXML, this, mapNodeData);
+                            this.addTask();
+                            var unitLoader = new UnitLoader(path);
+                            if (this._configParser.version == 1) {
+                                unitLoader.pathRoot = this._pathRoot;
+                            }
+                            this.unitLoaderList.push(unitLoader);
+                            unitLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_COMPLETE, this.onUnitLoader, this, mapNodeData);
+                            unitLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                        }
+                        break;
                     case "EffectGroup":
                         if (mapNodeData.path) {
                             var path = this._pathRoot + mapNodeData.path;
@@ -34670,9 +34749,10 @@ var egret3d;
                             //var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleXML, this, mapNodeData);
                             this.addTask();
                             var unitLoader = new UnitLoader(path);
-                            unitLoader.pathRoot = this._pathRoot;
+                            //unitLoader.pathRoot = this._pathRoot;
                             this.unitLoaderList.push(unitLoader);
                             unitLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_COMPLETE, this.onUnitLoader, this, mapNodeData);
+                            unitLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                         }
                         break;
                 }
@@ -34682,6 +34762,7 @@ var egret3d;
                 var path = this._pathRoot + data.path;
                 this.addTask();
                 var loader = egret3d.assetMgr.loadAsset(path, this.onTexture, this, data.name);
+                egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
             for (var i = 0; i < this._mapParser.hudList.length; ++i) {
                 var hudData = this._mapParser.hudList[i];
@@ -34709,6 +34790,7 @@ var egret3d;
                 var path = this._pathRoot + hudData.texture;
                 this.addTask();
                 egret3d.assetMgr.loadAsset(path, this.onHudTexture, this, hudData);
+                egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
         };
         UnitLoader.prototype.parseTexturePacker = function () {
@@ -34716,6 +34798,7 @@ var egret3d;
                 var path = this._pathRoot + this._texturePackerParser.data.meta.image;
                 this.addTask();
                 egret3d.assetMgr.loadAsset(path, this.onTexturePackerLoad, this);
+                egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
         };
         UnitLoader.prototype.onTexturePackerLoad = function (e) {
@@ -34729,9 +34812,13 @@ var egret3d;
             if (!this._configParser) {
                 return false;
             }
+            var path = "";
             for (var v in this._configParser.taskDict) {
                 this.taskTotal++;
-                this._taskDict[this._pathRoot + v] = 1;
+                path = this._pathRoot + v;
+                this._taskDict[path] = {};
+                this._taskDict[path].status = 1;
+                this._taskDict[path].currentProgress = 0;
             }
             switch (this._configParser.type) {
                 case egret3d.IConfigParser.TYPE_SCENE:
@@ -34787,6 +34874,7 @@ var egret3d;
                     parData.nodeData = nodeData;
                     parData.type = "shape";
                     var loader = egret3d.assetMgr.loadAsset(path, this.onParticleEsmLoad, this, parData);
+                    egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
                 if (particleData.property.meshFile) {
                     var path = this._pathRoot + particleData.property.meshFile;
@@ -34796,6 +34884,7 @@ var egret3d;
                     parData.nodeData = nodeData;
                     parData.type = "property";
                     var loader = egret3d.assetMgr.loadAsset(path, this.onParticleEsmLoad, this, parData);
+                    egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
             return null;
@@ -34857,6 +34946,7 @@ var egret3d;
                     paramData.grassData = grassData;
                     paramData.mapNodeData = mapNodeData;
                     var loader = egret3d.assetMgr.loadAsset(path, this.onGrassDetailTexture, this, paramData);
+                    egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
             this.processTask(load);
@@ -34909,6 +34999,7 @@ var egret3d;
                     var path = this._pathRoot + data.grassTexture;
                     this.addTask();
                     var loader = egret3d.assetMgr.loadAsset(path, this.onGrassDiffuseTexture, this, grassMesh.material);
+                    egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
             this.processTask(load);
@@ -34970,6 +35061,7 @@ var egret3d;
                     var path = this._pathRoot + propertyAnimsData["path"];
                     this.addTask();
                     var loader = egret3d.assetMgr.loadAsset(path, this.onEpaLoad, this, mapNodeData);
+                    egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
             var propertyAnimController = this.proAnimDict[mapNodeData.propertyAnimsId];
@@ -35017,6 +35109,7 @@ var egret3d;
                 loadData.mapNodeData = mapNodeData;
                 this.addTask();
                 var loader = egret3d.assetMgr.loadAsset(path, this.onEamLoad, this, loadData);
+                egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
             this.doLoadEpa(mapNodeData);
         };
@@ -35197,14 +35290,18 @@ var egret3d;
         };
         UnitLoader.prototype.processTaskCurrent = function (load) {
             if (this._taskDict[load.url]) {
-                this.taskCurrent++;
-                delete this._taskDict[load.url];
+                if (this._taskDict[load.url].status == 1) {
+                    this.taskCurrent++;
+                    this._taskDict[load.url].status = 2;
+                    this._taskDict[load.url].currentProgress = 1;
+                }
             }
-            this._event.eventType = egret3d.LoaderEvent3D.LOADER_PROGRESS;
-            this._event.target = this;
-            this._event.loader = load;
-            this._event.data = load.data;
-            this.dispatchEvent(this._event);
+            //this.currentProgress = this.taskCurrent / this.taskTotal;
+            //this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
+            //this._event.target = this;
+            //this._event.loader = load;
+            //this._event.data = load.data;
+            //this.dispatchEvent(this._event);
         };
         UnitLoader.prototype.processTask = function (load) {
             this.processTaskCurrent(load);
@@ -35215,6 +35312,7 @@ var egret3d;
                 this._event.target = this;
                 this._event.loader = this;
                 this._event.data = this.data;
+                this._event.currentProgress = this.currentProgress;
                 this.dispatchEvent(this._event);
             }
         };
@@ -35300,6 +35398,7 @@ var egret3d;
             textureData.mapNodeData = mapNodeData;
             this.addTask();
             var loader = egret3d.assetMgr.loadAsset(path, this.onMaterialTexture, this, textureData);
+            egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             return load;
         };
         UnitLoader.prototype.addMethodImgTask = function (name, method, textureName) {
@@ -35309,6 +35408,7 @@ var egret3d;
             methodData.textureName = textureName;
             this.addTask();
             var loader = egret3d.assetMgr.loadAsset(path, this.onMethodTexture, this, methodData);
+            egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             return loader;
         };
         UnitLoader.prototype.processMat = function (mapNodeData) {
@@ -35505,6 +35605,7 @@ var egret3d;
                     clip.clip = clip;
                     this.addTask();
                     var loader = egret3d.assetMgr.loadAsset(path, this.onSkinClip, this, clip);
+                    egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
         };
@@ -35523,6 +35624,7 @@ var egret3d;
                     clipData.clip = clip;
                     this.addTask();
                     var loader = egret3d.assetMgr.loadAsset(path, this.onProAnim, this, clipData);
+                    egret3d.assetMgr.addEventListener(path, egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
         };
@@ -37637,6 +37739,13 @@ var egret3d;
             * @platform Web,Native
             */
             this.taskCurrent = 0;
+            /**
+            * @language zh_CN
+            * 当前进度
+            * @version Egret 3.0
+            * @platform Web,Native
+            */
+            this.currentProgress = 0;
             if (url) {
                 this.load(url);
             }
@@ -37675,7 +37784,6 @@ var egret3d;
             return null;
         };
         QueueLoader.prototype.onLoader = function (e) {
-            console.log("queueloader onloaded");
             var loader = e.loader;
             loader.removeEventListener(egret3d.LoaderEvent3D.LOADER_COMPLETE, this.onLoader, this);
             this.taskTotal++;
@@ -39156,6 +39264,8 @@ var egret3d;
             _super.call(this);
             this.vsShaderList[egret3d.ShaderPhaseType.local_vertex] = this.vsShaderList[egret3d.ShaderPhaseType.local_vertex] || [];
             this.vsShaderList[egret3d.ShaderPhaseType.local_vertex].push("secondaryUV_vs");
+            this.fsShaderList[egret3d.ShaderPhaseType.lighting_fragment] = this.fsShaderList[egret3d.ShaderPhaseType.lighting_fragment] || [];
+            this.fsShaderList[egret3d.ShaderPhaseType.lighting_fragment].push("lightingBase_fs");
             if (useSpecularPower) {
                 this.fsShaderList[egret3d.ShaderPhaseType.shadow_fragment] = this.fsShaderList[egret3d.ShaderPhaseType.shadow_fragment] || [];
                 this.fsShaderList[egret3d.ShaderPhaseType.shadow_fragment].push("lightMapSpecularPower_fs");
@@ -39177,7 +39287,7 @@ var egret3d;
                 this.texture = texture;
                 if (this.materialData.lightTexture != this.texture) {
                     this.materialData.lightTexture = this.texture;
-                    this.materialData.lightTexture.useMipmap = false;
+                    this.materialData.lightTexture.useMipmap = true;
                     this.materialData.textureChange = true;
                 }
             },

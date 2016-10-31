@@ -140,6 +140,7 @@
         private progress: any;
         private readystatechange: any;
         private error: any;
+
         /**
          * @language zh_CN
          * 构造函数
@@ -395,6 +396,8 @@
             this._event.total = event.total; 
             this._event.loaded = event.loaded; 
             this._progressEvent = event;
+            this.currentProgress = event.loaded / event.total;
+            this._event.currentProgress = this.currentProgress;
             this.dispatchEvent(this._event);
         }
 
@@ -458,6 +461,7 @@
             this._event.target = this;
             this._event.loader = this;
             this._event.data = this.data;
+            this._event.currentProgress = this.currentProgress;
             this.dispatchEvent(this._event);
 
         }

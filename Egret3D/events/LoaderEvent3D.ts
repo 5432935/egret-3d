@@ -66,6 +66,15 @@
         */
         public loaded: number;
 
+
+        /**
+        * @language zh_CN
+        * 加载进度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public currentProgress: number;
+
        // addEventListener(type: "abort", listener: (ev: Event) => any, useCapture?: boolean): void;
        // addEventListener(type: "error", listener: (ev: ErrorEvent) => any, useCapture?: boolean): void;
         //addEventListener(type: "load", listener: (ev: Event) => any, useCapture?: boolean): void;

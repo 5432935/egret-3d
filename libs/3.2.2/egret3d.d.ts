@@ -3880,6 +3880,13 @@ declare module egret3d {
         * @platform Web,Native
         */
         loaded: number;
+        /**
+        * @language zh_CN
+        * 加载进度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        currentProgress: number;
     }
 }
 declare module egret3d {
@@ -5500,8 +5507,6 @@ declare module egret3d {
     * @classdesc
     * PropertyAnim 类为曲线动画驱动器，类中保存了各个属性对应的数值曲线数据，通过时间计算某个属性在某时刻的属性数值
     *
-    * @version Egret 3.0
-    * @platform Web,Native
     * @includeExample animation/PropertyAnimation/PropertyAnim.ts
     * @version Egret 3.0
     * @platform Web,Native
@@ -14629,6 +14634,27 @@ declare module egret3d {
         data: any;
         /**
         * @language zh_CN
+        * 任务总数
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        taskTotal: number;
+        /**
+        * @language zh_CN
+        * 当前完成的任务个数
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        taskCurrent: number;
+        /**
+        * @language zh_CN
+        * 当前进度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        currentProgress: number;
+        /**
+        * @language zh_CN
         * 构造
         * @version Egret 3.0
         * @platform Web,Native
@@ -14891,6 +14917,19 @@ declare module egret3d {
         loadAsset(url: string, callback: Function, thisObject: any, param?: any): URLLoader;
         /**
         * @language zh_CN
+        * 加载资源接口 并监听事件接口
+        * @param url 资源路径
+        * @param type 事件类型
+        * @param callback 加载完成后的回调
+        * @param thisObject 回调函数的this对象
+        * @param param 附带参数
+        * @returns URLLoader 反回当前加载的URLLoader对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        addEventListener(url: string, type: string, callback: Function, thisObject: any, param?: any): URLLoader;
+        /**
+        * @language zh_CN
         * 查找资源数据
         * @param url 资源路径
         * @param thisObject 资源引用对象 默认为null
@@ -14919,13 +14958,14 @@ declare module egret3d {
 }
 declare module egret3d {
     /**
- * @class egret3d.gui.TextureResourceManager
- * @classdesc
- * gui贴图资源加载管理器,</p>
- * 用于加载由TexturePacker生成的贴图资源</p>
- * @version Egret 3.0
- * @platform Web,Native
- */
+    * @private
+    * @class egret3d.gui.TextureResourceManager
+    * @classdesc
+    * gui贴图资源加载管理器,</p>
+    * 用于加载由TexturePacker生成的贴图资源</p>
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     class TextureResourceManager extends egret3d.EventDispatcher {
         private _textureDic;
         private _count;
@@ -15364,6 +15404,7 @@ declare module egret3d {
     * 加载完毕后，会派发事件LoaderEvent3D.LOADER_COMPLETE
     * @see egret3d.ILoader
     *
+    * @includeExample loader/UnitLoader.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -15477,20 +15518,6 @@ declare module egret3d {
         private _event;
         private _type;
         /**
-        * @language zh_CN
-        * 任务总数
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        taskTotal: number;
-        /**
-        * @language zh_CN
-        * 当前完成的任务个数
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        taskCurrent: number;
-        /**
         * @private
         * @language zh_CN
         * @version Egret 3.0
@@ -15562,6 +15589,7 @@ declare module egret3d {
         * @platform Web,Native
         */
         dispose(): void;
+        protected onProgress(e: LoaderEvent3D): void;
         private reset();
         private parseParticle();
         private parseUnit();
@@ -16565,6 +16593,13 @@ declare module egret3d {
         * @platform Web,Native
         */
         taskCurrent: number;
+        /**
+        * @language zh_CN
+        * 当前进度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        currentProgress: number;
         /**
         * @language zh_CN
         * 加载文件  可以为任意文件

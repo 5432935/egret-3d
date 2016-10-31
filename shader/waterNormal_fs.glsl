@@ -26,16 +26,20 @@ vec3 tbn(vec3 map, vec3 N, vec3 V, vec2 texcoord) {
 }
 
 void main(void){
-    
+
+    TBN = cotangentFrame(normal,varying_mvPose.xyz, varying_uv0) ;
     float tempTime = mod(time,100000.0); 
     vec2 uvA = uv_0 * waterNormalData[3].x + waterNormalData[0] * tempTime ; 
     vec2 uvB = uv_0 * waterNormalData[3].y + waterNormalData[1] * tempTime  ; 
 
-    normal = flatNormals(varying_mvPose.xyz) ;
-	TBN = cotangentFrame(normal, -varying_mvPose.xyz, uv_0 ); 
-	vec3 bump1 = texture2D( normalTextureA, uvA ).rgb;
-	vec3 bump2 = texture2D( normalTextureB, uvB ).rgb;
-	vec3 bump = bump1 + bump2 - 1.0;
-	normal = normalize(TBN * bump) ; 
-    normal.y *= -1.0; 
+    vec3 bump1 = texture2D( normalTextureA, uvA ).rgb * 2.0-1.0 ; 
+    bump1.y *= -1.0;
+    bump1.xyz = TBN * bump1 ; 
+    normal.xyz = bump1.xyz ;
+    
+    vec3 bump2 = texture2D( normalTextureB, uvB ).rgb * 2.0-1.0 ; 
+    bump2.y *= -1.0;
+    bump2.xyz = TBN * bump2 ; 
+    normal.xyz = (normal.xyz + bump2.xyz)*0.5 ;
+    
 } 

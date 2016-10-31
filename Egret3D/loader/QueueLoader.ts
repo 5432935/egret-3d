@@ -39,6 +39,14 @@
 
         /**
         * @language zh_CN
+        * 当前进度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public currentProgress: number = 0;
+
+        /**
+        * @language zh_CN
         * 加载文件  可以为任意文件
         * @param url 默认参数为null  文件路径
         * @version Egret 3.0
@@ -88,7 +96,6 @@
         }
 
         protected onLoader(e: LoaderEvent3D) {
-            console.log("queueloader onloaded");
             var loader: ILoader = e.loader;
 
             loader.removeEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoader, this);

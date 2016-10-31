@@ -29,6 +29,9 @@
             this.vsShaderList[ShaderPhaseType.local_vertex] = this.vsShaderList[ShaderPhaseType.local_vertex] || [];
             this.vsShaderList[ShaderPhaseType.local_vertex].push("secondaryUV_vs");
 
+            this.fsShaderList[ShaderPhaseType.lighting_fragment] = this.fsShaderList[ShaderPhaseType.lighting_fragment] || [];
+            this.fsShaderList[ShaderPhaseType.lighting_fragment].push("lightingBase_fs");
+            
             if (useSpecularPower){
                 this.fsShaderList[ShaderPhaseType.shadow_fragment] = this.fsShaderList[ShaderPhaseType.shadow_fragment] || [];
                 this.fsShaderList[ShaderPhaseType.shadow_fragment].push("lightMapSpecularPower_fs");
@@ -49,7 +52,7 @@
             this.texture = texture;
             if (this.materialData.lightTexture != this.texture) {
                 this.materialData.lightTexture = this.texture;
-                this.materialData.lightTexture.useMipmap = false;
+                this.materialData.lightTexture.useMipmap = true;
                 this.materialData.textureChange = true;
             }
         }

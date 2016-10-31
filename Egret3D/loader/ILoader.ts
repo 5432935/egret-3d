@@ -39,6 +39,30 @@
 
         /**
         * @language zh_CN
+        * 任务总数
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public taskTotal: number = 0;
+
+        /**
+        * @language zh_CN
+        * 当前完成的任务个数
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public taskCurrent: number = 0;
+
+        /**
+        * @language zh_CN
+        * 当前进度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public currentProgress: number = 0;
+
+        /**
+        * @language zh_CN
         * 构造
         * @version Egret 3.0
         * @platform Web,Native

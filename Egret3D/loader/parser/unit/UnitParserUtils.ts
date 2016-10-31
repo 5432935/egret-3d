@@ -79,6 +79,9 @@
                 case 1:
                     parser = new UnitJsonParser_1(data, mapConfigParser);
                     break;
+                default:
+                    parser = new UnitJsonParser_1(data, mapConfigParser);
+                    break;
             }
 
             return parser;

@@ -9,6 +9,7 @@
     * 加载完毕后，会派发事件LoaderEvent3D.LOADER_COMPLETE
     * @see egret3d.ILoader
     *
+    * @includeExample loader/UnitLoader.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -146,22 +147,6 @@
         private _type: string = "";
 
         /**
-        * @language zh_CN
-        * 任务总数
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public taskTotal: number = 0;
-
-        /**
-        * @language zh_CN
-        * 当前完成的任务个数
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public taskCurrent: number = 0;
-
-        /**
         * @private
         * @language zh_CN
         * @version Egret 3.0
@@ -257,10 +242,13 @@
             this._type = url.substr(s_pos, url.length - s_pos);
 
             this.taskTotal++;
-            this._taskDict[this.url] = 1;
+            this._taskDict[this.url] = {};
+            this._taskDict[this.url].status = 1;
+            this._taskDict[this.url].currentProgress = 0;
 
             this.addTask();
             this.loader = assetMgr.loadAsset(this.url, this.onConfigLoad, this);
+            assetMgr.addEventListener(this.url, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
         }
 
         /**
@@ -275,6 +263,25 @@
             if (this.container) {
                 this.container.dispose();
                 this.container = null;
+            }
+        }
+
+        protected onProgress(e: LoaderEvent3D) {
+            var load: ILoader = e.loader;
+            if (this._taskDict[load.url]) {
+                this._taskDict[load.url].currentProgress = load.currentProgress;
+                this.currentProgress = 0;
+                for (var key in this._taskDict) {
+                    this.currentProgress += 1 / this.taskTotal * this._taskDict[key].currentProgress;
+                }
+
+                this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
+                this._event.target = this;
+
+                this._event.loader = load;
+                this._event.data = load.data;
+                this._event.currentProgress = this.currentProgress;
+                this.dispatchEvent(this._event);
             }
         }
 
@@ -322,6 +329,7 @@
                 parData.type = "shape";
 
                 var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleEsmLoad1, this, parData);
+                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
 
             if (this._particleParser.data.property.meshFile) {
@@ -331,6 +339,7 @@
                 parData.particle = this._particleParser.data;
                 parData.type = "property";
                 var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleEsmLoad1, this, parData);
+                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
         }
 
@@ -358,6 +367,7 @@
 
                             this.addTask();
                             var loader: URLLoader = assetMgr.loadAsset(path, this.onEsmLoad, this, mapNodeData);
+                            assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                         }
                         else if (mapNodeData.geometry) {
                             this.processMesh(mapNodeData, GeometryUtil.createGemetryForType(mapNodeData.geometry.type, mapNodeData.geometry));
@@ -369,9 +379,27 @@
 
                             this.addTask();
                             var loader: URLLoader = assetMgr.loadAsset(path, this.onHeightImg, this, mapNodeData);
+                            assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                         }
                         break;
                     case "ParticleEmitter":
+                        if (mapNodeData.path) {
+                            var path: string = this._pathRoot + mapNodeData.path;
+
+                            //this.addTask();
+                            //var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleXML, this, mapNodeData);
+
+                            this.addTask();
+                            var unitLoader: UnitLoader = new UnitLoader(path);
+                            if (this._configParser.version == 1) {
+                                unitLoader.pathRoot = this._pathRoot;
+                            }
+
+                            this.unitLoaderList.push(unitLoader);
+                            unitLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onUnitLoader, this, mapNodeData);
+                            unitLoader.addEventListener(LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                        }
+                        break;
                     case "EffectGroup":
                         if (mapNodeData.path) {
                             var path: string = this._pathRoot + mapNodeData.path;
@@ -381,10 +409,11 @@
 
                             this.addTask();
                             var unitLoader: UnitLoader = new UnitLoader(path);
-                            unitLoader.pathRoot = this._pathRoot;
+                            //unitLoader.pathRoot = this._pathRoot;
 
                             this.unitLoaderList.push(unitLoader);
                             unitLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onUnitLoader, this, mapNodeData);
+                            unitLoader.addEventListener(LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                         }
                         break;
                 }
@@ -396,6 +425,7 @@
 
                 this.addTask();
                 var loader: URLLoader = assetMgr.loadAsset(path, this.onTexture, this, data.name);
+                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
 
             for (var i: number = 0; i < this._mapParser.hudList.length; ++i) {
@@ -429,6 +459,7 @@
                 var path: string = this._pathRoot + hudData.texture;
                 this.addTask();
                 assetMgr.loadAsset(path, this.onHudTexture, this, hudData);
+                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
         }
 
@@ -437,6 +468,7 @@
                 var path: string = this._pathRoot + this._texturePackerParser.data.meta.image;
                 this.addTask();
                 assetMgr.loadAsset(path, this.onTexturePackerLoad, this);
+                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
         }
 
@@ -453,9 +485,14 @@
                 return false;
             }
 
+            var path: string = "";
+
             for (var v in this._configParser.taskDict) {
                 this.taskTotal++;
-                this._taskDict[this._pathRoot + v] = 1;
+                path = this._pathRoot + v;
+                this._taskDict[path] = {};
+                this._taskDict[path].status = 1;
+                this._taskDict[path].currentProgress = 0;
             }
 
             switch (this._configParser.type) {
@@ -522,6 +559,7 @@
                     parData.type = "shape";
 
                     var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleEsmLoad, this, parData);
+                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
 
                 if (particleData.property.meshFile) {
@@ -536,6 +574,7 @@
                     parData.type = "property";
 
                     var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleEsmLoad, this, parData);
+                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
 
@@ -612,6 +651,7 @@
                     paramData.grassData = grassData;
                     paramData.mapNodeData = mapNodeData;
                     var loader: URLLoader = assetMgr.loadAsset(path, this.onGrassDetailTexture, this, paramData);
+                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
 
@@ -675,6 +715,7 @@
                     var path: string = this._pathRoot + data.grassTexture;
                     this.addTask();
                     var loader: URLLoader = assetMgr.loadAsset(path, this.onGrassDiffuseTexture, this, grassMesh.material);
+                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
 
@@ -749,6 +790,7 @@
 
                     this.addTask();
                     var loader: URLLoader = assetMgr.loadAsset(path, this.onEpaLoad, this, mapNodeData);
+                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
 
@@ -811,6 +853,7 @@
 
                 this.addTask();
                 var loader: URLLoader = assetMgr.loadAsset(path, this.onEamLoad, this, loadData);
+                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
             }
 
             this.doLoadEpa(mapNodeData);
@@ -1029,15 +1072,23 @@
 
         private processTaskCurrent(load: ILoader) {
             if (this._taskDict[load.url]) {
-                this.taskCurrent++;
-                delete this._taskDict[load.url];
+                if (this._taskDict[load.url].status == 1) {
+                    this.taskCurrent++;
+                    this._taskDict[load.url].status = 2;
+                    this._taskDict[load.url].currentProgress = 1;
+                }
+                
+                //delete this._taskDict[load.url];
             }
-            this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
-            this._event.target = this;
 
-            this._event.loader = load;
-            this._event.data = load.data;
-            this.dispatchEvent(this._event);
+            //this.currentProgress = this.taskCurrent / this.taskTotal;
+
+            //this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
+            //this._event.target = this;
+
+            //this._event.loader = load;
+            //this._event.data = load.data;
+            //this.dispatchEvent(this._event);
         }
 
         private processTask(load: ILoader) {
@@ -1052,6 +1103,7 @@
                 this._event.target = this;
                 this._event.loader = this;
                 this._event.data = this.data;
+                this._event.currentProgress = this.currentProgress;
                 this.dispatchEvent(this._event);
             }
         }
@@ -1154,6 +1206,7 @@
 
             this.addTask();
             var loader: URLLoader = assetMgr.loadAsset(path, this.onMaterialTexture, this, textureData);
+            assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
 
             return load;
         }
@@ -1167,6 +1220,7 @@
 
             this.addTask();
             var loader: URLLoader = assetMgr.loadAsset(path, this.onMethodTexture, this, methodData);
+            assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
 
             return loader;
         }
@@ -1420,6 +1474,7 @@
                     clip.clip = clip;
                     this.addTask();
                     var loader: URLLoader = assetMgr.loadAsset(path, this.onSkinClip, this, clip);
+                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
         }
@@ -1443,6 +1498,7 @@
                     clipData.clip = clip;
                     this.addTask();
                     var loader: URLLoader = assetMgr.loadAsset(path, this.onProAnim, this, clipData);
+                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
         }

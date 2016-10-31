@@ -6,8 +6,6 @@ module egret3d {
     * @classdesc
     * PropertyAnim 类为曲线动画驱动器，类中保存了各个属性对应的数值曲线数据，通过时间计算某个属性在某时刻的属性数值
     * 
-    * @version Egret 3.0
-    * @platform Web,Native
     * @includeExample animation/PropertyAnimation/PropertyAnim.ts
     * @version Egret 3.0
     * @platform Web,Native

@@ -1,5 +1,7 @@
 ﻿module egret3d {
-       /**
+
+    /**
+    * @private
     * @class egret3d.gui.TextureResourceManager
     * @classdesc
     * gui贴图资源加载管理器,</p>
