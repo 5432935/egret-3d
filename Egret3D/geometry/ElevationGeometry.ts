@@ -4,8 +4,10 @@
     * @class egret3d.ElevationGeometry
     * @classdesc
     * 使用高度图创建Geometry
+    * 高度图的一个任意一个通道 算出0.0 - 1.0 值  然后乘以 height 就是当前顶点高度值
     * @version Egret 3.0
     * @platform Web,Native
+    * @includeExample geometry/CubeGeometry.ts
     */
     export class ElevationGeometry extends Geometry {
 
@@ -30,8 +32,52 @@
 
         /**
         * @language zh_CN
+        * 得到宽度
+        * @returns {ImageTexture} 宽度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get width(): number {
+            return this._width;
+        }
+
+        /**
+        * @language zh_CN
+        * 得到高度
+        * @returns {ImageTexture} 高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get height(): number {
+            return this._height;
+        }
+
+        /**
+        * @language zh_CN
+        * 得到深度
+        * @returns {ImageTexture} 深度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get depth(): number {
+            return this._depth;
+        }
+
+        /**
+        * @language zh_CN
+        * 得到高度图
+        * @returns {ImageTexture} 高度图
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get heightmap(): ImageTexture {
+            return this._heightmap;
+        }
+
+        /**
+        * @language zh_CN
         * 得到格子列数
-        * @returns number
+        * @returns {number} 格子列数
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -42,7 +88,7 @@
         /**
         * @language zh_CN
         * 得到格子行数
-        * @returns number
+        * @returns {number} 格子行数
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -53,14 +99,15 @@
         /**
         * @language zh_CN
         * 构造函数
-        * @param heightmap 高度图
-        * @param width 地形宽度 默认1000
-        * @param height 地形主度 默认100
-        * @param depth 地形长度 默认1000
-        * @param segmentsW 格子列 默认30
-        * @param segmentsH 格子行 默认30
-        * @param maxElevation 高度最大值 默认255
-        * @param minElevation 高度最小值 默认0
+       
+        * @param heightmap {ImageTexture} 高度图
+        * @param width {number} 地形宽度 默认1000
+        * @param height {number} 地形主度 默认100
+        * @param depth {number} 地形长度 默认1000
+        * @param segmentsW {number} 格子列 默认30
+        * @param segmentsH {number} 格子行 默认30
+        * @param maxElevation {number} 高度最大值 默认255
+        * @param minElevation {number} 高度最小值 默认0
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -160,9 +207,10 @@
        * @language zh_CN
        * @private
        * 根据像素点获取高度
-       * @param intX 像素整形位置X
-       * @param intZ 像素整形位置Z
-       * @return number 指定位置的高度
+     
+       * @param intX {number} 像素整形位置X
+       * @param intZ {number} 像素整形位置Z
+       * @returns {number} 指定位置的高度
        * @version Egret 3.0
        * @platform Web,Native
        */
@@ -188,9 +236,9 @@
         * @language zh_CN
         * @private
         * 获取像素点颜色
-        * @param intX 像素浮点位置X
-        * @param intZ 像素浮点位置Z
-        * @return number 颜色值
+        * @param intX {number} 像素浮点位置X
+        * @param intZ {number} 像素浮点位置Z
+        * @returns {number} 颜色值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -212,11 +260,11 @@
         /**
         * @language zh_CN
         * 根据像素浮点位置获取3D场景的位置(需要插值计算)
-        * @param floatX 像素浮点位置X
-        * @param floatZ 像素浮点位置Z
-        * @param imageWidth 所在图片的宽度
-        * @param imageHeight 所在图片的高度
-        * @return Vector3D 场景中的3D坐标
+        * @param floatX {number} 像素浮点位置X
+        * @param floatZ {number} 像素浮点位置Z
+        * @param imageWidth {number} 所在图片的宽度
+        * @param imageHeight {number} 所在图片的高度
+        * @returns {Vector3D} 场景中的3D坐标
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -240,9 +288,9 @@
         /**
         * @language zh_CN
         * 根据3D场景中的浮点位置X和Z获取高度Y
-        * @param floatX 像素浮点位置X
-        * @param floatZ 像素浮点位置Z
-        * @return number 指定位置的高度
+        * @param floatX {number} 像素浮点位置X
+        * @param floatZ {number} 像素浮点位置Z
+        * @return {number} 指定位置的高度
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -282,7 +330,7 @@
             y0 = MathUtil.mix(y0, y1, ty);
 
             return y0;
-           
+
         }
 
 

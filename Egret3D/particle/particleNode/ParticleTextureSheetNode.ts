@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleTextureSheetNode
     * @classdesc
     * uv序列帧

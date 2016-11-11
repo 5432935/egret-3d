@@ -10,11 +10,11 @@
     * ESM, EAM, ECA, EPA 等egret3d独有的模型文件,动作文件,相机动画文件, 属性动画文件
     * ESM: Geometry
     * EAM: SkeletonAnimationClip
-    * ECA: CameraAnimationController
     * EPA: PropertyAnim
-    * @includeExample loader/URLLoader.ts
     * @see egret3d.ILoader
+    * @see egret3d.LoaderEvent3D
     *
+    * @includeExample loader/URLLoader.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -137,6 +137,24 @@
         */
         public static DATAFORMAT_HDR: string = "hdr";
 
+        /**
+        * @private
+        * @language zh_CN
+        * 以json格式接收加载的数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static DATAFORMAT_JSON: string = "json";
+
+        /**
+        * @private
+        * @language zh_CN
+        * 以xml格式接收加载的数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static DATAFORMAT_XML: string = "xml";
+
         private progress: any;
         private readystatechange: any;
         private error: any;
@@ -153,10 +171,7 @@
         constructor(url: string = null, dataformat: string = null) {
             super();
             if (url) {
-                if (dataformat) {
-                    this.dataformat = dataformat;
-                }
-                this.load(url);
+                this.load(url, dataformat);
             }
         }
 
@@ -167,12 +182,17 @@
          * @language zh_CN
          * 加载目标地址的数据
          * @param url 数据地址
+         * @param dataformat 以什么方式进行加载.如果为空的话.将通过目标文件的后缀名判断,
+         * 如果为空且文件后缀不为内置支持的集中文件类型的话.将以文本格式进行加载解析
          * @version Egret 3.0
          * @platform Web,Native
          */
-        public load(url: string) {
+        public load(url: string, dataformat:string = null) {
             this.data = null;
             this.url = url;
+
+
+            this.dataformat = dataformat;
 
             if (null == this._dataformat) {
 
@@ -180,9 +200,9 @@
 
                 var endPos: number = this.url.lastIndexOf(".");
                 var startPos: number = this.url.lastIndexOf("/");
-
-
-                if (this.url.length >= 4) switch (this.url.substr(this.url.length - 4, 4).toLowerCase()) {
+                var fileFormat: string = this.url.substr(endPos, this.url.length - endPos);
+                fileFormat = fileFormat.toLowerCase();
+                switch (fileFormat) {
                     case ".dds":
                         this._dataformat = URLLoader.DATAFORMAT_DDS;
                         break;
@@ -201,7 +221,7 @@
                     case ".hdr":
                         this._dataformat = URLLoader.DATAFORMAT_HDR;
                         break;
-                    case "glsl":
+                    case ".glsl":
                         this._dataformat = URLLoader.DATAFORMAT_TEXT;
                         break;
                     case ".pvr":
@@ -218,6 +238,12 @@
                         break;
                     case ".epa":
                         this._dataformat = URLLoader.DATAFORMAT_EPA;
+                        break;
+                    case ".json":
+                        this._dataformat = URLLoader.DATAFORMAT_JSON;
+                        break;
+                    case ".xml":
+                        this._dataformat = URLLoader.DATAFORMAT_XML;
                         break;
                 }
             }
@@ -243,11 +269,13 @@
             this._xhr.addEventListener("progress", this.progress, false);
             this._xhr.addEventListener("readystatechange", this.readystatechange, false);
             this._xhr.addEventListener("error", this.error, false);
-            //this._xhr.addEventListener("loadstart", this.loadstart, false);
 
             if (this.dataformat == URLLoader.DATAFORMAT_BITMAP) {
                 this._xhr.responseType = "blob";
-            } else if (this.dataformat != URLLoader.DATAFORMAT_TEXT) {
+            }
+            else if (this.dataformat != URLLoader.DATAFORMAT_TEXT &&
+                this.dataformat != URLLoader.DATAFORMAT_JSON &&
+                this.dataformat != URLLoader.DATAFORMAT_XML) {
                 this._xhr.responseType = "arraybuffer";
             }
             this._xhr.send();
@@ -277,7 +305,6 @@
          */
         public set dataformat(value: string) {
             this._dataformat = value;
-
         }
 
         /**
@@ -304,7 +331,13 @@
         */
         public tempData: any;
 
-
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public unitNodeData: UnitLoader;
         /**
         * @language zh_CN
         * 已经获取到的字节数
@@ -372,7 +405,7 @@
                     this.checkTexture(this.data);
                     break;
                 case URLLoader.DATAFORMAT_ESM:
-                    this.data = ESMParser.parse(this._xhr.response);
+                    this.data = ESMParser.parse(this._xhr.response, this.unitNodeData);
                     break;
                 case URLLoader.DATAFORMAT_EAM:
                     this.data = EAMParser.parse(this._xhr.response);
@@ -382,6 +415,12 @@
                     break;
                 case URLLoader.DATAFORMAT_EPA:
                     this.data = EPAParser.parse(this._xhr.response);
+                    break;
+                case URLLoader.DATAFORMAT_XML:
+                    this.data = XMLParser.parse(this._xhr.responseText);
+                    break;
+                case URLLoader.DATAFORMAT_JSON:
+                    this.data = eval("(" + this._xhr.responseText +")");
                     break;
                 default:
                     this.data = this._xhr.responseText;
@@ -457,11 +496,14 @@
         protected doLoadComplete() {
             this.disposeXhrEventListener();
             this.resourceName = StringUtil.getURLName(this.url);
-            this._event.eventType = LoaderEvent3D.LOADER_COMPLETE;
+            this._event.eventType = LoaderEvent3D.LOADER_ONCE_COMPLETE;
             this._event.target = this;
             this._event.loader = this;
             this._event.data = this.data;
             this._event.currentProgress = this.currentProgress;
+            this.dispatchEvent(this._event);
+
+            this._event.eventType = LoaderEvent3D.LOADER_COMPLETE;
             this.dispatchEvent(this._event);
 
         }

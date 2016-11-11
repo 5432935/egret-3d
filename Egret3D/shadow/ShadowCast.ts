@@ -12,6 +12,7 @@
     * 可以进行调节阴影摄像机的 位置 和 其它参数来进行处理,
     * this.directLight 当前渲染阴影的灯光,
     * this.shadowCamera 当前渲染阴影的摄像机
+    * @includeExample shadow/Shadow.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -62,7 +63,7 @@
 
         /**
         * @language zh_CN
-        * 阴影渲染器z
+        * 投射阴影的平行光对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -80,7 +81,8 @@
             this.shadowRender.name = PassType.shadowPass.toString() ;
             this.shadowRender.camera = this.shadowCamera ; 
             this.shadowRender.setRenderToTexture(this.textureSizeWidth, this.textureSizeHeight, FrameBufferFormat.UNSIGNED_BYTE_RGBA);
-            this.castShadowLight(new DirectLight(new Vector3D(0, -1, 1)));
+           
+            this.castShadowLight(view.sunLight);
 
             var v: Vector3D = MathUtil.CALCULATION_VECTOR3D;
             v.copyFrom(this.directLight.dir);
@@ -109,7 +111,7 @@
         * 如需要渲染阴影必须先设置当前阴影灯光，暂支持方向光
         * 灯光中的变换会用于阴影像机的变换
         * 注意:在阴影摄像机视锥中的物体,阴影才会渲染.
-        * @param light 实例返回
+        * @param light 阴影灯光
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -121,12 +123,12 @@
             light.addChild(this.shadowCamera);
         }
 
-        ///**
-        //* @private
-        //* @language zh_CN
-        //* @version Egret 3.0
-        //* @platform Web,Native
-        //*/
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public update(entityCollect: EntityCollect, time:number, delay:number ) {
               this.calculateBoundBox(entityCollect);
               //Egret3DCanvas.context3DProxy.clearColor(1.0,1.0,1.0,1.0);

@@ -40,39 +40,79 @@
             this.passes[PassType.diffusePass] = [this._fakePBR];
         }
 
-        //albedoTex;
+         /**
+         * @language zh_CN
+         * 设置albedo贴图
+         * @param tex 指定的贴图对象
+         * @version Egret 3.0
+         * @platform Web,Native
+         */
         public set albedoTexture(tex: ITexture) {
             this._fakePBR.setTexture("albedoTex", tex );
         }
-        //normalTex;
+         /**
+         * @language zh_CN
+         * 设置normal贴图
+         * @param tex 指定的贴图对象
+         * @version Egret 3.0
+         * @platform Web,Native
+         */
         public set normalTexture(tex: ITexture) {
             this._fakePBR.setTexture("normalTex", tex);
         }
-        //glossTex;
+
+        /**
+        * @language zh_CN
+        * 设置gloss贴图
+        * @param tex 指定的贴图对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set glossTexture(tex: ITexture) {
             this._fakePBR.setTexture("glossTex", tex);
         }
-        //specularTex;
+
+        /**
+        * @language zh_CN
+        * 设置specular贴图
+        * @param tex 指定的贴图对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set specularTexture(tex: ITexture) {
             this._fakePBR.setTexture("specularTex", tex);
         }
-        //opacityTex;
+
+        /**
+        * @language zh_CN
+        * 设置opacity贴图
+        * @param tex 指定的贴图对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set opacityTexture(tex: ITexture) {
             this._fakePBR.setTexture("opacityTex ", tex);
         }
-        //reflectionMapTex;
+
+        /**
+        * @language zh_CN
+        * 设置reflection贴图
+        * @param tex 指定的贴图对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set reflectionTexture(tex: ITexture) {
             this._fakePBR.setTexture("reflectionMap", tex);
         }
 
         /**
-         * @language zh_CN
-         * 克隆方法。
-         * 将材质球克隆一份，公用shader着色器和贴图，不公用参数
-         * @returns {TextureMaterial}
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 克隆方法。
+        * 将材质球克隆一份，公用shader着色器和贴图，不公用参数
+        * @returns {TextureMaterial}
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public clone(): TextureMaterial {
             var mat: TextureMaterial = new TextureMaterial(this.diffuseTexture, this.materialData.clone());
             return mat;

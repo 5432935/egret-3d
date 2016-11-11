@@ -14,7 +14,7 @@
             var geometery: SphereGeometry = new SphereGeometry();
             this.cube = new Mesh(geometery);
 
-            this.cube.pickType = PickType.PositionPick;
+            this.cube.pickType = PickType.UVPick;
             this.cube.enablePick = true;
             this.cube.addEventListener(PickEvent3D.PICK_DOWN, this.onMouseDown, this);
             this.cube.addEventListener(PickEvent3D.PICK_UP, this.onMouseUp, this);
@@ -29,10 +29,8 @@
             this.cameraCtl.distance = 1000;
             this.cameraCtl.rotationX = 60;
 
-
             this._egret3DCanvas.addView3D(this.view1);
             this.view1.addChild3D(this.cube);
-
 
 
             var bgImg: HTMLImageElement = <HTMLImageElement>document.getElementById("bg");
@@ -49,23 +47,26 @@
             this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
         }
 
-        private onMouseDown(code: PickEvent3D): void {
+        private onMouseDown(e: PickEvent3D): void {
             console.log("OnMouseDown");
+
             this.cube.scaleX++;
             this.cube.scaleY = this.cube.scaleZ = this.cube.scaleX;
 
         }
 
-        private onMouseUp(code: PickEvent3D): void {
+        private onMouseUp(e: PickEvent3D): void {
             console.log("onMouseUp");
         }
 
-        private onClick(code: PickEvent3D): void {
+        private onClick(e: PickEvent3D): void {
             console.log("onClick");
         }
 
         private onMouseMove(e: PickEvent3D): void {
             console.log("onMouseMove" + this.moveIndex++);
+            var object3d: Object3D = <Object3D>e.target;
+            object3d.rotationY++;
         }
 
         public update(e: Event3D) {

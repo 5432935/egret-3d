@@ -1,17 +1,18 @@
 ﻿module egret3d {
     /**
-     * @language zh_CN
-     * @class egret3d.Ray
-     * @classdesc
-     * 射线是指直线上的一点和它一旁的部分所组成的直线，射线有且仅有一个端点，无法测量，由一个原点,和一个方向构成
-     * 用于检测射线,也可用于鼠标拣选场景中的模型
-     *
-     * @see egret3d.Picker
-     * @see egret3d.Vector3D
-     *
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.Ray
+    * @classdesc
+    * 射线是指直线上的一点和它一旁的部分所组成的直线，射线有且仅有一个端点，无法测量，由一个原点,和一个方向构成
+    * 用于检测射线,也可用于鼠标拣选场景中的模型
+    *
+    * @see egret3d.Picker
+    * @see egret3d.Vector3D
+    *
+    * @includeExample geom/Ray.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class Ray {
         protected static v0: Vector3D = new Vector3D();
         protected static v1: Vector3D = new Vector3D();
@@ -125,7 +126,6 @@
         * @private
         */
         protected static transformCenter: Vector3D = new Vector3D();
-
         /**
         * @language zh_CN
         * 计算射线是否和球相交
@@ -138,8 +138,16 @@
         * @platform Web,Native
         */
         public IntersectSphere(center: Vector3D, radius: number, ret: number[] = null, transform: Matrix4_4 = null): number[]{
+
             ret = ret || [];
             Ray.transformCenter.copyFrom(center);
+
+            Ray.v0.copyFrom(Vector3D.X_AXIS);
+            Ray.v0.scaleBy(radius);
+            Ray.v0.add(Ray.transformCenter, Ray.v0);
+            transform.mat3TransformVector(Ray.v0, Ray.v0);
+            Ray.v0.subtract(Ray.transformCenter, Ray.v0);
+            radius = Ray.v0.length;
 
             if (transform) {
                 transform.transformVector(center, Ray.transformCenter);
@@ -211,6 +219,14 @@
             return this.IntersectMesh(renderItem.geometry.vertexArray, renderItem.geometry.indexArray, renderItem.geometry.vertexAttLength, renderItem.geometry.faceCount, uv_offset, renderItem.modelMatrix, result);
         }
                         
+        
+
+        protected static modletriangle: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
+        protected static uvarray: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
+        protected static triangle: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
+        protected static ret: number[] = [0, 0, 0];
+        protected static pos: Vector3D = new Vector3D();
+        protected static uv: Point = new Point();
         /**
         * @language zh_CN
         * 检测射线相交模型
@@ -225,14 +241,6 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-
-        protected static modletriangle: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
-        protected static uvarray: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
-        protected static triangle: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
-        protected static ret: number[] = [0, 0, 0];
-        protected static pos: Vector3D = new Vector3D();
-        protected static uv: Point = new Point();
-
         public IntersectMesh(verticesData: Float32Array, indexData: Uint16Array, offset: number, faces: number, uv_offset: number, mMat: Matrix4_4, result: PickResult): boolean {
 
             var modletriangle: Vector3D[] = Ray.modletriangle;
@@ -327,20 +335,20 @@
         * 计算摄像机的射线
         * @param width 视口宽
         * @param height 视口高
-        * @param modleMat 相机世界矩阵
-        * @param projMat 相机投影矩阵
+        * @param modelMtx 相机世界矩阵
+        * @param projMtx 相机投影矩阵
         * @param x 鼠标x
         * @param y 鼠标y
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public CalculateAndTransformRay(width: number, height: number, modleMat: Matrix4_4, projMat: Matrix4_4, x: number, y: number) {
+        public CalculateAndTransformRay(width: number, height: number, modelMtx: Matrix4_4, projMtx: Matrix4_4, x: number, y: number) {
             this.reset();
-            this.dir.x = (2.0 * x / width - 1.0) / projMat.rawData[0];
-            this.dir.y = (-2.0 * y / height + 1.0) / projMat.rawData[5];
+            this.dir.x = (2.0 * x / width - 1.0) / projMtx.rawData[0];
+            this.dir.y = (-2.0 * y / height + 1.0) / projMtx.rawData[5];
             this.dir.z = 1.0;
 
-            this.invViewMat.copyFrom(modleMat);
+            this.invViewMat.copyFrom(modelMtx);
             this.origin.copyFrom(this.invViewMat.transformVector(this.origin, Ray.v0));
             this.dir.copyFrom(this.invViewMat.deltaTransformVector(this.dir, Ray.v0));
             this.dir.normalize();

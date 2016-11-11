@@ -199,5 +199,9 @@
             }
         }
     }
+
+    /*
+    * @private
+    */
     export var textureResMgr: TextureResourceManager = new TextureResourceManager();
 }

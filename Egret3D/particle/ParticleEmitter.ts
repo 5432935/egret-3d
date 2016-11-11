@@ -1,15 +1,23 @@
 ﻿module egret3d {
 
     /**
-   * @class egret3d.ParticleEmitter
-   * @classdesc
-   * 粒子发射器 
-   * @see egret3d.Mesh
-   * @version Egret 3.0
-   * @platform Web,Native 
-   */
+    * @class egret3d.ParticleEmitter
+    * @classdesc
+    * 粒子发射器的主体，继承自Mesh，封装有粒子的各种动画节点在内。<p/>
+    * 根据ParticleData中的包含的每个数据节点，初始化对应的AnimationNode，然后填充Geometry数据和拼装shader。<p/>
+    * Egret3D的粒子是基于GPU的粒子，初始化完毕之后，不再使用CPU计算每个粒子的相关数据，如位置变化和颜色变化等。<p/>
+    * 通过释放CPU的负担获得更高的运行效率，让你的程序有更多的可能性。
+    * 在需要大量使用粒子的环境下，你需要考虑到的是渲染面积和drawcall的数量，从这2方面着手来优化你的程序。
+    * @see egret3d.Mesh
+    * @see egret3d.Geometry
+    * @see egret3d.AnimationNode
+    * @see egret3d.ParticleAnimation
+    * @see egret3d.ParticleAnimationState
+    * @includeExample particle/ParticleEmitter.ts
+    * @version Egret 3.0
+    * @platform Web,Native 
+    */
     export class ParticleEmitter extends Mesh {
-
 
 
         private _timeNode: ParticleTime;
@@ -32,10 +40,9 @@
 
         /**
         * @language zh_CN
-        * 构造函数
-        * @param geo Geometry 几何数据
-        * @param data ParticleData 生成粒子的数据来源
-        * @param material 粒子的材质
+        * 构造函数，创建一个粒子对象，然后添加至场景中后，使用play函数即可。
+        * @param data ParticleData 生成粒子的数据来源，该对象描述了该粒子的大部分信息。
+        * @param material 粒子用到的材质球数据。
         * @version Egret 3.0
         * @platform Web,Native 
         */
@@ -43,7 +50,7 @@
             super(null, material);
             //##FilterBegin## ##Particle##
             this.tag.name = "effect";
-            this.type = "particleEmit";
+            this.type = IRender.TYPE_PARTICLE_EMIT;
 
             this._data = data;
             this._externalGeometry = data.property.geometry;
@@ -56,12 +63,14 @@
 
 
             this.buildParticle();
+
+            this.animation.isLoop = this._data.life.loop;
             //##FilterEnd##
         }
 
         /**
         * @language zh_CN
-        * 将粒子的出生位置设置为原结束为止，然后重新设置结束位置
+        * 将每个粒子单元的出生位置设置为原结束位置。然后重新设置结束位置，以衔接更新追踪到一个新的目标位置。
         * @param fromCoords 粒子出生位置列表
         * @param endCoords 粒子目标位置列表
         * @version Egret 3.0
@@ -74,6 +83,13 @@
             }
         }
 
+        /**
+        * @language zh_CN
+        * 返回上一次跟踪目标点的列表
+        * @returns 粒子目标位置列表
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get trackEndCoords(): Vector3D[] {
             if (this._trackPositionNode) {
                 return this._trackPositionNode.endCoords;
@@ -90,7 +106,8 @@
 
         /**
         * @language zh_CN
-        * 渲染排序的参数，数值越大，先渲染</p>
+        * 渲染排序的参数，数值越大，先渲染。<p/>
+        * 例如一个火焰的特效可能同时含有高亮部分和灰色烟雾部分，你可以通过修改它们这个数据强制让灰色烟雾部分获得优先绘制权。
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -130,6 +147,8 @@
                 this.billboard = BillboardType.STANDARD;
             } else if (mode == ParticleRenderModeType.HorizontalBillboard || mode == ParticleRenderModeType.VerticalBillboard) {
                 this.billboard = BillboardType.Y_AXIS;
+            } else {
+                this.billboard = BillboardType.DISABLE;
             }
 
             this.initialize();
@@ -143,7 +162,7 @@
         /**
         * @language zh_CN
         * 根据粒子的配置信息，生成geometry
-        * @return Geometry
+        * @returns Geometry
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -167,6 +186,13 @@
             return geo;
         }
 
+        /**
+        * @language zh_CN
+        * 获取该粒子的描述数据
+        * @returns ParticleData 初始化该粒子用到的数据。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get data(): ParticleData {
             return this._data;
         }
@@ -175,6 +201,7 @@
         /**
         * @language zh_CN
         * 获取时间节点
+        * @returns ParticleTime 时间节点
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -184,7 +211,8 @@
 
         /**
         * @language zh_CN
-        * 获取位置节点
+        * 获取位置节点，该节点控制每个粒子单元的出生位置，并将数据写入顶点数据中。
+        * @returns ParticlePosition 创建粒子单元出生位置的节点。
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -205,7 +233,7 @@
 
         /**
         * @language zh_CN
-        * 获取跟随的目标
+        * 获取跟随的目标，全局粒子可能会绑定有一个跟随的目标，获得该目标对象
         * @returns Object3D 跟随的目标 
         * @version Egret 3.0
         * @platform Web,Native 
@@ -251,7 +279,7 @@
 
         /**
         * @language zh_CN
-        * 播放粒子
+        * 播放粒子，你可以之后使用stop函数暂停该特效的动画播放
         * @param speed 粒子播放速度
         * @param reset 是否重置到0位置
         * @param prewarm 是否预热
@@ -267,7 +295,7 @@
 
         /**
         * @language zh_CN
-        * 结束播放粒子
+        * 暂停播放粒子，你可以再次使用play函数继续该粒子特效播放。
         * @version Egret 3.0
         * @platform Web,Native 
         */
@@ -428,10 +456,10 @@
             }
 
 
-            if (this._data.scaleBezier) {
-                var scaleBesizer: ParticleSizeGlobalNode = new ParticleSizeGlobalNode();
-                scaleBesizer.initNode(this._data.scaleBezier);
-                nodes.push(scaleBesizer);
+            if (this._data.scaleSize) {
+                var scaleSize: ParticleSizeGlobalNode = new ParticleSizeGlobalNode();
+                scaleSize.initNode(this._data.scaleSize);
+                nodes.push(scaleSize);
             }
 
             if (this._data.rotationSpeed) {
@@ -553,9 +581,8 @@
 
         /**
         * @language zh_CN
-        * @public
         * 循环完毕的次数，用于检测是否单个循环结束
-        * @return number 循环次数
+        * @returns number 获得这个粒子播放的进度，0-1之间。如果该粒子有循环播放属性，获得的数据无效。
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -563,7 +590,7 @@
         public get loopProgress(): number {
             var p: number;
             //##FilterBegin## ##Particle##
-            p = this.animation.animTime / (this._particleState.circleTime * 1000);
+            p = this.animation.animTime / (this.animation.loopTime * 1000);
             //##FilterEnd##
             return p;
         }
@@ -580,15 +607,36 @@
                 this.buildParticle();
             }
             super.update(time, delay, camera);
+
             //##FilterEnd##
         }
 
-
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public copy(other: ParticleEmitter) {
+            super.copy(other);
+            var phaseList: number[] = [ParticleDataSubEmitterPhase.BIRTH, ParticleDataSubEmitterPhase.COLLISION, ParticleDataSubEmitterPhase.DEATH];
+            if (other._subEmitterNode) {
+                for (var j: number = 0; j < phaseList.length; j++) {
+                    var phase: number = phaseList[j];
+                    var emitters: ParticleEmitter[] = other._subEmitterNode.getSubEmitters(phase);
+                    if (emitters && emitters.length > 0) {
+                        for (var i: number = 0; i < emitters.length; i++) {
+                            this.addSubEmitter(phase, emitters[i]);
+                        }
+                    }
+                }
+            }
+        }
 
         /**
         * @language zh_CN
-        * 克隆一个模型
-        * @returns 克隆后的粒子
+        * 克隆该粒子个粒子，播放信息需要外部去设置（Geometry为全新创建的，ParticleData和MaterialBase数据共享。）
+        * @returns ParticleEmitter 克隆后的粒子特效
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -596,22 +644,8 @@
             var newParticle: ParticleEmitter;
             //##FilterBegin## ##Particle##
             newParticle = new ParticleEmitter(this.data, this.material);
-            newParticle.position = this.position;
-            newParticle.orientation = this.orientation;
-            newParticle.scale = this.scale;
-            var phaseList: number[] = [ParticleDataSubEmitterPhase.BIRTH, ParticleDataSubEmitterPhase.COLLISION, ParticleDataSubEmitterPhase.DEATH];
-            if (this._subEmitterNode) {
-                for (var j: number = 0; j < phaseList.length; j++) {
-                    var phase: number = phaseList[j];
-                    var emitters: ParticleEmitter[] = this._subEmitterNode.getSubEmitters(phase);
-                    if (emitters && emitters.length > 0) {
-                        for (var i: number = 0; i < emitters.length; i++) {
-                            newParticle.addSubEmitter(phase, emitters[i]);
-                        }
-                    }
 
-                }
-            }
+            newParticle.copy(this);
 
             //##FilterEnd##
             return newParticle;
@@ -620,7 +654,7 @@
 
         /**
         * @language zh_CN
-        * 释放所有数据
+        * 释放所有数据（ParticleData和MaterialBase数据在这个释放过程中，仅仅是移除引用）
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -636,13 +670,14 @@
 
             if (this._geometryShape) {
                 this._geometryShape.dispose();
+                this._geometryShape = null;
             }
-            this._geometryShape = null;
 
             if (this._externalGeometry) {
                 this._externalGeometry.dispose();
+                this._externalGeometry = null;
             }
-            this._externalGeometry = null;
+
             this._particleAnimation = null;
 
             if (this._particleState) {

@@ -7,11 +7,11 @@
     * @platform Web,Native
     */
     export class UILayout extends DisplayObject {
-        public onRender() {
+        protected onRender() {
         }
-        public onUpdate() {
+        protected onUpdate() {
         }
-        public onEvent() {
+        protected onEvent() {
         }
     }
 }

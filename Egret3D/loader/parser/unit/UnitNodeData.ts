@@ -18,6 +18,8 @@
 
         public name: string = "";
 
+        public staticType: string = "";
+
         public path: string = "";
 
         public fov: number = 0.0; 
@@ -168,6 +170,7 @@
         public childs: Array<any> = [];
 
         public boneBind: any = {};
+        public lightData: UnitLightData;
 
         public auto: boolean = false;
         public loop: boolean = false;

@@ -73,7 +73,7 @@
 
             Input.addEventListener(MouseEvent3D.MOUSE_MOVE, function (e: MouseEvent3D) {
                 if (this._currentDownIndex == -1) {
-                    var meshArray: Mesh[] = <Mesh[]>Picker.pickObject3DList(this._canvas3d, this._view3d,
+                    var meshArray: Mesh[] = <Mesh[]>Picker.pickObject3DList(this._view3d,
                         [
                             this._xyz[0].mesh,
                             this._xyz[1].mesh,
@@ -110,7 +110,7 @@
 
         public isPick(): boolean {
 
-            var meshArray: Mesh[] = <Mesh[]>Picker.pickObject3DList(this._canvas3d, this._view3d,
+            var meshArray: Mesh[] = <Mesh[]>Picker.pickObject3DList(this._view3d,
                 [
                     this._xyz[0].mesh,
                     this._xyz[1].mesh,

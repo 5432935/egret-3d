@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleRotation
     * @classdesc
     * 粒子旋转效果节点(初始角度，直接加成到了顶点位置上，不会在shader上反映出)

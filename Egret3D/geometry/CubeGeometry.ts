@@ -24,6 +24,7 @@
         /**
         * @language zh_CN
         * Cube宽度
+        * @returns {number} 宽度
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -36,6 +37,7 @@
         /**
         * @language zh_CN
         * Cube高度
+        * @returns {number} 高度
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -48,6 +50,7 @@
         /**
         * @language zh_CN
         * Cube深度
+        * @returns {number} 高度
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -58,9 +61,9 @@
         /**
         * @language zh_CN
         * 构造函数
-        * @param width 宽度 默认为80
-        * @param height 高度 默认为80
-        * @param depth 深度 默认为80
+        * @param width {number} 宽度 默认为80
+        * @param height {number} 高度 默认为80
+        * @param depth {number} 深度 默认为80
         * @version Egret 3.0
         * @platform Web,Native
         */

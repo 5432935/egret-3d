@@ -5,6 +5,7 @@
     * @classdesc
     * 实现颜色渐变叠加
     * @see egret3d.MethodBase
+    * @includeExample material/method/ColorGradientsMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -12,13 +13,13 @@
         private _posStart: number = 0;
         private _posEnd: number = 0;
         private _color: Color = new Color();
+      
         /**
         * @language zh_CN
         * 创建一个ColorGradientsMethod对象
         * @version Egret 3.0
         * @platform Web,Native
         */
-      
         constructor() {
             super();
 

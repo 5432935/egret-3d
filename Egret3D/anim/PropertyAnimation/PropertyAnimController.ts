@@ -4,8 +4,12 @@
     * @language zh_CN
     * @class egret3d.PropertyAnimController
     * @classdesc
-    * 属性动画控制器
+    * 属性动画控制器 管理 多个 PropertyAnim
+    * @see egret3d.PropertyAnim
     * @see egret3d.EventDispatcher
+    * @see egret3d.IAnimation
+    *
+    * @includeExample anim/PropertyAnimation/PropertyAnim.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -29,11 +33,37 @@
         */
         public speed: number = 1;
 
+        /**
+        * @language zh_CN
+        * 一个完整的动画播放时间周期
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public loopTime: number = 0;
+
+
+        /**
+        * @language zh_CN
+        * 是否为一个循环播放的动画
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public isLoop: boolean;
+
+        /**
+        * @language zh_CN
+        * 当前动画名字
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public currentAnimName: string = "";
+
         protected _target: Object3D;
 
         /**
         * @language zh_CN
         *  绑定目标
+        * @param tar 目标
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -60,6 +90,7 @@
         /**
         * @language zh_CN
         * 动画时间
+        * @param value 动画时间
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -89,9 +120,15 @@
         protected current: PropertyAnim;
 
         protected _proAnimDict: any = {};
-        protected _event3D: PropertyAnimEvent3D = new PropertyAnimEvent3D();
+        protected _event3D: AnimationEvent3D = new AnimationEvent3D();
 
-
+        /**
+        * @language zh_CN
+        * 构造函数，创建一个属性动画控制器
+        * @param target 控制器的目标对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         constructor(target:Object3D = null) {
             super();
             this._target = target;
@@ -145,6 +182,8 @@
                 }
 
                 this.current.timePosition = this._animTime;
+
+                this.currentAnimName = this.current.name;
 
                 this.current.play();
             }
@@ -233,8 +272,8 @@
 
         /**
         * @language zh_CN
-        * 添加动画对象
-        * @param proAnim 动画对象
+        * 添加动画属性对象
+        * @param proAnim 动画属性对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -244,11 +283,16 @@
             if (this.target) {
                 proAnim.bindObject3D(this.target);
             }
+
+            this.loopTime = Math.max(this.loopTime, proAnim.totalTime);
+            if (proAnim.isLoop == false) {
+                this.isLoop = proAnim.isLoop;
+            }
         }
 
         /**
         * @language zh_CN
-        * 移除动画对象
+        * 移除动画属性对象
         * @param proAnim 动画对象
         * @version Egret 3.0
         * @platform Web,Native

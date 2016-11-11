@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleVelocityLimitConstNode
     * @classdesc
     * 粒子速度节点限制(常量的影响方式)

@@ -1,5 +1,13 @@
 ﻿module egret3d {
-
+   /**
+    * @private
+    * @class egret3d.OctahedronSphereGeometry
+    * @classdesc
+    * 六面体球形Geometry
+    * @version Egret 3.0
+    * @platform Web,Native
+    * @includeExample geometry/CubeGeometry.ts
+    */
     export class OctahedronSphereGeometry extends Geometry {
 
         private _subdivisions: number;
@@ -18,7 +26,14 @@
             new Vector3D(0, 0, 1)
         ];
 
-        constructor(subdivisions: number, radius: number) {
+        /**
+        * @language zh_CN
+        * 构造函数
+        * @returns {number} 宽度  
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        constructor(subdivisions: number, radius: number, isHemisphere: boolean = false ) {
             super();
             if (subdivisions < 0) {
                 subdivisions = 0;
@@ -30,10 +45,10 @@
             }
             this._subdivisions = subdivisions;
             this._radius = radius;
-            this.buildGeomtry(false);
+            this.buildGeomtry(false, isHemisphere);
         }
 
-        public buildGeomtry(front: boolean) {
+        public buildGeomtry(front: boolean, isHemisphere: boolean) {
 
             var vertexBuffer: number[] = [];
             var indexBuffer: number[] = [];
@@ -41,7 +56,11 @@
             var resolution = 1 << this._subdivisions;
             var vertices: Vector3D[] = [];
             var triangles: number[] = [];
-            this.CreateOctahedron(vertices, triangles, resolution);
+            this.CreateOctahedron(vertices, triangles, resolution, isHemisphere);
+
+            for (var i = 0; i < vertices.length; i++) {
+                console.log(vertices[i]);
+            }
 
             var normals: Vector3D[] = [];
             this.Normalize(vertices, normals, front);
@@ -90,33 +109,34 @@
             this.buildDefaultSubGeometry();
         }
 
-        private CreateOctahedron(vertices: Vector3D[], triangles: number[], resolution: number) {
+        private CreateOctahedron(vertices: Vector3D[], triangles: number[], resolution: number, isHemisphere: boolean) {
 
             var v = 0, vBottom = 0, t = 0;
-
-            for (var i = 0; i < 4; i++) {
-                vertices[v++] = this.vector3_Down.clone();
-            }
-
-            for (var i = 1; i <= resolution; i++) {
-
-                var progress = i / resolution;
-                var _from: Vector3D = new Vector3D();
-                var _to: Vector3D = new Vector3D();
-                _to.lerp(this.vector3_Down, this.vector3_Forward, progress);
-                vertices[v++] = _to;
-
-
-
-                for (var d = 0; d < 4; d++) {
-                    _from = _to.clone();
-                    _to.lerp(this.vector3_Down, this.directions[d], progress);
-                    t = this.CreateLowerStrip(i, v, vBottom, t, triangles);
-                    v = this.CreateVertexLine(_from, _to, i, v, vertices);
-                    vBottom += i > 1 ? (i - 1) : 1;
+            if (isHemisphere == false) {
+                for (var i = 0; i < 4; i++) {
+                    vertices[v++] = this.vector3_Down.clone();
                 }
-                vBottom = v - 1 - i * 4;
+                for (var i = 1; i <= resolution; i++) {
+
+                    var progress = i / resolution;
+                    var _from: Vector3D = new Vector3D();
+                    var _to: Vector3D = new Vector3D();
+                    _to.lerp(this.vector3_Down, this.vector3_Forward, progress);
+                    vertices[v++] = _to;
+
+
+
+                    for (var d = 0; d < 4; d++) {
+                        _from = _to.clone();
+                        _to.lerp(this.vector3_Down, this.directions[d], progress);
+                        t = this.CreateLowerStrip(i, v, vBottom, t, triangles);
+                        v = this.CreateVertexLine(_from, _to, i, v, vertices);
+                        vBottom += i > 1 ? (i - 1) : 1;
+                    }
+                    vBottom = v - 1 - i * 4;
+                }
             }
+
 
             for (var i = resolution - 1; i >= 1; i--) {
 
@@ -134,14 +154,13 @@
                 }
                 vBottom = v - 1 - i * 4;
             }
-
             for (var i = 0; i < 4; i++) {
                 triangles[t++] = vBottom;
                 triangles[t++] = v;
                 triangles[t++] = ++vBottom;
                 vertices[v++] = this.vector3_Up.clone();
             }
-            triangles = triangles.reverse();
+            //triangles = triangles.reverse();
         }
 
         private CreateLowerStrip(steps: number, vTop: number, vBottom: number, t: number, triangles: number[]): number {
@@ -215,9 +234,6 @@
             uv[vertices.length - 3].u = uv[1].u = 0.375;
             uv[vertices.length - 2].u = uv[2].u = 0.625;
             uv[vertices.length - 1].u = uv[3].u = 0.875;
-
-
-
         }
 
         private CreateTangents(vertices: Vector3D[], tangents: Quaternion[]) {

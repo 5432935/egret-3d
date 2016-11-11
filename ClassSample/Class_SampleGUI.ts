@@ -1,16 +1,13 @@
 ﻿module egret3d {
     export class Class_SampleGUI extends Class_View3D {
         protected view1: View3D;
-        protected ctl; HoverController;
+        protected ctl: HoverController;
         protected textField: gui.UITextField;
 
         public constructor() {
             super();
 
-            this.view1 = new View3D(0,
-                0,
-                window.innerWidth * window.devicePixelRatio,
-                window.innerHeight * window.devicePixelRatio);
+            this.view1 = new View3D(0,0,window.innerWidth * window.devicePixelRatio,window.innerHeight * window.devicePixelRatio);
             this.view1.camera3D.lookAt(new Vector3D(0, 100, -100), new Vector3D(0, 0, 0));
             this.view1.backColor = 0xffcccccc;
             this._egret3DCanvas.addView3D(this.view1);
@@ -44,6 +41,13 @@
                 (e) => {
                     var characterView: CharacterView = new CharacterView();
                     this.view1.addGUI(characterView);
+                    var texture: Texture = textureResMgr.getTexture("45t.png");
+                    var mesh: Mesh = new Mesh(new CubeGeometry(), new TextureMaterial(texture));
+                    mesh.material.uvRectangle.x = texture.uvRectangle.x;
+                    mesh.material.uvRectangle.y = texture.uvRectangle.y;
+                    mesh.material.uvRectangle.width = texture.uvRectangle.width;
+                    mesh.material.uvRectangle.height = texture.uvRectangle.height;
+                    this.view1.addChild3D(mesh);
                 },
                 this);
         }

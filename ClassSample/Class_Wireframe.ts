@@ -2,14 +2,14 @@
     export class Class_Wireframe extends Class_View3D {
 
         private view1: View3D;
-        private cameraCtl: LookAtController;
+        private cameraCtl: HoverController;
 
         private mapLoader: MapLoader;
         constructor() {
             super();
 
             var view1: View3D = new View3D(0, 0, window.innerWidth, window.innerHeight);
-            view1.camera3D.lookAt(new Vector3D(0, 1000, -1000), new Vector3D(0, 0, 0));
+            view1.camera3D.lookAt(new Vector3D(0, 1000, 0), new Vector3D(0, 0, 0), Vector3D.Y_AXIS);
             view1.backColor = 0xff7f7f00;
 
             this._egret3DCanvas.addView3D(view1);
@@ -19,9 +19,9 @@
             var tex: ImageTexture = new ImageTexture(bgImg);
             this.view1.backImage = tex;
 
-            this.cameraCtl = new LookAtController(view1.camera3D, new Object3D());
+            this.cameraCtl = new HoverController(view1.camera3D, new Object3D());
             this.cameraCtl.distance = 1000;
-            this.cameraCtl.rotationX = 60;
+            this.cameraCtl.tiltAngle = 60;
 
             var wir: egret3d.Wireframe = new egret3d.Wireframe();
             wir.material.diffuseColor = 0xffffff;
@@ -77,6 +77,10 @@
             var sWireframe: Wireframe = new Wireframe();
             sWireframe.fromGeometry(s.geometry);
             s.addChild(sWireframe);
+
+
+
+            
         }
         public update(e: Event3D) {
             this.cameraCtl.update();

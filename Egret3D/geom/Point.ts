@@ -1,12 +1,13 @@
 ﻿module egret3d {
     /**
-     * @language zh_CN
-     * @class egret3d.Point
-     * @classdesc
-     * Point 对象表示二维坐标系统中的某个位置，其中 x 表示水平轴，y 表示垂直轴。
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.Point
+    * @classdesc
+    * Point 对象表示二维坐标系统中的某个位置，其中 x 表示水平轴，y 表示垂直轴。
+    * @includeExample geom/Point.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class Point {
         /**
          * @language en_US
@@ -91,6 +92,31 @@
         }
 
         /**
+        * @language zh_CN
+        * 当前Point自生加上v Point
+        * @param v
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public incrementBy(v: Point): void {
+            this.x += v.x;
+            this.y += v.y;
+        }
+
+        /**
+        * @language zh_CN
+        * 重新赋值Point实例
+        * @param x x坐标 默认为0
+        * @param y y坐标 默认为0
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public setTo(x: number = 0, y: number = 0) {
+            this.x += x;
+            this.y += y;
+        }
+
+        /**
          * @language en_US
          * Creates a copy of this Point object.
          *
@@ -157,8 +183,9 @@
          * @platform Web,Native
          */
         public normalize(thickness: number = 1) {
-            if (this.length != 0) {
-                var invLength = thickness / this.length;
+            var len: number = this.length;
+            if (len != 0) {
+                var invLength = thickness / len;
                 this.x *= invLength;
                 this.y *= invLength;
                 return;

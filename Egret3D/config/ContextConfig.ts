@@ -104,10 +104,11 @@
 
     }
     /**
-     * @class egret3d.ContextSamplerType
-     * @classdesc
-     * 贴图采样类型
-     */
+    * @private
+    * @class egret3d.ContextSamplerType
+    * @classdesc
+    * 贴图采样类型
+    */
     export class ContextSamplerType {
 
         /**
@@ -302,11 +303,11 @@
                             
                 
         /**
-         * @language zh_CN
-         * 裁剪正面进行反面渲染
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 裁剪正面进行反面渲染
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         static FRONT: number;
                 
         /**
@@ -435,11 +436,13 @@
         static ColorFormat_DXT5_RGBA: number = 0;
 
         /**
+        * @private
         * canvas窗口矩形
         */
         static canvasRectangle: Rectangle ;
                                             
         /**
+        * @private
         * 用户窗口矩形
         */
         static clientRect: ClientRect;

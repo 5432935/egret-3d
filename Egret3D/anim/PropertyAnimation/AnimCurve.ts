@@ -1,46 +1,95 @@
-module egret3d {
+﻿module egret3d {
+
 
     /**
-    * @private
+    * @language zh_CN
+    * @class egret3d.CurveType
+    * @classdesc
+    * 曲线的类型
+    * @version Egret 3.0
+    * @platform Web,Native
     */
-    export enum CurveType { Line, BesselCurve };
+    export enum CurveType {
+
+        /**
+        * @language zh_CN
+        * 普通的线  直线
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        Line,
+
+        /**
+        * @language zh_CN
+        * 贝塞尔曲线
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        BesselCurve
+    };
 
     /**
     * @language zh_CN
     * @class egret3d.AnimCurve
     * @classdesc
-    * AnimCurve 类为动画曲线，其中包含该曲线的类型，起始结束时刻以及参数�?
+    * AnimCurve 类为动画曲线，其中包含该曲线的类型，起始结束时刻以及参数
     * 
-    * @version Egret 3.0
-    * @platform Web,Native
-    * @includeExample animation/PropertyAnimation/AnimCurve.ts
+    * @includeExample anim/PropertyAnimation/AnimCurve.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
     export class AnimCurve {
 
         /**
-        * @private
+        * @language zh_CN
+        * start.x - end.x 之间 插值y值 使用哪种类型
+        * @see egret3d.CurveType
+        * @see egret3d.AnimCurve.start
+        * @see egret3d.AnimCurve.end
+        *
+        * @see egret3d.Point
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public type: CurveType = CurveType.Line;
 
+
         /**
-        * @private
+        * @language zh_CN
+        * start.x 开始时间
+        * start.y 值
+        * @see egret3d.Point
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public start: Point = new Point();
 
+
         /**
-        * @private
+        * @language zh_CN
+        * end.x 结束时间
+        * end.y 值
+        * @see egret3d.Point
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public end: Point = new Point();
 
         /**
-        * @private
+        * @language zh_CN
+        * 贝塞尔 控制点1
+        * @see egret3d.Point
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public c1: Point = new Point();
 
         /**
-        * @private
+        * @language zh_CN
+        * 贝塞尔 控制点2
+        * @see egret3d.Point
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public c2: Point = new Point();
 
@@ -50,18 +99,28 @@ module egret3d {
         public cache: number[] = null;
 
         /**
-        * @private
+        * @language zh_CN
+        * 是否缓存数据
+        * @see egret3d.Point
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public useCache: boolean = false;
 
+        /**
+        * @language zh_CN
+        * 构造函数
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public constructor() {
         }
 
         /**
         * @language zh_CN
-        * 计算数�?
+        * 取曲线某一时刻的值 
         * @param time 某个时刻
-        * @returns number 该时刻对应的数�?
+        * @returns number 该时刻对应的数
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -133,13 +192,13 @@ module egret3d {
         */
         public cacheCurveData(): void {
 
-            this.cache = [];
+            if (this.useCache) {
+                this.cache = [];
 
-            for (var time = this.start.x; time < this.end.x; time++) {
-                this.cache.push(this.calculateValue(time));
+                for (var time = this.start.x; time < this.end.x; time++) {
+                    this.cache.push(this.calculateValue(time));
+                }
             }
-
-            this.useCache = true;
         }
     }
 }

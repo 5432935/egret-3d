@@ -45,6 +45,7 @@
         }
         /**
         * @language zh_CN
+        * 构造函数
         * 创建一个新的 Channel3d 对象。
         * @param sound {Sound} Sound 对象 音频的数据源。
         * @param {Object} options {any} ["volume":1,"loop":true volume] 回放音量, 0 到 1 ， loop 是否循环播放。
@@ -143,7 +144,7 @@
         }
         /**
         * @language zh_CN
-        * 最大距离。
+        * 最大距离，超出这个距离会听不见声音
         * @param max{Number}   
         * @version Egret 3.0
         * @platform Web,Native

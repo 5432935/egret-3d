@@ -16,10 +16,13 @@
             view1.camera3D.lookAt(new Vector3D(0, 100, -100), new Vector3D(0, 0, 0));
             view1.backColor = 0xff000000;
             this._egret3DCanvas.addView3D(view1);
+
             this.view1 = view1;
             this.ctl = new HoverController(view1.camera3D);
             this.ctl.tiltAngle = 60;
             this.ctl.distance = 1000;
+
+            this.lights.addLight( view1.sunLight );
 
             var bgImg: HTMLImageElement = <HTMLImageElement>document.getElementById("bg");
             var tex: ImageTexture = new ImageTexture(bgImg);
@@ -28,33 +31,26 @@
             this._egret3DCanvas.start();
             this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
 
-    
-
-
-            var loadtex: URLLoader = new URLLoader("resource/terrain/ziyan_xinshou/Heightmap_0.jpg");
-            loadtex.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadHeightMap, this);
-            loadtex["mat"] = this.matPlane;
+            this._queueLoad = new QueueLoader();
+            this._queueLoad.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.loadComplete, this);
+            this._queueLoad.load("resource/terrain/ziyan_xinshou/Heightmap_0.jpg");
+            this._queueLoad.load("resource/terrain/ziyan_xinshou/Alphamap_0.jpg");
+            this._queueLoad.load("resource/terrain/ziyan_xinshou/SplatPrototype_texture_0.jpg");
+            this._queueLoad.load("resource/terrain/ziyan_xinshou/SplatPrototype_texture_1.jpg");
+            this._queueLoad.load("resource/terrain/ziyan_xinshou/SplatPrototype_texture_2.jpg");
+            this._queueLoad.load("resource/terrain/ziyan_xinshou/SplatPrototype_texture_3.jpg");
         }
 
-        protected onLoadHeightMap(e: LoaderEvent3D) {
-            var heightImage: ImageTexture = <ImageTexture>e.loader.data;
+        private loadComplete() {
+            var heightImage: ImageTexture = <ImageTexture>this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/Heightmap_0.jpg");
             var envHeightGeometry: ElevationGeometry = new ElevationGeometry(heightImage, 2000, 500, 2000, 200, 200);
 
             this.matPlane = new TextureMaterial();
-            this.matPlane.specularLevel = 0.5;
-            this.matPlane.gloss = 1.0;
+            this.matPlane.gloss = 10.0;
             this.matPlane.repeat = true;
 
-            var dirLight: DirectLight = new DirectLight(new Vector3D(0.0, 1.0, 0.0));
-            var lightGroup: LightGroup = new LightGroup();
-            lightGroup.addLight(dirLight);
-
-            var mesh: Mesh = new Mesh(new SphereGeometry(200,20,20), new TextureMaterial());
-            mesh.lightGroup = lightGroup;
-            this.view1.addChild3D(mesh);
-
             this.plane = new Mesh(envHeightGeometry, this.matPlane);
-            this.plane.lightGroup = lightGroup;
+            this.plane.lightGroup = this.lights;
 
             this.view1.addChild3D(this.plane);
 
@@ -65,47 +61,19 @@
                 CheckerboardTexture.texture,
                 CheckerboardTexture.texture
             );
-
-            this.terrainMethod.setUVTitling(0, 26.7, 26.7);
-            this.terrainMethod.setUVTitling(1, 16,16);
-            this.terrainMethod.setUVTitling(2, 26.7, 26.7);
-            this.terrainMethod.setUVTitling(3, 26.7, 26.7);
-
             this.matPlane.diffusePass.addMethod(this.terrainMethod);
 
-            var loadBlend: URLLoader = new URLLoader("resource/terrain/ziyan_xinshou/Alphamap_0.jpg");
-            var loadSplat_0: URLLoader = new URLLoader("resource/terrain/ziyan_xinshou/SplatPrototype_texture_0.jpg");
-            var loadSplat_1: URLLoader = new URLLoader("resource/terrain/ziyan_xinshou/SplatPrototype_texture_1.jpg");
-            var loadSplat_2: URLLoader = new URLLoader("resource/terrain/ziyan_xinshou/SplatPrototype_texture_2.jpg");
-            var loadSplat_3: URLLoader = new URLLoader("resource/terrain/ziyan_xinshou/SplatPrototype_texture_3.jpg");
+            this.terrainMethod.setUVTitling(0, 26.7, 26.7);
+            this.terrainMethod.setUVTitling(1, 16, 16);
+            this.terrainMethod.setUVTitling(2, 26.7, 26.7);
+            this.terrainMethod.setUVTitling(3, 26.7, 26.7);
+            this.terrainMethod.controlTexture = this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/Alphamap_0.jpg");
+            this.terrainMethod.splat_0_Texture = this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/SplatPrototype_texture_0.jpg");
+            this.terrainMethod.splat_1_Texture = this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/SplatPrototype_texture_1.jpg");
+            this.terrainMethod.splat_2_Texture = this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/SplatPrototype_texture_2.jpg");
+            this.terrainMethod.splat_3_Texture =  this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/SplatPrototype_texture_3.jpg");
 
-            loadBlend.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadBlend, this);
-            loadSplat_0.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadSplat_0, this);
-            loadSplat_1.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadSplat_1, this);
-            loadSplat_2.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadSplat_2, this);
-            loadSplat_3.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadSplat_3, this); 
         }
-
-        protected onLoadBlend(e:LoaderEvent3D) {
-            this.terrainMethod.controlTexture = e.loader.data;
-        }
-
-        protected onLoadSplat_0(e: LoaderEvent3D) {
-            this.terrainMethod.splat_0_Texture = e.loader.data;
-        }
-
-        protected onLoadSplat_1(e: LoaderEvent3D) {
-            this.terrainMethod.splat_1_Texture = e.loader.data;
-        }
-
-        protected onLoadSplat_2(e: LoaderEvent3D) {
-            this.terrainMethod.splat_2_Texture = e.loader.data;
-        }
-
-        protected onLoadSplat_3(e: LoaderEvent3D) {
-            this.terrainMethod.splat_3_Texture = e.loader.data;
-        }
-
 
         private angle: number = 0;
         public update(e: Event3D) {

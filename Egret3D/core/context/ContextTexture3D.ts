@@ -11,6 +11,7 @@
     * @see egret3d.ContextTexture2D
     * @see egret3d.Shader
     * @see egret3d.CubeTexture
+    * @includeExample core/context/ContextTexture3D.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -62,34 +63,69 @@
         public texture: WebGLTexture;
 
         /**
-         * @language zh_CN
-         * 是否使用mipmap
+        * @language zh_CN
+        * 是否使用mipmap
         * @version Egret 3.0
         * @platform Web,Native
-         */
+        */
         public useMipmap: boolean;
 
         /**
-         * @language zh_CN
-         * mipmap数据
+        * @language zh_CN
+        * mipmap数据
         * @version Egret 3.0
         * @platform Web,Native
-         */
+        */
         public mimapData: Array<MipmapData>;
-
+        /**
+        * @language zh_CN
+        * 正面位置的贴图数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public image_front: ContextTexture2D;
+         /**
+        * @language zh_CN
+        * 背部位置的贴图数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public image_back: ContextTexture2D;
+        /**
+        * @language zh_CN
+        * 左方位置的贴图数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public image_left: ContextTexture2D;
+        /**
+        * @language zh_CN
+        * 右方位置的贴图数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public image_right: ContextTexture2D;
+        /**
+        * @language zh_CN
+        * 顶部位置的贴图数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public image_up: ContextTexture2D;
+        /**
+        * @language zh_CN
+        * 底部位置的贴图数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public image_down: ContextTexture2D;
 
         /**
-         * @language zh_CN
-         * 构造函数
+        * @language zh_CN
+        * 构造函数
         * @version Egret 3.0
         * @platform Web,Native
-         */
+        */
         constructor() {
             this.border = 0;
             this.useMipmap = true;

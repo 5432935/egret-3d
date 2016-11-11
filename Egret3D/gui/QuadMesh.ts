@@ -30,19 +30,15 @@
             this.uiMaterial.repeat = true ;
             this.uiMaterial.diffusePass.addMethod(this.guiMethod);
 
-     
-
             this.canPick = false;
             this.tag.name = "gui";
         }
 
-     
-        //改变贴图
+        /*
+        *@private
+        */
         public setTexture(index: number,texture:ITexture) {
             this.guiMethod.setTextures(index, texture);
         }
-
-
-
     } 
 }

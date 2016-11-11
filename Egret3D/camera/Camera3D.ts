@@ -1,6 +1,8 @@
 ﻿module egret3d {
 
     /**
+    * @class egret3d.CameraType
+    * @classdesc
     * 摄像机类型
     * @version Egret 3.0
     * @platform Web,Native
@@ -38,30 +40,6 @@
     };
 
     /**
-    * VR类型
-    * @private
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    export enum VRType {
-
-        /**
-        * 左眼
-        * @private
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        left,
-
-        /**
-        * 右眼
-        * @private
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        right
-    };
-    /**
     * @class egret3d.Camera3D
     * @classdesc
     * 相机数据处理，生成3D摄相机。</p>
@@ -79,11 +57,11 @@
     export class Camera3D extends Object3D {
 
         /**
-         * @language zh_CN
-         * 相机投影矩阵
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 相机投影矩阵
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public projectMatrix: Matrix4_4 = new Matrix4_4();
 
         /**
@@ -149,19 +127,31 @@
 
 
         private _angleVector: Vector3D = new Vector3D();
+        /*
+        * @private
+        */
         public billboardX: Matrix4_4 = new Matrix4_4();
+        /*
+        * @private
+        */
         public billboardY: Matrix4_4 = new Matrix4_4();
+        /*
+        * @private
+        */
         public billboardZ: Matrix4_4 = new Matrix4_4();
+        /*
+        * @private
+        */
         public billboardXYZ: Matrix4_4 = new Matrix4_4();
 
 
         /**
-         * @language zh_CN        
-         * constructor
-         * @param cameraType 相机类型
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN        
+        * constructor
+        * @param cameraType 相机类型 默认为 CameraType.perspective 透视相机
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         constructor(cameraType: CameraType = CameraType.perspective) {
             super();
             this.frustum = new Frustum(this);
@@ -438,8 +428,8 @@
         /**
          * @language zh_CN
          * 当前对象对视位置
-         * @param pos 对象的位置
-         * @param target 目标的位置
+         * @param pos 相机的位置     (全局坐标)
+         * @param target 目标的位置  (全局坐标)
          * @param up 向上的方向
          * @version Egret 3.0
          * @platform Web,Native
@@ -464,6 +454,7 @@
             Vector3D.HELP_1.setTo(1, 1, 1, 1);
             Vector3D.HELP_0.setTo(0, 0, 0, 1);
 
+            this._modelMatrix3D.makeTransform(this._pos, Vector3D.HELP_1, this._orientation);
             this._modelMatrix3D.makeTransform(this._globalPos, Vector3D.HELP_1, this._globalOrientation);
 
 
@@ -575,7 +566,7 @@
         /**
          * @language zh_CN
          * 检测对象是否在相机视椎体内
-         * @param object 需要体测的对象
+         * @param renderItem 需要体测的对象
          * @returns 成功返回true
          * @version Egret 3.0
          * @platform Web,Native
@@ -592,18 +583,20 @@
         }
 
         /**
-         * @language zh_CN
-         * 增加相机动画
-         * @param name 相机动画名字
-         * @param ani 相机动画
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @private
+        * @language zh_CN
+        * 增加相机动画
+        * @param name 相机动画名字
+        * @param ani 相机动画
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public addAnimation(name: string, ani: CameraAnimationController) {
             this._animation[name] = ani;
         }
 
         /**
+        * @private
         * @language zh_CN
         * 播放某个动画
         * 根据动画名字来播放，指定摄像机，并且控制动画是否循环播放
@@ -623,9 +616,9 @@
         * @private
         * @language zh_CN
         * 当前对象数据更新
-        * @param camera 当前渲染的摄相机
         * @param time 当前时间
         * @param delay 每帧时间间隔
+        * @param camera 当前渲染的摄相机
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -730,6 +723,19 @@
                 this.frustum.dispose();
             }
             this.frustum = null;
+        }
+
+        /**
+        * @language zh_CN
+        * 克隆当前Camera3D
+        * @returns Camera3D 克隆后的对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public clone(): Camera3D {
+            var cloneObject: Camera3D = new Camera3D();
+            cloneObject.copy(this);
+            return cloneObject;
         }
     }
 } 

@@ -53,6 +53,12 @@
     */
     export class VRView3D extends View3D {
 
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public eyesCamera: EyesCamera;
 
         private _leftHUD: HUD;
@@ -61,8 +67,22 @@
         protected leftRender: MultiRender;
         protected rightRender: MultiRender;
 
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public w: number = 0;
+
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public h: number = 0;
+
         /**
         * @language zh_CN
         * 构建一个view3d对象

@@ -1,8 +1,13 @@
 ﻿module egret3d {
-
     /**
+    * @language zh_CN
     * @private
+    * @class egret3d.ParticleScale
+    * @classdesc
     * 粒子初始化的尺寸大小
+    * @see egret3d.AnimationNode
+    * @version Egret 3.0
+    * @platform Web,Native
     */
     export class ParticleScale extends AnimationNode {
 

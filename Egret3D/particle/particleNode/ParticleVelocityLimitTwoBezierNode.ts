@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleVelocityLimitTwoBezierNode
     * @classdesc
     * 粒子速度限制,贝塞尔曲线获得

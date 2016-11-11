@@ -1,23 +1,25 @@
 ﻿module egret3d {
 
-     /**
-     * @class egret3d.ImageTexture
-     * @classdesc
-     * ImageTexture 类为 图像贴图
-     * 
-     * 图像贴图用于封装 HTMLImageElement（网页图像元素）到引擎内部可使用的Texture2D对象, </p>
-      * HTMLImageElement 可通过内嵌HTML文件中获取。</p>
-     *
-      *
-     * 示例：
-     * 假设html中已有 &lt;img id="t1" src="xxx.png" /&gt;
-     * <pre>
-     * var img: HTMLImageElement = <HTMLImageElement>document.getElementById("t1");
-     * var imageTexture: egret3d.ImageTexture = new egret3d.ImageTexture(img);
-      * </pre>
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    /**
+    * @class egret3d.ImageTexture
+    * @classdesc
+    * ImageTexture 类为 图像贴图
+    * 加载png、jpg 会返回此对象
+    * 
+    * 图像贴图用于封装 HTMLImageElement（网页图像元素）到引擎内部可使用的Texture2D对象, </p>
+    * HTMLImageElement 可通过内嵌HTML文件中获取。</p>
+    *
+    *
+    * 示例：
+    * 假设html中已有 &lt;img id="t1" src="xxx.png" /&gt;
+    * <pre>
+    * var img: HTMLImageElement = <HTMLImageElement>document.getElementById("t1");
+    * var imageTexture: egret3d.ImageTexture = new egret3d.ImageTexture(img);
+    * </pre>
+    * @includeExample texture/ImageTexture.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class ImageTexture extends ITexture {
 
         /**
@@ -42,11 +44,21 @@
             this.texture2D = new ContextTexture2D();
             this.texture2D.imageData = img;
         }
-
+        /**
+        * @language zh_CN
+        * 获取贴图像素宽度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get width(): number {
             return this.imageData.width;
         }
-
+         /**
+        * @language zh_CN
+        * 获取贴图像素高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get height(): number {
             return this.imageData.height;
         }
@@ -54,7 +66,7 @@
         /**
         * @language zh_CN
         * 上传贴图数据给GPU
-        * @param context3D
+        * @param context3D 呈现几何定义图形的上下文
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -71,6 +83,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 强制上传贴图数据给GPU，强制要求贴图更新。
         * 在video 贴图类型需要立即改变显卡中的贴图内存
@@ -99,6 +112,7 @@
 
 
         /**
+        * @private
         * @language zh_CN
         * 读取image的byteArray数据
         * @param x 读取的x偏移值

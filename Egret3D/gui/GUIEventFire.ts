@@ -1,5 +1,5 @@
 ﻿module egret3d {
-       /**
+    /**
     * @private
     */
     export class GUIEventFire {

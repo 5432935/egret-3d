@@ -14,6 +14,12 @@
         private shape1Value: Mesh3DValueShape;
         private shape2Value: Mesh3DValueShape;
         private _modelCount: number = 0;
+
+
+        private _ball: Mesh;
+
+        private lightVector: Vector3D;
+
         constructor() {
             super();
             this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
@@ -26,10 +32,13 @@
 
             var bgImg: HTMLImageElement = <HTMLImageElement>document.getElementById("bg");
             var tex: ImageTexture = new ImageTexture(bgImg);
+            this.view1.backImage = tex; 
 
             this.cameraCrl = new LookAtController(this.view1.camera3D, new Object3D());
             this.cameraCrl.distance = 1000;
 
+            //this._ball = new Mesh(new SphereGeometry(50));
+            //this.view1.addChild3D(this._ball);
 
             this.pyramidLoader = new URLLoader("resource/scene/particle/pyramid.esm");
             this.pyramidLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadMesh, this);
@@ -57,6 +66,8 @@
 
                 //
                 this.initParticle(this.pyramidLoader.data);
+
+                this.initLight();
             }
         }
 
@@ -116,7 +127,7 @@
 
             this.view1.addChild3D(this.particle);
 
-            this.view1.addChild3D(new AxisMesh(200));
+            //this.view1.addChild3D(new AxisMesh(200));
 
 
             var loadtex: URLLoader = new URLLoader("resource/floor/WOOD09.png");
@@ -162,7 +173,7 @@
             //加入一些随机
             var radius: number = 700;
             for (var i: number = 0, count: number = endCoords.length; i < count; i++) {
-                if (Math.random() > 0.7) {
+                if (Math.random() > 0.8) {
                     endCoords[i].setTo((Math.random() * 2 - 1) * radius, (Math.random() * 2 - 1) * radius, (Math.random() * 2 - 1) * radius);
                 }
 
@@ -185,9 +196,42 @@
             e.loader["mat"].diffuseTexture = e.loader.data;
         }
 
-        private angle: number = 0;
+        private initLight(): void {
+            var lights: LightGroup = new LightGroup();
+
+            this.lightVector = new Vector3D(-0.5, -0.6, 0.2);
+            this.dirLight = new DirectLight(this.lightVector);
+            this.dirLight.diffuse = 0xffffff;
+            lights.addLight(this.dirLight);
+
+            this.particle.lightGroup = lights;
+
+
+            //var mesh: Mesh = new Mesh(this.shapeLoader2.data);
+            //mesh.scale = new Vector3D(20, 20, 20);
+            //this.view1.addChild3D(mesh);
+            //mesh.x = 200;
+            //mesh.lightGroup = lights;
+        }
+
+        private anlge: number = 0;
+        private dirLight: DirectLight;
+        private position: Vector3D = new Vector3D();
         public update(e: Event3D) {
             this.cameraCrl.update();
+
+            this.anlge += 0.01;
+            if (this.particle) {
+                this.dirLight.dir = this.lightVector;
+                this.position.setTo(Math.sin(this.anlge) * 300, 10, Math.cos(this.anlge) * 300);
+                this.lightVector.setTo(-this.position.x, 0, -this.position.z, 1);
+                this.lightVector.normalize();
+                this._ball.x = this.position.x;
+                this._ball.y = this.position.y;
+                this._ball.z = this.position.z;
+            } else {
+
+            }
 
         }
 

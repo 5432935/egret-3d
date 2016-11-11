@@ -10,6 +10,7 @@
      <pre>
      var box: egret3d.Mesh = new egret3d.Mesh( new egret3d.CylinderGeometry(), new egret3d.TextureMaterial() );
      </pre>
+     * @includeExample geometry/CubeGeometry.ts
      * @see egret3d.Geometry
      * @version Egret 3.0
      * @platform Web,Native
@@ -20,6 +21,7 @@
         /**
         * @language zh_CN
         * 圆柱体高度
+        * @returns {number} 高度
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -31,6 +33,7 @@
         /**
         * @language zh_CN
         * 圆柱体半径
+        * @returns {number} 半径
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -41,8 +44,8 @@
         /**
         * @language zh_CN
         * 构造函数
-        * @param height 宽度 默认为100
-        * @param radius 半径 默认为200
+        * @param height {number} 宽度 默认为100
+        * @param radius {number} 半径 默认为200
         * @version Egret 3.0
         * @platform Web,Native
         */

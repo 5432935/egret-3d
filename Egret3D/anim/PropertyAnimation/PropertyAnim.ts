@@ -6,7 +6,7 @@ module egret3d {
     * @classdesc
     * PropertyAnim 类为曲线动画驱动器，类中保存了各个属性对应的数值曲线数据，通过时间计算某个属性在某时刻的属性数值
     * 
-    * @includeExample animation/PropertyAnimation/PropertyAnim.ts
+    * @includeExample anim/PropertyAnimation/PropertyAnim.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -71,9 +71,10 @@ module egret3d {
         /**
         * @language zh_CN
         * 添加曲线动画数据
-        * @prame property 属性名
-        * @prame keyFrames 曲线动画帧
+        * @param property 属性名  控制 Object3D对象的属性
+        * @param keyFrames 曲线动画帧
         * @returns boolean 是否成功
+        * @see egret3d.Object3D
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -101,7 +102,7 @@ module egret3d {
 
                     this._totalTime = keyFrames[i].end.x;
 
-                    //keyFrames[i].cacheCurveData();
+                    keyFrames[i].cacheCurveData();
                 }
             }
 
@@ -111,7 +112,7 @@ module egret3d {
         /**
         * @language zh_CN
         * 移除曲线动画数据
-        * @prame property 属性名
+        * @param property 属性名
         * @returns AnimCurve[] 曲线动画帧
         * @version Egret 3.0
         * @platform Web,Native
@@ -136,8 +137,8 @@ module egret3d {
         /**
         * @language zh_CN
         * 设置属性是否循环播放
-        * @prame property 属性名
-        * @prame isLoop 是否循环播放
+        * @param property 属性名
+        * @param isLoop 是否循环播放
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -161,7 +162,7 @@ module egret3d {
         /**
         * @language zh_CN
         * 绑定需要驱动的Object3D对象
-        * @prame target Object3D对象
+        * @param target Object3D对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -224,7 +225,7 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * 时间位置
+        * 设置时间位置
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -240,6 +241,19 @@ module egret3d {
 
             if (this.isLoop) {
 
+                if (this.proAnimController) {
+                    if (this.name == this.proAnimController.currentAnimName) {
+                        
+                        if (this.speed < 0 && this._timePosition < 0) {
+                            this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
+                        }
+                        else if (this.speed > 0 && this._timePosition > this.totalTime) {
+                            this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
+                        }
+                    }
+                }
+
+               
                 this._timePosition = value % this._totalTime;
 
                 if (this._timePosition < 0) {
@@ -256,9 +270,8 @@ module egret3d {
                     this._timePosition = 0;
 
                     if (this.proAnimController) {
-                        this.proAnimController.doEvent(PropertyAnimEvent3D.EVENT_PLAY_COMPLETE, this);
+                        this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
                     }
-
 
                     this.stop();
 
@@ -268,7 +281,7 @@ module egret3d {
                     this._timePosition = this._totalTime;
 
                     if (this.proAnimController) {
-                        this.proAnimController.doEvent(PropertyAnimEvent3D.EVENT_PLAY_COMPLETE, this);
+                        this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
                     }
 
                     this.stop();
@@ -341,7 +354,8 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * 时间位置
+        * 获取时间位置
+        * @returns number 当前时间
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -351,7 +365,8 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * 动画总时间
+        * 获取动画总时间
+        * @returns number 动画总时间
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -362,7 +377,7 @@ module egret3d {
         /**
         * @language zh_CN
         * 更新动画数据
-        * @prame delay 延迟时间
+        * @param delay 延迟时间
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -379,7 +394,7 @@ module egret3d {
             if (this.timePosition < beginTime) {
 
                 if (this.proAnimController) {
-                    this.proAnimController.doEvent(PropertyAnimEvent3D.EVENT_PLAY_COMPLETE, this);
+                    this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
                 }
             }
         }

@@ -8,6 +8,7 @@
     * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
     * @see egret3d.MethodBase
     * @see egret3d.MaterialPass
+    * @includeExample material/method/WaterNormalMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -18,16 +19,16 @@
         private _time: number = 0.0;
         private _start: boolean = false;
 
-        private _speedU_0: Point = new Point(-0.000009, 0.0);
-        private _speedU_1: Point = new Point(0.00003, 0.0);
+        private _speedU_0: Point = new Point(-0.000005, 0.0);
+        private _speedU_1: Point = new Point(0.00001, 0.0);
 
-        private _distion_intensity : Point = new Point(0.05, 0.05);
+        private _distion_intensity : Point = new Point(0.02, 0.02);
 
         private _normalTexture_0: ITexture; 
         private _normalTexture_1: ITexture; 
 
-        private _normal_0_UVScale: number = 4.0; 
-        private _normal_1_UVScale: number = 4.0; 
+        private _normal_0_UVScale: number = 2.0; 
+        private _normal_1_UVScale: number = 2.0; 
 
         /** 
         * @private

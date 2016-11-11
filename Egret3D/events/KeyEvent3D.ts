@@ -1,7 +1,4 @@
-﻿
-
-
-module egret3d {
+﻿module egret3d {
 
     /**
      * @language zh_CN
@@ -133,36 +130,53 @@ module egret3d {
     export class KeyEvent3D extends Event3D {
 
         /**
-         * @language zh_CN
-         * KEY_CLICK 常量定义 onKeyClick 事件对象的 type 属性的值。
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * KEY_CLICK 常量定义 按键点击事件标识。
+        * 可注册对象 : Input类型。
+        * 事件响应状态 : 按键每次点击响应，按下回弹为一次点击。
+        * 响应事件参数 : KeyEvent3D类型,其中KeyEvent3D.keyCode的内容即为Key的值。
+        * @see egret3d.Input
+        * @default "onKeyClick"
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public static KEY_CLICK: string = "onKeyClick";
 
         /**
-         * @language zh_CN
-         * KEY_DOWN 常量定义 onKeyDown 事件对象的 type 属性的值。
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * KEY_DOWN 常量定义  按键点击事件标识。
+        * 可注册对象 : Input类型。
+        * 事件响应状态 : 按键每次按下时响应。
+        * 响应事件参数 : KeyEvent3D类型,其中KeyEvent3D.keyCode的内容即为Key的值。
+        * @see egret3d.Input
+        * @default "onKeyDown"
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public static KEY_DOWN: string = "onKeyDown";
 
         /**
-         * @language zh_CN
-         * KEY_UP 常量定义 onKeyUp 事件对象的 type 属性的值。
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * KEY_UP 常量定义 按键回弹事件标识。
+        * 可注册对象 : Input类型。
+        * 事件响应状态 : 按键每次回弹时响应。
+        * 响应事件参数 : KeyEvent3D类型,其中KeyEvent3D.keyCode的内容即为Key的值。
+        * @see egret3d.Input
+        * @default "onKeyUp"
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public static KEY_UP: string = "onKeyUp";
 
         
         /**
-         * @language zh_CN
-         * 按键code值
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 按键code值,枚举类型可以参考egret3d.KeyCode
+        * @see egret3d.KeyCode
+        * @default 0
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public keyCode: number = 0;
     }
 }

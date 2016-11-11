@@ -33,7 +33,7 @@
         constructor(geometry: Geometry, material: MaterialBase = null, animation: IAnimation = null) {
             super();
 
-            this.type = "mesh";
+            this.type = IRender.TYPE_MESH;
             this.geometry = geometry;
             if (animation) {
                 this.animation = animation;
@@ -128,6 +128,17 @@
 
         /**
         * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public copy(other: Mesh) {
+            super.copy(other);
+            this.multiMaterial = other.multiMaterial;
+        }
+
+        /**
+        * @language zh_CN
         * 克隆一个模型
         * @returns 克隆后的模型
         * @version Egret 3.0
@@ -139,7 +150,7 @@
                 ani = this.animation.clone();
             }
             var cloneMesh: Mesh = new Mesh(this.geometry, this.material, ani);
-            cloneMesh.multiMaterial = this.multiMaterial;
+            cloneMesh.copy(this);
             return cloneMesh;
         }
 

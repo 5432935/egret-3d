@@ -90,7 +90,7 @@
 
         private onProgress(event: ProgressEvent) {
             var e: string = event.loaded.toString() + event.total;
-            console.log("progress event```" + e);
+            //console.log("progress event```" + e);
         }
 
         private onReadyStateChange(event: Event) {

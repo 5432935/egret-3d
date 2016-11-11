@@ -1,5 +1,10 @@
 ﻿module egret3d {
 
+    /**
+    * @private
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export enum SpecialCast {
         Shadow,Pick,
     }
@@ -30,6 +35,7 @@
 
         public softLayerRenderItems: { [key: string]: IRender[] } = {};
         public specialCastItem: { [key: string]: IRender[] } = {};
+
         /**
         * @language zh_CN
         * constructor
@@ -92,7 +98,10 @@
                     this.numberAcceptShadow++;
                 }
 
-                if (renderItem.tag.name == "normalObject" && renderItem.material.materialData.alphaBlending) {
+                //renderItem.tag.name == "normalObject" && 
+                if (renderItem.material.materialData.alphaBlending) {
+                    var scenePos: Vector3D = camera.object3DToScreenRay(renderItem.position,Vector3D.HELP_0);
+                    renderItem.zIndex = Vector3D.HELP_0.z ; 
                     this.softLayerRenderItems["alphaObject"].push(renderItem);
                 }
                 else {
@@ -112,7 +121,7 @@
                         this.numberSkin += 1;
                     if (renderItem.proAnimation)
                         this.numberAnimation += 1;
-                    if (renderItem.type == "particleEmit")
+                    if (renderItem.type == IRender.TYPE_PARTICLE_EMIT)
                         this.numberParticle += 1;
                 }
 
@@ -153,19 +162,36 @@
                 Egret3DState.countEnd("entityCollect applyRender");
             }
 
+            var renders:IRender[] ;
+            var layerName: string;
             var listLen: number;
-            var renders;
+
+            //*******************
+            //---进行alpha软排序-------
+            layerName = Layer.layerType[2];
+            renders = this.softLayerRenderItems[layerName];
+            if (renders && renders.length) {
+                listLen = renders.length;
+                renders.sort(this.alphaZSort);
+            }
+            //------end---------
+            //*******************
+
+            //*******************
+            //---进行重要度软排序-
             for (var j: number = 0; j < Layer.layerType.length; j++) {
-                renders = this.softLayerRenderItems[Layer.layerType[j]];
+                layerName = Layer.layerType[j]; 
+                renders = this.softLayerRenderItems[layerName];
                 if (renders) {
-                    listLen = this.softLayerRenderItems[Layer.layerType[j]].length;
-                    this.softLayerRenderItems[Layer.layerType[j]].sort(this.sortByOrder);
+                    listLen = renders.length;
+                    renders.sort(this.sortByOrder);
                     for (var i: number = 0; i < listLen; i++) {
-                        this.renderList.push(this.softLayerRenderItems[Layer.layerType[j]][i]);
+                        this.renderList.push(renders[i]);
                     }
                 }
-                
             }
+            //------end---------
+            //*******************
         }
 
         /**
@@ -237,6 +263,10 @@
 
         protected sortByOrder(a: IRender, b: IRender) {
             return b.drawOrder - a.drawOrder;
+        }
+
+        protected alphaZSort(a: IRender, b: IRender) {
+            return b.zIndex - a.zIndex;
         }
 
     }

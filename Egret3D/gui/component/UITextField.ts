@@ -1,35 +1,71 @@
 ﻿module egret3d.gui {
-         /**
-    * @private
+
+    /**
     * @class egret3d.gui.UITextFieldAutoSize
     * @classdesc
+    * 设置 UITextField 类的 autoSize 属性时使用的常量值的枚举
+    * @see egret3d.gui.UITextField
     * @version Egret 3.0
     * @platform Web,Native
     */
     export enum UITextFieldAutoSize {
-        //指定不调整大小。
+        /**
+        * @language zh_CN
+        * 指定不调整大小。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         NONE,
-        //指定将文本视为左对齐文本，即文本字段的左侧固定不变，只在右侧调整单行的大小。
+
+        /**
+        * @language zh_CN
+        * 指定将文本视为左对齐文本，即文本字段的左侧固定不变，只在右侧调整单行的大小。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         LEFT,
-        //指定将文本视为右对齐文本，即文本字段的右侧固定不变，只在左侧调整单行的大小。
+        /**
+        * @language zh_CN
+        * 指定将文本视为右对齐文本，即文本字段的右侧固定不变，只在左侧调整单行的大小
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         RIGHT,
-        //指定将文本视为居中对齐文本。 
+        /**
+        * @language zh_CN
+        * 指定将文本视为居中对齐文本。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         CENTER,
     }
-         /**
-    * @private
+     /**
     * @class egret3d.gui.UITextFieldType
     * @classdesc
+    * 设置 UITextField 类的 type 属性时使用的常量值的枚举
+    * @see egret3d.gui.UITextField
     * @version Egret 3.0
     * @platform Web,Native
     */
     export enum UITextFieldType {
-        //用户无法编辑的动态文本字段
+        /**
+        * @language zh_CN
+        * 用户无法编辑的动态文本字段
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         DYNAMIC,
-        //用户可以编辑的输入文本字段
+        /**
+        * @language zh_CN
+        * 用户可以编辑的输入文本字段。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         INPUT
     }
-
+    /**
+    * @private
+    */
     class TextLineInfo {
         public lineWidth: number;
         public lineHeight: number;
@@ -37,21 +73,43 @@
         public lineQuads: Quad[];
     }
 
-         /**
-    * @private
+    /**
+    * @private 
     * @class egret3d.gui.UITextFormatAlign
     * @classdesc
+    * UITextFormatAlign 类为 UITextFormat 类中的文本对齐方式提供值。
+    * @see egret3d.gui.UITextFormat
     * @version Egret 3.0
     * @platform Web,Native
     */
     export enum UITextFormatAlign {
-        //在文本字段内将文本居中对齐。
+        /**
+        * @language zh_CN
+        * 在文本字段内将文本居中对齐。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         CENTER,
-        //在文本字段内将文本两端对齐。
+        /**
+        * @language zh_CN
+        * 在文本字段内将文本两端对齐。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         JUSTIFY,
-        //在文本字段内将文本左对齐。
+        /**
+        * @language zh_CN
+        * 在文本字段内将文本左对齐。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         LEFT,
-        //在文本字段内将文本右对齐。
+        /**
+        * @language zh_CN
+        * 在文本字段内将文本右对齐。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         RIGHT
     }
 
@@ -98,7 +156,13 @@
         private _textLineInfo: TextLineInfo[] = [];
         private _bgQuad: Quad;
         private _fontQuadPanel: DisplayObject;
-
+        /**
+        * @language zh_CN
+        * 构造函数
+        * @param textFieldType 文本类型，参照egret3d.UITextFieldType
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public constructor(textFieldType: UITextFieldType = UITextFieldType.DYNAMIC) {
             super();
             this._text = "";
@@ -158,7 +222,9 @@
             this.height = 20;
             this.addChild(this._fontQuadPanel);
         }
-
+        /**
+        * @private
+        */
         protected onShowInputAgent(e: Event3D): void {
             if (this._multiline) {
                 UITextField.sharedHTMLTextAreaElement.hidden = false;
@@ -183,19 +249,13 @@
                 UITextField.sharedHTMLInputElement.onblur = (e) => this.onSharedHTMLTextLoseFocus(e);
             }
 
-            //this.showAllFontQuad(false);
             this._fontQuadPanel.visible = false;
         }
 
-        //private showAllFontQuad(visible:boolean): void {
-        //    for (var i: number = 0; i < this._textLineInfo.length; ++i) {
-        //        var textLineInfo: TextLineInfo = this._textLineInfo[i];
-        //        for (var j: number = 0; j < textLineInfo.lineQuads.length; ++j) {
-        //            textLineInfo.lineQuads[j].visible = visible;
-        //        }
-        //    }
-        //}
-
+        
+        /**
+        * @private
+        */
         private onSharedHTMLTextLoseFocus(ev: FocusEvent): void {
             this.text = this._multiline ? UITextField.sharedHTMLTextAreaElement.value : UITextField.sharedHTMLInputElement.value;
             UITextField.sharedHTMLInputElement.onblur = UITextField.sharedHTMLTextAreaElement.onblur = null;
@@ -203,7 +263,12 @@
             //this.showAllFontQuad(true);
             this._fontQuadPanel.visible = true;
         }
-
+        /**
+        * @language zh_CN
+        * 获取或设置组件的宽度（以像素为单位）。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set width(value: number) {
             if (value != this._sca.z) {
                 this._fontQuadPanel.width = value;
@@ -213,7 +278,12 @@
                 this.refreshAlign();
             }
         }
-
+        /**
+        * @language zh_CN
+        * 获取或设置组件的高度（以像素为单位）。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set height(value: number) {
             if (value != this._sca.w) {
                 this._fontQuadPanel.height = value;
@@ -223,11 +293,21 @@
                 this.refreshAlign();
             }
         }
-
+        /**
+        * @language zh_CN
+        * 获取或设置组件的宽度（以像素为单位）。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get width(): number {
             return this._sca.z;
         }
-
+        /**
+        * @language zh_CN
+        * 获取或设置组件的高度（以像素为单位）。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get height(): number {
             return this._sca.w;
         }
@@ -242,7 +322,13 @@
         public set displayAsPassword(displayAsPassword: boolean) {
             this._displayAsPassword = displayAsPassword;
         }
-
+         /**
+        * @language zh_CN
+        * 指定文本字段是否是密码文本字段。
+        * @param displayAsPassword  是否为密码文本字段
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get displayAsPassword(): boolean {
             return this._displayAsPassword;
         }
@@ -267,7 +353,13 @@
         public set maxChars(maxChars: number) {
             this._maxChars = maxChars;
         }
-
+        /**
+        * @language zh_CN
+        * 文本字段中最多可包含的字符数（即用户输入的字符数）。
+        * @param maxChars  最大字符数
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get maxChars(): number {
             return this._maxChars;
         }
@@ -282,7 +374,13 @@
         public set multiline(multiline: boolean) {
             this._multiline = multiline;
         }
-
+        /**
+        * @language zh_CN
+        * 指示字段是否为多行文本字段。
+        * @param multiline  是否多行
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get multiline(): boolean {
             return this._multiline;
         }
@@ -297,7 +395,13 @@
         public set restrict(restrict: string) {
             this._restrict = restrict;
         }
-
+        /**
+        * @language zh_CN
+        * 指示用户可输入到文本字段中的字符集。
+        * @param restrict  字符集
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get restrict(): string {
             return this._restrict;
         }
@@ -312,7 +416,13 @@
         public set selectable(selectable: boolean) {
             this._selectable = selectable;
         }
-
+        /**
+        * @language zh_CN
+        * 一个布尔值，指示文本字段是否可选。
+        * @param selectable  是否可选
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get selectable(): boolean {
             return this._selectable;
         }
@@ -347,7 +457,13 @@
         public set type(type: UITextFieldType) {
             this._type = type;
         }
-
+        /**
+        * @language zh_CN
+        * 该文本字段的类型。
+        * @param type  文本字段的类型
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get type(): UITextFieldType {
             return this._type;
         }
@@ -361,10 +477,14 @@
         */
         public set textColor(textColor: number) {
             this._textColor = textColor;
-
-
         }
-
+        /**
+        * @language zh_CN
+        * 文本字段中文本的颜色（采用十六进制格式）。
+        * @param textColor  文本颜色
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get textColor(): number {
             return this._textColor;
         }
@@ -422,7 +542,9 @@
 
             this.refreshAlign();
         }
-
+        /**
+        * @private
+        */
         private clearText(): void {
 
             var textLineInfo: TextLineInfo = null;
@@ -440,19 +562,49 @@
 
             this._textLineInfo = [];
         }
-
+        /**
+        * @language zh_CN
+        * 当前文本字段中当前文本的字符串。
+        * @param text  文本字符串
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get text(): string {
             return this._text;
         }
-
+        /**
+        * @language zh_CN
+        * @param text  文本字符串
+        * 控制文本字段的自动大小调整和对齐。
+        * 如果 autoSize 设置为 UITextFieldAutoSize.NONE（默认值），则不会进行调整。</p>
+        * 如果 autoSize 设置为 UITextFieldAutoSize.LEFT，会将文本视为左对齐文本，这意味着该文本字段的左边距保持固定，在右边可调整单个文本字段行。 如果文本中包括换行符（例如 "\n" 或 "\r"），则会另外调整底边来适合文本的下一行。
+        * 如果 autoSize 设置为 UITextFieldAutoSize.RIGHT，会将文本视为右对齐文本，这意味着该文本字段的右边距保持固定，可在左边调整单个文本字段行。 如果文本中包括换行符（例如 "\n" or "\r")），则会另外调整底边来适合文本的下一行。
+        * 如果 autoSize 设置为 UITextFieldAutoSize.CENTER，会将文本视为居中对齐文本，这意味着对单个文本字段行的调整将使其在左右边距间均衡分布。 如果文本中包括换行符（例如 "\n" 或 "\r"），则会另外调整底边来适合文本的下一行。
+        * @see egret3d.gui.UITextFieldAutoSize
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set autoSize(autoSize: UITextFieldAutoSize) {
             this._autoSize = autoSize;
         }
-
+        /**
+        * @language zh_CN
+        * @param text  文本字符串
+        * 控制文本字段的自动大小调整和对齐。
+        * 如果 autoSize 设置为 UITextFieldAutoSize.NONE（默认值），则不会进行调整。</p>
+        * 如果 autoSize 设置为 UITextFieldAutoSize.LEFT，会将文本视为左对齐文本，这意味着该文本字段的左边距保持固定，在右边可调整单个文本字段行。 如果文本中包括换行符（例如 "\n" 或 "\r"），则会另外调整底边来适合文本的下一行。
+        * 如果 autoSize 设置为 UITextFieldAutoSize.RIGHT，会将文本视为右对齐文本，这意味着该文本字段的右边距保持固定，可在左边调整单个文本字段行。 如果文本中包括换行符（例如 "\n" or "\r")），则会另外调整底边来适合文本的下一行。
+        * 如果 autoSize 设置为 UITextFieldAutoSize.CENTER，会将文本视为居中对齐文本，这意味着对单个文本字段行的调整将使其在左右边距间均衡分布。 如果文本中包括换行符（例如 "\n" 或 "\r"），则会另外调整底边来适合文本的下一行。
+        * @see egret3d.gui.UITextFieldAutoSize
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get autoSize(): UITextFieldAutoSize {
             return this._autoSize;
         }
-
+        /**
+        * @private
+        */
         private refreshAlign(): void {
 
             var fontQuad: Quad = null;
@@ -536,7 +688,9 @@
                 }
             }
         }
-
+        /**
+        * @private
+        */
         private buildTextLineInfo(text: string): TextLineInfo {
 
             var textLineInfo: TextLineInfo = new TextLineInfo();
@@ -630,7 +784,9 @@
         */
         public setSelection(beginIndex: number, endIndex: number): void {
         }
-
+        /**
+        * @private
+        */
         private createFontQuad(unicode: number, isAddChild:boolean = true): Quad {
 
             var fontQuad: Quad;
@@ -661,7 +817,9 @@
             }
             return fontQuad;
         }
-
+        /**
+        * @private
+        */
         private deleteFontQuad(fontQuad: Quad): void {
 
             if (this._blankQuad == fontQuad) 

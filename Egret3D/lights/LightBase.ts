@@ -3,7 +3,7 @@
     /**
     *@language zh_CN
     * @class egret3d.LightType
-    *灯光类型
+    * 灯光类型
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -51,7 +51,7 @@
     */
     export class LightBase extends Object3D {
 
-         /**
+        /**
         *@language zh_CN 
         * 灯光在配置表中的id，用于和贴图建立绑定关系
         * @version Egret 3.0
@@ -61,22 +61,23 @@
         /**
         *@language zh_CN 
         * 灯光类型
+        * @see egret3d.LightType
         * @version Egret 3.0
         * @platform Web,Native
         */
         public lightType: number = -1 ;
         /**
-         * @language zh_CN  
-         *@private
-         * 环境颜色
-         */
+        * @language zh_CN  
+        * @private
+        * 环境颜色
+        */
         protected _ambient: Vector3D = new Vector3D(0.0, 0.0, 0.0);
  
         /**
-         * @language zh_CN  
-         *@private
-         * 漫反射  
-         */
+        * @language zh_CN  
+        * @private
+        * 漫反射  
+        */
         protected _diffuse: Vector3D = new Vector3D(1.0, 1.0, 1.0);
 
         // /**
@@ -189,6 +190,7 @@
         * @language zh_CN  
         * 设置灯光强度。</p>
         * 影响灯光的强弱显示，值的范围0~没有上限，但是值过大会导致画面过度曝光。</p>
+        * @param value 强度数值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -215,6 +217,7 @@
         * @language zh_CN  
         * 设置背光灯光强度。</p>
         * 影响背光灯光的强弱显示，值的范围0~没有上限，但是值过大会导致画面过度曝光。</p>
+        * @param value 背光灯光强度
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -269,6 +272,7 @@
         * 设置灯光漫反射颜色。</p>
         * 直接影响最终灯光的颜色色值 16进制的颜色, 例如 red：0xffff0000。</p>
         * 也可以通过 diffusePower 来改变这个值的总体强弱
+        * @param color 颜色值，0xffffffff格式
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -299,6 +303,7 @@
         * 在灯光方向与物体和相机成一个反光角度的时候，就会产生反光，高光，而不同的物体会有不同的颜色色值，尤其是金属。</p>
         * 16进制的颜色 例如 red：0xffff0000。</p>
         * 也可以通过 specularPower 来改变这个值的总体强弱。</p>
+        * @param color 颜色值，0xffffffff格式
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -328,12 +333,14 @@
         }
 
         /**
-         * @language zh_CN
-         * @private
-         * 更新灯光数据
-         * @param index 灯光ID
-         * @param lightData 灯光数据
-         */
+        * @language zh_CN
+        * @private
+        * 更新灯光数据
+        * @param index 灯光ID
+        * @param lightData 灯光数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public updateLightData(camera:Camera3D,index:number, lightData: Float32Array) {
           
         }

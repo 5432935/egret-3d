@@ -81,7 +81,7 @@
         * @language zh_CN
         * 获取节点容器
         * 获取整体的功能节点列表
-        * @return 节点容器
+        * @returns 节点容器
         */
         public getNodes(): Array<AnimationNode> {
             return this.nodes;

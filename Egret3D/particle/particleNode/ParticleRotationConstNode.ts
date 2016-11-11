@@ -1,8 +1,12 @@
 ﻿module egret3d {
-
     /**
+    * @language zh_CN
     * @private
-    * 粒子的旋转角速度，当前实现为Z轴的速度（todo：模型粒子或许需要同时有x/y/z三个方向的角速度）
+    * @class egret3d.ParticleRotationConstNode
+    * @classdesc
+    * 粒子的旋转角速度，当前实现为Z轴的速度（todo：模型粒子或许需要同时有x/y/z三个方向的角速度）    * @see egret3d.AnimationNode
+    * @version Egret 3.0
+    * @platform Web,Native
     */
     export class ParticleRotationConstNode extends AnimationNode {
 

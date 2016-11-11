@@ -11,7 +11,7 @@
      * 
      * @version Egret 3.0
      * @platform Web,Native
-     * @includeExample geometry/SphereGeometry.ts
+     * @includeExample geometry/CubeGeometry.ts
      */
     export class SphereGeometry extends Geometry {
 
@@ -19,6 +19,7 @@
         /**
         * @language zh_CN
         * 宽度分段数
+        * @returns {number} 宽度分段数
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -29,6 +30,7 @@
         /**
         * @language zh_CN
         * 高度分段数
+        * @returns {number} 高度分段数
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -39,6 +41,7 @@
         /**
         * @language zh_CN
         * 半径
+        * @returns {number} 半径
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -50,9 +53,9 @@
         /**
         * @language zh_CN
         * 构造函数
-        * @param r 半径 默认值 100
-        * @param segmentsW 宽度分段数 默认值 15
-        * @param segmentsH 高度分段数 默认值 15
+        * @param r {number} 半径 默认值 100
+        * @param segmentsW {number} 宽度分段数 默认值 15
+        * @param segmentsH {number} 高度分段数 默认值 15
         * @version Egret 3.0
         * @platform Web,Native
         */

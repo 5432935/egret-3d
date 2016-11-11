@@ -26,14 +26,17 @@
         /**
         * @language zh_CN  
         * 方向光列表
+        * @see egret3d.DirectLight
         * @version Egret 3.0
         * @platform Web,Native
         */
         public directLightList: Array<DirectLight>;
 
         /**
+        * @private
         * @language zh_CN  
         * 聚光灯列表
+        * @see egret3d.SpotLight
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -42,6 +45,7 @@
         /**
         * @language zh_CN  
         * 点光源列表
+        * @see egret3d.PointLight
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -62,7 +66,7 @@
         /**
         * @language zh_CN
         * 为灯光组,添加一个灯光
-        * @param light Light
+        * @param light 灯光实例对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -88,8 +92,8 @@
         /**
         * @private
         * @language zh_CN
-        * 删除一个灯光
-        * @param light Light
+        * 灯光不能动态移除,此接口不生效，不要使用
+        * @param light 灯光实例对象
         * @version Egret 3.0
         * @platform Web,Native
         */

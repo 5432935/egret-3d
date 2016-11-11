@@ -1,15 +1,39 @@
 ﻿module egret3d.gui {
+    /**
+    * @private
+    * @class egret3d.SkinManager
+    * @classdesc
+    * gui的默认皮肤管理器
+    * @see egret3d.TextureResourceManager
+    * @version Egret 3.0
+    * @platform Web,Native 
+    */
     export class SkinManager {
         private static _instance:SkinManager;
-        private _defaultSkinTexture:any;
+        private _defaultSkinTexture: any;
+
         constructor() {
             this._defaultSkinTexture = {};
         }
 
+        /**
+        * @private
+        * 获取默认贴图
+        * @param skinName 根据皮肤名称获取默认的Texture
+        * @returns Texture 获取到的默认贴图
+        * @version Egret 3.0
+        * @platform Web,Native 
+        */
         public getDefaultSkin(skinName: string): Texture {
             return this._defaultSkinTexture[skinName];
         }
 
+        /**
+        * @private
+        * 初始化该管理器
+        * @version Egret 3.0
+        * @platform Web,Native 
+        */
         public initDefaultSkin() {
             var upState: Texture = textureResMgr.getTexture("normal.png");
             var downState: Texture = textureResMgr.getTexture("pressed.png");
@@ -50,10 +74,29 @@
            SkinManager.instance.setDefaultSkin(gui.DefaultSkinName.DEFAULT_PANEL_BACKGROUND, whiteBg);
         }
 
-        public setDefaultSkin(skinName: string, texture: Texture) {
+        /**
+        * @private
+        * 设置默认皮肤对应的贴图
+        * @param skinName 默认的皮肤名
+        * @param texture 默认皮肤对应的贴图
+        * @version Egret 3.0
+        * @platform Web,Native 
+        */
+        public setDefaultSkin(skinName: string, texture: any) {
+            if (typeof texture === "string") {
+                texture = textureResMgr.getTexture(texture);
+            }
             this._defaultSkinTexture[skinName] = texture;
         }
 
+        /**
+        * @private
+        * 获取单例
+        * @param skinName 默认的皮肤名
+        * @returns SkinManager 管理器的蛋例
+        * @version Egret 3.0
+        * @platform Web,Native 
+        */
         public static get instance(): SkinManager {
             if (!SkinManager._instance) {
                 SkinManager._instance = new SkinManager();
@@ -62,6 +105,9 @@
         }
     }
 
+    /**
+    * @private
+    */
     export class DefaultSkinName {
         public static DEFAULT_BUTTON_UP:string = 'defaultButtonUp';
         public static DEFAULT_BUTTON_DOWN: string = 'defaultButtonDown';

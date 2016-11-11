@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticlePosition
     * @classdesc
     * 粒子位置效果节点，刚出生相对于(0,0,0)位置的偏移量
@@ -104,7 +105,7 @@
         /**
         * @language zh_CN
         * 获取位置节点在geometry的顶点数据中偏移量
-        * @return number
+        * @returns number
         * @version Egret 3.0
         * @platform Web,Native
         */

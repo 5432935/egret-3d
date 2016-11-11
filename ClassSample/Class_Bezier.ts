@@ -26,7 +26,10 @@
             var tex: ImageTexture = new ImageTexture(bgImg);
             this.view1.backImage = tex;
 
-
+            var planeGeometry: PlaneGeometry = new PlaneGeometry(1000, 1000, 20, 20);
+            var wireframe: Wireframe = new Wireframe();
+            wireframe.fromGeometry(planeGeometry);
+           // this.view1.addChild3D(wireframe);
            
             var geom: CubeGeometry = new CubeGeometry(2, 2, 10);
             var position: Vector3D = new Vector3D();
@@ -64,7 +67,7 @@
             this._egret3DCanvas.start();
             this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
 
-            this.node.addChild(new AxisMesh(200));
+            //this.node.addChild(new AxisMesh(200));
 
         }
 

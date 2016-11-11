@@ -1,13 +1,17 @@
 ﻿module egret3d {
     
     /**
-     * @language zh_CN
-     * @class egret3D.OrientationControler
-     * @classdesc
-     * 陀螺仪控制器
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3D.OrientationControler
+    * @classdesc
+    * 陀螺仪控制器
+    * 当前控制器使用后直接控制 view3D.camera3D 的本地旋转
+    * @see egret3d.View3D
+    * @see egret3d.Camera3D
+    * @includeExample input/OrientationControler.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class OrientationController {
         private acc: DeviceAcceleration;
         private accGravity: DeviceAcceleration;
@@ -31,7 +35,7 @@
         public offsetRotation: Vector3D = new Vector3D();
         /**
         * @language zh_CN
-        * constructor
+        * 构造函数，构建一个陀螺仪控制器
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -60,7 +64,7 @@
 
         /**
         * @language zh_CN
-        * 初始化
+        * 开始陀螺仪控制
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -74,7 +78,7 @@
 
         /**
         * @language zh_CN
-        * 释放
+        * 释放陀螺仪控制
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -125,6 +129,7 @@
 
 
         /**
+        * @private
         * @language zh_CN
         * 陀螺仪当前旋转角度
         * @version Egret 3.0
@@ -143,6 +148,7 @@
         } 
 
         /**
+        * @private
         * @language zh_CN
         * 
         * @returns number
@@ -174,6 +180,7 @@
         private outQ: Quaternion = new Quaternion();
 
         /**
+        * @private
         * @language zh_CN
         * 由陀螺仪的角度值计算出旋转四元数
         * @param alpha 
@@ -230,10 +237,12 @@
         private caheFixAxis: Vector3D = new Vector3D();
         private steps: number = 3.001;
         private interpolate: boolean = true;
+
         /**
         * @language zh_CN
         * 数据更新
-        * @param camera3D 当前相机
+        * 陀螺仪会直接控制view3D.camera3D的旋转
+        * @param view3D 当前控制view3D
         * @version Egret 3.0
         * @platform Web,Native
         */

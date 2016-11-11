@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleVelocityForceConstNode(常量部分)
     * @classdesc
     * 粒子加速度效果节点

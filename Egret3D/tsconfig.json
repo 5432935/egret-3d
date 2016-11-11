@@ -7,13 +7,14 @@
         "out": "./egret3d.js"
     },
     "files": [
-
         "Egret3DLog.ts",
         "Egret3DState.ts",
         "config/TextureMethodType.ts",
+        "config/ContextConfig.ts",
 
         "geom/UV.ts",
         "geom/Point.ts",
+        "geom/PointUtils.ts",
         "geom/Vector3D.ts",
         "geom/Rectangle.ts",
         "geom/Quaternion.ts",
@@ -32,8 +33,7 @@
         "geom/ColorTransform.ts",
         "events/PickResult.ts",
         "events/Event3D.ts",
-        "events/PropertyAnimEvent3D.ts",
-        "events/SkeletonAnimationEvent3D.ts",
+        "events/AnimationEvent3D.ts",
         "events/MouseEvent3D.ts",
         "events/TouchEvent3D.ts",
         "events/PickEvent3D.ts",
@@ -41,7 +41,6 @@
         "events/OrientationEvent3D.ts",
         "events/LoaderEvent3D.ts",
         "events/ParserEvent3D.ts",
-        "events/ParticleEvent3D.ts",
         "events/EventDispatcher.ts",
         "events/EventManager.ts",
 
@@ -96,9 +95,9 @@
         "controller/LookAtController.ts",
         "controller/HoverController.ts",
         "controller/PanController.ts",
+        "controller/CameraAnimationController.ts",
         
         "core/context/Reference.ts",
-        "core/context/ContextConfig.ts",
         "core/context/Context3DProxy.ts",
         "core/context/FrameBuffer.ts",
         "core/context/IndexBuffer3D.ts",
@@ -125,7 +124,6 @@
         "gui/QuadData.ts",
         "gui/Quad.ts",
         "gui/GUIEventFire.ts",
-        "gui/SortUtil.ts",
         "gui/QuadMesh.ts",
         "gui/GUITextureGroup.ts",
         "gui/QuadStage.ts",
@@ -139,7 +137,6 @@
         "gui/component/UIToggleButtonBase.ts",
         "gui/component/UIPanel.ts",
         "gui/component/UIList.ts",
-        "gui/component/UIToggleButton.ts",
         "gui/component/UICheckBox.ts",
         "gui/component/UIRadioButton.ts",
         "gui/component/UIRadioButtonGroup.ts",
@@ -255,7 +252,12 @@
         "material/method/WaterNormalMethod.ts",
         "material/method/EnvironmentMethod.ts",
         "material/method/RimlightMethod.ts",
-        
+
+        "plant/GrassMesh.ts",
+        "plant/GrassMethod.ts",
+
+
+        "material/method/WaterBumpMethod.ts",
 
         "material/pass/PassUsage.ts",
         "material/MaterialData.ts",
@@ -318,9 +320,7 @@
         "particle/particleNode/ParticleUVRollNode.ts",
         "particle/particleNode/ParticleSubEmitterNode.ts",
         "particle/particleNode/ParticleTrackPositionNode.ts",
-        
-        "plant/GrassMethod.ts",
-        "plant/GrassMesh.ts",
+
 
         
         "particle/ParticleAnimationState.ts",
@@ -347,7 +347,6 @@
         "Util/Debug.ts",
         "Util/StringUtil.ts",
 
-        "camera/CameraAnimationController.ts",
         "camera/CameraManager.ts",
         "camera/Camera3D.ts",
 
@@ -358,17 +357,8 @@
         "core/partition/quad/QuadTreeCell.ts",
 
         "Util/DoubleArray.ts",
-        "Util/navigation/Navi3DAstar.ts",
-        "Util/navigation/Navi3DEdge.ts",
-        "Util/navigation/Navi3DMaskType.ts",
-        "Util/navigation/Navi3DPoint2D.ts",
-        "Util/navigation/Navi3DPoint.ts",
-        "Util/navigation/Navi3DPointFat.ts",
-        "Util/navigation/Navi3DTriangle.ts",
-        "Util/navigation/Navi3DMesh.ts",
-        "Util/navigation/Navi3DFunnel.ts",
-        "Util/navigation/Navi3DRouter.ts",
-
+        "Util/StaticMergeUtil.ts",
+        
         "hud/HUD.ts",
 
         "View3D.ts",

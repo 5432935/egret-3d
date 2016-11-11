@@ -2,8 +2,9 @@
     export class Class_View3D {
 
         protected _egret3DCanvas: Egret3DCanvas;
-        private globalTime: number;
+        protected globalTime: number;
         protected infoText: gui.UITextField;
+        protected _queueLoad: QueueLoader;
         constructor() {
             this._egret3DCanvas = new Egret3DCanvas();
             this._egret3DCanvas.x = 0; 

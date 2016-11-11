@@ -1,16 +1,17 @@
 ﻿module egret3d {
     /**
-     * @language zh_CN
-     * @class egret3d.Quaternion
-     * @classdesc
-     * Quaternion类
-     * 
-     * 定义了一个四元数表示物体在空间的旋转。
-     * 四元数通常用作替代欧拉角和旋转矩阵的方式来实现平滑插值和避免万向节锁
-     * 注意，这四元数类不自动保持四元数标准化。因此，在必要的时候，必须采取单位化的四元数，通过调用单位化方法
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.Quaternion
+    * @classdesc
+    * Quaternion类
+    * 
+    * 定义了一个四元数表示物体在空间的旋转。
+    * 四元数通常用作替代欧拉角和旋转矩阵的方式来实现平滑插值和避免万向节锁
+    * 注意，这四元数类不自动保持四元数标准化。因此，在必要的时候，必须采取单位化的四元数，通过调用单位化方法
+    * @includeExample geom/Quaternion.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class Quaternion {
 
         /**
@@ -104,6 +105,23 @@
         * @platform Web,Native
         */
         constructor(x: number = 0, y: number = 0, z: number = 0, w: number = 1) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+            this.w = w;
+        }
+
+        /*
+        * @language zh_CN
+        * 设置四元数的值 
+        * @param x
+        * @param y
+        * @param z
+        * @param w 默认为1
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public setTo(x: number = 0, y: number = 0, z: number = 0, w: number = 1) {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -262,7 +280,7 @@
         *
         * @param qa 四元数1
         * @param qb 四元数2
-        * @param t 差值时刻
+        * @param t 插值时刻
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -317,7 +335,7 @@
         *
         * @param qa 四元数1
         * @param qb 四元数2
-        * @param t 差值时刻
+        * @param t 插值时刻
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -361,7 +379,7 @@
         * @param ax x轴旋转角度
         * @param ay y轴旋转角度
         * @param az z轴旋转角度
-        * @return Quaternion 四元数对象
+        * @returns Quaternion 四元数对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -423,10 +441,11 @@
         /**
         * @language zh_CN
         * 单位化四元数
+        * param val 单位系数，默认为1
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public normalize(val: number = 1) {
+        public normalize(val: number = 1):void {
             var mag: number = val / Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
 
             this.x *= mag;
@@ -462,8 +481,8 @@
         * @language zh_CN
         * 把一个四元数转换成矩阵
         * @param target 返回转换后的矩阵，如果为null就新建一个对象返回
-        * @see egret3d.Matrix4_4
         * @returns  Matrix4_4 返回转换后的矩阵
+        * @see egret3d.Matrix4_4
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -522,7 +541,7 @@
         * @language zh_CN
         * 返回一个把当前四元数取逆后的四元数
         * @param target 默认参数为null,如果当前参数为null那么就会new一个新的四元数对象返回
-        * @return Quaternion 四元数
+        * @returns Quaternion 四元数
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -552,7 +571,7 @@
         /**
         * @language zh_CN
         * 克隆一个四元数
-        * @returns Quaternion 当前四元数复制后返回.
+        * @returns Quaternion 当前四元数复制后返回新对象.
         * @version Egret 3.0
         * @platform Web,Native
         */

@@ -1,16 +1,17 @@
 ﻿module egret3d {
     /**
-     * @language zh_CN
-     * @class egret3d.ColorTransform
-     * @classdesc
-     * 可使用 ColorTransform 类调整显示对象的颜色值
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.ColorTransform
+    * @classdesc
+    * 可使用 ColorTransform 类调整显示对象的颜色值
+    * @includeExample geom/ColorTransform.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class ColorTransform {
         /**
         * @language zh_CN
-        * 颜色变化矩阵(r,g,b)
+        * 颜色变化矩阵(r,g,b)数据，a单独放在外面计算
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -27,8 +28,7 @@
         /**
         * @language zh_CN
         * @class egret3d.ColorTransform
-        * @classdesc
-        * ColorTransform 用到的数据，用于偏色某个材质球
+        * @classdesc 创建一个颜色变化矩阵对象，用于偏色某个材质球
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -39,7 +39,10 @@
         /**
         * @language zh_CN
         * 缩放颜色，对rgba进行对应比例的系数缩放
-        * @param color 颜色缩放系数
+        * @param r red通道
+        * @param g green通道
+        * @param b blue通道
+        * @param a alpha通道
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -51,7 +54,10 @@
         /**
         * @language zh_CN
         * 偏移颜色，对rgba进行对应便宜
-        * @param color 颜色缩放系数
+        * @param r red通道偏移值
+        * @param g green通道偏移值
+        * @param b blue通道偏移值
+        * @param a alpha通道偏移值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -64,7 +70,6 @@
         /**
         * @language zh_CN
         * 灰度变换
-        * @param color 颜色缩放系数
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -121,24 +126,24 @@
         /**
         * @language zh_CN
         * 拷贝一个颜色变换数据
-        * @param ctf 拷贝对象
+        * @param transform 被拷贝的对象
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public copyFrom(ctf: ColorTransform): void {
-            this.m44.copyFrom(ctf.m44);
-            this.alpha = ctf.alpha;
+        public copyFrom(transform: ColorTransform): void {
+            this.m44.copyFrom(transform.m44);
+            this.alpha = transform.alpha;
         }
 
         /**
         * @language zh_CN
         * 拷贝该颜色变换数据
-        * @param ctf 拷贝至目标对象
+        * @param transform 拷贝至目标对象
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public copyTo(ctf: ColorTransform): void {
-            ctf.copyFrom(this);
+        public copyTo(transform: ColorTransform): void {
+            transform.copyFrom(this);
         }
 
 
@@ -146,7 +151,7 @@
         /**
          * @language zh_CN
          * 设置颜色值
-         * @param rgb 0xffffff格式
+         * @param value rgb，0xffffff格式
          * @version Egret 3.0
          * @platform Web,Native
          */

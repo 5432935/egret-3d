@@ -7,8 +7,12 @@ module egret3d {
     * SkeletonAnimation 类表示骨骼动画控制类
     * 
     * 骨骼动画控制类中管理若干个 SkeletonAnimationClip（骨骼动画） 对象，每个SkeletonAnimationClip对象，都是对*.eam 文件的实例。
-    * @includeExample anim/skeletonAnimation/SkeletonAnimation.ts
+    * 此对象会触发 SkeletonAnimationEvent3D 事件
     * @see egret3d.SkeletonAnimationClip
+    * @see egret3d.EventDispatcher
+    * @see egret3d.IAnimation
+    * @see egret3d.SkeletonAnimationEvent3D
+    * @includeExample anim/skeletonAnimation/SkeletonAnimation.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -36,7 +40,7 @@ module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public event3D: Event3D = new Event3D();
+        public event3D: Event3D = new AnimationEvent3D();
 
         /**
         * @language zh_CN
@@ -45,7 +49,24 @@ module egret3d {
         * @platform Web,Native
         */
         public isLoop: boolean = true;
+        /**
+        * @language zh_CN
+        * 延迟播放的时间
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public delay: number;
+
+        /**
+        * @private
+        * @language zh_CN
+        * 一个完整的动画播放时间周期
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        private _loopTime: number = 1;
+
+
         private _currentAnimName: string;
         private _isPlay: boolean = false;
         private _animTime: number = 0;
@@ -67,9 +88,36 @@ module egret3d {
         private _currentSkeletonPose: SkeletonPose = null;
         private _oldTime: number = 0;
 
+
+        /**
+        * @language zh_CN
+        * 构造函数
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         constructor() {
             super();
             this._isPlay = false;
+        }
+
+        /**
+        * @language zh_CN
+        * 一个完整的动画播放时间周期
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get loopTime(): number { 
+            return this._loopTime;
+        }
+
+        /**
+        * @language zh_CN
+        * 一个完整的动画播放时间周期
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set loopTime(value:number){
+            this._loopTime = value;
         }
 
 
@@ -83,6 +131,9 @@ module egret3d {
         public addSkeletonAnimationClip(animationClip: SkeletonAnimationClip): void {
 
             var animState: SkeletonAnimationState = new SkeletonAnimationState(animationClip.animationName);
+            //初始化一下循环数据，这样外部就可以使用了（保证了只有一个clip时候，数据是有效的）
+            this.isLoop = animationClip.isLoop;
+            this.loopTime = animationClip.timeLength;
 
             animState.skeletonAnimation = this;
 
@@ -170,6 +221,7 @@ module egret3d {
             }
 
             this.isLoop = playSkeletonAnimationState.skeletonAnimationClip.isLoop;
+            this.loopTime = playSkeletonAnimationState.timeLength;
 
             this._currentAnimName = animName;
 
@@ -201,6 +253,7 @@ module egret3d {
                 this._movePosition.copyFrom(playSkeletonAnimationState.getSkeletonPose(0).joints[this._movePosIndex].worldMatrix.position);
             }
         }
+
 
         /**
         * @language zh_CN
@@ -259,7 +312,7 @@ module egret3d {
 
             for (var i: number = 0; i < count; ++i) {
 
-                this.event3D.eventType = SkeletonAnimationEvent3D.EVENT_FRAME_CHANGE;
+                this.event3D.eventType = AnimationEvent3D.EVENT_FRAME_CHANGE;
                 this.event3D.target = this;
 
                 if (delayTime < 0) {
@@ -323,6 +376,7 @@ module egret3d {
         /**
         * @language zh_CN
         * 克隆骨骼动画对象
+        * @returns SkeletonAnimation 克隆骨骼动画对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -346,6 +400,7 @@ module egret3d {
         /**
         * @language zh_CN
         * 骨架骨骼数量
+        * @returns number 骨架骨骼数量，当前默认为48
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -356,6 +411,7 @@ module egret3d {
         /**
         * @language zh_CN
         * 动画名列表
+        * @returns 动画名列表，字符串的数组
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -386,6 +442,7 @@ module egret3d {
         /**
         * @language zh_CN
         * 动画时间
+        * @param value 动画时间
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -558,7 +615,9 @@ module egret3d {
         
         /**
         * @language zh_CN
-        * 绑定3D对象到骨骼
+        * 绑定3D对象到骨骼 。
+        * 注意: 绑定的对象需要成为当前节点的子节点 
+        * 动画播放后才能正常
         * @param jointName 骨骼名称
         * @param obj3d 3D对象
         * @returns boolean 是否成功
@@ -589,6 +648,9 @@ module egret3d {
             return true;
         }
 
+        /**
+        * private
+        */
         public setMovePosJointName(jointName: string, target:Object3D): boolean {
 
             var jointIndex: number = this._animStates[0].skeletonAnimationClip.findJointIndex(jointName);

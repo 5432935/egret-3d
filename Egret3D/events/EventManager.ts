@@ -80,7 +80,7 @@
                     continue;
                 }
               
-                var ret: Array<IRender> = Picker.pickObject3DList(canvas, view, collect, false, this._retRenderList);
+                var ret: Array<IRender> = Picker.pickObject3DList(view, collect, false, this._retRenderList);
                 var len = ret.length;
                 if (len <= 0) {
                     continue;
@@ -110,7 +110,7 @@
                     else {
 
                         if (mouseChilder) {
-                            ret = Picker.pickObject3DList(canvas, view, ret, true, this._retRenderList);
+                            ret = Picker.pickObject3DList(view, ret, true, this._retRenderList);
                             dis = MathUtil.MAX_VALUE;
                             len = ret.length;
                             if (len <= 0) {

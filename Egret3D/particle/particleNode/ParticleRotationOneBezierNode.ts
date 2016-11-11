@@ -1,7 +1,7 @@
 ﻿module egret3d {
-
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleRotationOneBezierNode
     * @classdesc
     * 粒子z轴旋转角速度（bezier曲线）

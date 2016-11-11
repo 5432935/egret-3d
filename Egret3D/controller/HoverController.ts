@@ -34,7 +34,7 @@
         private _mouseRightDown: boolean = false;
         private _keyArray: Array<boolean> = new Array<boolean>();
 
-        
+
         /**
         * @language zh_CN
         * @param targetObject 控制的目标相机，目标对象
@@ -68,7 +68,7 @@
             this.steps = steps;
             this.yFactor = yFactor;
             this.wrapPanAngle = wrapPanAngle;
-			
+
             //values passed in contrustor are applied immediately
             this._currentPanAngle = this._panAngle;
             this._currentTiltAngle = this._tiltAngle;
@@ -203,7 +203,7 @@
                     break;
             }
         }
-        
+
         /**
         * @language zh_CN
         * 返回目标的位置
@@ -215,7 +215,7 @@
         public get lookAtPosition(): Vector3D {
             return this._lookAtPosition;
         }
-        
+
         /**
         * @language zh_CN
         * 设置目标坐标
@@ -225,17 +225,16 @@
         * @platform Web,Native
         */
         public set lookAtPosition(val: Vector3D) {
-            this._lookAtPosition = val; 
-            this.notifyUpdate();
+            this._lookAtPosition = val;
         }
-                
+
         /**
         * @private
         */
         public get steps(): number {
-            return this._steps ;
+            return this._steps;
         }
-                        
+
         /**
         * @private
         */
@@ -244,9 +243,8 @@
             if (this._steps == val)
                 return;
             this._steps = val;
-            this.notifyUpdate();
         }
-                        
+
         /**
         * @language zh_CN
         * 得到相机y轴旋转角度
@@ -257,7 +255,7 @@
         public get panAngle(): number {
             return this._panAngle;
         }
-                
+
         /**
         * @language zh_CN
         * 设置相机y轴旋转
@@ -270,9 +268,8 @@
             if (this._panAngle == val)
                 return;
             this._panAngle = val;
-            this.notifyUpdate();
         }
-                        
+
         /**
         * @language zh_CN
         * 得到相机x轴旋转角度
@@ -283,7 +280,7 @@
         public get tiltAngle(): number {
             return this._tiltAngle;
         }
-                
+
         /**
         * @language zh_CN
         * 设置相机x轴旋转
@@ -296,9 +293,8 @@
             if (this._tiltAngle == val)
                 return;
             this._tiltAngle = val;
-            this.notifyUpdate();
         }
-		        
+
         /**
         * @language zh_CN
         * 得到目标和相机的距离
@@ -309,7 +305,7 @@
         public get distance(): number {
             return this._distance;
         }
-        
+
         /**
         * @language zh_CN
         * 设置目标和相机的距离
@@ -321,9 +317,8 @@
             if (this._distance == val)
                 return;
             this._distance = this._distance = Math.max(this._minDistance, Math.min(this._maxDistance, val));
-            this.notifyUpdate();
         }
-		                        
+
         /**
         * @language zh_CN
         * 得到相机最小y轴旋转角度
@@ -334,7 +329,7 @@
         public get minPanAngle(): number {
             return this._minPanAngle;
         }
-        		                        
+
         /**
         * @language zh_CN
         * 设置相机最小y轴旋转角度
@@ -348,7 +343,7 @@
             this._minPanAngle = val;
             this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
         }
-				                        
+
         /**
         * @language zh_CN
         * 得到相机最大y轴旋转角度
@@ -359,7 +354,7 @@
         public get maxPanAngle(): number {
             return this._maxPanAngle;
         }
-                		                        
+
         /**
         * @language zh_CN
         * 设置相机最大y轴旋转角度
@@ -373,7 +368,7 @@
             this._maxPanAngle = val;
             this.panAngle = Math.max(this._minPanAngle, Math.min(this._maxPanAngle, this._panAngle));
         }
-				                        
+
         /**
         * @language zh_CN
         * 得到相机最小x轴旋转角度
@@ -384,7 +379,7 @@
         public get minTiltAngle(): number {
             return this._minTiltAngle;
         }
-                		                        
+
         /**
         * @language zh_CN
         * 设置相机最小x轴旋转角度
@@ -398,7 +393,7 @@
             this._minTiltAngle = val;
             this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
         }
-						                        
+
         /**
         * @language zh_CN
         * 得到相机最大x轴旋转角度
@@ -409,7 +404,7 @@
         public get maxTiltAngle(): number {
             return this._maxTiltAngle;
         }
-                        		                        
+
         /**
         * @language zh_CN
         * 设置相机最大x轴旋转角度
@@ -417,13 +412,13 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public  set maxTiltAngle(val: number) {
+        public set maxTiltAngle(val: number) {
             if (this._maxTiltAngle == val)
                 return;
             this._maxTiltAngle = val;
             this.tiltAngle = Math.max(this._minTiltAngle, Math.min(this._maxTiltAngle, this._tiltAngle));
         }
-		                        		                        
+
         /**
         * @language zh_CN
         * 设置相机和目标最大的距离
@@ -437,7 +432,7 @@
             this._maxDistance = val;
             this._distance = Math.max(this._minDistance, Math.min(this._maxDistance, this._distance));
         }
-        		                        		                        
+
         /**
         * @language zh_CN
         * 得到相机和目标最大的距离
@@ -448,7 +443,7 @@
         public get maxDistance(): number {
             return this._maxDistance;
         }
-        		                        		                        
+
         /**
         * @language zh_CN
         * 设置相机和目标最小的距离
@@ -462,7 +457,7 @@
             this._minDistance = val;
             this._distance = Math.max(this._minDistance, Math.min(this._maxDistance, this._distance));
         }
-                		                        		                        
+
         /**
         * @language zh_CN
         * 得到相机和目标最小的距离
@@ -477,27 +472,26 @@
         /**
         * @private
         */
-        public  get yFactor(): number {
+        public get yFactor(): number {
             return this._yFactor;
         }
 
         /**
         * @private
         */
-        public  set yFactor(val: number) {
+        public set yFactor(val: number) {
             if (this._yFactor == val)
                 return;
             this._yFactor = val;
-            this.notifyUpdate();
         }
-		
+
         /**
         * @private
         */
-        public  get wrapPanAngle(): boolean {
+        public get wrapPanAngle(): boolean {
             return this._wrapPanAngle;
         }
-        
+
         /**
         * @private
         */
@@ -505,7 +499,6 @@
             if (this._wrapPanAngle == val)
                 return;
             this._wrapPanAngle = val;
-            this.notifyUpdate();
         }
 
         /**
@@ -517,7 +510,6 @@
         */
         public update(interpolate: boolean = true): void {
             if (this._tiltAngle != this._currentTiltAngle || this._panAngle != this._currentPanAngle) {
-                this.notifyUpdate();
                 if (this._wrapPanAngle) {
                     if (this._panAngle < 0)
                         this._panAngle = (this._panAngle % 360) + 360;
@@ -537,7 +529,7 @@
                     this._currentPanAngle = this._panAngle;
                     this._currentTiltAngle = this._tiltAngle;
                 }
-				
+
                 //snap coords if angle differences are close
                 if ((Math.abs(this._tiltAngle - this._currentTiltAngle) < 0.01) && (Math.abs(this._panAngle - this._currentPanAngle) < 0.01)) {
                     this._currentTiltAngle = this._tiltAngle;
@@ -550,7 +542,7 @@
             p.x = pos.x + this.distance * Math.sin(this._currentPanAngle * MathUtil.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathUtil.DEGREES_TO_RADIANS);
             p.z = pos.z + this.distance * Math.cos(this._currentPanAngle * MathUtil.DEGREES_TO_RADIANS) * Math.cos(this._currentTiltAngle * MathUtil.DEGREES_TO_RADIANS);
             p.y = pos.y + this.distance * Math.sin(this._currentTiltAngle * MathUtil.DEGREES_TO_RADIANS) * this.yFactor;
-            
+
             if (this._target) {
                 if (this._lookAtPosition)
                     this._target.lookAt(p, this._lookAtPosition);

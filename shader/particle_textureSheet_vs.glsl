@@ -1,7 +1,7 @@
 //##FilterBegin## ##Particle##
 attribute vec3 attribute_textureSheetData;
 varying vec3 varying_textureSheetData;
-float particle(  ParticleData curParticle ){
+void getNodeData(){
 	varying_textureSheetData = attribute_textureSheetData;
 }
 	

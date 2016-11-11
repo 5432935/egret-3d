@@ -3,7 +3,8 @@
     /**
     * @class egret3d.MimapTexture
     * @classdesc
-    * MimapTexture 贴图对象
+    * Texture 贴图对象
+    * dds tga hdr 几种贴图的格式加载后会生成的对象
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -12,6 +13,7 @@
         /**
         * @language zh_CN
         * 构造函数
+        * 默认是平滑采样
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -20,8 +22,6 @@
             this.smooth = true;
             this.texture2D = new ContextTexture2D();
         }
-
-      
 
         /**
         * @language zh_CN

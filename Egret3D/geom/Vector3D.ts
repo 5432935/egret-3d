@@ -1,15 +1,16 @@
 ﻿module egret3d {
     /**
-     * @language zh_CN
-     * @class egret3d.Vector3D
-     * @classdesc
-     * 用 Vector3D 表示三维空间中的位置,也可以做4维向量,当为3维向量时w始终为0。</p>
-     * 定义了一个三元的浮点向量。</p>
-     * 当使用一个向量表示一个表面法线时，向量应该是标准化的。</p>
-     * 其他用途的定向矢量的大小不变。当用作一个点，元素的矢量表示在三维空间中的位置。</p>
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.Vector3D
+    * @classdesc
+    * 用 Vector3D 表示三维空间中的位置,也可以做4维向量,当为3维向量时w始终为0。</p>
+    * 定义了一个三元的浮点向量。</p>
+    * 当使用一个向量表示一个表面法线时，向量应该是标准化的。</p>
+    * 其他用途的定向矢量的大小不变。当用作一个点，元素的矢量表示在三维空间中的位置。</p>
+    * @includeExample geom/Vector3D.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class Vector3D {
 
         /**
@@ -56,7 +57,7 @@
         */
         public static HELP_0: Vector3D = new Vector3D();
 
-                /**
+        /**
         * @language zh_CN
         * @private
         * @version Egret 3.0
@@ -64,7 +65,7 @@
         */
         public static HELP_1: Vector3D = new Vector3D();
 
-                /**
+        /**
         * @language zh_CN
         * @private
         * @version Egret 3.0
@@ -72,7 +73,7 @@
         */
         public static HELP_2: Vector3D = new Vector3D();
 
-                /**
+        /**
         * @language zh_CN
         * @private
         * @version Egret 3.0
@@ -132,6 +133,7 @@
         /**
         * @language en_US
         *  设置w分量
+        * @param value 设置给w的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -142,6 +144,7 @@
         /**
         * @language en_US
         *  设置x分量
+        * @param value 设置给x的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -152,6 +155,7 @@
         /**
         * @language en_US
         *  设置y分量
+        * @param value 设置给y的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -162,6 +166,7 @@
         /**
         * @language en_US
         *  设置z分量
+        * @param value 设置给z的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -172,6 +177,7 @@
         /**
         * @language en_US
         *  得到w分量
+        * @returns 获得w的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -182,6 +188,7 @@
         /**
         * @language en_US
         *  得到x分量
+        * @returns 获得x的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -192,6 +199,7 @@
         /**
         * @language en_US
         *  得到y分量
+        * @returns 获得y的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -202,6 +210,7 @@
         /**
         * @language en_US
         *  得到z分量
+        * @returns 获得z的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -237,6 +246,7 @@
         /**
         * @language zh_CN
         * 3维向量的坐标x的平方加 y的平方加 z的平方
+        * @returns 获得长度的平方
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -259,6 +269,10 @@
         /**
         * @language zh_CN
         * 创建一个对象实例，默认为(0, 0, 0, 0)
+        * @param x x的值
+        * @param y y的值
+        * @param z z的值
+        * @param w w的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -287,8 +301,8 @@
         /**
         * @language zh_CN
         * 向量相加，结果返回一个新实例
-        * @param a
-        * @param target 默认为null
+        * @param a Vector3D 加成的值
+        * @param target Vector3D 默认为null
         * @returns Vector3D 结果返回
         * @version Egret 3.0
         * @platform Web,Native
@@ -375,8 +389,8 @@
         * @language zh_CN
         * 两个Vector3D进行叉乘 this 叉乘 a
         * 叉乘后的结果是这两条向量的垂直向量
-        * @param a 
-        * @returns Vector3D 返回叉乘结果
+        * @param a 求叉乘的另外一个向量
+        * @returns Vector3D 返回叉乘结果向量
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -408,7 +422,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public decrementBy(a: Vector3D) {
+        public decrementBy(a: Vector3D):void {
             this.x -= a.x;
             this.y -= a.y;
             this.z -= a.z;
@@ -543,7 +557,7 @@
         * @language zh_CN
         * 当前Vector3D除分量 或者 除Vector3D
         * @param v 如果是number就是除分量 如果为Vector3D 就是除Vector3D
-        * @return Vector3D 返回自己，计算之后的结果
+        * @returns Vector3D 返回自己，计算之后的结果
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -735,7 +749,7 @@
         
         /**
         * @language zh_CN
-        * 计算两个Vector3D之间的线性差值，结果为当前对象
+        * 计算两个Vector3D之间的线性插值，结果为当前对象
         * @param v0 Vector3D 1
         * @param v1 Vector3D 2
         * @param t 时刻
@@ -784,6 +798,16 @@
 
             return target;
         }
+
+         /**
+        * @language zh_CN
+        * 计算两个Vector3D之间的线性插值，结果为当前对象
+        * @param lhs Vector3D 1
+        * @param rhs Vector3D 2
+        * @param t 时刻
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public slerp(lhs: Vector3D, rhs: Vector3D, t: number): void {
             var lhsMag: number = Math.sqrt(this.Dot(lhs, lhs));
             var rhsMag: number = Math.sqrt(this.Dot(rhs, rhs));

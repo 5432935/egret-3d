@@ -43,5 +43,9 @@
         public parseHud(node: any): UnitHUDData {
             return null;
         }
+
+        public parseLight(node: any): UnitLightData {
+            return null;
+        }
     }
 }

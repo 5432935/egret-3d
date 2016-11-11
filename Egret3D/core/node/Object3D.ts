@@ -1,6 +1,7 @@
 ﻿module egret3d {
 
     /**
+    * @language zh_CN
     * @class egret3d.Object3D
     * @classdesc
     * 拣选类型，拣选时可以分为，包围盒拣选、模型拣选返回模型拣选到的位置、模型拣选返回模型拣选到的UV坐标
@@ -15,24 +16,34 @@
     export enum PickType {
         
         /**
+        * @language zh_CN
         * 包围盒拣选
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         BoundPick,
                 
         /**
+        * @language zh_CN
         * 模型拣选返回模型拣选到的位置
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         PositionPick,
                         
         /**
+        * @language zh_CN
         * 模型拣选返回模型拣选到的UV坐标
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         UVPick
     };
 
 
     /**
-    * @class egret3d.Object3D
+    * @language zh_CN
+    * @class egret3d.BillboardType
     * @classdesc
     * billboard类型
     * @see egret3d.Camera3D
@@ -42,29 +53,48 @@
     export enum BillboardType {
 
         /**
+        * @language zh_CN
         * 非billboard类型
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         DISABLE,
 
         /**
+        * @language zh_CN
         * 只允许绕x轴旋转
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         X_AXIS,
+
         /**
+        * @language zh_CN
         * 只允许绕y轴旋转
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         Y_AXIS,
+
         /**
+        * @language zh_CN
         * 只允许绕z轴旋转
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         Z_AXIS,
+
         /**
+        * @language zh_CN
         * 标准的billboard
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         STANDARD
     };
 
     /**
+    * @language zh_CN
     * @class egret3d.Object3D
     * @classdesc
     * 3d空间中的实体对象。
@@ -82,7 +112,7 @@
     */
     export class Object3D extends EventDispatcher {
 
-       /**
+        /**
         * @private
         * @language zh_CN
         * 当前对象名
@@ -92,6 +122,8 @@
         public static s_id: number = 0;
 
         protected _modelMatrix3D: Matrix4_4 = new Matrix4_4();
+        protected _localMatrix3D: Matrix4_4 = new Matrix4_4();
+
         protected _transformChange: boolean = true;
 
         protected _pos: Vector3D = new Vector3D();
@@ -112,6 +144,9 @@
         protected _isRoot: boolean = true;
         protected _bound: Bound;
 
+        protected static qua0: Quaternion = new Quaternion();
+        protected static mat0: Matrix4_4 = new Matrix4_4();
+
         protected static v0: Vector3D = new Vector3D();
         protected static v1: Vector3D = new Vector3D();
         protected static v2: Vector3D = new Vector3D();
@@ -121,6 +156,13 @@
 
         protected _proAnimation: IAnimation;
 
+        /**
+        * @language zh_CN
+        * 该对象所使用的面向相机模式，默认为关闭状态
+        * @see egret3d.BillboardType
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public billboard: number = BillboardType.DISABLE;
 
         /**
@@ -334,7 +376,7 @@
 
         /**
         * @language zh_CN
-        * 返回位移。</p>
+        * 返回位移。</p> （本地）
         * 获取容器的坐标位置，基于父节点的位置坐标。</p>
         * @returns 位移
         * @version Egret 3.0
@@ -346,7 +388,7 @@
 
         /**
         * @language zh_CN
-        * 设置位移。</p>
+        * 设置位移。</p> （本地）
         * 设置基于父节点的位置坐标，当父容器发生变化时，子节点也会变化。</p>
         * @param vec 位移
         * @version Egret 3.0
@@ -365,7 +407,7 @@
         
         /**
         * @language zh_CN
-        * 返回旋转。</p>
+        * 返回旋转。</p> （本地）
         * 获取容器的旋转信息，基于父节点的旋转信息 欧拉角信息。</p>
         * @returns 旋转 欧拉角信息
         * @version Egret 3.0
@@ -377,7 +419,7 @@
 
         /**
         * @language zh_CN
-        * 设置旋转 。</p>
+        * 设置旋转 。</p> （本地）
         * 设置基于父节点的旋转信息 欧拉角信息，当父容器发生变化时，子节点也会变化。</p>
         * @param vec 旋转 欧拉角信息
         * @version Egret 3.0
@@ -399,7 +441,7 @@
 
         /**
         * @language zh_CN
-        * 设置旋转。</p>
+        * 设置旋转。</p> （本地）
         * 设置旋转 基于四元素 旋转信息，当父容器发生变化时，子节点也会变化。</p>
         * @param value 旋转
         * @version Egret 3.0
@@ -422,7 +464,7 @@
 
         /**
         * @language zh_CN
-        * 设置旋转 分量x
+        * 设置旋转 分量x （本地）
         * @param value 分量x
         * @version Egret 3.0
         * @platform Web,Native
@@ -440,7 +482,7 @@
 
         /**
         * @language zh_CN
-        * 设置旋转 分量y
+        * 设置旋转 分量y （本地）
         * @param value 分量y
         * @version Egret 3.0
         * @platform Web,Native
@@ -458,7 +500,7 @@
 
         /**
         * @language zh_CN
-        * 设置旋转 分量z
+        * 设置旋转 分量z （本地）
         * @param value 分量z
         * @version Egret 3.0
         * @platform Web,Native
@@ -476,7 +518,7 @@
 
         /**
         * @language zh_CN
-        * 设置旋转 分量w
+        * 设置旋转 分量w （本地）
         * @param value 分量w
         * @version Egret 3.0
         * @platform Web,Native
@@ -494,7 +536,7 @@
 
         /**
         * @language zh_CN
-        * 返回旋转。</p>
+        * 返回旋转。</p> （本地）
         * 返回 基于四元素的旋转信息。</p>
         * @returns 旋转
         * @version Egret 3.0
@@ -506,7 +548,7 @@
 
         /**
         * @language zh_CN
-        * 返回缩放。</p>
+        * 返回缩放。</p> （本地）
         * 返回基于父容器的缩放信息。</p>
         * @returns 缩放
         * @version Egret 3.0
@@ -518,7 +560,7 @@
 
         /**
         * @language zh_CN
-        * 设置缩放。</p>
+        * 设置缩放。</p> （本地）
         * 设置基于父容器的缩放信息，当父容器发生变化时，子节点也会变化。</p>
         * @param vec 缩放
         * @version Egret 3.0
@@ -536,7 +578,7 @@
 
         /**
         * @language zh_CN
-        * 设置x坐标。</p>
+        * 设置x坐标。</p> （本地）
         * 设置基于父容器的位置信息，当父容器发生变化时，子节点也会变化，值不变。</p>
         * @param value x坐标
         * @version Egret 3.0
@@ -553,7 +595,7 @@
         
         /**
         * @language zh_CN
-        * 设置y坐标。</p>
+        * 设置y坐标。</p> （本地）
         * 设置基于父容器的位置信息，当父容器发生变化时，子节点也会变化，值不变。</p>
         * @param value y坐标
         * @version Egret 3.0
@@ -570,7 +612,7 @@
         
         /**
         * @language zh_CN
-        * 设置z坐标。</p>
+        * 设置z坐标。</p> （本地）
         * 设置基于父容器的位置信息，当父容器发生变化时，子节点也会变化，值不变。</p>
         * @param value z坐标
         * @version Egret 3.0
@@ -587,7 +629,7 @@
                 
         /**
         * @language zh_CN
-        * 设置x轴旋转。</p>
+        * 设置x轴旋转。</p> （本地）
         * 设置基于父容器的旋转信息，当父容器发生变化时，子节点也会变化，值不变。</p>
         * @param value x轴旋转
         * @version Egret 3.0
@@ -605,7 +647,7 @@
                         
         /**
         * @language zh_CN
-        * 设置y轴旋转。</p>
+        * 设置y轴旋转。</p> （本地）
         * 设置基于父容器的旋转信息，当父容器发生变化时，子节点也会变化，值不变。</p>
         * @param value y轴旋转
         * @version Egret 3.0
@@ -623,7 +665,7 @@
                         
         /**
         * @language zh_CN
-        * 设置z轴旋转。</p>
+        * 设置z轴旋转。</p> （本地）
         * 设置基于父容器的旋转信息，当父容器发生变化时，子节点也会变化，值不变。</p>
         * @param value z轴旋转
         * @version Egret 3.0
@@ -640,7 +682,7 @@
                                 
         /**
         * @language zh_CN
-        * 设置x轴缩放。</p>
+        * 设置x轴缩放。</p> （本地）
         * 设置基于父容器的旋转信息，当父容器发生变化时，子节点也会变化，值不变
         * @param value x轴缩放
         * @version Egret 3.0
@@ -657,7 +699,7 @@
                                         
         /**
         * @language zh_CN
-        * 设置y轴缩放
+        * 设置y轴缩放 （本地）
         *  
         * 设置基于父容器的旋转信息，当父容器发生变化时，子节点也会变化，值不变
         * @param value y轴缩放
@@ -675,7 +717,7 @@
                                         
         /**
         * @language zh_CN
-        * 设置z轴缩放
+        * 设置z轴缩放 （本地）
         *  
         * 设置基于父容器的旋转信息，当父容器发生变化时，子节点也会变化，值不变
         * @param value z轴缩放
@@ -711,7 +753,7 @@
 
         /**
         * @language zh_CN
-        * 返回x坐标
+        * 返回x坐标 （本地） 
         * 返回基于父容器的位置坐标信息值
         * @returns x坐标
         * @version Egret 3.0
@@ -723,7 +765,7 @@
         
         /**
         * @language zh_CN
-        * 返回y坐标
+        * 返回y坐标 （本地）
         *  
         * 返回基于父容器的位置坐标信息值
         * @returns y坐标
@@ -736,7 +778,7 @@
         
         /**
         * @language zh_CN
-        * 返回z坐标
+        * 返回z坐标 （本地）
         *  
         * 返回基于父容器的位置坐标信息值
         * @returns z坐标
@@ -749,7 +791,7 @@
         
         /**
         * @language zh_CN
-        * 返回x旋转
+        * 返回x旋转 （本地）
         *  
         * 返回基于父容器的位置旋转信息值
         * @returns x旋转
@@ -762,7 +804,7 @@
         
         /**
         * @language zh_CN
-        * 返回y旋转
+        * 返回y旋转 （本地）
         *  
         * 返回基于父容器的位置旋转信息值
         * @returns y旋转
@@ -775,7 +817,7 @@
                 
         /**
         * @language zh_CN
-        * 返回z旋转
+        * 返回z旋转 （本地）
         *  
         * 返回基于父容器的位置旋转信息值
         * @returns z旋转
@@ -788,7 +830,7 @@
                         
         /**
         * @language zh_CN
-        * 返回x缩放
+        * 返回x缩放 （本地）
         * 返回基于父容器的缩放信息值
         * @returns x缩放
         * @version Egret 3.0
@@ -800,7 +842,7 @@
                                 
         /**
         * @language zh_CN
-        * 返回y缩放
+        * 返回y缩放 （本地）
         * 返回基于父容器的缩放信息值
         * @returns y缩放
         * @version Egret 3.0
@@ -812,8 +854,8 @@
                                 
         /**
         * @language zh_CN
-        * 返回z缩放
-        * 返回基于父容器的缩放信息值
+        * 返回z缩放 （本地）
+        * 返回基于父容器的缩放信息值 
         * @returns z缩放
         * @version Egret 3.0
         * @platform Web,Native
@@ -824,9 +866,8 @@
                                         
         /**
         * @language zh_CN
-        * 返回 object 世界渲染矩阵
-        * 如果有父亲节点对象的话，要乘以父对象的变换.
-        * @returns object 世界渲染矩阵
+        * 返回 object在世界中的渲染矩阵 （全局）
+        * @returns Matrix4_4 世界渲染矩阵
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -840,7 +881,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界渲染矩阵
+        * 设置 object在世界中的渲染矩阵 （全局）
         * @param matrix 世界矩阵
         * @version Egret 3.0
         * @platform Web,Native
@@ -858,11 +899,34 @@
 
         /**
         * @language zh_CN
-        * 返回 object 世界渲染矩阵
-        * 如果有父亲节点对象的话，要乘以父对象的变换.
-        * @private
-        * @returns object 世界渲染矩阵
+        * 返回 object在本地空间中的矩阵 （本地）
+        * @returns Matrix4_4 本地空间矩阵
         * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get localMatrix(): Matrix4_4 {
+            this.modelMatrix;
+            return this._localMatrix3D;
+        }
+
+        /**
+        * @language zh_CN
+        * 设置 object在本地空间中的矩阵 （本地）
+        * @param matrix 本地空间矩阵
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set localMatrix(matrix: Matrix4_4) {
+            var tas: Vector3D[] = matrix.decompose(Orientation3D.QUATERNION);
+            this.position = tas[0];
+            Object3D.qua0.setTo(tas[1].x, tas[1].y, tas[1].z, tas[1].w);
+            this.orientation = Object3D.qua0;
+            this.scale = tas[2];
+        }
+
+        /**
+        * @language zh_CN
+        * @private
         * @platform Web,Native
         */
         protected updateModelMatrix() {
@@ -896,12 +960,13 @@
         }
 
         protected onMakeTransform() {
+            this._localMatrix3D.makeTransform(this._pos, this._sca, this._orientation);
             this._modelMatrix3D.makeTransform(this._globalPos, this._globalSca, this._globalOrientation);
         }
 
         /**
         * @language zh_CN
-        * 返回 object 世界位置 x
+        * 返回 object 世界位置 x (全局)
         * @returns object 世界位置x
         * @version Egret 3.0
         * @platform Web,Native
@@ -912,7 +977,7 @@
 
         /**
         * @language zh_CN
-        * 返回 object 世界位置 y
+        * 返回 object 世界位置 y (全局)
         * @returns object 世界位置 y
         * @version Egret 3.0
         * @platform Web,Native
@@ -924,7 +989,7 @@
 
         /**
         * @language zh_CN
-        * 返回 object 世界位置 z
+        * 返回 object 世界位置 z (全局)
         * @returns object 世界位置 z
         * @version Egret 3.0
         * @platform Web,Native
@@ -935,7 +1000,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界位置 x
+        * 设置 object 世界位置 x (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -947,7 +1012,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界位置 y
+        * 设置 object 世界位置 y (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -961,7 +1026,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界位置 z
+        * 设置 object 世界位置 z (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -973,7 +1038,7 @@
                                                
         /**
         * @language zh_CN
-        * 返回 object 世界位置
+        * 返回 object 世界位置 （全局）
         * 返回世界坐标系的 全局位置坐标
         * @returns object 世界位置
         * @version Egret 3.0
@@ -988,7 +1053,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界位置
+        * 设置 object 世界位置 （全局）
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1009,7 +1074,7 @@
 
         /**
         * @language zh_CN
-        * 返回 object 世界旋转x
+        * 返回 object 世界旋转x (全局)
         * @returns object 世界旋转x
         * @version Egret 3.0
         * @platform Web,Native
@@ -1021,7 +1086,7 @@
 
         /**
         * @language zh_CN
-        * 返回 object 世界旋转y
+        * 返回 object 世界旋转y (全局)
         * @returns object 世界旋转y
         * @version Egret 3.0
         * @platform Web,Native
@@ -1033,7 +1098,7 @@
 
         /**
         * @language zh_CN
-        * 返回 object 世界旋转z
+        * 返回 object 世界旋转z (全局)
         * @returns object 世界旋转z
         * @version Egret 3.0
         * @platform Web,Native
@@ -1044,7 +1109,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界旋转 x
+        * 设置 object 世界旋转 x (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1056,8 +1121,8 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界旋转 y
-        * @version Egret 3.0
+        * 设置 object 世界旋转 y (全局)
+        * @version Egret 3.0 
         * @platform Web,Native
         */
         public set globalRotationY(value: number) {
@@ -1068,7 +1133,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界旋转 z
+        * 设置 object 世界旋转 z (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1080,7 +1145,7 @@
                                             
         /**
         * @language zh_CN
-        * 返回 object 世界旋转
+        * 返回 object 世界旋转 (全局)
         * 返回世界坐标系的 全局旋转信息
         * @returns object 世界旋转
         * @version Egret 3.0
@@ -1096,7 +1161,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界旋转
+        * 设置 object 世界旋转 (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1109,7 +1174,7 @@
                                                         
         /**
         * @language zh_CN
-        * 返回 object 世界缩放
+        * 返回 object 世界缩放 (全局)
         * 返回世界坐标系的 全局缩放信息
         * @returns object 世界缩放
         * @version Egret 3.0
@@ -1124,7 +1189,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界缩放
+        * 设置 object 世界缩放 (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1140,7 +1205,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界缩放 x
+        * 设置 object 世界缩放 x (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1152,7 +1217,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界缩放 y
+        * 设置 object 世界缩放 y (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1164,7 +1229,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界缩放 z
+        * 设置 object 世界缩放 z (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1176,7 +1241,7 @@
              
         /**
         * @language zh_CN
-        * 获取 object 世界缩放 x
+        * 获取 object 世界缩放 x (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1187,7 +1252,7 @@
 
         /**
         * @language zh_CN
-        * 获取 object 世界缩放 y
+        * 获取 object 世界缩放 y (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1197,7 +1262,7 @@
 
         /**
         * @language zh_CN
-        * 获取 object 世界缩放 z
+        * 获取 object 世界缩放 z (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1207,7 +1272,7 @@
                                        
         /**
         * @language zh_CN 
-        * 返回 object 世界旋转 四元数
+        * 返回 object 世界旋转 四元数 (全局)
         * 返回世界坐标系的 全局旋转信息，数据类型是 四元素
         * @returns object 世界旋转
         * @version Egret 3.0
@@ -1222,7 +1287,7 @@
 
         /**
         * @language zh_CN
-        * 设置 object 世界旋转 四元数
+        * 设置 object 世界旋转 四元数 (全局)
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1239,7 +1304,8 @@
 
         /**
         * @language zh_CN
-        * 增加一个子对象,并返回当前子对象
+        * 增加一个子对象,并返回当前子对象。
+        * 如果child 本身有父节点 会先进行移除父节点。
         * 在容器中添加子对象，如果有显示接口的，将会放到场景显示树种进行渲染逻辑运算，及渲染
         * @param child 增加的子对象
         * @returns 子对象
@@ -1294,7 +1360,6 @@
         /**
         * @language zh_CN
         * 返回下标为index的子对象
-        * @private
         * @param index 子对象下标
         * @returns 如果有就返回子对象,否则就返回null.
         * @version Egret 3.0
@@ -1308,6 +1373,12 @@
             return this.childs[index];
         }
 
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public addFollowUI( ui:DisplayObject ) {
             this._displayList = this._displayList || [];
 
@@ -1327,7 +1398,6 @@
                         
         /**
         * @language zh_CN
-        * @private
         * 返回子对角child的下标
         * @param child 子对象
         * @returns 如果有就返回子对象的下标,否则就返回-1.
@@ -1373,7 +1443,6 @@
         /**
         * @language zh_CN
         * 移除下标为index的子对象 并返回
-        * @private
         * @param index 子对象的下标
         * @returns 如果成功就返回child,否则返回null
         * @version Egret 3.0
@@ -1456,24 +1525,21 @@
             var parent = other.parent;
 
             if (this.parent) {
-
                 var index: number = this.parent.getChildIndex(this);
-
                 this.parent.childs[index] = other;
             }
 
-            if (other.parent) {
+            other.parent = this.parent;
+            this.parent = null;
 
-                var index: number = other.parent.getChildIndex(other);
-
-                other.parent.childs[index] = this;
+            var childs: Object3D[] = [];
+            while (this.childs.length > 0) {
+                childs.push(this.childs[0]);
+                this.removeChild(this.childs[0]);
             }
 
-            other.parent = this.parent;
-            this.parent = parent;
-
-            for (var i: number = 0; i < this.childs.length; ++i) {
-                other.addChild(this.childs[i]);
+            for (var i: number = 0; i < childs.length; ++i) {
+                other.addChild(childs[i]);
             }
 
             this.updateTransformChange(true);
@@ -1596,9 +1662,8 @@
         /**
         * @language zh_CN
         * 当前对象对视位置
-        * @private
-        * @param pos 对象的位置
-        * @param target 目标的位置
+        * @param pos 自身的位置 （全局）
+        * @param target 目标的位置 （全局）
         * @param up 向上的方向
         * @version Egret 3.0
         * @platform Web,Native
@@ -1616,17 +1681,14 @@
         }
 
         /**
-        * @private
         * @language zh_CN
         * 看向目标
-        * @param target 目标对象
+        * @param target 目标对象 (会根据目标对象的全局坐标进行改变)
         * @version Egret 3.0
         * @platform Web,Native
         */
         public lookAtTarget(target: Object3D) {
-
-            target.modelMatrix.transformVector(Vector3D.Y_AXIS, this._vec);
-            MathUtil.CALCULATION_MATRIX.lookAt(this.globalPosition, target.globalPosition, this._vec);
+            MathUtil.CALCULATION_MATRIX.lookAt(this.globalPosition, target.globalPosition, Vector3D.Y_AXIS);
             MathUtil.CALCULATION_MATRIX.invert();
             var prs: Vector3D[] = MathUtil.CALCULATION_MATRIX.decompose(Orientation3D.QUATERNION);
             MathUtil.CALCULATION_QUATERNION.x = prs[1].x;
@@ -1639,21 +1701,8 @@
 
         /**
         * @language zh_CN
-        * 返回目标的位置
-        *  
-        * @private
-        * @returns 目标的位置
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get lookAtPosition(): Vector3D {
-            return new Vector3D();
-        }
-
-        /**
-        * @language zh_CN
         * 以Object3D name 来查找Object3D
-        * @prame name Object3D名字
+        * @param name Object3D名字
         * @returns Object3D 
         * @version Egret 3.0
         * @platform Web,Native
@@ -1677,7 +1726,7 @@
         /**
         * @language zh_CN
         * 以Object3D id 来查找Object3D
-        * @prame id Object3D id
+        * @param id Object3D id
         * @returns Object3D 
         * @version Egret 3.0
         * @platform Web,Native
@@ -1723,9 +1772,8 @@
             if (this._displayList) {
                 for (var i: number = 0; i < this._displayList.length; i++) {
                     camera.object3DToScreenRay(this.globalPosition, Vector3D.HELP_0);
-                    this._displayList[i].globalX = Vector3D.HELP_0.x;
-                    this._displayList[i].globalY = Vector3D.HELP_0.y;
-                    this._displayList[i].globalZ = Vector3D.HELP_0.z;
+                    this._displayList[i].x = Vector3D.HELP_0.x;
+                    this._displayList[i].y = Vector3D.HELP_0.y;
                 }
             }
         }
@@ -1745,11 +1793,58 @@
             this.removeAllChild();
         }
 
+        /**
+        * @language zh_CN
+        * 获取当前节点的根节点
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get root(): Object3D {
             if (!this.parent) {
                 return this;
             }
             return this.parent.root;
+        }
+
+
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public copy(other: Object3D) {
+            this.position = other.position;
+            this.rotation = other.rotation;
+            this.scale = other.scale;
+            this.visible = other.visible;
+            this.name = other.name;
+        }
+
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public clone(): Object3D {
+            var newObject: Object3D = new Object3D();
+            newObject.copy(this);
+            return newObject;
+        }
+
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public deepClone(): Object3D {
+            var newObject: Object3D = this.clone();
+            for (var i: number = 0; i < this.childs.length; ++i) {
+                newObject.addChild(this.childs[i].deepClone());
+            }
+            return newObject;
         }
     }
 } 

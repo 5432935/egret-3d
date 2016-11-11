@@ -71,10 +71,10 @@
                 }
             }
 
-            //对于每个面片而言，取摩的时间（周期）
-            this._animationState.loopTime = generator.loopTime;
-            //最后一个面片消失的时间
-            this._animationState.circleTime = generator.circleTime;
+            //对于每个面片而言，取模的时间（周期）
+            this._animationState.modTime = generator.loopTime;
+            //最后一个面片消失的时间，即整个循环时间
+            this._animationState.emitter.animation.loopTime = generator.circleTime;
 
             //##FilterEnd##
         }
@@ -94,7 +94,7 @@
         /**
        * @language zh_CN
        * 获取时间节点在geometry的顶点数据中偏移量
-       * @return number
+       * @returns number
        * @version Egret 3.0
        * @platform Web,Native
        */

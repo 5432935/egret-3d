@@ -18,9 +18,10 @@
 
         /**
         * @language zh_CN
+        * @private
         * 注册一张UI贴图，最多支持7张
         * @param texture 将要注册的贴图
-        * @return boolean 是否注册成功
+        * @returns boolean 是否注册成功
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -37,10 +38,11 @@
 
         /**
         * @language zh_CN
+        * @private
         * 替换一张UI贴图至指定下标位置
         * @param texture 将要注册的贴图
         * @param index 指定下标位置
-        * @return boolean 是否注册成功
+        * @returns boolean 是否注册成功
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -54,6 +56,7 @@
 
         /**
         * @language zh_CN
+        * @private
         * 渲染之前，将贴图信息绑定至mesh中
         * @param mesh 绑定至目标mesh对象
         * @version Egret 3.0

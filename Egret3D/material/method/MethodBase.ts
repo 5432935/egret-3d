@@ -1,6 +1,7 @@
 ﻿module egret3d {
     
     /**
+    * @private
     * @class egret3d.MethodBase
     * @classdesc
     * 增加多种渲染效果的方法基类

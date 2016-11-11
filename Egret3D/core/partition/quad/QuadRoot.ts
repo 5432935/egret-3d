@@ -83,7 +83,7 @@ module egret3d {
         * @param minY 框选范围最小y值
         * @param maxX 框选范围最大x值
         * @param maxY 框选范围最大y值
-        * @return Array<IQuadNode>
+        * @returns Array<IQuadNode>
         */
         public getNodesByAABB(minX: number, minY: number, maxX: number, maxY: number): Array<IQuadNode> {
             // 创建一个射线的boundingbox
@@ -111,9 +111,9 @@ module egret3d {
         * 给定一个三维坐标点，获取节点中最为接近的一个三角形
         * @param point 给定的点
         * @param threshold 设定的阈值，超出这个距离则视为放弃
-        * @return Navi3DTriangle
+        * @returns IQuadNode
         */
-        public getTriangleAtPoint(point: Vector3D, threshold: number = 5): Navi3DTriangle {
+        public getTriangleAtPoint(point: Vector3D, threshold: number = 5): IQuadNode {
             // 创建一个射线的boundingbox
             this._segBox.clear();
             this._segBox.setAABox(point.x, point.z, 1, 1);
@@ -126,17 +126,17 @@ module egret3d {
             // 检查那个三角与点(x,y)相交
             var minDistance: number = 0xffffffff;
             var curDistance: number = 0;
-            var minTriangle: Navi3DTriangle;
+            var minTriangle: IQuadNode;
             var quadNode: IQuadNode;
-            var triangle: Navi3DTriangle;
+            var triangle: IQuadNode;
             var box: QuadAABB;
             for (var i: number = 0; i < this._collisionNodesIdx.length; i++) {
                 quadNode = this._quadTree.getQuadNode(this._collisionNodesIdx[i]);
                 box = quadNode.aabb;
-                if (!Navi3DTriangle.pointInsideTriangle(point, box.points[0], box.points[1], box.points[2])) {
+                if (!PointUtils.pointInsideTriangle(point, box.points[0], box.points[1], box.points[2])) {
                     continue;
                 }
-                triangle = <Navi3DTriangle>quadNode;
+                triangle = quadNode;
                 curDistance = Math.abs(triangle.plane.distance(point));
                 if (curDistance > threshold)
                     continue;

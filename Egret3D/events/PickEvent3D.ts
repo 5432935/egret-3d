@@ -19,8 +19,10 @@
 
         /**
          * @language zh_CN
-         * PICK_CLICK 点击拣选事件
-         * 手机上没有此事件 
+         * PICK_CLICK 点击拣选事件标识
+         * 可注册对象 : Object3D类型。
+         * 事件响应状态 : 点击拣选时触发，手机上不触发此事件。
+         * 响应事件参数 : PickEvent3D类型,其中PickEvent3D.pickResult的内容即为此次拣选结果。
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -28,7 +30,10 @@
 
         /**
          * @language zh_CN
-         * PICK_DOWN  按下拣选事件
+         * PICK_DOWN  按下拣选事件标识
+         * 可注册对象 : Object3D类型。
+         * 事件响应状态 : 按下拣选时触发。
+         * 响应事件参数 : PickEvent3D类型,其中PickEvent3D.pickResult的内容即为此次拣选结果。
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -36,7 +41,10 @@
 
         /**
          * @language zh_CN
-         * PICK_UP 弹起拣选事件
+         * PICK_UP 弹起拣选事件标识
+         * 可注册对象 : Object3D类型。
+         * 事件响应状态 : 弹起拣选时触发。
+         * 响应事件参数 : PickEvent3D类型,其中PickEvent3D.pickResult的内容即为此次拣选结果。
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -44,7 +52,10 @@
 
         /**
          * @language zh_CN
-         * PICK_MOVE 光标移动拣选
+         * PICK_MOVE 光标移动拣选事件标识
+         * 可注册对象 : Object3D类型。
+         * 事件响应状态 : 光标移动拣选时触发。
+         * 响应事件参数 : PickEvent3D类型,其中PickEvent3D.pickResult的内容即为此次拣选结果。
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -52,7 +63,10 @@
 
         /**
          * @language zh_CN
-         * PICK_WHEEL 滚轮滚动拣选事件
+         * PICK_WHEEL 滚轮滚动拣选事件标识
+         * 可注册对象 : Object3D类型。
+         * 事件响应状态 : 滚轮滚动拣选时触发。
+         * 响应事件参数 : PickEvent3D类型,其中PickEvent3D.pickResult的内容即为此次拣选结果。
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -61,6 +75,7 @@
         /**
          * @language zh_CN
          * 拣选结果数据。
+         * @see egret3d.PickResult
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -77,6 +92,7 @@
         /**
         * @language zh_CN
         * MouseEvent3D TouchEvent3D 事件对象
+        * @see egret3d.Event3D
         * @version Egret 3.0
         * @platform Web,Native
         */

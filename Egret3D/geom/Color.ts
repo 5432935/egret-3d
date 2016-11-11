@@ -1,13 +1,14 @@
 ﻿module egret3d {
     /**
-    * @private
-     * @language zh_CN
-     * @class egret3d.Color
-     * @classdesc
-     * 可使用 Color 类调整显示对象的颜色值
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.Color
+    * @classdesc
+    * 可使用 Color 类调整显示对象的颜色值
+    * 使用的时候需要区分当前的值是0-255之间，还是0-1之间
+    * @includeExample geom/Color.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class Color {
 
         
@@ -91,7 +92,7 @@
         /**
         * @language zh_CN
         * 返回蓝色 new Color(0, 0, 255, 255)
-        * @retrun 蓝色
+        * @retruns 蓝色
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -99,7 +100,16 @@
             return new Color(0, 0, 255, 255);
         }
 
-
+        /**
+        * @language zh_CN
+        * 返回Vector3D格式的颜色数据
+        * @param color 颜色数据
+        * @param colorFormat 指定的颜色格式
+        * @param target 传入的Vector3D对象，如果为null，会自动创建一个用于返回
+        * @retruns 返回Vector3D格式的颜色数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public static getColor(color: number, colorFormat: ContextConfig = ContextConfig.ColorFormat_RGBA8888, target: Vector3D = null): Vector3D {
             if (!target) {
                 target = new Vector3D();
@@ -108,8 +118,19 @@
             return target ;
         }
 
-        public static RGBAToColor(r: number, g: number, b: number, a: number): number {
 
+        /**
+        * @language zh_CN
+        * 将rgba四个通道，分离过的数据合并为一个颜色数据
+        * @param r red通道
+        * @param g green通道
+        * @param b blue通道
+        * @param a alpha通道
+        * @retruns number 返回颜色数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static RGBAToColor(r: number, g: number, b: number, a: number): number {
             return (a << 24) | (r << 16) | (g << 8) | b;
         }
 
@@ -210,7 +231,7 @@
          * @language zh_CN
          * 创建颜色值
          * @param argb 0xff00ff00格式
-         * @return color
+         * @returns color
          * @version Egret 3.0
          * @platform Web,Native
          */

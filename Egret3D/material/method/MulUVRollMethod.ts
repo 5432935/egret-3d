@@ -5,9 +5,10 @@
     * @class egret3d.UVRollMethod
     * @classdesc
     * 用来实现多UV滚动效果的渲染方法
-        * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
+    * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
     * @see egret3d.MethodBase
     * @see egret3d.MaterialPass
+    * @includeExample material/method/MulUVRollMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -39,7 +40,8 @@
 
         /**
         * @language zh_CN
-        * 用来UV u的滚动速度
+        * 用来设置UV u的滚动速度
+        * @param index 下标
         * @param value u的滚动速度
         * @version Egret 3.0
         * @platform Web,Native
@@ -51,6 +53,7 @@
         /**
         * @language zh_CN
         * 获取UV u的滚动速度
+        * @param index 下标
         * @returns number u的滚动速度
         * @version Egret 3.0
         * @platform Web,Native
@@ -61,7 +64,8 @@
 
         /**
         * @language zh_CN
-        * 用来UV v的滚动速度
+        * 用来设置UV v的滚动速度
+        * @param index 下标
         * @param value v的滚动速度
         * @version Egret 3.0
         * @platform Web,Native
@@ -73,6 +77,7 @@
         /**
         * @language zh_CN
         * 获取UV v的滚动速度
+        * @param index 下标
         * @returns number v的滚动速度
         * @version Egret 3.0
         * @platform Web,Native

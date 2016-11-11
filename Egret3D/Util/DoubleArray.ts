@@ -1,6 +1,7 @@
 ﻿module egret3d {
 
     /**
+    * @private
     * @language zh_CN
     * @class egret3d.DoubleArray
     * @classdesc
@@ -38,8 +39,8 @@
         /**
         * @language zh_CN
         * 根据键获得下标
-        * @param    key     键
-        * @return           下标
+        * @param  key（键）
+        * @returns 下标
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -50,8 +51,8 @@
         /**
         * @language zh_CN
         * 根据键获得值
-        * @param    key     键
-        * @return           值
+        * @param    key（键）
+        * @returns 值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -68,7 +69,7 @@
         * 放入一个键值对
         * @param    key     键
         * @param    value   值
-        * @return           原来的值
+        * @returns           原来的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -85,7 +86,7 @@
         * @language zh_CN
         * 移除一个键值对
         * @param    key     键
-        * @return           移除的值
+        * @returns          移除的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -103,7 +104,7 @@
         /**
         * @language zh_CN
         * 获取值的队列
-        * @return          值的队列
+        * @returns          值的队列
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -114,7 +115,7 @@
         /**
         * @language zh_CN
         * 获取键的队列
-        * @return          键的队列
+        * @returns          键的队列
         * @version Egret 3.0
         * @platform Web,Native
         */

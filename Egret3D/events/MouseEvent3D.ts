@@ -51,7 +51,11 @@
 
         /**
          * @language zh_CN
-         * MOUSE_CLICK 常量定义 onClick 事件对象的 type 属性的值。
+         * MOUSE_CLICK 常量定义 鼠标点击事件标识。
+         * 可注册对象 : Input类型。
+         * 事件响应状态 : 鼠标点击后触发。
+         * 响应事件参数 : MouseEvent3D类型,其中LoaderEvent3D.mouseCode的内容即为此次鼠标键码。
+         * @see egret3d.Input
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -59,7 +63,11 @@
 
         /**
          * @language zh_CN
-         * MOUSE_DOWN 常量定义 onMouseDown 事件对象的 type 属性的值。
+         * MOUSE_DOWN 常量定义 鼠标按下事件标识。
+         * 可注册对象 : Input类型。
+         * 事件响应状态 : 鼠标按下后触发。
+         * 响应事件参数 : MouseEvent3D类型,其中LoaderEvent3D.mouseCode的内容即为此次鼠标键码。
+         * @see egret3d.Input
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -67,7 +75,11 @@
 
         /**
          * @language zh_CN
-         * MOUSE_UP 常量定义 onMouseUp 事件对象的 type 属性的值。
+         * MOUSE_UP 常量定义 鼠标弹回事件标识
+         * 可注册对象 : Input类型。
+         * 事件响应状态 : 鼠标弹回后触发。
+         * 响应事件参数 : MouseEvent3D类型,其中LoaderEvent3D.mouseCode的内容即为此次鼠标键码。
+         * @see egret3d.Input
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -75,7 +87,11 @@
 
         /**
          * @language zh_CN
-         * MOUSE_MOVE 常量定义 onMouseMove 事件对象的 type 属性的值。
+         * MOUSE_MOVE 常量定义 鼠标移动事件标识。
+         * 可注册对象 : Input类型。
+         * 事件响应状态 : 鼠标移动时触发。
+         * 响应事件参数 : MouseEvent3D类型,其中LoaderEvent3D.mouseCode的内容即为此次鼠标键码。
+         * @see egret3d.Input
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -83,15 +99,23 @@
 
         /**
          * @language zh_CN
-         * MOUSE_OVER 常量定义 onMouseMove 事件对象的 type 属性的值。
+         * MOUSE_OVER 常量定义 鼠标穿过物体事件标识。
+         * 可注册对象 : Input类型。
+         * 事件响应状态 : 鼠标穿过物体时触发。
+         * 响应事件参数 : MouseEvent3D类型,其中LoaderEvent3D.mouseCode的内容即为此次鼠标键码。
+         * @see egret3d.Input
          * @version Egret 3.0
          * @platform Web,Native
          */
         public static MOUSE_OVER: string = "onMouseOver";
 
-                /**
+         /**
          * @language zh_CN
-         * MOUSE_OVER 常量定义 onMouseOut 事件对象的 type 属性的值。
+         * MOUSE_OVER 常量定义 鼠标离开物体事件标识。
+         * 可注册对象 : Input类型。
+         * 事件响应状态 : 鼠标离开物体时触发。
+         * 响应事件参数 : MouseEvent3D类型,其中LoaderEvent3D.mouseCode的内容即为此次鼠标键码。
+         * @see egret3d.Input
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -99,16 +123,21 @@
         
         /**
          * @language zh_CN
-         * MOUSE_WHEEL 常量定义 onMouseWheel 事件对象的 type 属性的值。
+         * MOUSE_WHEEL 常量定义 滚轮事件标识。
+         * 可注册对象 : Input类型。
+         * 事件响应状态 : 鼠标滚轮滚动时触发。
+         * 响应事件参数 : MouseEvent3D类型。
+         * @see egret3d.Input
          * @version Egret 3.0
          * @platform Web,Native
          */
         public static MOUSE_WHEEL: string = "onMouseWheel";
 
                 
-        /**
+      /**
          * @language zh_CN
-         * 鼠标code值
+         * 鼠标code值,枚举值可以参考egret3d.MouseCode
+         * @see egret3d.MouseCode
          * @version Egret 3.0
          * @platform Web,Native
          */

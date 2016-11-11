@@ -329,7 +329,7 @@
             this._delay = this._timeDate.getTime() - this._time;
             this._time = this._timeDate.getTime();
 
-            this._enterFrameEvent3D.time += this._time;
+            this._enterFrameEvent3D.time = this._time;
             this._enterFrameEvent3D.delay = this._delay;
             this.dispatchEvent(this._enterFrameEvent3D);
 

@@ -29,6 +29,9 @@
         /**
         * @language zh_CN
         * 宽度分段数
+        * @returns {number} 宽度分段数
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public get segmentsW(): number {
             return this._segmentsW;
@@ -37,6 +40,9 @@
         /**
         * @language zh_CN
         * 高度分段数
+        * @returns {number} 高度分段数
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public get segmentsH(): number {
             return this._segmentsH;
@@ -45,6 +51,9 @@
         /**
         * @language zh_CN
         * 宽度
+        * @returns {number} 宽度
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public get width(): number {
             return this._width;
@@ -52,7 +61,10 @@
         private _height: number = 500.0;
         /**
         * @language zh_CN
-        * 宽度
+        * 高度
+        * @returns {number} 高度
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public get height(): number {
             return this._height;
@@ -61,6 +73,9 @@
         /**
         * @language zh_CN
         * U缩放
+        * @returns {number} 缩放值
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public get scaleU(): number {
             return this._scaleU;
@@ -69,6 +84,9 @@
         /**
         * @language zh_CN
         * U缩放
+        * @returns {number} 缩放值
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public get scaleV(): number {
             return this._scaleV;
@@ -77,15 +95,15 @@
         /**
         * @language zh_CN
         * 构造函数
-        * @param width 宽度
-        * @param height 高度
-        * @param segmentsW 宽度分段数
-        * @param segmentsH 高度分段数
-        * @param uScale U缩放
-        * @param vScale V缩放
-        * @param aixs 平面的朝向 默认参数为Vector3D.Y_AXIS
-        * @param wCenter 是否width以中心位置为(0,0)点
-        * @param hCenter 是否height以中心位置为(0,0)点
+        * @param width {number} 宽度
+        * @param height {number} 高度
+        * @param segmentsW {number} 宽度分段数
+        * @param segmentsH {number} 高度分段数
+        * @param uScale {number} U缩放
+        * @param vScale {number} V缩放
+        * @param aixs {Vector3D} 平面的朝向 默认参数为Vector3D.Y_AXIS
+        * @param wCenter {boolean} 是否width以中心位置为(0,0)点
+        * @param hCenter {boolean} 是否height以中心位置为(0,0)点
         */
         constructor(width: number = 500, height: number = 500, segmentsW: number = 1, segmentsH: number = 1, uScale: number = 1, vScale: number = 1, aixs: Vector3D = Vector3D.Y_AXIS,
             wCenter: boolean = true, hCenter: boolean = true) {

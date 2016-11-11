@@ -1,17 +1,37 @@
-﻿
-
-module egret3d {
+﻿module egret3d {
     /**
-     * @language zh_CN
-     * @class egret3d.ColorGradients
-     * @classdesc
-     * 使用 ColorGradients记录一个颜色渐变信息
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.ColorGradients
+    * @classdesc
+    * 使用 ColorGradients记录一个颜色渐变信息
+    * @includeExample geom/ColorGradients.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class ColorGradients {
+
+        /**
+        * @language zh_CN
+        * 渐变色列表，对应时间列表
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public colors: Array<Color> = [];
+
+        /**
+        * @language zh_CN
+        * 渐变色所处时间下标位置[0-1]，对应颜色列表
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public times: Array<number> = [];
+
+        /**
+        * @language zh_CN
+        * 创建一个ColorGradients对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         constructor() {
            
         }

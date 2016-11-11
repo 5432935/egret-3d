@@ -20,105 +20,190 @@
     */
     export class Picker {
         protected static ray: Ray = new Ray();
-                                                        
+
         /**
         * @language zh_CN
-        * 返回鼠标拾取对象得到的所有对象,调用之前到设置被拣选对象的pickType.
-        * @param canvas 当前canvas
+        * 根据View创建在当前view中光标射线
         * @param view 当前检测view
-        * @param objects 检测的对象列表
-        * @param childBox 检测是否用子包围盒 默认false就可以了 
-        * @returns 拾取的object列表
+        * @returns Rya 光标射线
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public static pickObject3DList(canvas: Egret3DCanvas, view:View3D, objects: Array<IRender>, childBox:boolean = false, target:Array<IRender> = null): Array<IRender> {
-            if (!target) {
-                target = new Array<IRender>(); 
+        public static createRayToView(view: View3D, ray: Ray = null): Ray {
+            if (!ray) {
+                ray = Picker.ray;
             }
-            target.length = 0;
-            var ray: Ray = this.ray;
 
             if (Input.mouseX < view.x || Input.mouseX > x + view.width || Input.mouseY < view.y || Input.mouseY > y + view.height) {
-                return target;
+                return null;
             }
 
             var x: number = Input.mouseX - view.x;
             var y: number = Input.mouseY - view.y;
-
-
             ray.CalculateAndTransformRay(view.width, view.height, view.camera3D.modelMatrix, view.camera3D.projectMatrix, x, y);
+
+            return ray;
+        }
+
+        /**
+        * @language zh_CN
+        * 返回鼠标拾取对象得到的所有对象,调用之前到设置被拣选对象的pickType.
+        * 会检测对象的所有子节点,然后把检测的对象进行返回
+        * @param view 当前检测view
+        * @param object 检测的对象 
+        * @param childBox 检测是否用子包围盒 默认false就可以了
+        * @param target 将结果放入到该列表
+        * @returns 拾取的object列表
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static pickObject3D(view: View3D, object: Object3D, target: Object3D[] = null, childBox: boolean = false): Object3D[] {
+            target = target || [];
+            target.length = 0;
+
+            var ray: Ray = Picker.createRayToView(view);
+            Picker.pickObject(ray, object, childBox, target);
+            return target;
+        }
+
+
+        /**
+        * @language zh_CN
+        * 返回射线检测对象得到的所有对象,调用之前到设置被拣选对象的pickType.
+        * 会检测对象的所有子节点,然后把检测的对象进行返回
+        * @param ray 当前检测射线
+        * @param object 检测的对象 
+        * @param childBox 检测是否用子包围盒 默认false就可以了
+        * @param target 将结果放入到该列表
+        * @returns 拾取的object列表
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static pickObject(ray: Ray, object: Object3D, childBox: boolean = false, target: Object3D[] = null): Object3D[]{
+            if (Picker.doPickerObject(ray, object, childBox)) {
+                target.push(object);
+            }
+
+            for (var i: number = 0; i < object.childs.length; ++i) {
+                Picker.pickObject(ray, object.childs[i], childBox, target);
+            }
+
+            return target;
+        }
+
+        /**
+        * @language zh_CN
+        * 返回射线检测对象是否成功,调用之前到设置被拣选对象的pickType.
+        * @param ray 当前检测射线
+        * @param object 检测的对象 
+        * @param childBox 检测是否用子包围盒 默认false就可以了
+        * @returns boolean 成功返回true
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static doPickerObject(ray: Ray, object: Object3D, childBox: boolean = false): boolean {
+            var renderItem: IRender;
+            if (object instanceof IRender) {
+                renderItem = <IRender>object;
+            }
+
+            if (!renderItem) {
+                return false;
+            }
+
+            switch (renderItem.pickType) {
+                case PickType.BoundPick:
+                    if (renderItem.bound != null) {
+                        var bound: Bound = renderItem.bound;
+                        if (childBox) {
+                            bound = renderItem.currentBound;
+                        }
+
+                        if (bound) {
+                            if (ray.IntersectBound(bound, renderItem.pickResult)) {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                case PickType.PositionPick:
+
+                    var uvoffset: number = 0;
+
+                    if (renderItem.geometry.vertexFormat & VertexFormat.VF_POSITION) {
+                        uvoffset += Geometry.positionSize;
+                    }
+
+                    if (renderItem.geometry.vertexFormat & VertexFormat.VF_NORMAL) {
+                        uvoffset += Geometry.normalSize;
+                    }
+
+                    if (renderItem.geometry.vertexFormat & VertexFormat.VF_TANGENT) {
+                        uvoffset += Geometry.tangentSize;
+                    }
+
+                    if (renderItem.geometry.vertexFormat & VertexFormat.VF_COLOR) {
+                        uvoffset += Geometry.colorSize;
+                    }
+                    var boundBox: BoundBox = <BoundBox>renderItem.bound;
+                    var ret: number[] = [];
+
+                    if (ray.IntersectSphere(boundBox.center, boundBox.radius, ret, renderItem.modelMatrix)) {
+                        if (ray.IntersectMeshEx(renderItem, uvoffset, renderItem.pickResult)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                case PickType.UVPick:
+                    var uvoffset: number = 0;
+
+                    if (renderItem.geometry.vertexFormat & VertexFormat.VF_POSITION) {
+                        uvoffset += Geometry.positionSize;
+                    }
+
+                    if (renderItem.geometry.vertexFormat & VertexFormat.VF_NORMAL) {
+                        uvoffset += Geometry.normalSize;
+                    }
+
+                    if (renderItem.geometry.vertexFormat & VertexFormat.VF_TANGENT) {
+                        uvoffset += Geometry.tangentSize;
+                    }
+
+                    if (renderItem.geometry.vertexFormat & VertexFormat.VF_COLOR) {
+                        uvoffset += Geometry.colorSize;
+                    }
+                    var boundBox: BoundBox = <BoundBox>renderItem.bound;
+                    if (ray.IntersectSphere(boundBox.center, boundBox.radius, ret, boundBox.transform)) {
+                        if (ray.IntersectMeshEx(renderItem, uvoffset, renderItem.pickResult)) {
+                            return true;
+                        }
+                    }
+                    return false;
+            }
+            return false;
+        }
+
+        /**
+        * @language zh_CN
+        * 返回鼠标拾取对象得到的所有对象,调用之前到设置被拣选对象的pickType.
+        * @param view 当前检测view
+        * @param objects 检测的对象列表
+        * @param childBox 检测是否用子包围盒 默认false就可以了
+        * @param target 将结果放入到该列表
+        * @returns 拾取的object列表
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static pickObject3DList(view:View3D, objects: IRender[], childBox:boolean = false, target:IRender[] = null): IRender[] {
+            if (!target) {
+                target = new Array<IRender>(); 
+            }
+            target.length = 0;
+            var ray: Ray = Picker.createRayToView(view);
             for (var i: number = 0; i < objects.length; ++i) {
-                var renderItem: IRender = objects[i];
-                var inPos: Vector3D = new Vector3D();
-                switch (renderItem.pickType) {
-                    case PickType.BoundPick:
-                        if (renderItem.bound != null) {
-                            var bound: Bound = renderItem.bound;
-                            if (childBox) {
-                                bound = renderItem.currentBound;
-                            }
-
-                            if (bound) {
-                                if (ray.IntersectBound(bound, renderItem.pickResult)) {
-                                    target.push(objects[i]);
-                                }
-                            }
-                        }
-                        break;
-                    case PickType.PositionPick:
-
-                        var uvoffset: number = 0;
-
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_POSITION) {
-                            uvoffset += Geometry.positionSize;
-                        }
-
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_NORMAL) {
-                            uvoffset += Geometry.normalSize;
-                        }
-
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_TANGENT) {
-                            uvoffset += Geometry.tangentSize;
-                        }
-
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_COLOR) {
-                            uvoffset += Geometry.colorSize;
-                        }
-                        var boundBox: BoundBox = <BoundBox>renderItem.bound;
-                        var ret: number[] = [];
-
-                        if (ray.IntersectSphere(boundBox.center, boundBox.radius, ret, renderItem.modelMatrix)) {
-                            if (ray.IntersectMeshEx(renderItem, uvoffset, renderItem.pickResult)) {
-                                target.push(objects[i]);
-                            }
-                        }
-
-                        break;
-                    case PickType.UVPick:
-                        var uvoffset: number = 0;
-
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_POSITION) {
-                            uvoffset += Geometry.positionSize;
-                        }
-
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_NORMAL) {
-                            uvoffset += Geometry.normalSize;
-                        }
-
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_TANGENT) {
-                            uvoffset += Geometry.tangentSize;
-                        }
-
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_COLOR) {
-                            uvoffset += Geometry.colorSize;
-                        }
-                        if (ray.IntersectSphere(boundBox.center, boundBox.radius, ret, boundBox.transform)) {
-                            if (ray.IntersectMeshEx(renderItem, uvoffset, renderItem.pickResult)) {
-                                target.push(objects[i]);
-                            }
-                        }
-                        break;
+                if (Picker.doPickerObject(ray, objects[i], childBox)) {
+                    target.push(objects[i]);
                 }
             }
             return target;

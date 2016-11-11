@@ -1,6 +1,7 @@
 ﻿module egret3d {
 
     /**
+    * @private
     * @language zh_CN
     * @class egret3d.AssetManager
     * @classdesc
@@ -53,7 +54,10 @@
             }
 
             var loader: URLLoader = asset.loader;
-
+            loader.param = param;
+            if (param instanceof UnitLoader) {
+                loader.unitNodeData = param;
+            }
             if (loader.data) {
                 setTimeout(() => {
 
@@ -143,6 +147,7 @@
     }
 
     /**
+    * @private
     * @language zh_CN
     * 资源管理对象 内部资源管理直接使用此对象
     * @version Egret 3.0

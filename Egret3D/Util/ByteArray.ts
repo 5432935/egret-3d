@@ -164,6 +164,8 @@ module egret3d {
         public endian:string;
 
         /**
+         * 构造函数
+         * @param buffer {ArrayBuffer} 二进制数据,可以为空
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -183,6 +185,7 @@ module egret3d {
         }
 
         /**
+         * @private
          * @deprecated
          * @version Egret 2.4
          * @platform Web,Native
@@ -190,13 +193,21 @@ module egret3d {
         public setArrayBuffer(buffer:ArrayBuffer):void {
 
         }
-
+        /**
+         * 获取buffer
+         * @returns {ArrayBuffer} 二进制数据
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
         public get buffer():ArrayBuffer {
             return this.data.buffer;
         }
 
-        /**
-         * @private
+       /**
+         * 设置buffer
+         * @param value {ArrayBuffer} 二进制数据
+         * @version Egret 2.4
+         * @platform Web,Native
          */
         public set buffer(value:ArrayBuffer) {
             this.data = new DataView(value);
@@ -234,14 +245,21 @@ module egret3d {
          */
         /**
          * @language zh_CN
-         * 将文件指针的当前位置（以字节为单位）移动或返回到 ByteArray 对象中。下一次调用读取方法时将在此位置开始读取，或者下一次调用写入方法时将在此位置开始写入。
+         * 获取当前文件指针位置
+         * @returns {number} 以字节为单位的位置信息
          * @version Egret 2.4
          * @platform Web,Native
          */
         public get position():number {
             return this._position;
         }
-
+        /**
+         * @language zh_CN
+         * 设置当前文件指针位置
+         * @param value {number} 以字节为单位的位置信息
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
         public set position(value:number) {
             //if (this._position < value) {
             //    if (!this.validate(value - this._position)) {
@@ -260,18 +278,28 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        /**
+
+
+
+         /**
          * @language zh_CN
-         * ByteArray 对象的长度（以字节为单位）。
-         * 如果将长度设置为大于当前长度的值，则用零填充字节数组的右侧。
-         * 如果将长度设置为小于当前长度的值，将会截断该字节数组。
+         * 获取 ByteArray 对象的长度。
+         * @returns {number} 以字节为单位的长度信息
          * @version Egret 2.4
          * @platform Web,Native
          */
         public get length():number {
             return this.write_position;
         }
-
+          /**
+         * @language zh_CN
+         * 设置 ByteArray 对象的长度。
+         * 如果将长度设置为大于当前长度的值，则用零填充字节数组的右侧。
+         * 如果将长度设置为小于当前长度的值，将会截断该字节数组。
+         * @param value {number} 以字节为单位的长度信息
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
         public set length(value:number) {
             this.write_position = value;
             var tmp:Uint8Array = new Uint8Array(new ArrayBuffer(value));
@@ -295,6 +323,7 @@ module egret3d {
          * @language zh_CN
          * 可从字节数组的当前位置到数组末尾读取的数据的字节数。
          * 每次访问 ByteArray 对象时，将 bytesAvailable 属性与读取方法结合使用，以确保读取有效的数据。
+         * @param value {number} 以字节为单位的长度信息
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -311,7 +340,6 @@ module egret3d {
         /**
          * @language zh_CN
          * 清除字节数组的内容，并将 length 和 position 属性重置为 0。
-
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -329,7 +357,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 从字节流中读取布尔值。读取单个字节，如果字节非零，则返回 true，否则返回 false
-         * @return 如果字节不为零，则返回 true，否则返回 false
+         * @returns 如果字节不为零，则返回 true，否则返回 false
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -349,7 +377,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 从字节流中读取带符号的字节
-         * @return 介于 -128 和 127 之间的整数
+         * @returns {number} 介于 -128 和 127 之间的整数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -371,9 +399,9 @@ module egret3d {
         /**
          * @language zh_CN
          * 从字节流中读取 length 参数指定的数据字节数。从 offset 指定的位置开始，将字节读入 bytes 参数指定的 ByteArray 对象中，并将字节写入目标 ByteArray 中
-         * @param bytes 要将数据读入的 ByteArray 对象
-         * @param offset bytes 中的偏移（位置），应从该位置写入读取的数据
-         * @param length 要读取的字节数。默认值 0 导致读取所有可用的数据
+         * @param bytes {ByteArray} 要将数据读入的 ByteArray 对象
+         * @param offset {number} bytes 中的偏移（位置），应从该位置写入读取的数据
+         * @param length {number} 要读取的字节数。默认值 0 导致读取所有可用的数据
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -406,7 +434,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 从字节流中读取一个 IEEE 754 双精度（64 位）浮点数
-         * @return 双精度（64 位）浮点数
+         * @returns {number} 双精度（64 位）浮点数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -428,7 +456,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 从字节流中读取一个 IEEE 754 单精度（32 位）浮点数
-         * @return 单精度（32 位）浮点数
+         * @returns {number} 单精度（32 位）浮点数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -443,14 +471,14 @@ module egret3d {
         /**
          * @language en_US
          * Read a 32-bit signed integer from the byte stream.
-         * @return A 32-bit signed integer ranging from -2147483648 to 2147483647
+         * @returns A 32-bit signed integer ranging from -2147483648 to 2147483647
          * @version Egret 2.4
          * @platform Web,Native
          */
         /**
          * @language zh_CN
          * 从字节流中读取一个带符号的 32 位整数
-         * @return 介于 -2147483648 和 2147483647 之间的 32 位带符号整数
+         * @returns {number} 介于 -2147483648 和 2147483647 之间的 32 位带符号整数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -478,14 +506,14 @@ module egret3d {
         /**
          * @language en_US
          * Read a 16-bit signed integer from the byte stream.
-         * @return A 16-bit signed integer ranging from -32768 to 32767
+         * @returns A 16-bit signed integer ranging from -32768 to 32767
          * @version Egret 2.4
          * @platform Web,Native
          */
         /**
          * @language zh_CN
          * 从字节流中读取一个带符号的 16 位整数
-         * @return 介于 -32768 和 32767 之间的 16 位带符号整数
+         * @returns {number} 介于 -32768 和 32767 之间的 16 位带符号整数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -500,14 +528,14 @@ module egret3d {
         /**
          * @language en_US
          * Read unsigned bytes from the byte stream.
-         * @return A 32-bit unsigned integer ranging from 0 to 255
+         * @returns A 32-bit unsigned integer ranging from 0 to 255
          * @version Egret 2.4
          * @platform Web,Native
          */
         /**
          * @language zh_CN
          * 从字节流中读取无符号的字节
-         * @return 介于 0 和 255 之间的 32 位无符号整数
+         * @returns {number} 介于 0 和 255 之间的 32 位无符号整数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -527,7 +555,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 从字节流中读取一个无符号的 32 位整数
-         * @return 介于 0 和 4294967295 之间的 32 位无符号整数
+         * @returns {number} 介于 0 和 4294967295 之间的 32 位无符号整数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -549,7 +577,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 从字节流中读取一个无符号的 16 位整数
-         * @return 介于 0 和 65535 之间的 16 位无符号整数
+         * @returns {number} 介于 0 和 65535 之间的 16 位无符号整数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -571,7 +599,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 从字节流中读取一个 UTF-8 字符串。假定字符串的前缀是无符号的短整型（以字节表示长度）
-         * @return UTF-8 编码的字符串
+         * @returns {string} UTF-8 编码的字符串
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -599,8 +627,8 @@ module egret3d {
         /**
          * @language zh_CN
          * 从字节流中读取一个由 length 参数指定的 UTF-8 字节序列，并返回一个字符串
-         * @param length 指明 UTF-8 字节长度的无符号短整型数
-         * @return 由指定长度的 UTF-8 字节组成的字符串
+         * @param length {number} 指明 UTF-8 字节长度的无符号短整型数
+         * @returns {number} 由指定长度的 UTF-8 字节组成的字符串
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -626,7 +654,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 写入布尔值。根据 value 参数写入单个字节。如果为 true，则写入 1，如果为 false，则写入 0
-         * @param value 确定写入哪个字节的布尔值。如果该参数为 true，则该方法写入 1；如果该参数为 false，则该方法写入 0
+         * @param value {boolean} 确定写入哪个字节的布尔值。如果该参数为 true，则该方法写入 1；如果该参数为 false，则该方法写入 0
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -648,7 +676,7 @@ module egret3d {
          * @language zh_CN
          * 在字节流中写入一个字节
          * 使用参数的低 8 位。忽略高 24 位
-         * @param value 一个 32 位整数。低 8 位将被写入字节流
+         * @param value {number} 一个 32 位整数。低 8 位将被写入字节流
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -674,9 +702,9 @@ module egret3d {
          * 将指定字节数组 bytes（起始偏移量为 offset，从零开始的索引）中包含 length 个字节的字节序列写入字节流
          * 如果省略 length 参数，则使用默认长度 0；该方法将从 offset 开始写入整个缓冲区。如果还省略了 offset 参数，则写入整个缓冲区
          * 如果 offset 或 length 超出范围，它们将被锁定到 bytes 数组的开头和结尾
-         * @param bytes ByteArray 对象
-         * @param offset 从 0 开始的索引，表示在数组中开始写入的位置
-         * @param length 一个无符号整数，表示在缓冲区中的写入范围
+         * @param bytes {ByteArray} ByteArray 对象
+         * @param offset {number} 从 0 开始的索引，表示在数组中开始写入的位置
+         * @param length {number} 一个无符号整数，表示在缓冲区中的写入范围
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -721,7 +749,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 在字节流中写入一个 IEEE 754 双精度（64 位）浮点数
-         * @param value 双精度（64 位）浮点数
+         * @param value {number} 双精度（64 位）浮点数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -742,7 +770,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 在字节流中写入一个 IEEE 754 单精度（32 位）浮点数
-         * @param value 单精度（32 位）浮点数
+         * @param value {number} 单精度（32 位）浮点数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -763,7 +791,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 在字节流中写入一个带符号的 32 位整数
-         * @param value 要写入字节流的整数
+         * @param value {number} 要写入字节流的整数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -784,7 +812,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 在字节流中写入一个 16 位整数。使用参数的低 16 位。忽略高 16 位
-         * @param value 32 位整数，该整数的低 16 位将被写入字节流
+         * @param value {number} 32 位整数，该整数的低 16 位将被写入字节流
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -805,7 +833,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 在字节流中写入一个无符号的 32 位整数
-         * @param value 要写入字节流的无符号整数
+         * @param value {number} 要写入字节流的无符号整数
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -826,7 +854,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 在字节流中写入一个无符号的 16 位整数
-         * @param value 要写入字节流的无符号整数
+         * @param value {number} 要写入字节流的无符号整数
          * @version Egret 2.5
          * @platform Web,Native
          */
@@ -847,7 +875,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 将 UTF-8 字符串写入字节流。先写入以字节表示的 UTF-8 字符串长度（作为 16 位整数），然后写入表示字符串字符的字节
-         * @param value 要写入的字符串值
+         * @param value {string} 要写入的字符串值
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -872,7 +900,7 @@ module egret3d {
         /**
          * @language zh_CN
          * 将 UTF-8 字符串写入字节流。类似于 writeUTF() 方法，但 writeUTFBytes() 不使用 16 位长度的词为字符串添加前缀
-         * @param value 要写入的字符串值
+         * @param value {string} 要写入的字符串值
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -882,8 +910,8 @@ module egret3d {
 
 
         /**
-         *
-         * @returns
+         * 返回格式化字符串信息，包含ByteArray的长度信息和bytesAvailable信息
+         * @returns {string} 格式化字符串
          * @version Egret 2.4
          * @platform Web,Native
          */
@@ -894,7 +922,7 @@ module egret3d {
         /**
          * @private
          * 将 Uint8Array 写入字节流
-         * @param bytes 要写入的Uint8Array
+         * @param bytes {Uint8Array} 要写入的Uint8Array
          * @param validateBuffer
          */
         public _writeUint8Array(bytes:Uint8Array, validateBuffer:boolean = true):void {
@@ -908,6 +936,7 @@ module egret3d {
         }
 
         /**
+         * @private
          * @param len
          * @returns
          * @version Egret 2.4

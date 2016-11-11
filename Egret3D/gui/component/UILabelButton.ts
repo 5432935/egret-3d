@@ -1,9 +1,10 @@
 ﻿module egret3d.gui {
          /**
-    * @private
     * @class egret3d.gui.UILabelButton
     * @classdesc
     * 含文本组件的按钮, 用于在按钮上显示文字
+    * @see egret3d.MouseEvent3D
+    * @see egret3d.gui.UIButton
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -14,7 +15,12 @@
         private _textField:gui.UITextField;
         private _textWidth: number;
         private _textHeight:number;
-
+        /**
+        * @language zh_CN
+        * 构造函数
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         constructor() {
             super();
             this._textField = new gui.UITextField();
@@ -25,7 +31,9 @@
             this._textHeight = -1;
             this._textWidth = -1;
         }
-
+         /**
+        * @private
+        */
         protected getDefaultStyleNameByStyleName(styleName: string): string {
             var obj = {
                 "down": DefaultSkinName.DEFAULT_LABE_BUTTON_DOWN,
@@ -39,20 +47,28 @@
             }
             return result;
         }
-
+         /**
+        * @private
+        */
         public get textHeight(): number {
             return this._textHeight;
         }
-
+         /**
+        * @private
+        */
         public set textHeight(value: number) {
             this._textHeight = value;
             this.onRender();
         }
-
+         /**
+        * @private
+        */
         public get textWidth(): number {
             return this._textWidth; 
         }
-
+         /**
+        * @private
+        */
         public set textWidth(value: number) {
             this._textWidth = value;
             this.onRender();
@@ -86,8 +102,10 @@
             this._label = value;
             this._textField.text = this._label;
         }	
-    
-        public onRender() {
+        /**
+        * @private
+        */
+        protected onRender() {
             super.onRender();
 
             if (this._textHeight > 0) {

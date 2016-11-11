@@ -15,7 +15,7 @@
           * @param datas 加载的二进制流
           * @returns Geometry
           */
-        public static parse(datas: ArrayBuffer): Geometry {
+        public static parse(datas: ArrayBuffer, param:any = null): Geometry {
 
             var bytes: ByteArray = new ByteArray(datas);
             var fileFormatBytes: ByteArray = new ByteArray();
@@ -28,7 +28,7 @@
             }
 
             var geomtryData: GeometryData = new GeometryData();
-            ESMVersion.versionDictionary[version](bytes, geomtryData);
+            ESMVersion.versionDictionary[version](bytes, geomtryData, param);
             var geomtry: Geometry;
             var vertexFormat: number = 0;
             if (geomtryData.source_skinData.length > 0) {

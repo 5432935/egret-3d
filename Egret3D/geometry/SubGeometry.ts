@@ -20,7 +20,15 @@
          * @version Egret 3.0
          * @platform Web,Native
          */
-        public start: number = 0;
+        public _start: number = 0; 
+
+        public set start(val:number) {
+            this._start = val;
+        }
+
+        public get start(): number {
+            return this._start;
+        }
 
         /**
          * @language zh_CN
@@ -31,49 +39,51 @@
         public count: number = 0;
 
         /**
-         * @language zh_CN
-         * 材质ID
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 材质ID 对应 IRender.getMaterial(this.matID)
+        * @see egret3d.IRender
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public matID: number = 0;
 
         /**
-         * @language zh_CN
-         * @private
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 对应的网格数据对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public geometry: Geometry;
 
         /**
         * @language zh_CN
         * 材质球的漫反射贴图。
+        * @version Egret 3.0
+        * @platform Web,Native
         */
-
         public textureDiffuse: string;
 
         /**
          * @language zh_CN
          * 材质球的凹凸法线贴图。
+        * @version Egret 3.0
+        * @platform Web,Native
          */
         public textureNormal: string;
 
         /**
         * @language zh_CN
         * 材质球的高光贴图。
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public textureSpecular: string;
 
-        public preAttList: Array<GLSL.Attribute> = new Array<GLSL.Attribute>();
-
-
         /**
         * @language zh_CN
-        * 创建一个SubGeometry
+        * @private
         */
-        constructor() {
-        }
+        public preAttList: Array<GLSL.Attribute> = new Array<GLSL.Attribute>();
 
         /**
         * @private
@@ -359,7 +369,19 @@
         * @platform Web,Native
         */
         static use: boolean = false;
+         /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         private localActive: boolean = false; 
+         /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public activeState(time: number, delay: number, passUsage: PassUsage, contextProxy: Context3DProxy) {
 
             if (passUsage.attributeDiry)

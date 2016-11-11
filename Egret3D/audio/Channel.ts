@@ -113,7 +113,7 @@
 
         /**
         * @language zh_CN
-        * 暂时停止在该声道中播放声音。
+        * 暂停在该声道中播放声音。
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -251,7 +251,7 @@
 
         /**
         * @language zh_CN
-        * 音频持续时间。
+        * 获取音频持续时间。
         * @returns {number}   
         * @version Egret 3.0
         * @platform Web,Native

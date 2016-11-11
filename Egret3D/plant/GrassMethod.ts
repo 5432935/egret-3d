@@ -1,36 +1,36 @@
 ﻿module egret3d {
-
     /**
     * @language zh_CN
     * @class egret3d.GrassMethod
     * @classdesc
-    * 草的飘动
+    * 草的飘动动画实现部分,不建议单独使用，而是封装在GrassMesh中被动生成。
+    * @see egret3d.GrassMesh
+    * @includeExample plant/GrassMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
     export class GrassMethod extends MethodBase {
 
         private _start: boolean;
-
         private _time: number = 0.0;
-        private _grass_wave = 0.003;//波浪的振频
-        private _grass_x_span = 0.02;//x方向位置加成到时间系数
-        private _grass_y_span = 0.02;//y方向位置加成到时间系数
-        private _grass_z_span = 0.01;//z方向位置加成到时间系数
-        private _grass_wave_big = 0.001;//大波浪缩放系数，使风变成一阵一阵的
-        private _grass_range = 5.0;//草的振幅
-        private _grass_wave_x = 1.0;//草摇晃x方向的系数
-        private _grass_wave_z = 1.0;//草摇晃z方向的系数
+        private _windSpeed: number = 200;
+        private _windStrength: number = 0.2;
+        private _shakeScale: number = 0.1;
+        private _windDirection: Vector3D = new Vector3D(1, 0, 0);
+        private _windSpace: Vector3D = new Vector3D(400, 0, 300);
 
-
-        private _grassData: Float32Array = new Float32Array(10);
+        private _windData: Float32Array = new Float32Array(9);
         private _squeezeData: Float32Array = new Float32Array(6);
 
         private _data: GrassData;
 
         /**
-        * @private
         * @language zh_CN
+        * @构造函数
+        * 创建一个GrassMethod对象
+        * @param data GrassData 创建该method需要用到的数据源
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         constructor(data:GrassData) {
             super();
@@ -46,30 +46,27 @@
 
         /**
         * @language zh_CN
-        * 更新草动画的参数
-        * @param wave 波浪的振幅
-        * @param x_span x方向位置加成到时间系数
-        * @param y_span y方向位置加成到时间系数
-        * @param z_span z方向位置加成到时间系数
-        * @param wave_big 大波浪缩放系数，使风变成一阵一阵的
-        * @param range 草的最大摇动系数
-        * @param wave_x 草摇晃x方向的系数
-        * @param wave_z 草摇晃z方向的系数
+        * 更新风的参数
+        * @param direction 单位向量，xz为有效值，表示风的方向
+        * @param space 一团风的体积，xz为有效值，每个朝向在单位体积内实现了一个正弦抖动循环
+        * @param speed 风的移动速度，代表1秒内，风移动的单位
+        * @param windStrength 风的强度，这个值用于加成到草的倾斜上面
+        * @param shakeScale 草自身来回摇摆缩放系数，这个值用于加成到草的倾斜上面
         * @version Egret 3.0
         * @platform Web,Native 
         */
-        public updateGrass(wave:number, x_span:number, y_span:number, z_span:number, wave_big:number, range:number, wave_x:number, wave_z:number): void {
-            this._grass_wave = wave;
-            this._grass_x_span = x_span;
-            this._grass_y_span = y_span;
-            this._grass_z_span = z_span;
-            this._grass_wave_big = wave_big;
-            this._grass_range = range;
-            this._grass_wave_x = wave_x;
-            this._grass_wave_z = wave_z;
+        public setWind(direction: Vector3D, space: Vector3D, speed: number = 100.0, windStrength: number = 0.1, shakeScale:number = 1.0): void {
+            direction.y = 0;
+            this._windDirection.copyFrom(direction);
+            this._windDirection.normalize();
 
+            this._windSpace.copyFrom(space);
+            this._windStrength = windStrength;
+            this._windSpeed = speed;
+            this._shakeScale = shakeScale;
             this.fillGrassData();
         }
+
 
         /**
         * @language zh_CN
@@ -91,14 +88,14 @@
         }
 
         private fillGrassData(): void {
-            this._grassData[0] = this._grass_wave;
-            this._grassData[1] = this._grass_x_span;
-            this._grassData[2] = this._grass_y_span;
-            this._grassData[3] = this._grass_z_span;
-            this._grassData[4] = this._grass_wave_big;
-            this._grassData[5] = this._grass_range;
-            this._grassData[6] = this._grass_wave_x;
-            this._grassData[7] = this._grass_wave_z;
+            this._windData[0] = this._windDirection.x;
+            this._windData[1] = this._windDirection.z;
+            this._windData[2] = this._windSpace.x;
+            this._windData[3] = this._windSpace.z;
+            this._windData[4] = this._windStrength;
+            this._windData[5] = this._windSpeed;
+            this._windData[6] = this._shakeScale;
+            
         }
        
         /**
@@ -139,8 +136,6 @@
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
             usage["uniform_grass_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_grass_data");
             usage["uniform_squeeze_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_squeeze_data");
-
-
         }
         
         /**
@@ -151,9 +146,9 @@
             if (this._start) {
                 this._time += delay;
             }
-            this._grassData[8] = this._time;
-            this._grassData[9] = this._data.billboard ? 1 : 0;
-            context3DProxy.uniform1fv(usage["uniform_grass_data"].uniformIndex, this._grassData);
+            this._windData[7] = this._time / 1000.0;
+            this._windData[8] = this._data.billboard ? 1 : 0;
+            context3DProxy.uniform1fv(usage["uniform_grass_data"].uniformIndex, this._windData);
             context3DProxy.uniform1fv(usage["uniform_squeeze_data"].uniformIndex, this._squeezeData);
 
 

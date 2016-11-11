@@ -16,6 +16,9 @@
         public nodeList: Array<UnitNodeData> = new Array<UnitNodeData>();
         public hudList: Array<UnitHUDData> = new Array<UnitHUDData>();
 
+        public auto: boolean = false;
+        public loop: boolean = false;
+
         public matDict: any = {};
 
         public lightDict: any = {};
@@ -120,50 +123,6 @@
             if (data.path) {
                 this.taskDict[data.path] = 0;
             }
-        }
-
-        public processNode() {
-            for (var i: number = 0; i < this.nodeList.length; i++) {
-                var mapNodeData: UnitNodeData = this.nodeList[i];
-
-                if (mapNodeData.type == "Camera3D") {
-                    var camera: Camera3D = new Camera3D();
-                    camera.fieldOfView = mapNodeData.fov;
-                    camera.near = mapNodeData.clipNear;
-                    camera.far = mapNodeData.clipFar;
-
-                    mapNodeData.object3d = camera;
-
-                }
-                else if (mapNodeData.type == "Billboard") {
-                    mapNodeData.object3d = new Billboard(new TextureMaterial(CheckerboardTexture.texture));
-                }
-                else if (mapNodeData.type == "Terrain") {
-                    mapNodeData.object3d = new Object3D();
-                }
-                else {
-                    mapNodeData.object3d = new Object3D();
-                }
-                mapNodeData.object3d.name = mapNodeData.name;
-                mapNodeData.object3d.visible = mapNodeData.visible;
-                mapNodeData.object3d.position = new Vector3D(mapNodeData.x, mapNodeData.y, mapNodeData.z);
-                mapNodeData.object3d.orientation = new Quaternion(mapNodeData.rx, mapNodeData.ry, mapNodeData.rz, mapNodeData.rw);
-                mapNodeData.object3d.scale = new Vector3D(mapNodeData.sx, mapNodeData.sy, mapNodeData.sz);
-                if (mapNodeData.tagName != "") {
-                    mapNodeData.object3d.tag.name = mapNodeData.tagName;
-                }
-            }
-
-            for (var i: number = 0; i < this.nodeList.length; i++) {
-                var mapNodeData0: UnitNodeData = this.nodeList[i];
-                for (var j: number = 0; j < this.nodeList.length; j++) {
-                    var mapNodeData1: UnitNodeData = this.nodeList[j];
-                    if (mapNodeData0.parent == mapNodeData1.insID) {
-                        mapNodeData1.object3d.addChild(mapNodeData0.object3d);
-                        break;
-                    }
-                }
-            }
-        }
+        }       
     }
 }

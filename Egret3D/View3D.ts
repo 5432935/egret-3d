@@ -50,9 +50,11 @@
 
         protected _shadowCast: ShadowCast;
 
+        public sunLight: DirectLight = new DirectLight(new Vector3D(0, -1, 1)) ;
+
         /**
         * @language zh_CN
-        * 构建一个view3d对象
+        * 构建一个view3d对象 如果不给摄像机 内部会创建一个默认的摄像机
         * @param x 视口的屏幕x坐标
         * @param y 视口的屏幕y坐标
         * @param width 视口的屏幕宽度
@@ -64,7 +66,6 @@
         constructor(x: number, y: number, width: number, height: number, camera: Camera3D = null) {
             this._entityCollect = new EntityCollect();
             this._entityCollect.root = this._scene;
-
 
             this._camera = camera || new Camera3D(CameraType.perspective);
             this._camera.name = "MainCamera";
@@ -92,14 +93,45 @@
             this._shadowCast = new ShadowCast(this);
         }
 
+        /**
+        * @private
+        * @language zh_CN
+        * gui 舞台
+        * @returns QuadStage
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get quadStage(): QuadStage {
             return this._quadStage;
         }
 
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get renderQuen(): RenderQuen {
             return this._renderQuen;
         }
 
+        /**
+        * @language zh_CN
+        * 获取控制阴影实例对象
+        * @returns ShadowCast 控制阴影实例对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get shadowCast(): ShadowCast {
+            return this._shadowCast;
+        }
+
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set post(list: any[]) {
             this._postList = list;
             if (list.length > 0) {
@@ -147,6 +179,13 @@
             return (this._backColor.w * 255 << 24) | (this._backColor.x * 255 << 16) | (this._backColor.y * 255 << 8) | (this._backColor.z * 255);
         }
 
+        /**
+        * @language zh_CN
+        * 设置view3d背景贴图
+        * @param tex 背景贴图
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set backImage(tex: ITexture) {
             if (tex) {
                 this._backImg = this._backImg || new HUD();
@@ -158,6 +197,13 @@
             }
         }
 
+        /**
+        * @language zh_CN
+        * 获取view3d背景贴图
+        * @returns ITexture 背景贴图
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get backImage(): ITexture {
             return this._backImg.diffuseTexture;
         }
@@ -204,13 +250,14 @@
         /**
         * @language zh_CN
         * 设置View3d中的场景对象
+        * 当前scene 会被替换  你需要你原来的主摄像机加入当前场景中
         * @param sc 当前View3D的场景对象
         * @version Egret 3.0
         * @platform Web,Native
         */
         public set scene(sc: Scene3D) {
             this._scene = sc;
-
+            this._entityCollect.root = this._scene;
         }
 
         /**
@@ -350,9 +397,12 @@
         /**
         * @language zh_CN
         * 开启Gui功能.
-         * @param initedFun Gui初始化完成后要执行的函数
-         * @param thisObj initedFun回调函数的this指向
-         * @param loadDefaultGuiSkin 是否加载默认的组件皮肤
+        * 需要以下两个资源
+        * resource/ui/fonts.json 
+        * resource/ui/GUI.json 
+        * @param initedFun Gui初始化完成后要执行的函数
+        * @param thisObj initedFun回调函数的this指向
+        * @param loadDefaultGuiSkin 是否加载默认的组件皮肤
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -405,9 +455,10 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 获取gui stage
-        * @return QuadStage
+        * @returns QuadStage
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -417,6 +468,7 @@
             }
             return this._quadStage;
         }
+
         /**
         * @language zh_CN
         * 添加一个gui对象
@@ -522,13 +574,13 @@
         * @private
         */
         private _renderItem: IRender;
+        private a: number;
         /**
         * @private
         * @language zh_CN
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public a: number = 0;
         public update(time: number, delay: number) {
             this._camera.viewPort = this._viewPort;
             //------------------
@@ -632,6 +684,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 请求全屏
         */
@@ -645,6 +698,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 退出全屏
         */

@@ -13,7 +13,7 @@
     * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
     * @see egret3d.MethodBase
     * @see egret3d.MaterialPass
-    * @includeExample material/method/AlphaMaskMethod.ts
+    * @includeExample material/method/EnvironmentMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -29,8 +29,8 @@
         constructor() {
             super();
 
-            this.fsShaderList[ShaderPhaseType.multi_end_fragment] = this.fsShaderList[ShaderPhaseType.multi_end_fragment] || [];
-            this.fsShaderList[ShaderPhaseType.multi_end_fragment].push("environmentMapping_fragment");
+            this.fsShaderList[ShaderPhaseType.lighting_fragment] = this.fsShaderList[ShaderPhaseType.lighting_fragment] || [];
+            this.fsShaderList[ShaderPhaseType.lighting_fragment].push("environmentMapping_fragment");
         }
 
         /**

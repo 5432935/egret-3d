@@ -4,6 +4,7 @@
     * @class egret3d.MathUtil
     * @classdesc
     * 可使用 MathUtil 类 进行3d矩阵的计算
+    * @includeExample geom/MathUtil.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -25,7 +26,20 @@
         */
         public static DEGREES_TO_RADIANS: number = Math.PI / 180;
 
+        /**
+        * @language zh_CN
+        * 整型最大值
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public static MAX_VALUE: number = 0x7fffffff;
+
+        /**
+        * @language zh_CN
+        * 整型最小值
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public static MIN_VALUE: number = -0x7fffffff;
 
         /**
@@ -66,7 +80,23 @@
         */
         public static CALCULATION_VECTOR3D_2: Vector3D = new Vector3D();
 
+
         /**
+        * @private
+        * @language zh_CN
+        * 两个Float是否相等
+        * @param f0 float
+        * @param f1 float
+        * @returns boolean 是否相等
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static FloatEqual(f0: number, f1: number): boolean {
+            return Math.abs(f0 - f1) < 0.00000001;
+        }
+
+        /**
+        * @private
         * @language zh_CN
         * 四元数转矩阵
         * @param quarternion 源四元数
@@ -114,6 +144,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 得到矩阵朝前的方向
         * @param m 源矩阵
@@ -133,6 +164,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 得到矩阵朝上的方向
         * @param m 源矩阵
@@ -157,6 +189,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 得到矩阵朝右的方向
         * @param m 源矩阵
@@ -180,6 +213,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 比较两个矩阵是否相同
         * @param m1 矩阵1
@@ -202,6 +236,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 得到平面的反射矩阵
         * @param plane 反射的面
@@ -242,6 +277,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 得到矩阵的平移
         * @param transform 计算的矩阵
@@ -259,6 +295,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 把一个值固定在一个范围之内
         * @param value 当前判定的值
@@ -300,6 +337,9 @@
 
 
         private static _tempVector: Vector3D = new Vector3D();
+        /**
+        * @private
+        */
         public static calcDegree(quat: Quaternion, angleVector: Vector3D): void {
 
             //计算billboard矩阵x

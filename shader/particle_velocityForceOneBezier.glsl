@@ -7,10 +7,8 @@ void calcVelocityForceBezier(float curTime, float totalTime)
 }
 
 void main() {
-	if(discard_particle < TrueOrFalse){
-		velocityForceVec3.xyz = velocityForceOneBezier.xyz;
-		calcVelocityForceBezier(currentTime, curParticle.life);
-	} 
+	velocityForceVec3.xyz = velocityForceOneBezier.xyz;
+	calcVelocityForceBezier(currentTime, curParticle.life);
 }
 
 

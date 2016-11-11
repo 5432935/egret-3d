@@ -8,9 +8,6 @@ module egret3d {
     * 
     * @version Egret 3.0
     * @platform Web,Native
-    * @includeExample animation/skeletonAnimation/SkeletonPose.ts
-    * @version Egret 3.0
-    * @platform Web,Native
     */
     export class SkeletonPose {
 
@@ -48,9 +45,6 @@ module egret3d {
         private static _temp_matrixDecomposeA: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
         private static _temp_matrixDecomposeB: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
 
-        constructor() {
-        }
-
         /**
         * @language zh_CN
         * 克隆新骨架对象
@@ -77,6 +71,7 @@ module egret3d {
         * @param skeletonA 骨架A
         * @param skeletonB 骨架B
         * @param t 时间因子(0~1);
+        * @returns SkeletonPose 插值后的SkeletonPose对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -158,6 +153,7 @@ module egret3d {
 
         /**
         * @language zh_CN
+        * @private
         * 计算当前骨架内所有骨骼的世界矩阵
         * @version Egret 3.0
         * @platform Web,Native
@@ -193,6 +189,7 @@ module egret3d {
 
         /**
         * @language zh_CN
+        * @private
         * 更新GPU所需的骨骼缓存数据
         * @param skeleton 蒙皮骨骼骨架
         * @returns Float32Array 缓存数据
@@ -237,7 +234,7 @@ module egret3d {
         * @language zh_CN
         * 通过名称查找指定骨骼
         * @param name 骨骼名称
-        * @return 骨骼对象
+        * @returns Joint 骨骼对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -272,6 +269,7 @@ module egret3d {
 
         /**
         * @language zh_CN
+        * @private
         * 重置骨骼世界矩阵;
         * @param name 骨骼名称
         * @returns number 骨骼索引编号

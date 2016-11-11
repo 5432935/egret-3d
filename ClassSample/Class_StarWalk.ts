@@ -6,7 +6,7 @@
         private gui: QuadStage;
         private particle: ParticleEmitter;
         private panController: PanController;
-        private quenLoad: QuenLoad = new QuenLoad();
+        private queueLoader: QueueLoader = new QueueLoader();
         private constellationArray: Constellation[] = [];
         private space: Object3D = new Object3D();
         public constructor() {
@@ -29,11 +29,11 @@
 
         private onLoadFonts() {
             gui.BitmapFont.load(textureResMgr.getTextureDic());
-            this.quenLoad.addEventListener(QuenLoad.QUENLOAD_COMPLETE, this.loadComplete, this);
-            this.quenLoad.addLoaderQuen("resource/StarWalk/sky_nightime.png");
-            this.quenLoad.addLoaderQuen("resource/StarWalk/effect.png");
-            this.quenLoad.addLoaderQuen("resource/StarWalk/Stars.csv.json");
-            this.quenLoad.addLoaderQuen("resource/StarWalk/Constellation.csv.json");
+            this.queueLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.loadComplete, this);
+            this.queueLoader.load("resource/StarWalk/sky_nightime.png");
+            this.queueLoader.load("resource/StarWalk/effect.png");
+            this.queueLoader.load("resource/StarWalk/Stars.csv.json");
+            this.queueLoader.load("resource/StarWalk/Constellation.csv.json");
             var labelBtn: gui.UILabelButton = new gui.UILabelButton();
             var upState: Texture = textureResMgr.getTexture("normal.png");
             var downState: Texture = textureResMgr.getTexture("pressed.png");
@@ -48,12 +48,12 @@
 
         private loadComplete() {
 
-            var texture: ITexture = this.quenLoad.getTexture("resource/StarWalk/sky_nightime.png");
+            var texture: ITexture = this.queueLoader.getAsset("resource/StarWalk/sky_nightime.png");
             var sky: Mesh = new Mesh(new SphereGeometry(5000, 20, 20), new TextureMaterial(texture));
             sky.material.cullMode = ContextConfig.FRONT;
             this.space.addChild(sky);
             //初始化星星粒子;
-            var starsJson = JSON.parse(this.quenLoad.getString("resource/StarWalk/Stars.csv.json"));
+            var starsJson = this.queueLoader.getAsset("resource/StarWalk/Stars.csv.json");
 
             var starsData: { [hd: number]: any } = {};
 
@@ -80,7 +80,7 @@
             }
 
             //初始化星座数据;
-            var constellationJson = JSON.parse(this.quenLoad.getString("resource/StarWalk/Constellation.csv.json"));
+            var constellationJson = this.queueLoader.getAsset("resource/StarWalk/Constellation.csv.json");
 
             var constellationData: { [id: number]: any[] } = {};
 

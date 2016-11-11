@@ -1,8 +1,13 @@
 ﻿module egret3d {
-
     /**
+    * @language zh_CN
     * @private
+    * @class egret3d.ParticleRotationTwoBezierNode
+    * @classdesc
     * 粒子的旋转角速度，当前实现为XYZ轴的速度
+    * @see egret3d.AnimationNode
+    * @version Egret 3.0
+    * @platform Web,Native
     */
     export class ParticleRotationXYZConstNode extends AnimationNode {
 

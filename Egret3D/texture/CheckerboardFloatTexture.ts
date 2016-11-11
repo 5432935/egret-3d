@@ -1,6 +1,7 @@
 ﻿module egret3d {
 
      /**
+     * @private
      * @language zh_CN
      * @class egret3d.CheckerboardTexture
      * @classdesc
@@ -47,10 +48,13 @@
         }
 
         /**
-         * @language zh_CN
-         * 上传贴图数据给GPU
-         * @param context3D 
-         */
+        * @private
+        * @language zh_CN
+        * 上传贴图数据给GPU
+        * @param context3D
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public upload(context3D: Context3DProxy) {
             if (!this.texture2D.textureBuffer) {
                 this.texture2D.textureBuffer = this.texture2D.textureBuffer || context3D.creatTexture();
@@ -98,7 +102,13 @@
                 }
             }
         }
-        
+
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public uploadForcing(context3D: Context3DProxy) {
         }
     }

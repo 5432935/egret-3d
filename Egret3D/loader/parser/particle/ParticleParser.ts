@@ -34,22 +34,22 @@
          * @returns ParticleData
          */
 
-        public parseJson(text:string): ParticleData {
+        public parseJson(text: any): ParticleData {
             this.data = new ParticleData();
            
             var parser: ParticleJsonParser = new ParticleJsonParser();
-            parser.parse(eval("(" + text + ")"), this.data);
+            parser.parse(text, this.data);
             this.version = Number(parser.version);
 
             this.data.validate();
             return this.data;
         }
 
-        public parseXml(text:string): ParticleData {
+        public parseXml(text:any): ParticleData {
             this.data = new ParticleData();
 
             var parser: ParticleXmlParser = new ParticleXmlParser();
-            parser.parse(XMLParser.parse(text), this.data);
+            parser.parse(text, this.data);
             this.version = Number(parser.version);
 
             this.data.validate();

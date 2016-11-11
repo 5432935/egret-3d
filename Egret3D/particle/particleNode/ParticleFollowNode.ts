@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleFollowNode
     * @classdesc
     * 粒子跟随效果节点
@@ -120,7 +121,7 @@
             //非循环的粒子生命周期达上限
             var particleData: ParticleData = this._animationState.emitter.data;
             var loop: boolean = particleData.life.loop;
-            var maxLife: number = this._animationState.loopTime + particleData.life.duration + particleData.life.delay;
+            var maxLife: number = this._animationState.modTime + particleData.life.duration + particleData.life.delay;
             if (!loop && (animTime * 0.001 >= maxLife)) {
                 return;
             }
@@ -153,7 +154,7 @@
                     if (particleTime > (this.bornTime + this.life) && !loop)
                         continue;
 
-                    curCircleIndex = Math.floor((particleTime - this.bornTime) / this._animationState.loopTime);
+                    curCircleIndex = Math.floor((particleTime - this.bornTime) / this._animationState.modTime);
                     if (curCircleIndex != this._lifeCircles[i]) {
                         this._lifeCircles[i] = curCircleIndex;
                         changed = true;

@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleVelocityNode
     * @classdesc
     * 粒子速度节点(根据粒子的出生相对位置，以及是否随机方向获得一个三维向量)

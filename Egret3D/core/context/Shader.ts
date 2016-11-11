@@ -14,12 +14,13 @@
     * @see egret3d.Texture2D
     * @see egret3d.Shader
     * @see egret3d.CubeTexture
+    * @includeExample core/context/Shader.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
     export class Shader {
-
-          /**
+        
+        /**
         * @language zh_CN
         * @private
         * 声明 shader 为顶点 类型
@@ -27,7 +28,7 @@
         */
         static vertex: number = 0;
 
-             /**
+        /**
         * @language zh_CN
         * @private
         * 声明 shader 为片段 类型
@@ -43,6 +44,7 @@
         static ID_COUNT: number = 0;
 
         /**
+        * @pirvate
         * @language zh_CN
         *  
         * 获取已经有的shader 的ID

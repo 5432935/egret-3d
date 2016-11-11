@@ -26,7 +26,6 @@
 
             this._cameraCrl = new LookAtController(this._view3D.camera3D, new Object3D());
             this._cameraCrl.distance = 100 * scale;
-            this._cameraCrl.scaleSpeed(scale);
 
             //this._particleLoader = new EffectGroupLoader("resource/scene/waterwave/MapConfig.json");
             this._particleLoader = new UnitLoader("resource/scene/ocean/MapConfig.json");
@@ -50,8 +49,6 @@
 
         private onParticleLoad(e: LoaderEvent3D): void {
             this._view3D.addChild3D(this._particleLoader.container);
-            var effect: EffectGroup = <EffectGroup>this._particleLoader.container;
-            effect.play();
         }
         
         private angle: number = 0;

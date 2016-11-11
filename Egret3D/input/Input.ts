@@ -26,6 +26,8 @@
         /**
         * @language zh_CN
         * 当前鼠标X坐标。
+        * 基于 Egret3DCanvas 的x坐标
+        * @see egret3d.Egret3DCanvas
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -34,6 +36,8 @@
         /**
         * @language zh_CN
         * 当前鼠标Y坐标。
+        * 基于 Egret3DCanvas 的y坐标
+        * @see egret3d.Egret3DCanvas
         * @version Egret 3.0
         * @platform Web,Native
         */

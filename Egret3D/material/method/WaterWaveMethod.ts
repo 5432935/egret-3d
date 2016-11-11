@@ -2,12 +2,13 @@
 
     /**
     * @language zh_CN
-    * @class egret3d.UVRollMethod
+    * @class egret3d.WaterWaveMethod
     * @classdesc
     * 水面模拟特效，用来实现水面顶点波动效果
     * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
     * @see egret3d.MethodBase
     * @see egret3d.MaterialPass
+    * @includeExample material/method/WaterWaveMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */

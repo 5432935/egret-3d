@@ -3,9 +3,13 @@
     /**
     * @class egret3d.Terrain
     * @classdesc
-    *
+    * 地形网格创建
+    * 使用地形高度图,生成地形。
+    * 通过读取草数据，主要有草密度/宽度/高度/颜色/使用贴图等属性，结合高度图组装成一片草。
+    * @see egret3d.ElevationGeometry
+    * @see egret3d.ImageTexture
     * @see egret3d.Mesh
-    *
+    * @includeExample core/node/terrain/Terrain.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -13,13 +17,52 @@
 
         /**
         * @language zh_CN
+        * @private
         * lod处理对象
+        * @see egret3d.LODQuadTree
         * @version Egret 3.0
         * @platform Web,Native
         */
         public lodQuadTree: LODQuadTree;
 
         private vertex: any;
+        private useLod: boolean;
+
+
+        /**
+        * @language zh_CN
+        * @private
+        * @param other copy对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public copy(other: Terrain) {
+            super.copy(other);
+        }
+
+        /**
+        * @private
+        * @language zh_CN
+        * 克隆当前地形
+        * @returns Terrain 克隆后的对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public clone(): Terrain {
+            var cloneMesh: Terrain = new Terrain(
+                this.terrainGeometry.heightmap,
+                this.terrainGeometry.width,
+                this.terrainGeometry.height,
+                this.terrainGeometry.depth,
+                this.terrainGeometry.segmentsW,
+                this.terrainGeometry.segmentsH,
+                this.useLod,
+                this.material);
+
+            cloneMesh.copy(this);
+            return cloneMesh;
+        }
+
 
         /**
         * @language zh_CN
@@ -37,7 +80,7 @@
         */
         constructor(heightmap: ImageTexture, width: number = 1000, height: number = 100, depth: number = 1000, segmentsW: number = 128, segmentsH: number = 128, useLod: boolean = false, mat: MaterialBase = null) {
             super(new ElevationGeometry(heightmap, width, height, depth, segmentsW, segmentsH), mat);
-
+            this.useLod = useLod;
             if (useLod) {
                 if (segmentsW == segmentsH && (segmentsW & (segmentsW - 1)) == 0) {
                     this.vertex = this.geometry.getVertexForIndex(0, VertexFormat.VF_POSITION, null, this.geometry.vertexCount);
@@ -51,6 +94,18 @@
                     Egret3DLog.outError("地形宽高不相等或者不是2的N次方!");
                 }
             }
+        }
+
+        /**
+        * @language zh_CN
+        * 返回地形的ElevationGeometry
+        * @see egret3d.ElevationGeometry
+        * @returns ElevationGeometry 地形网格
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get terrainGeometry(): ElevationGeometry {
+            return <ElevationGeometry>this.geometry;
         }
 
         protected onUpdateTransform() {

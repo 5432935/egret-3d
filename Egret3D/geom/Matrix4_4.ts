@@ -1,19 +1,23 @@
 ﻿module egret3d {
     /**
-     * @language zh_CN
-     * @class egret3d.Matrix4_4
-     * @classdesc
-     *
-     * Matrix4_4 类表示一个转换矩阵，该矩阵确定三维 (3D) 显示对象的位置和方向。
-     * 该矩阵可以执行转换功能，包括平移（沿 x、y 和 z 轴重新定位）、旋转和缩放（调整大小）.
-     * Matrix4_4 类还可以执行透视投影，这会将 3D 坐标空间中的点映射到二维 (2D) 视图.
-     * 单一矩阵可以将多个转换组合在一起，并一次性对 3D 显示对象应用这些转换.
-     * 例如，可以将一个矩阵应用于 3D 坐标，以便依次执行旋转和平移.
-     * 
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.Matrix4_4
+    * @classdesc
+    *
+    * Matrix4_4 类表示一个转换矩阵，该矩阵确定三维 (3D) 显示对象的位置和方向。
+    * 该矩阵可以执行转换功能，包括平移（沿 x、y 和 z 轴重新定位）、旋转和缩放（调整大小）.
+    * Matrix4_4 类还可以执行透视投影，这会将 3D 坐标空间中的点映射到二维 (2D) 视图.
+    * 单一矩阵可以将多个转换组合在一起，并一次性对 3D 显示对象应用这些转换.
+    * 例如，可以将一个矩阵应用于 3D 坐标，以便依次执行旋转和平移.
+    * 
+    * @includeExample geom/Matrix4_4.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class Matrix4_4 {
+        /**
+        * @private
+        */
         public static helpMatrix: Matrix4_4 = new Matrix4_4();
         
         /**
@@ -48,11 +52,25 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public lookAt(eye: Vector3D, at: Vector3D, up: Vector3D) {
+        public lookAt(eye: Vector3D, at: Vector3D, up: Vector3D = Vector3D.Y_AXIS):void {
             at.subtract(eye,Vector3D.HELP_0)
             var zaxis: Vector3D = Vector3D.HELP_0;
             zaxis.normalize();
             var xaxis: Vector3D = up.crossProduct(zaxis, Vector3D.HELP_1);
+
+            if (xaxis.length < 0.05) {
+                xaxis.x = up.y;
+                xaxis.y = up.x;
+                if (Math.abs(xaxis.x - xaxis.y) < 0.05) {
+                    xaxis.x = -up.z;
+                    xaxis.y = up.x;
+                    xaxis.z = 0;
+                }
+                else {
+                    xaxis.z = 0;
+                }
+            }
+
             xaxis.normalize();
             var yaxis = zaxis.crossProduct(xaxis, Vector3D.HELP_2);
 
@@ -85,7 +103,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public multiply(mat4: Matrix4_4) {
+        public multiply(mat4: Matrix4_4):void {
             var a = this.rawData, b = mat4.rawData, r = Matrix4_4.helpMatrix;
 
             r[0] = a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12];
@@ -363,7 +381,7 @@
         * @param fromDirection 初始方向
         * @param toDirection 变换后的方向
         * @param target 计算出的旋转矩阵 默认为null 结果会返回
-        * @returns Quaternion 计算出的旋转矩阵 如果 target为null 就会创建新实例返回
+        * @returns Matrix4_4 计算出的旋转矩阵 如果 target为null 就会创建新实例返回
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -383,7 +401,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public append(lhs: Matrix4_4) {
+        public append(lhs: Matrix4_4):void {
             var m111: number = this.rawData[0], m121: number = this.rawData[4], m131: number = this.rawData[8], m141: number = this.rawData[12], m112: number = this.rawData[1], m122: number = this.rawData[5], m132: number = this.rawData[9], m142: number = this.rawData[13], m113: number = this.rawData[2], m123: number = this.rawData[6], m133: number = this.rawData[10], m143: number = this.rawData[14], m114: number = this.rawData[3], m124: number = this.rawData[7], m134: number = this.rawData[11], m144: number = this.rawData[15], m211: number = lhs.rawData[0], m221: number = lhs.rawData[4], m231: number = lhs.rawData[8], m241: number = lhs.rawData[12], m212: number = lhs.rawData[1], m222: number = lhs.rawData[5], m232: number = lhs.rawData[9], m242: number = lhs.rawData[13], m213: number = lhs.rawData[2], m223: number = lhs.rawData[6], m233: number = lhs.rawData[10], m243: number = lhs.rawData[14], m214: number = lhs.rawData[3], m224: number = lhs.rawData[7], m234: number = lhs.rawData[11], m244: number = lhs.rawData[15];
 
             this.rawData[0] = m111 * m211 + m112 * m221 + m113 * m231 + m114 * m241;
@@ -411,7 +429,7 @@
         * @language zh_CN
         * 矩阵相加.
         * @param lhs 目标矩阵.
-        * @returns 相加后的结果.
+        * @returns Matrix4_4 相加后的结果.
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -476,7 +494,7 @@
         /**
         * @language zh_CN
         * 矩阵乘分量.
-        * @param v .
+        * @param v 该矩阵会乘以这个值
         * @returns Matrix4_4 返回一个相乘后的结果 矩阵.
         * @version Egret 3.0
         * @platform Web,Native
@@ -565,7 +583,7 @@
 
         /**
         * @language zh_CN
-        * 生成一个缩放矩阵
+        * 追加三轴缩放值
         * @param xScale x轴缩放
         * @param yScale y轴缩放
         * @param zScale z轴缩放
@@ -573,9 +591,24 @@
         * @platform Web,Native
         */
         public appendScale(xScale: number, yScale: number, zScale: number) {
-            this.rawData[0] = xScale; this.rawData[1] = 0.0; this.rawData[2] = 0.0;
-            this.rawData[4] = 0.0; this.rawData[5] = yScale; this.rawData[6] = 0.0;
-            this.rawData[8] = 0.0; this.rawData[9] = 0.0; this.rawData[10] = zScale;
+            Matrix4_4.helpMatrix.createByScale(xScale, yScale, zScale);
+            this.append(Matrix4_4.helpMatrix);
+        }
+
+        /**
+        * @language zh_CN
+        * 生成一个缩放矩阵，其他的属性会被重置
+        * @param xScale x轴缩放
+        * @param yScale y轴缩放
+        * @param zScale z轴缩放
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public createByScale(xScale: number, yScale: number, zScale: number): void{
+            this.rawData[0] = xScale; this.rawData[1] = 0.0; this.rawData[2] = 0.0; this.rawData[3] = 0.0; 
+            this.rawData[4] = 0.0; this.rawData[5] = yScale; this.rawData[6] = 0.0; this.rawData[7] = 0.0; 
+            this.rawData[8] = 0.0; this.rawData[9] = 0.0; this.rawData[10] = zScale; this.rawData[11] = 0.0;
+            this.rawData[12] = 0.0; this.rawData[13] = 0.0; this.rawData[14] = 0.0; this.rawData[15] = 1.0;
         }
 
         /**
@@ -836,7 +869,10 @@
         /**
         * @language zh_CN
         * 分解当前矩阵
-        * @param orientationStyle 分解类型
+        * @param orientationStyle 分解类型 默认为 Orientation3D.EULER_ANGLES
+        * @see egret3d.Orientation3D.AXIS_ANGLE
+        * @see egret3d.Orientation3D.EULER_ANGLES
+        * @see egret3d.Orientation3D.QUATERNION
         * @returns Vector3D[3] pos rot scale
         * @version Egret 3.0
         * @platform Web,Native
@@ -1077,6 +1113,9 @@
             }
         }
 
+        /**
+        * private
+        */
         public static transpose(matrix: Matrix4_4, result: Matrix4_4) {
             result = result || new Matrix4_4();
             var m = matrix.rawData, r = result.rawData;
@@ -1087,6 +1126,9 @@
             return result;
         };
 
+        /**
+        * private
+        */
         public static inverse(matrix: Matrix4_4, result: Matrix4_4) {
             result = result || new Matrix4_4();
             var m = matrix.rawData, r = result.rawData;
@@ -1171,12 +1213,12 @@
         * 生成一个变换矩阵
         * @param pos  位移
         * @param scale 缩放
-        * @param rot 旋转
+        * @param rot 旋转的四元素
         * @version Egret 3.0
         * @platform Web,Native
         */
         public makeTransform(pos: Vector3D, scale: Vector3D, rot: Quaternion) {
-            this.appendScale(scale.x, scale.y, scale.z);
+            this.createByScale(scale.x, scale.y, scale.z);
             rot.toMatrix3D(MathUtil.CALCULATION_MATRIX);
             this.append(MathUtil.CALCULATION_MATRIX);
 
@@ -1230,7 +1272,7 @@
         /**
         * @language zh_CN
         * 用当前矩阵变换一个3D向量
-        * @param v 变换的向量
+        * @param v 变换的向量  w 会进行计算
         * @param target 如果当前参数为null那么就会new一个新的Vector3D返回
         * @returns Vector3D 变换后的向量
         * @version Egret 3.0
@@ -1256,7 +1298,7 @@
 
         /**
         * @language zh_CN
-        * 用当前矩阵变换一个3D向量
+        * 用当前矩阵变换一个3D向量 不处理位移
         * @param v 变换的向量
         * @param target 如果当前参数为null那么就会new一个新的Vector3D返回
         * @returns Vector3D 变换后的向量
@@ -1436,7 +1478,7 @@
 
         /**
         * @language zh_CN
-        * 求两个矩阵之间的差值
+        * 求两个矩阵之间的插值
         * @param m0 矩阵0
         * @param m1 矩阵1
         * @param t 时间差 0.0 - 1.0

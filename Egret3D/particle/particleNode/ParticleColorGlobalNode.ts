@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleColorGlobalNode
     * @classdesc
     * 颜色渐变

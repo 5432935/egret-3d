@@ -2,8 +2,17 @@
 
     /**
     * @private
+    * @class egret3d.QuadStage
+    * @classdesc
+    * GUI的舞台对象，引擎会自动创建该对象
+    * @see egret3d.QuadStage
+    * @version Egret 3.0
+    * @platform Web,Native 
     */
     export class QuadStage extends EventDispatcher {
+        /*
+        * @private
+        */
         public static moreQuad: number = 500;
 
 
@@ -16,8 +25,21 @@
         private _guiEventFire: GUIEventFire;
         private _renderListInvalid: boolean = false;
         private _guiContainer: Object3D;
+
+        /*
+        * @private
+        */
         public quadList: Quad[] = [];
 
+        /**
+        * @private
+        * @constructor
+        * @classdesc
+        * gui中基础的2d显示单元</p>
+        * 在这个class中，主要完成更新顶点数据。</p>
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         constructor(view3D: View3D) {
             super();
             this._view3D = view3D;
@@ -28,6 +50,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 注册ui用到的贴图素材源，最多7张。
         * @param texture gui所用到的贴图
@@ -38,6 +61,9 @@
             return this._textureGroup.register(texture);
         }
 
+        /*
+        *@private
+        */
         public changeCamera() {
             if (this._guiContainer.parent)
                 this._guiContainer.parent.removeChild(this._guiContainer);
@@ -70,6 +96,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 添加孩子到舞台上
         * @param object 添加的2d显示对象
@@ -90,6 +117,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 标记当前渲染队列需要重新计算
         * @version Egret 3.0
@@ -114,6 +142,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 从舞台上移除某个孩子节点
         * @param object 添加的2d显示对象
@@ -140,6 +169,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 在渲染之前逻辑更新，每帧执行一次
         * @param time 当前运行的总时间
@@ -224,67 +254,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-        //------------------
-        //mouse event
-        public dispatchMuseDown() {
-            if (this.hasEventListener(MouseEvent3D.MOUSE_DOWN)) {
-                var mouseEvent: MouseEvent3D = new MouseEvent3D(MouseEvent3D.MOUSE_DOWN);
-                mouseEvent.target = this;
-                this.dispatchEvent(mouseEvent);
-            }
-        }
-
-        public dispatchMuseUp() {
-            if (this.hasEventListener(MouseEvent3D.MOUSE_UP)) {
-                var mouseEvent: MouseEvent3D = new MouseEvent3D(MouseEvent3D.MOUSE_UP);
-                mouseEvent.target = this;
-                this.dispatchEvent(mouseEvent);
-            }
-        }
-
-        public dispatchMuseClick() {
-            if (this.hasEventListener(MouseEvent3D.MOUSE_CLICK)) {
-                var mouseEvent: MouseEvent3D = new MouseEvent3D(MouseEvent3D.MOUSE_CLICK);
-                mouseEvent.target = this;
-                this.dispatchEvent(mouseEvent);
-            }
-        }
-
-        public dispatchMuseMove() {
-            if (this.hasEventListener(MouseEvent3D.MOUSE_MOVE)) {
-                var mouseEvent: MouseEvent3D = new MouseEvent3D(MouseEvent3D.MOUSE_MOVE);
-                mouseEvent.target = this;
-                this.dispatchEvent(mouseEvent);
-            }
-        }
-
-        public dispatchMouseOut() {
-            if (this.hasEventListener(MouseEvent3D.MOUSE_OUT)) {
-                var mouseEvent: MouseEvent3D = new MouseEvent3D(MouseEvent3D.MOUSE_OUT);
-                mouseEvent.target = this;
-                this.dispatchEvent(mouseEvent);
-            }
-        }
-
-        public dispatchMouseOver() {
-            if (this.hasEventListener(MouseEvent3D.MOUSE_OVER)) {
-                var mouseEvent: MouseEvent3D = new MouseEvent3D(MouseEvent3D.MOUSE_OVER);
-                mouseEvent.target = this;
-                this.dispatchEvent(mouseEvent);
-            }
-        }
 
     }
 }

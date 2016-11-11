@@ -3,10 +3,10 @@
 
         protected view1: View3D;
         protected cameraCrl: LookAtController;
-        private grass: GrassMesh;
-        private ball: Mesh;
 
-        private lightVector: Vector3D;
+        private _grass: GrassMesh;
+        private _lightFromBall: Mesh;
+        private _lightVector: Vector3D;
 
         constructor() {
             super();
@@ -20,26 +20,15 @@
             var bgImg: HTMLImageElement = <HTMLImageElement>document.getElementById("bg");
             var tex: ImageTexture = new ImageTexture(bgImg);
 
-            this.view1.camera3D.lookAt(new Vector3D(0, 500, -500), new Vector3D(0, 0, 0));
             this.cameraCrl = new LookAtController(this.view1.camera3D, new Object3D());
             this.cameraCrl.distance = 600;
+            this.cameraCrl.rotationX = 60;
 
 
-            this.ball = new Mesh(new SphereGeometry(20));
-            this.view1.addChild3D(this.ball);
-            this.view1.addChild3D(new AxisMesh(100));
+            this._lightFromBall = new Mesh(new SphereGeometry(20));
+            this.view1.addChild3D(this._lightFromBall);
 
-            //var loadtex: URLLoader = new URLLoader("resource/scene/plant/Detailmap_0.jpg");
-            //loadtex.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadDetails, this);
-
-            this.initGrass(null);
-        }
-
-        private onLoadDetails(e: LoaderEvent3D): void {
-            var texture: ImageTexture = e.loader.data;
-            var image: ImageData = texture.readPixels(0, 0, texture.width, texture.height);
-            var positions:Vector3D[] = this.parseDistribution(image);
-            this.initGrass(positions);
+            this.initGrass();
         }
 
 
@@ -77,8 +66,8 @@
             }
         }
 
-        private initGrass(positions:Vector3D[]): void {
-            positions = this.createPositions();
+        private initGrass(): void {
+            var positions: Vector3D[] = this.createPositions();
 
             var mat: TextureMaterial = new TextureMaterial();
             mat.ambientColor = 0xffffff;
@@ -95,9 +84,9 @@
             data.healthyColor = "0x00ff00";
             data.dryColor = "0xff8000";
 
-            this.grass = new GrassMesh(positions, mat, data);
-            this.grass.y = 20;
-            this.view1.addChild3D(this.grass);
+            this._grass = new GrassMesh(positions, mat, data);
+            this._grass.y = 20;
+            this.view1.addChild3D(this._grass);
 
             var loadtex: URLLoader = new URLLoader("resource/scene/plant/leaf.png");
             loadtex.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadTexture, this);
@@ -106,12 +95,12 @@
 
             var lights: LightGroup = new LightGroup();
 
-            this.lightVector = new Vector3D(-0.5, -0.6, 0.2);
-            this.dirLight = new DirectLight(this.lightVector);
+            this._lightVector = new Vector3D(-0.5, -0.6, 0.2);
+            this.dirLight = new DirectLight(this._lightVector);
             this.dirLight.diffuse = 0xffffff;
             lights.addLight(this.dirLight);
 
-            this.grass.lightGroup = lights;
+            this._grass.lightGroup = lights;
         }
 
 
@@ -136,12 +125,12 @@
 
             this.anlge += 0.01;
             this.position.setTo(Math.sin(this.anlge) * 300, 10, Math.cos(this.anlge) * 300);
-            this.ball.position = this.position;
-            if (this.grass) {
-                this.grass.method.updateSqueezeData(this.position, true, 60, 1);
-                this.lightVector.setTo(this.position.x, 50, this.position.z, 1);
-                this.lightVector.normalize();
-                this.dirLight.dir = this.lightVector;
+            this._lightFromBall.position = this.position;
+            if (this._grass) {
+                this._grass.method.updateSqueezeData(this.position, true, 60, 1);
+                this._lightVector.setTo(-this.position.x, -50, -this.position.z, 1);
+                this._lightVector.normalize();
+                this.dirLight.dir = this._lightVector;
             }
         }
 

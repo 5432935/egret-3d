@@ -1,6 +1,6 @@
 ﻿module egret3d {
 
-      /**
+    /**
     * @language zh_CN
     * @class egret3d.UVRollMethod
     * @classdesc
@@ -9,6 +9,7 @@
     * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
     * @see egret3d.MethodBase
     * @see egret3d.MaterialPass
+    * @includeExample material/method/RimlightMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -32,7 +33,7 @@
 
         /**
         * @language zh_CN
-        * @public
+        * 设置边缘光特效的颜色 alpha值为特效的亮度,其他为颜色。
         * @param  val 设置边缘光特效的颜色 alpha值为特效的亮度,其他为颜色。
         * @version Egret 3.0
         * @platform Web,Native
@@ -48,7 +49,7 @@
 
         /**
         * @language zh_CN
-        * @public
+        * 获取边缘光特效的颜色。
         * @param  val 获取边缘光特效的颜色。
         * @version Egret 3.0
         * @platform Web,Native
@@ -64,7 +65,7 @@
 
         /**
         * @language zh_CN
-        * @public
+        * 设置边缘光特效的pow值,值越大,边缘越窄,值越小,边缘越宽.
         * @param  size 设置边缘光特效的pow值,值越大,边缘越窄,值越小,边缘越宽.
         * @version Egret 3.0
         * @platform Web,Native
@@ -75,7 +76,7 @@
 
         /**
         * @language zh_CN
-        * @public
+        * 设置边缘光特效的pow值,值越大,边缘越窄,值越小,边缘越宽.
         * @param  size 设置边缘光特效的pow值,值越大,边缘越窄,值越小,边缘越宽.
         * @version Egret 3.0
         * @platform Web,Native
@@ -85,19 +86,19 @@
         }
 
         /**
-     * @language zh_CN
-     * @public
-     * @param  size 设置边缘光特效的强度值
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+        * @language zh_CN
+        * 设置边缘光特效的强度值
+        * @param  size 设置边缘光特效的强度值
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set strength(val: number) {
             this.uniform_rimData[5] = val;
         }
 
         /**
         * @language zh_CN
-        * @public
+        * 设置边缘光特效的强度值
         * @param  size 设置边缘光特效的强度值
         * @version Egret 3.0
         * @platform Web,Native
@@ -107,18 +108,18 @@
         }
 
         /**
-      * @private
-      * @language zh_CN
-      * @param time
-      * @param delay
-      * @param usage
-      * @param materialData
-      * @param geometry
-      * @param context3DProxy
-      * @param modeltransform 
-      * @param modeltransform
-      * @param camera3D
-      */
+        * @private
+        * @language zh_CN
+        * @param time
+        * @param delay
+        * @param usage
+        * @param materialData
+        * @param geometry
+        * @param context3DProxy
+        * @param modeltransform 
+        * @param modeltransform
+        * @param camera3D
+        */
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
             usage["uniform_rimData"] = context3DProxy.getUniformLocation(usage.program3D, "uniform_rimData");
         }

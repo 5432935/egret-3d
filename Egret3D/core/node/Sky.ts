@@ -3,7 +3,9 @@
     /**
     * @class egret3d.Sky
     * @classdesc
-    * 场景中天空盒子，是6面体cube，以6张无缝结合的贴图构成.
+    * 天空可由任意几何图形构成天空。
+    * 场景中天空。
+    * 可以是6面体cube，以6张无缝结合的贴图构成.
     *
     * @see egret3d.CubeTexture
     * @see egret3d.CubeTextureMaterial
@@ -18,6 +20,7 @@
         /**
         * @language zh_CN
         * 天空的摄像机
+        * 天空模型坐标会跟随此摄像机
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -29,6 +32,7 @@
         * @param geometry 天空模型数据
         * @param material 天空材质
         * @param camera 天空渲染相机
+        * @default null
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -54,6 +58,30 @@
             if (this.camera) {
                 this.globalPosition = this.camera.globalPosition;
             }
+        }
+
+        /**
+        * @language zh_CN
+        * @private
+        * @param other copy对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public copy(other: Sky) {
+            super.copy(other);
+        }
+
+        /**
+        * @language zh_CN
+        * 克隆当前Sky
+        * @returns Sky 克隆后的对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public clone(): Sky {
+            var cloneObject: Sky = new Sky(this.geometry, this.material, this.camera);
+            cloneObject.copy(this);
+            return cloneObject;
         }
     }
 } 

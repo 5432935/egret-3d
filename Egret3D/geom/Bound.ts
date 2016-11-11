@@ -1,13 +1,16 @@
 ﻿module egret3d {
     /**
-     * @language zh_CN
-     * @class egret3d.Bound
-     * @classdesc
-     * 可使用 Bound 类 取得包围盒的数据。</p>
-     * 包含包围盒的各顶点信息，当包围盒要进行世界变换时，应当变换各顶点信息。</p>
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.Bound
+    * @classdesc
+    * 可使用 Bound 类 取得包围盒的数据。</p>
+    * 包含包围盒的各顶点信息，当包围盒要进行世界变换时，应当变换各顶点信息。</p>
+    * 包围物体的顶点数据都是和绑定物体同一空间,变换信息也是用的共同的
+    * 
+    * @includeExample geom/Bound.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class Bound {
 
 
@@ -55,7 +58,7 @@
 
         /**
         * @language zh_CN
-        * 是否可见
+        * 设置是否可见
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -80,7 +83,8 @@
 
         /**
         * @language zh_CN
-        * 是否可见
+        * 获取是否可见
+        * @returns boolean 是否可见
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -110,7 +114,7 @@
 
         /**
         * @language zh_CN
-        * 得到变换矩阵 如果没有绑定Object3D对象
+        * 得到变换矩阵，如果没有绑定Object3D对象返回本身的矩阵，否则返回父节点的模型矩阵
         * @returns 变换矩阵 
         */
         public get transform(): Matrix4_4 {
@@ -143,7 +147,7 @@
 
         /**
         * @language zh_CN
-        * 克隆一個包圍對象
+        * 克隆一个包围对象
         * @returns Bound 包圍對象
         */
         public clone(): Bound {

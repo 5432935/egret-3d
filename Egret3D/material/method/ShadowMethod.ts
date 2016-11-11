@@ -6,6 +6,7 @@
     * @classdesc
     * 实现实时阴影渲染方法
     * @see egret3d.MethodBase
+    * @includeExample material/method/ShadowMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */

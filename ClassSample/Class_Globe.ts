@@ -7,7 +7,6 @@
         private lights: LightGroup = new LightGroup();
 
         private cameraCtl: LookAtController;
-        private queload: QuenLoad = new QuenLoad();
 
         private _earth: Mesh;
         private _could: Mesh;
@@ -37,16 +36,14 @@
             this.cameraCtl.distance = 1000;
             this.cameraCtl.rotationX = 60;
 
-            this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
 
-            this.queload.addEventListener(QuenLoad.QUENLOAD_COMPLETE, this.initScene,this);
-            this.queload.addLoaderQuen("resource/globe/land_ocean_ice_2048_match.jpg");
-            this.queload.addLoaderQuen("resource/globe/EarthNormal.png");
-            this.queload.addLoaderQuen("resource/globe/earth_specular_2048.jpg");
-            this.queload.addLoaderQuen("resource/globe/land_lights_16384.jpg");
-            this.queload.addLoaderQuen("resource/globe/cloud_combined_2048.jpg");
-            this.queload.addLoaderQuen("resource/imageEffects/grayscaleRamp.png");
-            this.queload.addLoaderQuen("resource/imageEffects/RGBTable16x1.png");
+            this._queueLoad = new QueueLoader();
+            this._queueLoad.addEventListener( LoaderEvent3D.LOADER_COMPLETE , this.initScene, this);
+            this._queueLoad.load("resource/scene/globe/land_ocean_ice_2048_match.jpg");
+            this._queueLoad.load("resource/scene/globe/EarthNormal.png");
+            this._queueLoad.load("resource/scene/globe/earth_specular_2048.jpg");
+            this._queueLoad.load("resource/scene/globe/land_lights_16384.jpg");
+            this._queueLoad.load("resource/scene/globe/cloud_combined_2048.jpg");
             
         }
 
@@ -55,29 +52,19 @@
             var dirlight: DirectLight = new DirectLight( new Vector3D(0.2,-1,1.0) );
             this.lights.addLight(dirlight);
 
-            var diffuseTexture: Texture = this.queload.getTexture("resource/globe/land_ocean_ice_2048_match.jpg");
-            var normalTexture: Texture = this.queload.getTexture("resource/globe/EarthNormal.png");
-            var specularTexture: Texture = this.queload.getTexture("resource/globe/earth_specular_2048.jpg");  
-            var lightsTexture: Texture = this.queload.getTexture("resource/globe/land_lights_16384.jpg");  
-            var cloudTexture: Texture = this.queload.getTexture("resource/globe/cloud_combined_2048.jpg");  
+            var diffuseTexture: Texture = this._queueLoad.getAsset("resource/scene/globe/land_ocean_ice_2048_match.jpg");
+            var normalTexture: Texture = this._queueLoad.getAsset("resource/scene/globe/EarthNormal.png");
+            var specularTexture: Texture = this._queueLoad.getAsset("resource/scene/globe/earth_specular_2048.jpg");  
+            var lightsTexture: Texture = this._queueLoad.getAsset("resource/scene/globe/land_lights_16384.jpg");  
+            var cloudTexture: Texture = this._queueLoad.getAsset("resource/scene/globe/cloud_combined_2048.jpg");  
 
-            var lutTexture: Texture = this.queload.getTexture("resource/imageEffects/grayscaleRamp.png");  
-            //var lutTexture: Texture = this.queload.getTexture("resource/imageEffects/RGBTable16x1.png");  
-            lutTexture.hasMipmap = false;
-            lutTexture.useMipmap = false ;
-
-           // var pos: ColorCorrectionPost = new ColorCorrectionPost();
-            //pos.lutTexture = lutTexture; 
-           // this.view1.post = [pos];
-
-            //this.queload.addLoaderQuen("resource/imageEffects/ContrastEnhanced3D16.jpg");
-            //this.queload.addLoaderQuen("resource/imageEffects/Neutral3D16.jpg");
             this._earth = new Mesh(new OctahedronSphereGeometry(6, 50), new TextureMaterial(diffuseTexture));
             this._earth.material.normalTexture = normalTexture; 
             this._earth.material.ambientColor = 0x222222;
             this._earth.material.specularTexture = specularTexture; 
             this._earth.material.gloss = 1.0;
             this._earth.material.specularLevel = 0.1;
+            this._earth.material.cullMode = ContextConfig.FRONT;
 
             var rimlight: RimlightMethod = new RimlightMethod();
             rimlight.rimColor = 0xffffffff;
@@ -93,9 +80,12 @@
             this._could.lightGroup = this.lights;
             this._could.material.gloss = 1.0;
             this._could.material.specularLevel = 0.0;
+            this._could.material.cullMode = ContextConfig.FRONT;
 
             this.view1.addChild3D(this._earth);
             this.view1.addChild3D(this._could);
+
+            this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
         }
 
 

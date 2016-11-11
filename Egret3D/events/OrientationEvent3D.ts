@@ -45,25 +45,38 @@
     * @see egret3d.Input
     * @version Egret 3.0
     * @platform Web,Native
+    * @includeExample events/OrientationEvent3D.ts
     */
     export class OrientationEvent3D extends Event3D {
         /**
          * @language zh_CN
-         * ORIENTATION_CHANGE 常量定义 onOrientationChange 事件对象的 type 属性的值。
+         * ORIENTATION_CHANGE 常量定义 方向改变事件标识。
+         * 可注册对象 : Input类型。
+         * 事件响应状态 : 方向改变事件时响应。
+         * 响应事件参数 : OrientationEvent3D类型,其中OrientationEvent3D.Orientation的内容即为方向枚举值。
+         * @see egret3d.Input
          * @version Egret 3.0
          * @platform Web,Native
          */
         public static ORIENTATION_CHANGE: string = "onOrientationChange";
         /**
          * @language zh_CN
-         * DEVICE_MOTION 常量定义 onDeviceMotion 事件对象的 type 属性的值。
+         * DEVICE_MOTION 常量定义 晃动事件标识
+         * 可注册对象 : Input类型。
+         * 事件响应状态 : 晃动时响应。
+         * 响应事件参数 : OrientationEvent3D类型,其提供设备的加速信息，还提供了设备在坐标系中的自转速率。
+         * @see egret3d.Input
          * @version Egret 3.0
          * @platform Web,Native
          */
         public static DEVICE_MOTION: string = "onDeviceMotion";
         /**
          * @language zh_CN
-         * DEVICE_ORIENTATION 常量定义 onDeviceOrientation 事件对象的 type 属性的值。
+         * DEVICE_ORIENTATION 常量定义 设备方向事件标识。
+         * 可注册对象 : Input类型。
+         * 事件响应状态 : 设备方向变化响应。
+         * 响应事件参数 : OrientationEvent3D类型,其提供设备的物理方向信息，表示为一系列本地坐标系的旋角。
+         * @see egret3d.Input
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -74,7 +87,8 @@
         /**
          * @language zh_CN
          * 获取设备的方向枚举值,枚举值为其对应角度
-         * @return {Orientation} 设备的方向枚举值
+         * @returns {Orientation} 设备的方向枚举值
+         * @see egret3d.Orientation
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -82,13 +96,13 @@
             var value = <number>window.orientation;
             return <Orientation>value;
         }
-        
+
 
         private _acceleration: DeviceAcceleration;
         /**
          * @language zh_CN
          * 获取排除重力影响的加速度
-         * @return {DeviceAcceleration} 加速度,单位是m/s2
+         * @returns {DeviceAcceleration} 加速度,单位是m/s2
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -109,7 +123,7 @@
         /**
         * @language zh_CN
         * 获取受到重力影响的加速度
-        * @return {DeviceAcceleration} 加速度,单位是m/s2
+        * @returns {DeviceAcceleration} 加速度,单位是m/s2
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -132,7 +146,7 @@
         /**
          * @language zh_CN
          * 获取旋转角度的变化速率
-         * @return {DeviceAcceleration} 旋转速率,单位是deg/s。
+         * @returns {DeviceAcceleration} 旋转速率,单位是deg/s。
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -155,7 +169,7 @@
         /**
          * @language zh_CN
          * 获取是否是绝对旋转重力方向
-         * @return {boolean}。
+         * @returns {boolean}。
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -179,7 +193,7 @@
         /**
          * @language zh_CN
          * 获取Alpha旋转，围绕Z轴旋转，即水平方向旋转
-         * @return {number} 旋转角度。
+         * @returns {number} 旋转角度。
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -202,7 +216,7 @@
         /**
          * @language zh_CN
          * 获取Beta旋转，围绕X轴旋转，即前后方向旋转
-         * @return {number} 旋转角度。
+         * @returns {number} 旋转角度。
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -225,7 +239,7 @@
         /**
          * @language zh_CN
          * 获取Gamma旋转，围绕Y轴旋转，即左右方向旋转
-         * @return {number} 旋转角度。
+         * @returns {number} 旋转角度。
          * @version Egret 3.0
          * @platform Web,Native
          */

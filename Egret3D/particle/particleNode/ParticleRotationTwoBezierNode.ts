@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleRotationTwoBezierNode
     * @classdesc
     * 粒子z轴旋转角速度（双bezier曲线）

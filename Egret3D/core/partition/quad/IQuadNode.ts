@@ -43,5 +43,13 @@ module egret3d {
         */
         calcGlobalQuadAABB(): void;
 
+        /**
+        * @language zh_CN
+        * 如果这个对象只是普通的一个三角面，才有可能存在这个对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        plane?: Plane3D;
+
     }
 }

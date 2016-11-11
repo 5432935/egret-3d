@@ -9,6 +9,7 @@
      * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
     * @see egret3d.MethodBase
     * @see egret3d.MaterialPass
+    * @includeExample material/method/MultiUVSpriteMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -40,8 +41,12 @@
 
         /**
         * @language zh_CN
-        * 创建一个LightmapMethod对象
-        * @param useSpecularPower 是否使用高功率，默认参数为true
+        * 创建一个MultiUVSpriteMethod对象
+        * 构造函数
+        * @param row 行数
+        * @param column 列数
+        * @param sum 序列帧的总数
+        * @param isRandom 是否随机序列帧
         * @version Egret 3.0
         * @platform Web,Native
         */

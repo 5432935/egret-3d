@@ -8,7 +8,6 @@ module egret3d {
     * 
     * @version Egret 3.0
     * @platform Web,Native
-    * @includeExample animation/skeletonAnimation/Skeleton.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -22,6 +21,12 @@ module egret3d {
         */
         public joints: Array<Joint> = [];
 
+        /**
+        * @language zh_CN
+        * 构造函数，创建一套骨骼
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         constructor() {
         }
 
@@ -57,7 +62,7 @@ module egret3d {
         * @language zh_CN
         * 通过名称查找指定骨骼
         * @param name 骨骼名称
-        * @return 骨骼对象
+        * @returns 骨骼对象
         * @version Egret 3.0
         * @platform Web,Native
         */

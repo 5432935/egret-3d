@@ -7,6 +7,8 @@
         private meshs: Mesh[] = [];
         private lights: LightGroup = new LightGroup();
 
+        protected queueLoader: QueueLoader;
+
         public constructor() {
 
             super();
@@ -35,7 +37,20 @@
             //this.load3DModel("resource/anim/xiaoqiao/", "zhanshen.esm", ["zhanshen.eam"]);
             //this.load3DModel("resource/anim/xiaoqiao/", "zhanshen_weapon.esm", ["zhanshen_weapon.eam"]);
             //this.load3DModel("resource/anim/xiaoqiao/", "body_27.esm", ["idle_1.eam", "run_1.eam", "attack_1.eam", "attack_2.eam", "skill_1.eam", "skill_2.eam", "skill_3.eam", "skill_4.eam"]);
-            this.load3DModel("resource/anim/ganning/", "Ganning.esm", ["Idle.eam", "Run.eam", "Attack1.eam", "Death.eam"]);
+            //this.load3DModel("resource/anim/ganning/", "Ganning.esm", ["Idle.eam", "Run.eam", "Attack1.eam", "Death.eam"]);
+
+            this.queueLoader = new QueueLoader();
+            this.queueLoader.load("resource/anim/ganning/Ganning.esm");
+            this.queueLoader.load("resource/anim/ganning/Idle.eam");
+            this.queueLoader.load("resource/anim/ganning/Run.eam");
+            this.queueLoader.load("resource/anim/ganning/Attack1.eam");
+            this.queueLoader.load("resource/anim/ganning/Death.eam");
+
+            this.queueLoader.load("resource/anim/ganning/Ganning.png");
+            this.queueLoader.load("resource/anim/ganning/Ganning_f.png");
+            this.queueLoader.load("resource/anim/ganning/Ganning_Weapon.png");
+
+            this.queueLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoader, this);
 
             var p: PointLight = new PointLight(0xffffff);
             p.y = 250;
@@ -58,15 +73,73 @@
             plane.material.acceptShadow = true;
             this.view1.addChild3D(plane);
 
-
             Input.addEventListener(MouseEvent3D.MOUSE_DOWN, this.onMouseDown, this);
 
         }
+
+        protected onLoader(e: LoaderEvent3D) {
+            var geo: Geometry = this.queueLoader.getAsset("resource/anim/ganning/Ganning.esm");
+            var clip0: SkeletonAnimationClip = this.queueLoader.getAsset("resource/anim/ganning/Idle.eam");
+            var clip1: SkeletonAnimationClip = this.queueLoader.getAsset("resource/anim/ganning/Run.eam");
+            var clip2: SkeletonAnimationClip = this.queueLoader.getAsset("resource/anim/ganning/Attack1.eam");
+            var clip3: SkeletonAnimationClip = this.queueLoader.getAsset("resource/anim/ganning/Death.eam");
+            var textures: ITexture[] = [];
+            textures[0] = this.queueLoader.getAsset("resource/anim/ganning/Ganning.png");
+            textures[1] = this.queueLoader.getAsset("resource/anim/ganning/Ganning_f.png");
+            textures[2] = this.queueLoader.getAsset("resource/anim/ganning/Ganning_Weapon.png");
+
+            clip0.animationName = "Idle";
+            clip1.animationName = "Run";
+            clip2.animationName = "Attack1";
+            clip3.animationName = "Death";
+            var mesh: Mesh = new Mesh(geo, new TextureMaterial());
+
+            for (var i: number = 0; i < geo.subGeometrys.length; ++i) {
+                var mat: MaterialBase = mesh.getMaterial(i);
+                if (!mat) {
+                    mat = new TextureMaterial();
+                    mesh.addSubMaterial(i, mat);
+                }
+
+                mat.diffuseTexture = textures[i];
+
+                mat.ambientColor = 0xffffffff;
+                mat.castShadow = true;
+            }
+
+            mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip0);
+            mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip1);
+            mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip2);
+            mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip3);
+
+            for (var x: number = 0; x < 10; x++) {
+
+                var cloneMesh: Mesh = mesh.clone();
+                cloneMesh.pickType = PickType.PositionPick;
+                cloneMesh.lightGroup = this.lights;
+
+                cloneMesh.x = -80 * 5 + x * 80;
+                cloneMesh.z = 200;
+                this.view1.addChild3D(cloneMesh);
+                this.meshs.push(cloneMesh);
+                cloneMesh.bound.visible = true;
+                this.meshs.push(cloneMesh);
+            }
+
+            // 绑定一个box在 LeftHand 骨骼上
+            this.cameraCtl.lookAtObject = cloneMesh;
+            var box: Mesh = new Mesh(new CubeGeometry(10, 10, 50));
+            box.material.castShadow = true;
+            cloneMesh.addChild(box);
+            cloneMesh.animation.skeletonAnimationController.bindToJointPose("LeftHand", box);
+        }
+
+
         private onMouseDown(e: MouseEvent3D) {
             var objects: IRender[] = [];
 
             var t0: number = Date.now();
-            Picker.pickObject3DList(this._egret3DCanvas, this.view1, [this.meshs[0]], false, objects);
+            Picker.pickObject3DList(this.view1, [this.meshs[0]], false, objects);
             var t1: number = Date.now();
             console.log(t1 - t0);
             for (var i: number = 0; i < objects.length; ++i) {
@@ -112,113 +185,6 @@
 
                     break;
             }
-        }
-
-        public findMeshFromName(name: string): Mesh {
-            for (var i: number = 0; i < this.meshs.length; ++i) {
-                if (this.meshs[i].name == name) {
-                    return this.meshs[i];
-                }
-            }
-
-            return null;
-        }
-
-        public load3DModel(url: string, esm: string, eams: string[] = []): void {
-
-            var urlLoad: URLLoader = new URLLoader(url + esm);
-
-            urlLoad["url"] = url;
-
-            urlLoad["eams"] = eams;
-
-            urlLoad["fileName"] = esm;
-
-            urlLoad.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onESMLoadComplete, this);
-        }
-
-        private onFrameChange(e: Event3D): void {
-            //console.log("onFrameChange: " + e.data);
-        }
-
-        private onPlayComplete(e: Event3D): void {
-            //console.log("onPlayComplete: " + e.data);
-        }
-
-        private onESMLoadComplete(e: LoaderEvent3D): void {
-
-            var mesh: Mesh = new Mesh(e.loader.data, new TextureMaterial());
-
-            mesh.animation.skeletonAnimationController.addEventListener(SkeletonAnimationEvent3D.EVENT_FRAME_CHANGE, this.onFrameChange, this);
-            mesh.animation.skeletonAnimationController.addEventListener(SkeletonAnimationEvent3D.EVENT_PLAY_COMPLETE, this.onPlayComplete, this);
-
-            mesh.enableCulling = false;
-
-            mesh.name = e.loader["fileName"];
-
-            //this.meshs.push(mesh);
-            this.view1.addChild3D(mesh);
-            this.meshs.push(mesh);
-            mesh.pickType = PickType.PositionPick;
-
-            mesh.material.ambientColor = 0xffffffff;
-            mesh.material.castShadow = true;
-
-            var url: string = e.loader["url"];
-
-            var eams: string[] = e.loader["eams"];
-
-            if (eams && eams.length > 0) {
-                for (var i: number = 0; i < eams.length; i++) {
-
-                    var urlLoad: URLLoader = new URLLoader(url + eams[i]);
-
-                    urlLoad["eam"] = eams[i];
-
-                    urlLoad["mesh"] = mesh;
-                    urlLoad["eamLength"] = eams.length;
-
-                    urlLoad.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onEAMLoadComplete, this);
-                }
-            }
-
-
-            var textureURL: string = mesh.geometry.subGeometrys[0].textureDiffuse;
-
-            var textureLoad: URLLoader = new URLLoader(url + textureURL);
-
-            textureLoad.addEventListener(LoaderEvent3D.LOADER_COMPLETE, function fun(e: LoaderEvent3D) {
-                mesh.material.diffuseTexture = e.loader.data;
-            }, this);
-        }
-
-        private onEAMLoadComplete(e: LoaderEvent3D): void {
-
-            var mesh: Mesh = e.loader["mesh"];
-
-            var clip: SkeletonAnimationClip = <SkeletonAnimationClip>e.loader.data;
-
-            clip.animationName = e.loader["eam"];
-
-            mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip);
-
-            if (mesh.animation.animStateNames.length == e.loader["eamLength"]) {
-
-                for (var x: number = 0; x < 10; x++) {
-
-                    var cloneMesh:Mesh = mesh.clone();
-                    cloneMesh.pickType = PickType.PositionPick;
-                    cloneMesh.lightGroup = this.lights;
-
-                    cloneMesh.x = -80 * 5 + x * 80;
-                    this.view1.addChild3D(cloneMesh);
-                    this.meshs.push(cloneMesh);
-                    cloneMesh.bound.visible = true;
-                }
-
-                this.cameraCtl.lookAtObject = cloneMesh;
-            }
-
         }
 
         public update(e: Event3D) {

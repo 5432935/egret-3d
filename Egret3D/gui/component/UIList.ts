@@ -1,10 +1,10 @@
 ﻿module egret3d.gui {
 
-         /**
-    * @private
+     /**
     * @class egret3d.gui.UIList
     * @classdesc
-    * 基础的列表组件. 实现了滚动交互
+    * 基础的列表组件. 实现了滚动交互</p>
+    * 鼠标按下拖动时, 将能够拖动内部的显示区域
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -17,7 +17,12 @@
         private _startDrag:boolean;
         private _containerHeight:number;
       
-
+        /**
+        * @language zh_CN
+        * 构造函数
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         constructor() {
             super();
             this._items = [];
@@ -30,25 +35,29 @@
             this._container.height = 0;
         }
 
-
+        /**
+        * @private
+        */
         private onMouseDown(event: MouseEvent3D) {
             this._startDrag = true;
             this.addEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
             this.addEventListener(MouseEvent3D.MOUSE_MOVE, this.onMouseMove, this);
             this.stage.addEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
-            console.log("mousedown");
 
         }
-
+        /**
+        * @private
+        */
         private onMouseUp(event: MouseEvent3D) {
             this._startDrag = false;
             this.removeEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
             this.removeEventListener(MouseEvent3D.MOUSE_MOVE, this.onMouseMove, this);
             this.stage.removeEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
-            console.log("mouseup");
             
         }
-
+        /**
+        * @private
+        */
         private onMouseMove(event: MouseEvent3D) {
             if (this._startDrag) {
 //                this._container.x += Input.mouseOffsetX;
@@ -63,7 +72,9 @@
 
             } 
         }
-
+        /**
+        * @private
+        */
         protected updateView() {
             var sum: number = 0;
             for (var i: number = 0; i < this._items.length; i++) {
@@ -95,22 +106,6 @@
             this._gap = value;
             this.updateView();
         }
-
-//        public get selectedIndex(): number {
-//            return this._selectedIndex;
-//        }
-//
-//        public set selectedIndex(value: number) {
-//            this._selectedIndex = value;
-//        }
-//         
-//        public get selectedItem(): UIElement {
-//            return this._selectedItem;
-//        }
-//
-//        public set selectedItem(item: UIElement) {
-//            this._selectedItem = item;
-//        }
 
          /**
         * @language zh_CN

@@ -22,19 +22,26 @@
         * @language zh_CN
         * @private
         * WebGLBuffer 的引用
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public buffer: WebGLBuffer;
 
         /**
-         * @language zh_CN
-         * @private
-         */
+        * @language zh_CN
+        * @private
+        * buffer
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public arrayBuffer: Uint16Array;
                
         /**
         * @language zh_CN
         * 构造
         * @param buffer webglbuffer
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         constructor(buffer: WebGLBuffer) {
             this.buffer = buffer;

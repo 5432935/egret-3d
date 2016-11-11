@@ -2,9 +2,10 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleSubEmitterNode
     * @classdesc
-    * 粒子跟随效果节点
+    * 粒子子发射器
     * @see egret3d.AnimationNode
     * @version Egret 3.0
     * @platform Web,Native
@@ -74,7 +75,7 @@
         * @language zh_CN
         * 获取子粒子
         * @param phase 某个阶段的子粒子
-        * @return ParticleEmitter列表
+        * @returns ParticleEmitter列表
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -134,7 +135,7 @@
             //非循环的粒子生命周期达上限
             var particleData: ParticleData = this._animationState.emitter.data;
             var loop: boolean = particleData.life.loop;
-            var maxLife: number = this._animationState.loopTime + particleData.life.duration + particleData.life.delay;
+            var maxLife: number = this._animationState.modTime + particleData.life.duration + particleData.life.delay;
             if (!loop && (animTime * 0.001 >= maxLife)) {
                 return;
             }
@@ -165,7 +166,7 @@
                     //粒子超时了，并且不需要继续循环
                     if (particleTime > (this.bornTime + this.life) && !loop)
                         continue;
-                    curCircleIndex = Math.floor((particleTime - this.bornTime) / this._animationState.loopTime);
+                    curCircleIndex = Math.floor((particleTime - this.bornTime) / this._animationState.modTime);
 
                     if (curCircleIndex != this._lifeCircles[i]) {
                         //不发射
@@ -290,7 +291,16 @@
 
 
 
-
+    /**
+    * @language zh_CN
+    * @private
+    * @class egret3d.ParticleSubEmitterNodePhase
+    * @classdesc
+    * 用于子粒子的回收
+    * @see egret3d.DoubleArray
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class ParticleSubEmitterNodePhase {
 
         /**

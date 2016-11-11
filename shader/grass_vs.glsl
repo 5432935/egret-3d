@@ -1,6 +1,6 @@
 attribute vec3 attribute_grassOffset;
 attribute float attribute_grassAngleY;
-uniform float uniform_grass_data[10];
+uniform float uniform_grass_data[9];
 uniform float uniform_squeeze_data[6];
 
 uniform mat4 uniform_cameraMatrix;
@@ -8,6 +8,7 @@ uniform mat4 uniform_billboardMatrix;
 
 varying vec4 varying_mvPose; 
 const float TrueOrFalse = 0.5;
+const float PI_2 = 6.283;
 
 struct SqueezeData{
 	float enable;
@@ -62,8 +63,8 @@ mat4 buildRotMat4(vec3 rot)
 }
 void main(void){
 
-	mat4 mvMatrix = mat4(uniform_ViewMatrix * uniform_ModelMatrix);
-	if(uniform_grass_data[9] > TrueOrFalse){
+	
+	if(uniform_grass_data[8] > TrueOrFalse){
 		rotVertexMatrix = uniform_billboardMatrix;
 	}else{
 		rotVertexMatrix = buildRotMat4(vec3(0.0, attribute_grassAngleY, 0.0));
@@ -72,17 +73,15 @@ void main(void){
 	e_normal.xyz = (rotVertexMatrix * vec4(e_normal, 1.0)).xyz;
 
 	if(e_position.y > 0.0){ 
-		float grass_wave		= uniform_grass_data[0];
-		float grass_x_span		= uniform_grass_data[1];
-		float grass_y_span		= uniform_grass_data[2];
-		float grass_z_span		= uniform_grass_data[3];
-		float grass_wave_big	= uniform_grass_data[4];
-		float grass_range		= uniform_grass_data[5];
-		float grass_wave_x		= uniform_grass_data[6];
-		float grass_wave_z		= uniform_grass_data[7];
-		float grass_time		= uniform_grass_data[8];
+		float windDirectionX			= uniform_grass_data[0];
+		float windDirectionZ			= uniform_grass_data[1];
+		float windSpaceX				= uniform_grass_data[2];
+		float windSpaceZ				= uniform_grass_data[3];
+		float windStrength				= uniform_grass_data[4];
+		float windSpeed					= uniform_grass_data[5];
+		float shakeScale				= uniform_grass_data[6];
+		float grassTime					= uniform_grass_data[7];
 
-	
 		squeezeData.enable			= uniform_squeeze_data[0];
 		squeezeData.position.x		= uniform_squeeze_data[1];
 		squeezeData.position.y		= uniform_squeeze_data[2];
@@ -90,16 +89,13 @@ void main(void){
 		squeezeData.radius			= uniform_squeeze_data[4];
 		squeezeData.strength		= uniform_squeeze_data[5];
 
+		windSpaceX = PI_2 * (attribute_grassOffset.x + abs(windDirectionX) * windSpeed * grassTime) / windSpaceX;
+		windSpaceZ = PI_2 * (attribute_grassOffset.z + abs(windDirectionZ) * windSpeed * grassTime) / windSpaceZ;
+		
+		e_position.x += windDirectionX * (sin(windSpaceX + windSpaceZ) * shakeScale + windStrength) * e_position.y;
+		e_position.z += windDirectionZ * (sin(windSpaceX + windSpaceZ) * shakeScale + windStrength) * e_position.y;
 
-		float wave_time = grass_time * grass_wave; 
-		float wave = sin(wave_time + attribute_grassOffset.x * grass_x_span);
-		wave += sin(wave_time + attribute_grassOffset.y * grass_y_span); 
-		wave += sin(wave_time + attribute_grassOffset.z * grass_z_span); 
-		float waveBig = (1.0 + sin(grass_time * grass_wave_big) * 0.5) * 0.5; 
-		wave *= waveBig; 
-		e_position.x += wave * grass_range * grass_wave_x; 
-		e_position.z += wave * grass_range * grass_wave_z; 
-
+		//¼·Ñ¹
 		if(squeezeData.enable > TrueOrFalse){
 			vec3 distanceVec3 = squeezeData.position - attribute_grassOffset;
 			float distanceFloat = sqrt(dot(distanceVec3, distanceVec3));
@@ -115,6 +111,7 @@ void main(void){
 
 
 	e_position += attribute_grassOffset;
+	mat4 mvMatrix = mat4(uniform_ViewMatrix * uniform_ModelMatrix);
 	varying_mvPose = outPosition = mvMatrix * vec4( e_position , 1.0 ); 
     
     mat4 normalMatrix = inverse(mvMatrix) ;

@@ -56,8 +56,13 @@
             var followTarget: Object = json.followTarget;
             this.parseFollowTarget(followTarget);
             //parseBezierNode
+            var scaleSize: Object = json.scaleSize;
             var scaleBezier: Object = json.scaleBezier;
-            this.parseScaleBeizer(scaleBezier);
+            if (scaleSize) {
+                this.parseScaleSize(scaleSize);
+            } else {
+                this.parseScaleBeizer(scaleBezier);
+            }
             //rotationSpeed
             var rotationSpeed: Object = json.rotationSpeed;
             this.parseRotationSpeed(rotationSpeed);
@@ -349,15 +354,32 @@
 
         /**
          * @private
-         * 解析粒子生命过程中缩放变化信息
+         * 解析粒子生命过程中缩放变化信息(早期版本，只支持一个贝塞尔曲线形势)
          */
         private parseScaleBeizer(node: any): void {
             if (node == null)
                 return;
-            var scaleBesizer: ParticleDataScaleBezier = this._particleData.scaleBezier = new ParticleDataScaleBezier();
-            scaleBesizer.data = this.parseBezierData(node.bezier);
+            var scaleBezier: ParticleDataScaleSize = this._particleData.scaleSize = new ParticleDataScaleSize();
+            scaleBezier.type = ParticleValueType.OneBezier;
+            scaleBezier.bezier1 = this.parseBezierData(node.bezier);
         }
 
+        /**
+         * @private
+         * 解析粒子生命过程中缩放变化信息
+         */
+        private parseScaleSize(node: any): void {
+            if (node == null)
+                return;
+            var scaleSize: ParticleDataScaleSize = this._particleData.scaleSize = new ParticleDataScaleSize();
+
+            scaleSize.type = ParticleValueType[node.type + ""];
+            scaleSize.min = Number(node.min);
+            scaleSize.max = Number(node.max);
+            scaleSize.bezier1 = this.parseBezierData(node.bezier1);
+            scaleSize.bezier2 = this.parseBezierData(node.bezier2);
+        }
+        
 
         /**
         * @private

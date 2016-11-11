@@ -2,13 +2,14 @@
 //按秒为单位，当前时间
 float currentTime = 0.0;
 float totalTime = 0.0;
-float discard_particle = 0.0;
+bool discard_particle = true;
 
 const float PI = 3.1415926;
 const float TrueOrFalse = 0.5;
 const float Tiny = 0.0001;
 
 varying vec3 varying_particleData;
+varying vec4 varying_mvPose;
 
 attribute vec3 attribute_time;//(bornTime 秒, life, index)
 attribute vec4 attribute_color;
@@ -22,6 +23,7 @@ uniform float uniform_particleState[25];
 
 vec3 cubicPos = vec3(1.0,1.0,1.0);
 
+vec3 rotResultVec3 = vec3(0.0);
 vec4 localPosition = vec4(0.0,0.0,0.0,1.0);
 vec3 velocityBaseVec3 = vec3(0.0,0.0,0.0);
 vec3 velocityOverVec3 = vec3(0.0,0.0,0.0);
@@ -33,6 +35,7 @@ vec3 followTargetPosition = vec3(0.0,0.0,0.0);
 vec3 followTargetScale = vec3(1.0,1.0,1.0);
 vec4 followTargetRotation = vec4(0.0,0.0,0.0,0.0);
 
+float scaleSize = 1.0;
 //render mode
 const float Billboard				= 0.0;
 const float StretchedBillboard		= 1.0;
@@ -173,19 +176,20 @@ float easeInOut(float t)
 
 }
 
-void e_discard()
-{
-	discard_particle = 1.0;
-}
 
-float particle( ParticleData curParticle )
+void calcParticleTime()
 {
+	discard_particle = true;
+	curParticle.bornTime = attribute_time.x; 
+	curParticle.life = attribute_time.y; 
+	curParticle.index = attribute_time.z; 
+
 	//扣除延迟时间
 	float time = particleStateData.time - particleStateData.delay;
 	//还未出生
 	currentTime = time - curParticle.bornTime;
 	if(currentTime <= 0.0){
-		return currentTime = 0.0;
+		return;
 	}
 	//永久性的粒子
 	if(particleStateData.stayAtEnd > TrueOrFalse){
@@ -196,45 +200,54 @@ float particle( ParticleData curParticle )
 	if(particleStateData.loop < TrueOrFalse){
 		//还没到出生时间，发射器已经死亡
 		if(curParticle.bornTime >= particleStateData.duration){
-			return currentTime = 0.0;
+			return;
 		}
 		//单个粒子本身的生命周期已经结束
 		if(time >= curParticle.life + curParticle.bornTime){
-			return currentTime = 0.0;
+			return;
 		}
 	}
 
 	//计算当前粒子在单次循环中的相对时间
 	currentTime = mod(currentTime, particleStateData.loopTime);
 	//当前loopTime内超过粒子自身的什么周期，死亡状态
-	if(currentTime >= curParticle.life){
-		return currentTime = 0.0;
+	if(currentTime > curParticle.life || currentTime < 0.0){
+		return;
 	}
-	if( currentTime <= 0.0 ) 
-		return currentTime = 0.0;
+	discard_particle = false;
 }
-
 
 
 void calcCubicPos(float time, float totalTime, vec3 fromPos, vec3 endPos)
 {
-	
 }
 
 void trackPosition()
 {
 }
 
+void getUnitRotate(){
+}
+
+void getNodeData(){
+}
+
 void rotateParticleUnit()
 {
-	rotVertexMatrix = buildRotMat4(vec3(0.0, 0.0, attribute_rotationBirth * PI / 180.0));
-	if(particleStateData.renderMode == HorizontalBillboard){
-		rotVertexMatrix *= buildRotMat4(vec3(0.5 * PI, 0.0, 0.0));
-		localPosition = rotVertexMatrix * localPosition;
-	}else if(particleStateData.renderMode == VerticalBillboard){
-		rotVertexMatrix *= buildRotMat4(vec3(-0.5 * PI, 0.0, 0.0));
-		localPosition = rotVertexMatrix * localPosition;
-	}
+	rotResultVec3.z += attribute_rotationBirth; 
+	rotResultVec3 *= PI / 180.0; 
+	if(particleStateData.renderMode == HorizontalBillboard){ 
+		rotVertexMatrix = buildRotMat4(vec3(0.5 * PI, 0.0, 0.0)); 
+		rotResultVec3 = vec3(rotResultVec3.z, 0.0, 0.0); 
+		rotVertexMatrix = buildRotMat4(rotResultVec3) * rotVertexMatrix; 
+	}else if(particleStateData.renderMode == VerticalBillboard){ 
+		rotVertexMatrix = buildRotMat4(vec3(-0.5 * PI, 0.0, 0.0)); 
+		rotResultVec3 = vec3(rotResultVec3.z, 0.0, 0.0); 
+		rotVertexMatrix = buildRotMat4(rotResultVec3) * rotVertexMatrix; 
+	}else{ 
+		rotVertexMatrix = buildRotMat4(rotResultVec3); 
+	} 
+	localPosition = rotVertexMatrix * localPosition; 
 }
 
 void main(void) 
@@ -268,27 +281,21 @@ void main(void)
 	particleStateData.stayAtEnd						= uniform_particleState[24];
 
 
-
-	curParticle.bornTime = attribute_time.x ; 
-	curParticle.life = attribute_time.y ; 
-	curParticle.index = attribute_time.z ; 
-	
-	float active = particle( curParticle ) ;
-	
+	calcParticleTime();
 	varying_particleData.x = currentTime;
-	varying_particleData.y = curParticle.life ;
+	varying_particleData.y = curParticle.life;
 	varying_particleData.z = curParticle.index;
 	
-	if( active < TrueOrFalse ){
-		e_discard();
-		outPosition = localPosition = vec4(0.0, 0.0, 0.0, 1.0);
-	}else{
-		rotateParticleUnit();
-		trackPosition();
-		outPosition = localPosition;
-		//varying_mvPose = mvMatrix * localPosition ;
+	if(discard_particle){
+		varying_particleData.x = currentTime = 0.0;
+		gl_Position = varying_pos = vec4(0.0, 0.0, 0.0, 1.0);
+		return;
 	}
 
+	getNodeData();
+	getUnitRotate();
+	rotateParticleUnit();
+	trackPosition();
 }
 
 

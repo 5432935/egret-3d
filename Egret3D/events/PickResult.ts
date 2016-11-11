@@ -30,6 +30,8 @@
         /**
         * @language zh_CN
         * 鼠标拾取模型的uv。
+        * 只有对象的PickType为UVPick 并且模型有uv才会返回
+        * @see egret3d.PickType
         * @version Egret 3.0
         * @platform Web,Native
         */

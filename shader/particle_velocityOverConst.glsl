@@ -1,7 +1,7 @@
 //##FilterBegin## ##Particle##
 
 attribute vec3 attribute_velocityOverConst;
-float particle(  ParticleData curParticle ){
+void getNodeData(){
 	velocityOverVec3 = attribute_velocityOverConst * currentTime;
 }
 

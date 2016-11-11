@@ -3,7 +3,8 @@
     /**
     * @class egret3d.ITexture
     * @classdesc
-    * 贴图的接口
+    * 贴图的接口、
+    * 贴图的基类对象 包括各类贴图的公共数据
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -19,7 +20,7 @@
 
         /**
         * @language zh_CN
-        * 是否平滑差值
+        * 是否平滑插值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -27,7 +28,7 @@
 
         /**
         * @language zh_CN
-        * 贴图采样方式
+        * 贴图采样重复方式
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -51,7 +52,7 @@
 
         /**
         * @language zh_CN
-        * Texture2D 对象 保存贴图的数据
+        * 保存贴图的数据
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -59,70 +60,114 @@
 
         /**
         * @language zh_CN
-        * Texture3D 对象 保存贴图的数据
+        * 保存贴图的数据
         * @version Egret 3.0
         * @platform Web,Native
         */
         public texture3D: ContextTexture3D;
 
         /**
-         * @language zh_CN
-         * 是否预乘alpha
-         */
+        * @language zh_CN
+        * 是否预乘alpha
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public premultiply_alpha: number = 0;
 
         /**
-         * gl.LINEAR
-         * gl.NEAREST
-         * gl.LINEAR_MIPMAP_LINEAR
-         * gl.LINEAR_MIPMAP_NEAREST
-         * gl.NEAREST_MIPMAP_LINEAR
-         * gl.NEAREST_MIPMAP_NEAREST
-         * @language zh_CN
-         * 是否预乘alpha
-         */
+        * @language zh_CN
+        * min_filter
+        * Context3DProxy.gl.LINEAR
+        * Context3DProxy.gl.NEAREST
+        * Context3DProxy.gl.LINEAR_MIPMAP_LINEAR
+        * Context3DProxy.gl.LINEAR_MIPMAP_NEAREST
+        * Context3DProxy.gl.NEAREST_MIPMAP_LINEAR
+        * Context3DProxy.gl.NEAREST_MIPMAP_NEAREST
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public min_filter: number;
 
         /**
-         * gl.LINEAR
-         * gl.NEAREST
-         * gl.LINEAR_MIPMAP_LINEAR
-         * gl.LINEAR_MIPMAP_NEAREST
-         * gl.NEAREST_MIPMAP_LINEAR
-         * gl.NEAREST_MIPMAP_NEAREST
-         * @language zh_CN
-         * 是否预乘alpha
-         */
+        * @language zh_CN
+        * Context3DProxy.gl.LINEAR
+        * Context3DProxy.gl.NEAREST
+        * Context3DProxy.gl.LINEAR_MIPMAP_LINEAR
+        * Context3DProxy.gl.LINEAR_MIPMAP_NEAREST
+        * Context3DProxy.gl.NEAREST_MIPMAP_LINEAR
+        * Context3DProxy.gl.NEAREST_MIPMAP_NEAREST
+        * mag_filter
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public mag_filter: number;
 
         /**
-         * gl.REPEAT
-         * gl.MIRRORED_REPEAT
-         * gl.CLAMP_TO_EDGE
-         * @language zh_CN
-         * 是否预乘alpha
-         */
+        * @language zh_CN
+        * Context3DProxy.gl.REPEAT
+        * Context3DProxy.gl.MIRRORED_REPEAT
+        * Context3DProxy.gl.CLAMP_TO_EDGE
+        * wrap_u_filter
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public wrap_u_filter: number;
 
         /**
-         * gl.filp_y
-         * @language zh_CN
-         * 是否需要颠倒uv
-         */
+        * @language zh_CN
+        * filp_y
+        * Context3DProxy.gl.filp_y
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public filp_y: number = 0;
 
         /**
-         * gl.REPEAT
-         * gl.MIRRORED_REPEAT
-         * gl.CLAMP_TO_EDGE
-         * @language zh_CN
-         * 是否预乘alpha
-         */
+        * @language zh_CN
+        * wrap_v_filter
+        * Context3DProxy.gl.REPEAT
+        * Context3DProxy.gl.MIRRORED_REPEAT
+        * Context3DProxy.gl.CLAMP_TO_EDGE
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public wrap_v_filter: number;
 
+        /**
+        * @language zh_CN
+        * 在gui中的的下标
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public guiIndex: number;
+
+        /**
+        * @language zh_CN
+        * uv信息，st坐标和缩放数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public uvRectangle: Rectangle;
+
+        /**
+        * @language zh_CN
+        * 所属父级贴图，表示当前贴图隶属于某个贴图
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public parentTexture: ITexture;
+
+         /**
+        * @language zh_CN
+        * 从父级贴图对象中，拷贝一个贴图对象出来
+        * @param texture 父级贴图对象
+        * @param x 贴图在父级贴图中的x坐标偏移值
+        * @param y 贴图在父级贴图中的y坐标偏移值
+        * @param width 贴图宽度
+        * @param height 贴图高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public copyFromTexture(texture: ITexture, x: number, y: number, width: number, height: number) {
             this.parentTexture = texture;
             texture.width = width; 
@@ -139,7 +184,7 @@
         /**
         * @language zh_CN
         * 上传贴图数据给GPU
-        * @param context3D
+        * @param context3D 图形绘制上下文
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -182,6 +227,23 @@
 
         /**
         * @language zh_CN
+        * 贴图 是否需要按照U的方向镜像
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public mirroredU: boolean = false;
+
+        /**
+        * @language zh_CN
+        * 贴图 是否需要按照V的方向镜像
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public mirroredV: boolean = false;
+
+        /**
+        * @private
+        * @language zh_CN
         * 强制上传贴图数据给GPU，强制要求贴图更新。
         * 在video 贴图类型需要立即改变显卡中的贴图内存
         * @param context3D
@@ -193,7 +255,17 @@
         }
 
         private ready: boolean = false;
+
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public activeState(context3D: Context3DProxy) {
+
+
+
             if (this.ready) return;
             this.ready = true;
 
@@ -217,19 +289,21 @@
                 }
             }
             else {
-                //if (this.useMipmap) {
-                //    context3D.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_MIN_FILTER, Context3DProxy.gl.NEAREST_MIPMAP_NEAREST);
-                //    context3D.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_MAG_FILTER, Context3DProxy.gl.NEAREST_MIPMAP_NEAREST);
-                //}
-                //else {
                 context3D.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_MIN_FILTER, Context3DProxy.gl.NEAREST);
                 context3D.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_MAG_FILTER, Context3DProxy.gl.NEAREST);
-                //}
             }
 
             if (this.repeat) {
-                context3D.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_WRAP_S, Context3DProxy.gl.REPEAT);
-                context3D.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_WRAP_T, Context3DProxy.gl.REPEAT);
+                if (this.mirroredU) {
+                    Context3DProxy.gl.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_WRAP_S, Context3DProxy.gl.MIRRORED_REPEAT);
+                }
+                else if (this.mirroredV) {
+                    Context3DProxy.gl.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_WRAP_T, Context3DProxy.gl.MIRRORED_REPEAT);  
+                }
+                else {
+                    context3D.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_WRAP_S, Context3DProxy.gl.REPEAT);
+                    context3D.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_WRAP_T, Context3DProxy.gl.REPEAT);
+                }
             } else {
                 context3D.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_WRAP_S, Context3DProxy.gl.CLAMP_TO_EDGE);
                 context3D.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_WRAP_T, Context3DProxy.gl.CLAMP_TO_EDGE);
@@ -238,6 +312,7 @@
             if (this.filp_y) {
                 Context3DProxy.gl.pixelStorei(Context3DProxy.gl.UNPACK_FLIP_Y_WEBGL, this.filp_y);
             }
+
 
 
         }
@@ -261,8 +336,8 @@
         }
 
         /**
+        * @private
         * @language zh_CN
-        * 
         * @version Egret 3.0
         * @platform Web,Native
         */

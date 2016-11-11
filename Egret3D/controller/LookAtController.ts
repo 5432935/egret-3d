@@ -22,7 +22,7 @@
         private _eyesPos: Vector3D = new Vector3D();
         private _up: Vector3D = Vector3D.Y_AXIS;
 
-        private _eyesLength: number = 0;
+        private _eyesLength: number = 100;
         private _rotaEyesLine: Vector3D = new Vector3D(0, 0, 1);
         private _rotaAngle: Vector3D = new Vector3D();
 
@@ -41,7 +41,6 @@
         private _isUpdate: boolean = false;
 
         private _elapsed: number = 0;
-        private _speed: number = 3;
         private _xAngle: number = 0;
 
         private _ctl: boolean = false; 
@@ -84,11 +83,6 @@
             this._needctl = needCtl;
             this._needalt = needAlt;
 
-            this._keyArray.push(false);
-            this._keyArray.push(false);
-            this._keyArray.push(false);
-            this._keyArray.push(false);
-
             if (lookAtObject)
                 this.lookAtObject = lookAtObject;
             else
@@ -114,12 +108,6 @@
             Input.addEventListener(TouchEvent3D.TOUCH_MOVE, this.touchMove, this);
 
         }
-
-
-        public scaleSpeed(value: number): void {
-            this._speed *= value;
-        }
-
 
         private mouseMove(m: MouseEvent3D) {
             if (this._mouseDown && (this._needctl ? this._ctl : true)) {
@@ -288,40 +276,6 @@
                 this._lookAtObject = null;
 
             this._lookAtPosition.copyFrom(val.add(this.lookAtOffset, MathUtil.CALCULATION_VECTOR3D));
-            
-            this.notifyUpdate();
-        }
-
-        /**
-        * @language zh_CN
-        *  
-        * 返回目标对象
-        * @returns 目标对象
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public  get lookAtObject(): Object3D {
-
-            return this._lookAtObject;
-        }
-
-        /**
-        * @language zh_CN
-        *  
-        * 设置目标对象
-        * @param val 目标
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set lookAtObject(val: Object3D) {
-
-            if (this._lookAtObject == val)
-                return;
-
-            this._lookAtObject = val;
-            this._lookAtPosition.copyFrom(this._lookAtObject.position.add(this.lookAtOffset, MathUtil.CALCULATION_VECTOR3D));
-
-            this.notifyUpdate();
         }
 
         /**
@@ -338,7 +292,6 @@
                 this._eyesLength = 1;
             }
         }
-
         
         /**
         * @language zh_CN
@@ -421,17 +374,19 @@
         /**
         * @language zh_CN
         * 控制器数据更新
+        * @param delay 帧间隔
+        * @param time 当前时间
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public update() {
+        public update(delay: number = 16.6, time:number = 0) {
            
             if (this._target) {
 
                 if (this._target.isController == false) {
                     return;
                 }
-
+                var speed: number = this._speed * (delay / 1000);
                 this._quaRot.fromEulerAngles(this._rotaAngle.x, this._rotaAngle.y, 0);
                 this._rotaEyesLine.copyFrom(this._quaRot.transformVector(Vector3D.Z_AXIS, MathUtil.CALCULATION_VECTOR3D));
                 this._rotaEyesLine.normalize();
@@ -440,7 +395,7 @@
                     this._tempVec.copyFrom(this._rotaEyesLine);
                     this._tempVec.y = 0;
                     this._tempVec.normalize();
-                    this._tempVec.scaleBy(this._speed);
+                    this._tempVec.scaleBy(speed);
                     this._tempVec.copyFrom(this._lookAtObject.position.add(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
 
@@ -453,7 +408,7 @@
                     this._tempVec.copyFrom(this._matTemp.transformVector(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._tempVec.y = 0;
                     this._tempVec.normalize();
-                    this._tempVec.scaleBy(this._speed);
+                    this._tempVec.scaleBy(speed);
                     this._tempVec.copyFrom(this._lookAtObject.position.subtract(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
                 }
@@ -463,7 +418,7 @@
                     this._tempVec.y = 0;
                     this._tempVec.normalize();
 
-                    this._tempVec.scaleBy(this._speed);
+                    this._tempVec.scaleBy(speed);
                     this._tempVec.copyFrom(this._lookAtObject.position.subtract(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
                 }
@@ -476,7 +431,7 @@
                     this._tempVec.y = 0;
                     this._tempVec.normalize();
 
-                    this._tempVec.scaleBy(this._speed);
+                    this._tempVec.scaleBy(speed);
                     this._tempVec.copyFrom(this._lookAtObject.position.add(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
                 }
@@ -487,7 +442,7 @@
                     this._quaRot.fromEulerAngles(this._rotaAngle.x, this._rotaAngle.y, 0);
                     this._tempVec.copyFrom(this._quaRot.transformVector(Vector3D.Y_AXIS, MathUtil.CALCULATION_VECTOR3D));
                     this._tempVec.normalize();
-                    this._tempVec.scaleBy(this._speed);
+                    this._tempVec.scaleBy(speed);
                     this._tempVec.copyFrom(this._lookAtObject.position.add(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
                 }
@@ -498,7 +453,7 @@
                     this._quaRot.fromEulerAngles(this._rotaAngle.x, this._rotaAngle.y, 0);
                     this._tempVec.copyFrom(this._quaRot.transformVector(Vector3D.Y_AXIS, MathUtil.CALCULATION_VECTOR3D));
                     this._tempVec.normalize();
-                    this._tempVec.scaleBy(this._speed);
+                    this._tempVec.scaleBy(speed);
                     this._tempVec.copyFrom(this._lookAtObject.position.subtract(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._lookAtObject.position = this._tempVec;
                 }

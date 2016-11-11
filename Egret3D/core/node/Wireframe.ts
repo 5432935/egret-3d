@@ -1,23 +1,24 @@
 ﻿module egret3d {
     /**
-     * @language zh_CN
-     * @class egret3d.Wireframe
-     * @classdesc
-     * 渲染线框 以线的形式渲染顶点。
-     * 使用LINES的模式进行渲染。
-     * 会使用两个索引来进行渲染一个线段。
-     * 实例化一个Wireframe对象之后需要把geometry顶点数据和索引数据填充
-     * @see egret3d.Geometry.setVerticesForIndex
-     * @see egret3d.Geometry.indexData
-     * @see egret3d.Geometry
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.Wireframe
+    * @classdesc
+    * 渲染线框 以线的形式渲染顶点。
+    * 使用LINES的模式进行渲染。
+    * 会使用两个索引来进行渲染一个线段。
+    * 实例化一个Wireframe对象之后需要把geometry顶点数据和索引数据填充
+    * @see egret3d.Geometry.setVerticesForIndex
+    * @see egret3d.Geometry.indexData
+    * @see egret3d.Geometry
+    * @includeExample core/node/Wireframe.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class Wireframe extends IRender {
 
         /**
         * @language zh_CN
-        * 构造
+        * 构造函数，输入一个模型，拷贝这个模型的顶点数据，创建一个只绘制边框的渲染对象
         * @param src  画线顶点数据列表 默认为null 没有设置数据 可以调用 this.fromVertexs 或 this.fromGeometry设置数据 
         * @param vf 画线顶点数据格式 默认为 VertexFormat.VF_POSITION (x, y, z) 可以加上颜色 VertexFormat.VF_COLOR (r, g, b, a)
         * 每个顶点数据格式必须统一
@@ -26,7 +27,7 @@
         */
         constructor(src: any = null, vf: VertexFormat = VertexFormat.VF_POSITION) {
             super();
-            this.type = "wireframe";
+            this.type = IRender.TYPE_WIREFRAME;
             this.geometry = new Geometry();
 
             this.material = new ColorMaterial(0xffffff);
@@ -102,6 +103,33 @@
                 this.geometry.indexArray[i * 6 + 4] = _2;
                 this.geometry.indexArray[i * 6 + 5] = _0;
             }
+        }
+
+        /**
+        * @language zh_CN
+        * @private
+        * @param other copy对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public copy(other: Wireframe) {
+            super.copy(other);
+            this.geometry = other.geometry;
+            this.material = other.material;
+        }
+
+        /**
+        * @language zh_CN
+        * @private
+        * 克隆当前Wireframe
+        * @returns Wireframe 克隆后的对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public clone(): Wireframe {
+            var cloneObject: Wireframe = new Wireframe();
+            cloneObject.copy(this);
+            return cloneObject;
         }
     }
 }

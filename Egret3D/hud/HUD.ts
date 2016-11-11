@@ -1,6 +1,7 @@
 ﻿module egret3d {
 
     /**
+    * @private
     * @class egret3d.HUD
     * @classdesc
     * HUD直接渲染在屏幕上的一张贴图</p>

@@ -49,7 +49,7 @@
             var objects: IRender[] = [];
 
             var t0: number = Date.now();
-            Picker.pickObject3DList(this._egret3DCanvas, this.view1, [this.meshs[0]], false, objects);
+            Picker.pickObject3DList(this.view1, [this.meshs[0]], false, objects);
             var t1: number = Date.now();
             console.log(t1 - t0);
             for (var i: number = 0; i < objects.length; ++i) {
@@ -132,8 +132,8 @@
 
             var mesh: Mesh = new Mesh(e.loader.data, new TextureMaterial());
 
-            mesh.animation.skeletonAnimationController.addEventListener(SkeletonAnimationEvent3D.EVENT_FRAME_CHANGE, this.onFrameChange, this);
-            mesh.animation.skeletonAnimationController.addEventListener(SkeletonAnimationEvent3D.EVENT_PLAY_COMPLETE, this.onPlayComplete, this);
+            mesh.animation.skeletonAnimationController.addEventListener(AnimationEvent3D.EVENT_FRAME_CHANGE, this.onFrameChange, this);
+            mesh.animation.skeletonAnimationController.addEventListener(AnimationEvent3D.EVENT_PLAY_COMPLETE, this.onPlayComplete, this);
 
             mesh.enableCulling = false;
 

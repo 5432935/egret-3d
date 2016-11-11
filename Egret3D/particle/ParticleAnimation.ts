@@ -2,9 +2,14 @@
 
     /**
     * @language zh_CN
-    * @class egret3d.ParticleAnimation
     * @classdesc
-    * 粒子动画
+    * 粒子动画的实现IAnimation的部分，ParticleEmitter会自动创建该对象，不建议使用者在外部自行创建该对象。
+    * 主要用于控制粒子的播放/暂停/更改播放速度/粒子的帧刷新，控制当前粒子所有节点的数据更新等。
+    * @see egret3d.IAnimation
+    * @see egret3d.EventDispatcher
+    * @see egret3d.ParticleData
+    * @see egret3d.ParticleAnimationState
+    * @class egret3d.ParticleAnimation
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -12,7 +17,7 @@
                     
         /**
         * @language zh_CN
-        * 粒子发射器
+        * 当前粒子的实例引用，通过该引用可获取对应的ParticleData数据和ParticleEmitter中的geometry数据等
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -28,12 +33,15 @@
 
         /**
         * @language zh_CN
-        * 总时间,计算过速度后的事件
+        * 总时间，加成过特效播放速度后的时间
         * @version Egret 3.0
         * @platform Web,Native
         */
         public animTime: number = 0;
 
+
+        private _event3D: AnimationEvent3D = new AnimationEvent3D();
+        private _lastAnimTime: number = 0;
         /**
         * @language zh_CN
         * 帧间隔时间
@@ -44,7 +52,23 @@
 
         /**
         * @language zh_CN
-        * 播放速度
+        * 一个完整的动画播放时间周期
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public loopTime: number = 0;
+
+        /**
+        * @language zh_CN
+        * 是否为一个循环播放的动画
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public isLoop: boolean;
+
+        /**
+        * @language zh_CN
+        * 播放速度，注意0的情况（x/0=?）
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -53,7 +77,7 @@
         /**
         * @language zh_CN
         * 获取动画列表
-        * @return 动画名称数组
+        * @returns 动画名称数组
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -62,7 +86,7 @@
         /**
         * @language zh_CN
         * 获取动画节点
-        * @return 动画节点数组
+        * @returns 动画节点数组
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -79,7 +103,8 @@
 
         /**
         * @language zh_CN
-        * 构造函数
+        * 构造函数，创建一个ParticleAnimation对象
+        * @param emitter 该动画对应粒子发射器对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -90,6 +115,10 @@
             this.addAnimState(this.particleAnimationState);
         }
 
+        /*
+        * @private
+        */
+        public static Reset: boolean;
        
         /**
         * @private
@@ -100,22 +129,34 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-
-        public static Reset: boolean;
         public update(time: number, delay: number, geometry: Geometry) {
             if (ParticleAnimation.Reset) {
                 this.animTime = 0;
             }
-            if (!this._play) {
-                return;
-            }
-            if (this.speed != 0) {
+            
+            if (this._play && this.speed != 0) {
                 this.animTime += delay * this.speed;
-                if (this.particleAnimationState)
-                    this.particleAnimationState.update(this.animTime, delay, geometry);
+                this.particleAnimationState.update(this.animTime, delay, geometry);
+
+
+                if (this.isLoop == false) {
+                    var endTime: number = this.loopTime * 1000;
+                    if (this._lastAnimTime <= endTime && this.animTime > endTime) {
+                        this._event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
+                        this._event3D.target = this;
+                        this.dispatchEvent(this._event3D);
+                    }
+                    
+                }
+
+                this._lastAnimTime = this.animTime;
             }
 
+
         }
+
+
+
          /**
         * @private
         * @language zh_CN
@@ -138,9 +179,11 @@
 
         /**
         * @language zh_CN
-        * 播放动画
-        * @param animName 动画名
-        * @param speed 播放速度
+        * 播放该粒子动画，你可以使用stop函数暂停该粒子的播放
+        * @param animName 动画名称
+        * @param speed 播放速度（默认为1）
+        * @param reset 是否从头播放
+        * @param prewarm 是否预热
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -150,14 +193,15 @@
                 this.animTime = 0;
             }
             if (prewarm){
-                this.animTime = this.particleAnimationState.loopTime;
+                this.animTime = this.particleAnimationState.modTime;
             }
+
             this.speed = speed;
         } 
 
         /**
         * @language zh_CN
-        * 停止播放
+        * 暂停播放该粒子，你可以在之后使用play函数继续播放该动画
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -167,8 +211,8 @@
 
         /**
         * @language zh_CN
-        * 是否正在播放中
-        * @return 是否播放中
+        * 获取当前粒子是否正在播放
+        * @returns 是否播放中
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -179,7 +223,7 @@
         /**
         * @language zh_CN
         * 添加动画状态
-        * @return 动画名称列表
+        * @param animState IAnimationState给改动画添加一个控制器，应该为ParticleAnimationState的实例。
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -191,8 +235,7 @@
 
         /**
         * @language zh_CN
-        * 上传动画状态
-        * @return 动画名称列表
+        * 移除一个动画状态机
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -206,7 +249,7 @@
         * @private
         * @language zh_CN
         * 获取动画列表
-        * @return 动画名称列表
+        * @returns 动画名称列表
         */
         public getAnimList(): string[] {
             return []; 
@@ -216,7 +259,7 @@
         * @private
         * @language zh_CN
         * 获取动画节点
-        * @return 动画节点数组
+        * @returns 动画节点数组
         */
         public getAnimNode(): AnimationNode[] {
             return [];
@@ -226,7 +269,7 @@
         * @private
         * @language zh_CN
         * 克隆新的ParticleAnimation对象;
-        * @return 新的ParticleAnimation对象
+        * @returns 新的ParticleAnimation对象
         */
         public clone(): IAnimation {
             return null;

@@ -135,6 +135,9 @@
                 else if (key == "boneBind") {
                     data.boneBind = node.boneBind;
                 }
+                else if (key == "lightInfo") {
+                    data.lightData = this.parseLight(node.lightInfo);
+                }
                 else {
                     var v: string = typeof data[key];
                     if (v == "number") {
@@ -153,43 +156,23 @@
         }
 
         public parseEnvironment(environment: any): void {
+            if (!environment) {
+                return;
+            }
+            if (environment.directLight) {
+                this._mapConfigParser.directLight = (environment.directLight == "open")
+            }
 
-            this._mapConfigParser.directLight = (environment.directLight == "open")
-            this._mapConfigParser.pointLight = (environment.pointLight == "open")
-            if (!environment.lights) {
+            if (environment.pointLight) {
+                this._mapConfigParser.pointLight = (environment.pointLight == "open")
+            }
+
+            if (!environment.lightList) {
                 return;
             }
 
-            for (var i: number = 0; i < environment.lights.length; ++i) {
-                var lightData: UnitLightData = new UnitLightData();
-                var item: any = environment.lights[i];
-                for (var key in item) {
-                    switch (key) {
-                        case "id":
-                        case "diffuseColor":
-                        case "ambientColor":
-                        case "intensity":
-                        case "halfIntensity":
-                        case "falloff":
-                        case "radius":
-                            lightData[key] = Number(item[key]);
-                            break;
-                        case "type":
-                            lightData[key] = item.type;
-                            break;
-                        case "direction":
-                            lightData.direction.x = Number(item[key].x);
-                            lightData.direction.y = Number(item[key].y);
-                            lightData.direction.z = Number(item[key].z);
-                            break;
-                        case "position":
-                            lightData.position.x = Number(item[key].x);
-                            lightData.position.y = Number(item[key].y);
-                            lightData.position.z = Number(item[key].z);
-                            break;
-                    }
-                }
-
+            for (var i: number = 0; i < environment.lightList.length; ++i) {
+                var lightData: UnitLightData = this.parseLight(environment.lightList[i]);
                 this._mapConfigParser.lightDict[lightData.id] = lightData;
             }
         }
@@ -218,6 +201,38 @@
 
             this._mapConfigParser.textures.push(node);
             this._mapConfigParser.calculateTextureTask(node);
+        }
+
+        public parseLight(node: any): UnitLightData {
+            var lightData: UnitLightData = new UnitLightData();
+            for (var key in node) {
+                switch (key) {
+                    case "id":
+                    case "diffuseColor":
+                    case "ambientColor":
+                    case "intensity":
+                    case "halfIntensity":
+                    case "falloff":
+                    case "radius":
+                        lightData[key] = Number(node[key]);
+                        break;
+                    case "type":
+                        lightData[key] = LightType[node.type];
+                        break;
+                    case "direction":
+                        lightData.direction.x = Number(node[key].x);
+                        lightData.direction.y = Number(node[key].y);
+                        lightData.direction.z = Number(node[key].z);
+                        break;
+                    case "position":
+                        lightData.position.x = Number(node[key].x);
+                        lightData.position.y = Number(node[key].y);
+                        lightData.position.z = Number(node[key].z);
+                        break;
+                }
+            }
+
+            return lightData;
         }
     }
 }

@@ -483,9 +483,7 @@
             for (var index in this._passUsage.sampler2DList) {
                 sampler2D = this._passUsage.sampler2DList[index];
                 sampler2D.uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program3D, sampler2D.varName);
-
                 sampler2D.texture = this._materialData[sampler2D.varName];
-
             }
 
             var sampler3D: GLSL.Sampler2D;
@@ -600,6 +598,7 @@
 
             //texture 2D
             var sampler2D: GLSL.Sampler2D;
+            var texture: Texture;
             for (var index in this._passUsage.sampler2DList) {
                 sampler2D = this._passUsage.sampler2DList[index];
                 sampler2D.texture = this._materialData[sampler2D.varName];
@@ -607,13 +606,15 @@
                 if (!sampler2D.texture) {
                     continue;
                 }
-                sampler2D.texture.upload(context3DProxy);
-                context3DProxy.setTexture2DAt(sampler2D.activeTextureIndex, sampler2D.uniformIndex, sampler2D.index, sampler2D.texture.texture2D);
 
-                if (sampler2D.texture.useMipmap)
-                    sampler2D.texture.useMipmap = this._materialData.useMipmap;
-                sampler2D.texture.repeat = this._materialData.repeat;
-                sampler2D.texture.activeState(context3DProxy);
+                texture = sampler2D.texture.parentTexture ? sampler2D.texture.parentTexture : sampler2D.texture ; 
+                texture.upload(context3DProxy);
+                context3DProxy.setTexture2DAt(sampler2D.activeTextureIndex, sampler2D.uniformIndex, sampler2D.index, texture.texture2D);
+
+                if (texture.useMipmap)
+                    texture.useMipmap = this._materialData.useMipmap;
+                texture.repeat = this._materialData.repeat;
+                texture.activeState(context3DProxy);
                 this._materialData.textureStateChage = false;
             }
 
@@ -714,7 +715,7 @@
                 context3DProxy.uniform3fv(this._passUsage["uniform_ObjectId"].uniformIndex, [objectId.x, objectId.y, objectId.z]);
             }
 
-            context3DProxy.drawElement(this._materialData.drawMode, subGeometry.start, subGeometry.count);
+            context3DProxy.drawElement(this._materialData.drawMode, subGeometry.start * Uint16Array.BYTES_PER_ELEMENT, subGeometry.count);
 
             if (this._materialData.alphaBlending)
                 Context3DProxy.gl.depthMask(true);

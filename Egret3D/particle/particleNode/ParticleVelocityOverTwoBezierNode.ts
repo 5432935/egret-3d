@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleVelocityOverTwoBezierNode
     * @classdesc
     * 粒子速度叠加节点,双贝塞尔曲线获得

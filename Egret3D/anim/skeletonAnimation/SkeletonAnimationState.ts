@@ -1,9 +1,21 @@
-module egret3d {
+﻿module egret3d {
+
+    /**
+    * @language zh_CN
+    * @class egret3d.SkeletonAnimationState
+    * @classdesc
+    * 骨骼动画状态机对象
+    * 处理骨骼动画的状态切换
+    * @see egret3d.IAnimationState
+    * 
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class SkeletonAnimationState implements IAnimationState {
 
         /**
         * @language zh_CN
-        * State����
+        * State名称
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -11,7 +23,7 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * �ں�Ȩ��ֵ
+        * 融合权重值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -23,13 +35,22 @@ module egret3d {
         private _skeletonAnimationClip: SkeletonAnimationClip = null;
         
 
+        /**
+        * @language zh_CN
+        * 构造函数
+        * 创建一个骨骼动画状态机对象
+        * @param name 状态名字
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         constructor(name: string) {
             this.name = name;
         }
 
         /**
         * @language zh_CN
-        * ��������������
+        * 获取骨骼动画控制器
+        * @returns SkeletonAnimation 骨骼动画控制器
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -39,7 +60,8 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * ��������������
+        * 设置骨骼动画控制器
+        * @param skeletonAnimation 骨骼动画控制器
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -49,7 +71,8 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * ������������
+        * 获取骨骼动画剪辑
+        * @returns SkeletonAnimationClip 骨骼动画控制器
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -59,7 +82,8 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * ����ʱ�䳤��
+        * 动画时间长度
+        * @returns number 时间长度 毫秒
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -69,68 +93,74 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * ���� SkeletonAnimationClip ����
+        * 添加 SkeletonAnimationClip 对象
+        * @param animationClip 添加的动画剪辑对象
         * @version Egret 3.0
         * @platform Web,Native
         */
         public addAnimationClip(animationClip: SkeletonAnimationClip): void {
 
-            if (animationClip.sourceData) {
-                this._skeletonAnimationClip = animationClip;
+            this._skeletonAnimationClip = animationClip.cacheAnimationClip.clone();
 
-                this._timeLength = this._skeletonAnimationClip.timeLength;
-            }
-            else {
+            this._timeLength = this._skeletonAnimationClip.timeLength;
 
-                if (!this._skeletonAnimationClip) {
-                    this._skeletonAnimationClip = new SkeletonAnimationClip();
-                }
-                else {
-                    this._skeletonAnimationClip.poseArray = [];
-                }
+            //if (animationClip.sourceData) {
+            //    this._skeletonAnimationClip = animationClip;
 
-                if (animationClip.poseArray.length < 2) {
-                    this._skeletonAnimationClip.poseArray = animationClip.poseArray;
-                }
-                else {
-                    var skeletonPoseA: SkeletonPose = animationClip.poseArray[0];
+            //    this._timeLength = this._skeletonAnimationClip.timeLength;
+            //}
+            //else {
 
-                    var skeletonPoseB: SkeletonPose = animationClip.poseArray[1];
+            //    if (!this._skeletonAnimationClip) {
+            //        this._skeletonAnimationClip = new SkeletonAnimationClip();
+            //    }
+            //    else {
+            //        this._skeletonAnimationClip.poseArray = [];
+            //    }
 
-                    var nCount: number = Math.round((skeletonPoseB.frameTime - skeletonPoseA.frameTime) / SkeletonAnimation.fps);
+            //    if (animationClip.poseArray.length < 2) {
+            //        this._skeletonAnimationClip.poseArray = animationClip.poseArray;
+            //    }
+            //    else {
+            //        var skeletonPoseA: SkeletonPose = animationClip.poseArray[0];
 
-                    if (nCount <= 1) {
-                        this._skeletonAnimationClip.poseArray = animationClip.poseArray;
-                    }
-                    else {
-                        for (var i: number = 1; i < animationClip.poseArray.length; ++i) {
+            //        var skeletonPoseB: SkeletonPose = animationClip.poseArray[1];
 
-                            skeletonPoseA = animationClip.poseArray[i - 1];
+            //        var nCount: number = Math.round((skeletonPoseB.frameTime - skeletonPoseA.frameTime) / SkeletonAnimation.fps);
 
-                            skeletonPoseB = animationClip.poseArray[i];
+            //        if (nCount <= 1) {
+            //            this._skeletonAnimationClip.poseArray = animationClip.poseArray;
+            //        }
+            //        else {
+            //            for (var i: number = 1; i < animationClip.poseArray.length; ++i) {
 
-                            for (var j: number = 0; j < nCount; j++) {
+            //                skeletonPoseA = animationClip.poseArray[i - 1];
 
-                                var skeletonPose: SkeletonPose = new SkeletonPose();
-                                skeletonPose.boneNameArray = animationClip.boneNameArray;
+            //                skeletonPoseB = animationClip.poseArray[i];
 
-                                skeletonPose.lerp(skeletonPoseA, skeletonPoseB, j / nCount);
+            //                for (var j: number = 0; j < nCount; j++) {
 
-                                this._skeletonAnimationClip.poseArray.push(skeletonPose);
-                            }
-                        }
+            //                    var skeletonPose: SkeletonPose = new SkeletonPose();
+            //                    skeletonPose.boneNameArray = animationClip.boneNameArray;
 
-                        this._skeletonAnimationClip.poseArray.push(animationClip.poseArray[animationClip.poseArray.length - 1].clone());
-                    }
-                }
+            //                    skeletonPose.lerp(skeletonPoseA, skeletonPoseB, j / nCount);
 
-                this._timeLength = this._skeletonAnimationClip.poseArray[this._skeletonAnimationClip.poseArray.length - 1].frameTime;
-            }
+            //                    this._skeletonAnimationClip.poseArray.push(skeletonPose);
+            //                }
+            //            }
+
+            //            this._skeletonAnimationClip.poseArray.push(animationClip.poseArray[animationClip.poseArray.length - 1].clone());
+            //        }
+            //    }
+
+            //    this._timeLength = this._skeletonAnimationClip.poseArray[this._skeletonAnimationClip.poseArray.length - 1].frameTime;
+            //}
         }
 
         /**
         * @language zh_CN
-        * ʱ��λ��
+        * 获取当前动画时间位置
+        * @returns number 当前动画时间位置
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -140,7 +170,8 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * ʱ��λ��
+        * 设置当前动画时间位置
+        * @param value 设置值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -154,12 +185,22 @@ module egret3d {
 
             if (this._skeletonAnimation.isLoop) {
 
+                if (this.name == this._skeletonAnimation.currentAnimName) {
+                    if (this._skeletonAnimation.speed < 0 && this._timePosition < 0) {
+                        this._skeletonAnimation.event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
+                        this._skeletonAnimation.dispatchEvent(this._skeletonAnimation.event3D);
+                    }
+                    else if (this._skeletonAnimation.speed > 0 && this._timePosition > this.timeLength) {
+                        this._skeletonAnimation.event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
+                        this._skeletonAnimation.dispatchEvent(this._skeletonAnimation.event3D);
+                    }
+                }
+
                 this._timePosition = value % this._timeLength;
 
                 if (this._timePosition < 0) {
 
                     this._timePosition += this._timeLength;
-
                 }
             }
             else {
@@ -172,8 +213,7 @@ module egret3d {
 
                         this._skeletonAnimation.stop();
 
-                        this._skeletonAnimation.event3D.target = this._skeletonAnimation;
-                        this._skeletonAnimation.event3D.eventType = SkeletonAnimationEvent3D.EVENT_PLAY_COMPLETE;
+                        this._skeletonAnimation.event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
                         this._skeletonAnimation.dispatchEvent(this._skeletonAnimation.event3D);
                     }
                 }
@@ -185,8 +225,7 @@ module egret3d {
 
                         this._skeletonAnimation.stop();
 
-                        this._skeletonAnimation.event3D.target = this._skeletonAnimation;
-                        this._skeletonAnimation.event3D.eventType = SkeletonAnimationEvent3D.EVENT_PLAY_COMPLETE;
+                        this._skeletonAnimation.event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
                         this._skeletonAnimation.dispatchEvent(this._skeletonAnimation.event3D);
                     }
                 }
@@ -195,17 +234,21 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * ��ȡ��ǰ֡��SkeletonPose
+        * 获取当前帧的SkeletonPose
+        * @returns SkeletonPose 当前帧的SkeletonPose
+        * @see egret3d.SkeletonPose
         * @version Egret 3.0
         * @platform Web,Native
         */
         public get currentSkeletonPose(): SkeletonPose {
             return this._skeletonAnimationClip.getSkeletonPose(this.currentFrameIndex);
         }
-
+        
         /**
         * @language zh_CN
-        * ��ȡ��һ֡��SkeletonPose
+        * 获取上一帧的SkeletonPose
+        * @returns SkeletonPose 上一帧的SkeletonPose
+        * @see egret3d.SkeletonPose
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -229,7 +272,8 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * ��ȡ��ǰ֡����
+        * 获取当前帧索引
+        * @returns number 当前帧索引
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -239,7 +283,8 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * ��ȡ֡����
+        * 获取帧数量
+        * @returns number 帧数量
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -252,7 +297,8 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * ��ȡSkeletonPose
+        * 使用帧索引获取SkeletonPose
+        * @returns SkeletonPose 获取SkeletonPose
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -262,7 +308,8 @@ module egret3d {
 
         /**
         * @language zh_CN
-        * ��¡SkeletonAnimationState����
+        * 克隆SkeletonAnimationState对象
+        * @returns SkeletonAnimationState 克隆后的对象
         * @version Egret 3.0
         * @platform Web,Native
         */

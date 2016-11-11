@@ -1,7 +1,8 @@
 ﻿module egret3d {
                         
     /**
-    * @class egret3d.DirectLight
+    * @private
+    * @class egret3d.SpotLight
     * @classdesc
     * spot 的灯光 也就是筒灯
     * 所有的灯光基本要素 灯光的颜色，强度，位置，方向

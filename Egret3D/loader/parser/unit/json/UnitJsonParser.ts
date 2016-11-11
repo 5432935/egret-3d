@@ -16,8 +16,16 @@
         public parser() {
             this._versionParser = UnitParserUtils.jsonVersion(this._mapConfigParser.version, this._data, this._mapConfigParser);
 
-            this.parseEnvironment(this._data.env);
+            this._versionParser.parseEnvironment(this._data.env);
 
+            if (this._data.auto) {
+                this._mapConfigParser.auto = this._data.auto == "true" ? true : false;
+            }
+
+            if (this._data.loop) {
+                this._mapConfigParser.loop = this._data.loop == "true" ? true : false;
+            }
+            
             if (this._data.propertyAnimations) {
                 for (var i: number = 0; i < this._data.propertyAnimations.length; i++) {
                     var proAnimation: any = this._data.propertyAnimations[i];
@@ -76,8 +84,6 @@
                     }
                 }
             }
-
-            this._mapConfigParser.processNode();
         }    
     }
 }

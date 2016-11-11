@@ -1,11 +1,21 @@
 ﻿module egret3d {
 
     /**
-    * @private
+    * @class egret3d.Scene3D
+    * @classdesc
+    * 场景的根节点对象
+    * 创建场景后会将场景树中的静态物体进行四叉树空间划分
+    * 然后会根据 划分好的的空间进行裁剪
+    * 在View3D 中的场景节点为 Scene3D
+    * @see egret3d.Object3D
+    * @see egret3d.Scene3D
+    * @includeExample scene/Scene3D.ts
+    * @version Egret 3.0
+    * @platform Web,Native
     */
     export class Scene3D extends Object3D{
-        private _tree: TreeBase; 
-
+        private _tree: TreeBase;
+        
         /**
         * @language zh_CN
         * 四叉树根对象
@@ -29,12 +39,18 @@
             return this._quad;
         }
 
-
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public infrustumList(camera: Camera3D): Object3D[] {
             return this._tree.infrustumList(camera);
         }
 
         /**
+        * @private
         * @language zh_CN
         * 根据当前场景的节点分布情况，生成四叉树
         * @version Egret 3.0
@@ -48,6 +64,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 遍历一个Object3D及其child节点，如果能够进入视锥体，则放入返回的列表中
         * @param  nodes 用于返回Quad元素结果
@@ -76,7 +93,17 @@
             return nodes;
         }
 
-
-
+        /**
+        * @language zh_CN
+        * 克隆当前Role
+        * @returns Role 克隆后的对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public clone(): Scene3D {
+            var cloneObject: Scene3D = new Scene3D();
+            cloneObject.copy(this);
+            return cloneObject;
+        }
     }
 } 

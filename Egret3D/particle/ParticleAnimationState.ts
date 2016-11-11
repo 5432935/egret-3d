@@ -4,7 +4,13 @@
      * @language zh_CN
      * @class egret3d.ParticleAnimationState
      * @classdesc
-     * 粒子动画状态机
+     * 粒子动画状态机，继承自IAnimationState。ParticleEmitter会自动创建该对象，不建议使用者在外部自行创建该对象。
+     * 该类主要用于维护粒子的顶点数据/shader拼装/辅助初始化Geometry对象；负责在每次update时更新每个节点，和绘制前的基础数据上传工作。
+     * @see egret3d.IAnimationState
+     * @see egret3d.AnimationNode
+     * @see egret3d.Geometry
+     * @see egret3d.ParticleData
+     * @see egret3d.ParticleAnimation
      * @version Egret 3.0
      * @platform Web,Native
      */
@@ -27,6 +33,7 @@
         public animNodes: AnimationNode[];
 
         /**
+        * @private
         * @language zh_CN
         * 动画关键帧列表
         * @version Egret 3.0
@@ -72,15 +79,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public loopTime: number = 0;
-
-        /**
-        * @language zh_CN
-        * 粒子走完一轮所需要的总时间(秒)
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public circleTime: number = 0;
+        public modTime: number = 0;
 
         /**
         * @language zh_CN
@@ -92,13 +91,15 @@
 
         /**
         * @language zh_CN
-        * 跟随的目标
+        * 跟随的目标，在被使用的情况下，新出生的粒子会使用这个对象的旋转和位置信息。
         * @version Egret 3.0
         * @platform Web,Native
         */
         public followTarget: Object3D = null;
 
-
+        /**
+        * @private
+        */
         public directionArray: Array<Vector3D>;
         /**
         * @private
@@ -107,8 +108,9 @@
 
         /**
         * @language zh_CN
-        * 构造函数
+        * 构造函数，随着ParticleEmitter的初始化，会创建该ParticleAnimationState对象
         * @param name 粒子动画状态名
+        * @param emitter 当前粒子动画主体部分
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -123,7 +125,7 @@
         /**
        * @language zh_CN
        * 获取发射器
-       * @return ParticleEmitter
+       * @returns ParticleEmitter
        * @version Egret 3.0
        * @platform Web,Native
        */
@@ -161,7 +163,6 @@
         /**
        * @language zh_CN
        * 清空分配好的动画节点
-       * @param node 节点对象
        * @version Egret 3.0
        * @platform Web,Native
        */
@@ -184,9 +185,9 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 计算节点
-        * @private 
         */
         public calculate(geometry: Geometry) {
             //##FilterBegin## ##Particle##
@@ -209,8 +210,8 @@
         }
 
         /**
+        * @private
         * @language zh_CN
-        * @private 
         */
         public fill(geometry: Geometry, maxParticle: number) {
             //##FilterBegin## ##Particle##
@@ -224,8 +225,8 @@
         }
 
         /**
-        * @language zh_CN
         * @private 
+        * @language zh_CN
         */
         public update(animTime: number, delay: number, geometry: Geometry) {
             //##FilterBegin## ##Particle##
@@ -278,7 +279,7 @@
             this._particleProperty[11] = positionData.y;
             this._particleProperty[12] = positionData.z;
 
-            this._particleProperty[13] = this.loopTime;
+            this._particleProperty[13] = this.modTime;
             this._particleProperty[14] = data.life.delay;
             this._particleProperty[15] = data.life.duration;
             this._particleProperty[16] = data.property.gravity;
@@ -307,6 +308,12 @@
             //##FilterEnd##
         }
 
+        /**
+        * @language zh_CN
+        * 释放所有数据，销毁该对象的内部属性
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public dispose(): void {
             var node: AnimationNode;
             for (node of this.animNodes) {

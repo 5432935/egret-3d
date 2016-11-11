@@ -1,5 +1,5 @@
 ﻿module egret3d.gui {
-       /**
+    /**
     * @private
     */
     export class BitmapFont {
@@ -7,10 +7,17 @@
         constructor() {
         }
 
+        /**
+        * @private
+        */
         static load(data: any) {
             this._fontTextures = data;
         }
 
+
+        /**
+        * @private
+        */
         static getTexture(unicode: number): Texture {
             var texture: Texture = this._fontTextures[unicode]; 
             return texture;

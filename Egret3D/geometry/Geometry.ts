@@ -1,90 +1,70 @@
 ﻿module egret3d {
     
     /**
-     * @private
-     * @language zh_CN
-     * @class egret3d.GeometryType
-     * @classdesc
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
-    export enum GeometryType {
-        normal_geometry,
-        skin_geometry,
-        particle_geometry,
-    }
-
-    /**
-     * @language zh_CN
-     * @class egret3d.VertexFormat
-     * @classdesc
-     * 顶点数据格式类型 是由2进制组成 一个顶点可以由多个类型组成
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.VertexFormat
+    * @classdesc
+    * 顶点数据格式类型 是由2进制组成 一个顶点可以由多个类型组成
+    * 创建顶点数据的顺序必需按照下面枚举定义的顺序进行赋值
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export enum VertexFormat {
                 
         /**
-         * @private
-         * @language zh_CN
-         * 顶点坐标
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 顶点坐标
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         VF_POSITION = 0x00000001,
 
         /**
-         * @private
-         * @language zh_CN
-         * 顶点法线
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 顶点法线
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         VF_NORMAL = 0x00000002,
                         
         /**
-         * @private
-         * @language zh_CN
-         * 顶点切线
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 顶点切线
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         VF_TANGENT = 0x00000004,
         
         /**
-         * @private
-         * @language zh_CN
-         * 顶点颜色
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 顶点颜色
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         VF_COLOR = 0x00000008,
         
         /**
-         * @private
-         * @language zh_CN
-         * 顶点uv
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 顶点uv
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         VF_UV0 = 0x00000010,
                 
         /**
-         * @private
-         * @language zh_CN
-         * 顶点第二uv
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 顶点第二uv
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         VF_UV1 = 0x00000020,
 
         /**
-         * @private
-         * @language zh_CN
-         * 顶点蒙皮信息
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 顶点蒙皮信息
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         VF_SKIN = 0x00000040,
 
         /**
@@ -158,20 +138,19 @@
     */
     export class Geometry extends Reference {
 
-       /**
+        /**
+        * @private
         * @language zh_CN
-        * 模型的类别，是属于 静态模型，还是蒙皮动画模型，还是粒子模型，还是 特定模型
-        *
+        * 顶点格式
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public geomtryType: number = -1;
-
         public drawType: number = Context3DProxy.gl.STATIC_DRAW ; 
 
         /**
         * @language zh_CN
         * 顶点格式
+        * @default 0
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -180,6 +159,7 @@
         /**
         * @language zh_CN
         * 顶点属性长度
+        * @default 0
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -245,6 +225,7 @@
         /**
         * @language zh_CN
         * 顶点坐标大小
+        * @default 3
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -253,6 +234,7 @@
         /**
         * @language zh_CN
         * 顶点法线大小
+        * @default 3
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -261,6 +243,7 @@
         /**
         * @language zh_CN
         * 顶点切线大小
+        * @default 3
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -269,6 +252,7 @@
         /**
         * @language zh_CN
         * 顶点色大小
+        * @default 4
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -277,6 +261,7 @@
         /**
         * @language zh_CN
         * 顶点uv大小
+        * @default 2
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -285,6 +270,7 @@
         /**
         * @language zh_CN
         * 顶点uv2大小
+        * @default 2
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -293,6 +279,7 @@
         /**
         * @language zh_CN
         * 顶点uv2大小
+        * @default 8
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -304,7 +291,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public subGeometrys: Array<SubGeometry> = new Array<SubGeometry>();       
+        public subGeometrys: Array<SubGeometry> = [];       
 
         /**
         * @language zh_CN
@@ -313,13 +300,27 @@
         */
         private _bufferDiry: boolean = true;
 
+
+        /**
+        * @language zh_CN
+        * 是否重新提交数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set bufferDiry(value: boolean) {
             this._bufferDiry = value;
         }
 
+        /**
+        * @language zh_CN
+        * 是否重新提交数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get bufferDiry(): boolean {
             return this._bufferDiry;
         }
+
         /**
         * @language zh_CN
         * 顶点的数量
@@ -338,6 +339,12 @@
 
         private _totalIndexCount: number = 0;
 
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set skeleton(skeleton: Skeleton) {
 
             if (!skeleton) {
@@ -351,6 +358,12 @@
             }
         }
 
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get skeleton(): Skeleton {
             return this._skeleton;
         }
@@ -455,10 +468,6 @@
             return this._faceCount;
         }
 
-        constructor() {
-            super();
-        }
-
         /**
         * @language zh_CN
         * @private
@@ -551,7 +560,6 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-
         public get vertexFormat(): number {
             return this._vertexFormat;
         }
@@ -573,6 +581,7 @@
                                 
         /**
         * @language zh_CN
+        * @private
         * 提交顶点数据 如果顶点数据有变化的话,需要调用此函数重新提交
         * @param context3DProxy 上下文设备
         * @version Egret 3.0
@@ -882,6 +891,71 @@
             for (var i: number = 0; i < indices.length; ++i) {
                 this.indexArray[start + i] = indices[i];
             }
+        }
+
+        /*
+        * @private
+        */
+        public cloneMirror(x: boolean, y: boolean, z: boolean): Geometry {
+            var geometry: Geometry = new Geometry();
+            geometry.vertexFormat = this.vertexFormat;
+            geometry.vertexCount = this.vertexCount;
+            geometry.indexCount = this.indexCount;
+
+            var i: number = 0;
+            var tempPos: Vector3D = new Vector3D(); 
+            var pos: Vector3D = new Vector3D();
+            var scal: Vector3D = new Vector3D(x ? -1 : 1, y ? -1 : 1, z ? -1 : 1);
+            var rot: Quaternion = new Quaternion();
+
+            geometry.vertexArray = new Float32Array(this.vertexArray.length);// this.vertexArray.subarray(0, this.vertexArray.length);
+            geometry.indexArray = new Float32Array(this.indexArray.length);//this.indexArray.subarray(0, this.indexArray.length);
+
+            for (i = 0; i < geometry.vertexArray.length; i++) {
+                geometry.vertexArray[i] = this.vertexArray[i];
+            }
+            for (i = 0; i < geometry.indexArray.length; i++) {
+                geometry.indexArray[i] = this.indexArray[i];
+            }
+
+            Matrix4_4.helpMatrix.makeTransform(pos, scal, rot);
+
+            for (i = 0; i < this.vertexCount; i++){
+                tempPos.x = geometry.vertexArray[i * this.vertexAttLength];
+                tempPos.y = geometry.vertexArray[i * this.vertexAttLength + 1];
+                tempPos.z = geometry.vertexArray[i * this.vertexAttLength + 2];
+
+                Matrix4_4.helpMatrix.transformVector(tempPos, Vector3D.HELP_0);
+
+                geometry.vertexArray[i * this.vertexAttLength] = Vector3D.HELP_0.x;
+                geometry.vertexArray[i * this.vertexAttLength + 1] = Vector3D.HELP_0.y;
+                geometry.vertexArray[i * this.vertexAttLength + 2] = Vector3D.HELP_0.z;
+            }
+
+            for (i = 0; i < this.indexCount/3; i++) {
+                tempPos.x = geometry.indexArray[i * 3 + 0];
+                tempPos.y = geometry.indexArray[i * 3 + 1];
+                tempPos.z = geometry.indexArray[i * 3 + 2];
+
+                geometry.indexArray[i * 3 + 0] = tempPos.x;
+                geometry.indexArray[i * 3 + 1] = tempPos.z;
+                geometry.indexArray[i * 3 + 2] = tempPos.y;
+            }
+
+            for (i = 0; i < this.subGeometrys.length ; ++i) {
+                var subGeometry: SubGeometry = new SubGeometry();
+                subGeometry.matID = i;
+                subGeometry.geometry = geometry;
+                //subGeometry.start = source.material[i].start * 3 * Uint16Array.BYTES_PER_ELEMENT;
+                subGeometry.start = this.subGeometrys[i].start * 3;
+                subGeometry.count = this.subGeometrys[i].count * 3;
+                subGeometry.textureDiffuse = this.subGeometrys[i].textureDiffuse;
+                subGeometry.textureNormal = this.subGeometrys[i].textureNormal;
+                subGeometry.textureSpecular = this.subGeometrys[i].textureSpecular;
+                geometry.subGeometrys.push(subGeometry);
+            }
+            
+            return geometry;
         }
 
         /**

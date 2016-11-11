@@ -424,8 +424,8 @@
         private parseScaleBeizer(node: Node): void {
             if (node == null)
                 return;
-            var scaleBesizer: ParticleDataScaleBezier = this._particleData.scaleBezier = new ParticleDataScaleBezier();
-            scaleBesizer.data = this.parseBezierData(this.getNode(node, "bezier"));
+            var scaleBezier: ParticleDataScaleSize = this._particleData.scaleSize = new ParticleDataScaleSize();
+            scaleBezier.bezier1 = this.parseBezierData(this.getNode(node, "bezier"));
         }
 
 

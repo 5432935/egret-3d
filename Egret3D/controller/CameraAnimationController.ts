@@ -1,6 +1,7 @@
 ﻿module egret3d {
 
     /**
+    * @private
     * @class egret3d.CameraAnimationController
     * @classdesc
     * 摄像机动画控制器。

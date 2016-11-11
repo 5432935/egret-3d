@@ -327,7 +327,7 @@ module egret3d {
         * @param    triPi1      三角形顶点1
         * @param    triPi2      三角形顶点2
         * @param    triPi3      三角形顶点3
-        * @return   是否包含
+        * @returns  是否包含
         * @version Egret 3.0
         * @platform Web,Native
         */

@@ -47,54 +47,21 @@
 
             this.matPlane.repeat = true;
             this.matPlane.uvRectangle = new Rectangle(0, 0, 1.0, 1.0);
-
-            //var lightMethod: LightmapMethod = new LightmapMethod();
-            //this.matPlane.diffusePass.addMethod(lightMethod);
-            //lightMethod.lightTexture = CheckerboardTexture.texture;
-
-
-
-            //this.plane = new Mesh(new SphereGeometry(300, 120, 120), this.matPlane);
-            //this.plane = new Mesh(new CubeGeometry(150, 120, 120), this.matPlane);
             this.plane = new Mesh(new PlaneGeometry(500, 500), this.matPlane);
             this.plane.lightGroup = this.lights;
-
             this.view1.addChild3D(this.plane);
 
-           
-
-            var loadtex: URLLoader = new URLLoader("resource/normal/Metal_SciFiFuelCrate_1k_d.png");
-            loadtex.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadDiffuse, this);
-            loadtex["mat"] = this.matPlane;
-
-            var loadtex: URLLoader = new URLLoader("resource/normal/Metal_SciFiFuelCrate_1k_n.png");
-            loadtex.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadNormal, this);
-            loadtex["mat"] = this.matPlane;
-
-            var loadtex: URLLoader = new URLLoader("resource/normal/Metal_SciFiFuelCrate_1k_g.png");
-            //loadtex.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadSpecular, this);
-           // loadtex["mat"] = this.matPlane;
-
-            //this.matPlane.addPass(PassType.matCapPass);
-
+            this._queueLoad = new QueueLoader();
+            this._queueLoad.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.loadComplete, this);
+            this._queueLoad.load("resource/normal/Metal_SciFiFuelCrate_1k_d.png");
+            this._queueLoad.load("resource/normal/Metal_SciFiFuelCrate_1k_n.png");
+            this._queueLoad.load("resource/normal/Metal_SciFiFuelCrate_1k_g.png");
         }
 
-        protected onLoadDiffuse(e:LoaderEvent3D) {
-            e.loader["mat"].diffuseTexture = e.loader.data;
-        }
-
-        protected onLoadNormal(e: LoaderEvent3D) {
-            e.loader["mat"].normalTexture = e.loader.data;
-            //mat.normalTexture.useMipmap = false;
-            //mat.normalTexture.smooth = false;
-        }
-
-        protected onLoadSpecular(e: LoaderEvent3D) {
-            e.loader["mat"].specularTexture = e.loader.data;
-
-       
-            //mat.normalTexture.useMipmap = false;
-            //mat.normalTexture.smooth = false;
+        private loadComplete(e: LoaderEvent3D) {
+            this.matPlane.diffuseTexture = this._queueLoad.getAsset("resource/normal/Metal_SciFiFuelCrate_1k_d.png");
+            this.matPlane.normalTexture = this._queueLoad.getAsset("resource/normal/Metal_SciFiFuelCrate_1k_n.png");
+            this.matPlane.specularTexture = this._queueLoad.getAsset("resource/normal/Metal_SciFiFuelCrate_1k_g.png");
         }
 
         private angle: number = 0;

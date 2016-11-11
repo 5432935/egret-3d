@@ -1,6 +1,7 @@
 ﻿module egret3d {
     
     /**
+    * @private
     * @language zh_CN
     * @class egret3d.BooleanArray
     * @classdesc
@@ -69,7 +70,7 @@
         * @language zh_CN
         * 在指定的位置获取bool值
         * @param index 指定下标
-        * @return bool值
+        * @returns bool值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -82,7 +83,7 @@
         /**
         * @language zh_CN
         * 是否需要重新计算
-        * @return bool值
+        * @returns bool值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -103,7 +104,7 @@
         /**
         * @language zh_CN
         * 获取压缩后的值
-        * @return number 压缩的结果
+        * @returns number 压缩的结果
         * @version Egret 3.0
         * @platform Web,Native
         */

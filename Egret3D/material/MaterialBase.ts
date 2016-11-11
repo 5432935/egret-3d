@@ -5,6 +5,10 @@
     * @class egret3d.MaterialBase
     * @classdesc
     * 材质球共有的基础类型，封装了材质球共有的基础数据设置方法。</p>
+    * 提供控制模型渲染的效果
+    * 比如：
+    * 默认贴图、法线贴图、高光贴图、
+    * 裁剪模式、渲染方式等内容
     * 不同的渲染通道pass。</p>
     * @version Egret 3.0
     * @platform Web,Native
@@ -101,7 +105,7 @@
         /**
          * @language zh_CN
          * 获取材质球接受的灯光组。
-         * @return LightGroup 灯光组
+         * @returns LightGroup 灯光组
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -109,53 +113,53 @@
             return this._lightGroup;
         }
 
-        ///**
-        // * @language zh_CN
-        // * 设置材质 shadowMapTexture 。
-        // * 设置材质球的阴影贴图。
-        // * @param texture ITexture
-        // * @version Egret 3.0
-        // * @platform Web,Native
-        // */
-        ////public set shadowMapTexture(texture: ITexture) {
-        ////    if (texture) {
-        ////        this.materialData.shadowMapTexture = texture;
-        ////        this.materialData.textureChange = true;
-
-        ////        //if (this.materialData.shaderPhaseTypes.indexOf(ShaderPhaseType.shadow_fragment) == -1) {
-        ////        //    this.materialData.shaderPhaseTypes.push(ShaderPhaseType.shadow_fragment);
-        ////        //    this.diffusePass.passInvalid();
-        ////        //}
-        ////    }
-        ////}
-
-        ///**
-        //* @language zh_CN
-        //* 返回材质 shadowMapTexture。
-        //* 返回材质球的阴影贴图。
-        //* @returns ITexture 阴影贴图
-        //* @version Egret 3.0
-        //* @platform Web,Native
-        //*/
-        ////public get shadowMapTexture(): ITexture {
-        ////    return this.materialData.shadowMapTexture;
-        ////}
-
         /**
          * @language zh_CN
-         * 设置是否开启深度测试
+         * 设置材质 shadowMapTexture 。
+         * 设置材质球的阴影贴图。
          * @param texture ITexture
          * @version Egret 3.0
          * @platform Web,Native
          */
-        public set depth(v: boolean) {
-            this.materialData.depthTest = v;
+        //public set shadowMapTexture(texture: ITexture) {
+        //    if (texture) {
+        //        this.materialData.shadowMapTexture = texture;
+        //        this.materialData.textureChange = true;
+
+        //        //if (this.materialData.shaderPhaseTypes.indexOf(ShaderPhaseType.shadow_fragment) == -1) {
+        //        //    this.materialData.shaderPhaseTypes.push(ShaderPhaseType.shadow_fragment);
+        //        //    this.diffusePass.passInvalid();
+        //        //}
+        //    }
+        //}
+
+        /**
+        * @language zh_CN
+        * 返回材质 shadowMapTexture。
+        * 返回材质球的阴影贴图。
+        * @returns ITexture 阴影贴图
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        //public get shadowMapTexture(): ITexture {
+        //    return this.materialData.shadowMapTexture;
+        //}
+
+
+        /**
+         * @language zh_CN
+         * 设置是否开启深度测试
+         * @param bool 是否开启深度测试
+         * @version Egret 3.0
+         * @platform Web,Native
+         */
+        public set depth(bool: boolean) {
+            this.materialData.depthTest = bool;
         }
 
          /**
          * @language zh_CN
          * 返回深度测试
-         * @param texture ITexture
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -385,9 +389,10 @@
         * @language zh_CN
         * 设置模型渲染模式。模型可以以顶点的方式渲染，线框渲染（会需要特定模型），三角形渲染
         * DrawMode.POINTS
-        * rawMode.LINES
+        * DrawMode.LINES
         * DrawMode.TRIANGLES
         * @default DrawMode.TRIANGLES
+        * @see egret3d.DrawMode
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -398,6 +403,7 @@
         /**
         * @language zh_CN
         * 设置模型渲染模式。模型渲染中，带透明贴图的 去除不渲染透明透明部分的阀值
+        * 取值范围 0 - 1
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -407,7 +413,8 @@
 
         /**
         * @language zh_CN
-        * 设置模型渲染模式。模型渲染中，带透明贴图的 去除不渲染透明透明部分的阀值
+        * 获取模型渲染模式。模型渲染中，带透明贴图的 去除不渲染透明透明部分的阀值
+        * 取值范围 0 - 1
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -635,7 +642,7 @@
          /**
          * @language zh_CN
          * 获取映射贴图UV坐标，区域，用uvRectangle 的方式映射
-         * @return rect Rectangle
+         * @returns rect Rectangle
          * @version Egret 3.0
          * @platform Web,Native
          */
@@ -808,7 +815,6 @@
         * @language zh_CN
         * 使用阴影详细请看 ShadowCast
         * @see egret3d.ShadowCast
-        * 返回材质 castShadow 值。
         * 返回材质 是否产生阴影 值。
         * @returns {boolean}
         * @version Egret 3.0
@@ -822,7 +828,6 @@
         * @language zh_CN
         * 使用阴影详细请看 ShadowCast
         * @see egret3d.ShadowCast
-        * 设置材质 acceptShadow 值。
         * 设置材质是否是否产生阴影，设置了之后必须要给 shadowmaping 的方法。
         * @param value {boolean}
         * @version Egret 3.0
@@ -944,10 +949,9 @@
         }
 
         /**
-
         * @language zh_CN
         * 返回材质 bothside 值。
-       * 返回是否显示双面的开关。
+        * 返回是否显示双面的开关。
         * @returns {boolean}
         * @version Egret 3.0
         * @platform Web,Native
@@ -957,12 +961,14 @@
         }
 
         /**
-       * @language zh_CN
-       * 设置 cull 模式 正面渲染三角形或者背面渲染三角形。
-       * @param value {Number}
-       * @version Egret 3.0
-       * @platform Web,Native
-       */
+        * @language zh_CN
+        * 设置 cull 模式 正面渲染三角形或者背面渲染三角形。
+        * @see egret3d.ContextConfig.BACK 裁剪反面进行正面渲染
+        * @see egret3d.ContextConfig.FRONT 裁剪正面进行反面渲染
+        * @param value {Number}
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set cullMode(value: number) {
             this.materialData.textureStateChage = true; 
             this.materialData.cullFrontOrBack = value;
@@ -980,13 +986,14 @@
         }
         
         /**
-         * @language zh_CN
-         * 设置材质 blendMode 值。
-         * 设置材质球的 混合模式可以参照 blendmode 中的值
-         * @param value {BlendMode}
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 设置材质 blendMode 值。
+        * 设置材质球的 混合模式可以参照 blendmode 中的值
+        * @see egret3d.BlendMode
+        * @param value {BlendMode}
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set blendMode(value: BlendMode) {
             this.materialData.textureStateChage = true; 
             this.materialData.blendMode = value;
@@ -1030,6 +1037,14 @@
             }
         }
 
+        /**
+        * @language zh_CN
+        * 设置点的大小
+        * 只有 DrawMode.POINTS 渲染模式才能有作用 
+        * @param value  点的大小
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set pointSize(value: number) {
             if (value == this.materialData.specularLevel) {
                 return;
@@ -1038,10 +1053,23 @@
             this.materialData.textureStateChage = true;
         }
 
+        /**
+        * @language zh_CN
+        * 获取点的大小
+        * @returns number  点的大小
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get pointSize(): number {
             return this.materialData.specularLevel;
         }
 
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public disposePass(passType: PassType) {
             for (var i: number = 0; i < this.passes[passType].length; i++ ){
                 this.passes[passType][i].dispose();
@@ -1151,6 +1179,7 @@
 
 
         /**
+        * @private
         * @language zh_CN
         * 释放接口
         * @version Egret 3.0

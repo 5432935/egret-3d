@@ -1,4 +1,7 @@
 ﻿module egret3d {
+    /*
+    * @private
+    */
     export class RenderQuen {
         public mainRender: RenderBase;
 

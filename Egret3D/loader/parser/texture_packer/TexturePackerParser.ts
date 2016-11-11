@@ -8,14 +8,13 @@
         constructor(data: any, type: string, fileType: string) {
             super(fileType);
 
+            this.data = data;
             switch (type) {
                 case "json":
-                    this.data = eval("(" + data + ")");
+                    if (this.data.meta && this.data.meta.image) {
+                        this.taskDict[this.data.meta.image] = 0;
+                    }
                     break;
-            }
-
-            if (this.data.meta && this.data.meta.image) {
-                this.taskDict[this.data.meta.image] = 0;
             }
         }
     }

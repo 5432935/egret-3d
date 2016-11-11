@@ -1,7 +1,7 @@
 //##FilterBegin## ##Particle##
 
 attribute vec3 attribute_velocity;
-float particle(  ParticleData curParticle ){
+void getNodeData(){
 	velocityBaseVec3 = attribute_velocity;
 }
 

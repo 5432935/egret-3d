@@ -23,27 +23,21 @@
                         }
                     }
 
-                    return IConfigParser.TYPE_PARTICLE;
+                    if (data.property && data.emission && data.life) {
+                        return IConfigParser.TYPE_PARTICLE;
+                    }
+                    return "";
             }
             return "";
         }
 
-        public static parserConfig(dataConfig: string, type: string): IConfigParser {
-            var config = null;
-            switch (type) {
-                case "xml":
-                    config = XMLParser.parse(dataConfig);
-                    break;
-                case "json":
-                    config = eval("(" + dataConfig + ")");
-                    break;
-            }
-            var fileType: string = UnitParserUtils.parserType(config, type);
+        public static parserConfig(dataConfig: any, type: string): IConfigParser {
+            var fileType: string = UnitParserUtils.parserType(dataConfig, type);
             switch (fileType) {
                 case IConfigParser.TYPE_SCENE:
                 case IConfigParser.TYPE_SKIN_MESH:
                 case IConfigParser.TYPE_EFFECT_GROUP:
-                    return new UnitConfigParser(config, type, fileType);
+                    return new UnitConfigParser(dataConfig, type, fileType);
                 case IConfigParser.TYPE_PARTICLE:
                     return new ParticleParser(dataConfig, type, fileType);
                 case IConfigParser.TYPE_TEXTUREPACKER:

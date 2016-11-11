@@ -1,36 +1,37 @@
 ﻿module egret3d {
     /**
-     * @class egret3d.CubeTexture
-     * @classdesc
-     * CubeTexture 类为天空贴图
-     *
-     * 天空贴图用于Sky类使用，其内部是将6张HTMLImageElement（网页图片元素）封装到CubeTexture对象，CubeTexture为引擎内部使用对象。</p>
-     *
-     * 示例：</p>
-     * 假设html中已有</p>
-     <pre>
-     <img id="t1" src="image_front.png" />
-     <img id="t2" src="image_back.png" />
-     <img id="t3" src="image_left.png" />
-     <img id="t4" src="image_right.png" />
-     <img id="t5" src="image_up.png" />
-     <img id="t6" src="image_down.png" />
-     </pre>
-     使用示例：</p>
-     <pre>
-     var cubeTexture: CubeTexture = CubeTexture.createCubeTexture(
-     <HTMLImageElement>document.getElementById("t1"),
-     <HTMLImageElement>document.getElementById("t2"),
-     <HTMLImageElement>document.getElementById("t3"),
-     <HTMLImageElement>document.getElementById("t4"),
-     <HTMLImageElement>document.getElementById("t5"),
-     <HTMLImageElement>document.getElementById("t6")
-     );
-     </pre>
-     * @see egret3d.Sky
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @class egret3d.CubeTexture
+    * @classdesc
+    * CubeTexture 类为天空贴图
+    *
+    * 天空贴图用于Sky类使用，其内部是将6张HTMLImageElement（网页图片元素）封装到CubeTexture对象，CubeTexture为引擎内部使用对象。</p>
+    *
+    * 示例：</p>
+    * 假设html中已有</p>
+    <pre>
+    <img id="t1" src="image_front.png" />
+    <img id="t2" src="image_back.png" />
+    <img id="t3" src="image_left.png" />
+    <img id="t4" src="image_right.png" />
+    <img id="t5" src="image_up.png" />
+    <img id="t6" src="image_down.png" />
+    </pre>
+    使用示例：</p>
+    <pre>
+    var cubeTexture: CubeTexture = CubeTexture.createCubeTexture(
+    <HTMLImageElement>document.getElementById("t1"),
+    <HTMLImageElement>document.getElementById("t2"),
+    <HTMLImageElement>document.getElementById("t3"),
+    <HTMLImageElement>document.getElementById("t4"),
+    <HTMLImageElement>document.getElementById("t5"),
+    <HTMLImageElement>document.getElementById("t6")
+    );
+    </pre>
+    * @see egret3d.Sky
+    * @includeExample texture/CubeTexture.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class CubeTexture extends ITexture {
 
         /**
@@ -83,15 +84,15 @@
         public image_down: ContextTexture2D;
 
         /**
-         * @language zh_CN
-         * 构造函数
-         * @param image_front 默认参为null 前部HTMLImageElement图片元素
-         * @param image_back 默认参为null 背部HTMLImageElement图片元素
-         * @param image_left 默认参为null 左部HTMLImageElement图片元素
-         * @param image_right 默认参为null 右部HTMLImageElement图片元素
-         * @param image_up 默认参为null 顶部HTMLImageElement图片元素
-         * @param image_down 默认参为null 底部HTMLImageElement图片元素
-         */
+        * @language zh_CN
+        * 构造函数
+        * @param image_front 默认参为null 前部HTMLImageElement图片元素
+        * @param image_back 默认参为null 背部HTMLImageElement图片元素
+        * @param image_left 默认参为null 左部HTMLImageElement图片元素
+        * @param image_right 默认参为null 右部HTMLImageElement图片元素
+        * @param image_up 默认参为null 顶部HTMLImageElement图片元素
+        * @param image_down 默认参为null 底部HTMLImageElement图片元素
+        */
         constructor(image_front: ContextTexture2D = null,
             image_back: ContextTexture2D = null,
             image_left: ContextTexture2D = null,
@@ -112,15 +113,17 @@
         }
 
         /**
-         * @language zh_CN
-         * 创建CubuTexture
-         * @param image_front 前部HTMLImageElement图片元素
-         * @param image_back 背部HTMLImageElement图片元素
-         * @param image_left 左部HTMLImageElement图片元素
-         * @param image_right 右部HTMLImageElement图片元素
-         * @param image_up 顶部HTMLImageElement图片元素
-         * @param image_down 底部HTMLImageElement图片元素
-         */
+        * @language zh_CN
+        * 创建CubuTexture
+        * @param image_front 前部HTMLImageElement图片元素
+        * @param image_back 背部HTMLImageElement图片元素
+        * @param image_left 左部HTMLImageElement图片元素
+        * @param image_right 右部HTMLImageElement图片元素
+        * @param image_up 顶部HTMLImageElement图片元素
+        * @param image_down 底部HTMLImageElement图片元素
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public static createCubeTexture(image_front: HTMLImageElement,
             image_back: HTMLImageElement,
             image_left: HTMLImageElement,
@@ -150,6 +153,18 @@
             return cubeTexture;
         }
 
+        /**
+        * @language zh_CN
+        * 创建CubuTexture
+        * @param image_front 前部ITexture图片元素
+        * @param image_back 背部ITexture图片元素
+        * @param image_left 左部ITexture图片元素
+        * @param image_right 右部ITexture图片元素
+        * @param image_up 顶部ITexture图片元素
+        * @param image_down 底部ITexture图片元素
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public static createCubeTextureByImageTexture(
             image_front: ITexture,
             image_back: ITexture,
@@ -162,16 +177,18 @@
         }
 
         /**
-         * @language zh_CN
-         * 设置CubuTexture
-         * @param cubeTexture 源CubuTexture
-         * @param image_front 前部ITexture图片元素
-         * @param image_back 背部ITexture图片元素
-         * @param image_left 左部ITexture图片元素
-         * @param image_right 右部ITexture图片元素
-         * @param image_up 顶部ITexture图片元素
-         * @param image_down 底部ITexture图片元素
-         */
+        * @language zh_CN
+        * 设置CubuTexture
+        * @param cubeTexture 源CubuTexture
+        * @param image_front 前部ITexture图片元素
+        * @param image_back 背部ITexture图片元素
+        * @param image_left 左部ITexture图片元素
+        * @param image_right 右部ITexture图片元素
+        * @param image_up 顶部ITexture图片元素
+        * @param image_down 底部ITexture图片元素
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public static setCubeTexture(cubeTexture: CubeTexture, image_front: ITexture,
             image_back: ITexture,
             image_left: ITexture,
@@ -187,11 +204,14 @@
         }
 
         /**
-         * @language zh_CN
-         * 上传贴图数据给GPU
-         * 更新上传 cube 贴图纹理到GPU 现存中缓存起来
-         * @param context3D
-         */
+        * @private
+        * @language zh_CN
+        * 上传贴图数据给GPU
+        * 更新上传 cube 贴图纹理到GPU 现存中缓存起来
+        * @param context3D
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public upload(context3D: Context3DProxy) {
             if (!this.image_front ||
                 !this.image_back ||
@@ -217,6 +237,12 @@
             }
         }
 
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public uploadForcing(context3D: Context3DProxy) {
 
         }

@@ -9,12 +9,12 @@
      */
     export class ESMVersion {
         static versionDictionary: any = {
-            1: (bytes: ByteArray, geomtry: GeometryData) => ESMVersion.parserVersion_1(bytes, geomtry),
-            2: (bytes: ByteArray, geomtry: GeometryData) => ESMVersion.parserVersion_2(bytes, geomtry),
-            3: (bytes: ByteArray, geomtry: GeometryData) => ESMVersion.parserVersion_3(bytes, geomtry),
+            1: (bytes: ByteArray, geomtry: GeometryData, param: any) => ESMVersion.parserVersion_1(bytes, geomtry, param),
+            2: (bytes: ByteArray, geomtry: GeometryData, param: any) => ESMVersion.parserVersion_2(bytes, geomtry, param),
+            3: (bytes: ByteArray, geomtry: GeometryData, param: any) => ESMVersion.parserVersion_3(bytes, geomtry, param),
         };
 
-        public static parserVersion_1(bytes: ByteArray, geomtry: GeometryData) {
+        public static parserVersion_1(bytes: ByteArray, geomtry: GeometryData, param: any) {
             var description: number = bytes.readInt();
 
             geomtry.matCount = bytes.readInt();
@@ -158,7 +158,7 @@
                 }
             }
         }
-        public static parserVersion_2(bytes: ByteArray, geomtry: GeometryData) {
+        public static parserVersion_2(bytes: ByteArray, geomtry: GeometryData, param: any) {
             var description: number = bytes.readInt();
 
             geomtry.matCount = bytes.readInt();
@@ -304,7 +304,7 @@
         }
 
 
-        public static parserVersion_3(bytes: ByteArray, geomtry: GeometryData) {
+        public static parserVersion_3(bytes: ByteArray, geomtry: GeometryData, param: any) {
             var description: number = bytes.readInt();
 
             geomtry.matCount = bytes.readInt();

@@ -8,7 +8,6 @@ module egret3d {
     * 
     * @version Egret 3.0
     * @platform Web,Native
-    * @includeExample animation/skeletonAnimation/Joint.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -105,7 +104,6 @@ module egret3d {
         /**
         * @language zh_CN
         * 构造函数
-        * @param name 骨骼名称
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -144,6 +142,9 @@ module egret3d {
         /**
         * @language zh_CN
         * 构建骨骼本地矩阵
+        * @param scale Vector3D 缩放值
+        * @param rotation Vector3D或者Quaternion，旋转数据
+        * @param translation Vector3D 位移对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -163,6 +164,9 @@ module egret3d {
         /**
         * @language zh_CN
         * 构建骨骼逆矩阵
+        * @param scale Vector3D 缩放值
+        * @param rotation Vector3D或者Quaternion，旋转数据
+        * @param translation Vector3D 位移对象
         * @version Egret 3.0
         * @platform Web,Native
         */

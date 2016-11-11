@@ -1,22 +1,22 @@
 ﻿module egret3d {
 
-     /**
-     * @language zh_CN
-     * @class egret3d.CheckerboardTexture
-     * @classdesc
-     * CheckerboardTexture 类为 棋盘格纹理类</p>
-     * 
-     * 棋盘格纹理为黑白间隔色块组成的一张纹理，主要用于判别模型UV的正确性，若某模型UV值不正确，其纹理表现必定乱序不规整。</p>
-     * 使用示例:</p>
-      <pre>
-     var material: egret3d.TextureMaterial = new egret3d.TextureMaterial(egret3d.CheckerboardTexture.texture );
-     var mesh: egret3d.Mesh = new egret3d.Mesh(new egret3d.CubeGeometry(), material);
-      </pre>
-     *
-     * @version Egret 3.0
-     * @platform Web,Native
-     * @includeExample texture/CheckerboardTexture.ts
-     */
+    /**
+    * @language zh_CN
+    * @class egret3d.CheckerboardTexture
+    * @classdesc
+    * CheckerboardTexture 类为 棋盘格纹理类</p>
+    * 
+    * 棋盘格纹理为黑白间隔色块组成的一张纹理，主要用于判别模型UV的正确性，若某模型UV值不正确，其纹理表现必定乱序不规整。</p>
+    * 使用示例:</p>
+    <pre>
+    var material: egret3d.TextureMaterial = new egret3d.TextureMaterial(egret3d.CheckerboardTexture.texture );
+    var mesh: egret3d.Mesh = new egret3d.Mesh(new egret3d.CubeGeometry(), material);
+    </pre>
+    *
+    * @includeExample texture/CheckerboardTexture.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class CheckerboardTexture extends ITexture {
 
         /**
@@ -47,10 +47,12 @@
         }
 
         /**
-         * @language zh_CN
-         * 上传贴图数据给GPU
-         * @param context3D 
-         */
+        * @language zh_CN
+        * 上传贴图数据给GPU
+        * @param context3D
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public upload(context3D: Context3DProxy) {
             if (!this.texture2D.textureBuffer) {
                 this.texture2D.textureBuffer = this.texture2D.textureBuffer || context3D.creatTexture();
@@ -100,7 +102,13 @@
                 }
             }
         }
-        
+
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public uploadForcing(context3D: Context3DProxy) {
         }
 

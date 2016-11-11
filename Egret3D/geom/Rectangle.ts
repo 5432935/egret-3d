@@ -1,18 +1,19 @@
 ﻿module egret3d {
     /**
-     * @language zh_CN
-     * @class egret3d.Rectangle
-     * @classdesc
-     * Rectangle 类 表示矩形
-     * 
-     * Rectangle 对象是按其位置（由它左上角的点 (x, y) 确定）以及宽度和高度定义的区域。 
-     * 
-     * Rectangle 类的 x、y、width 和 height 属性相互独立；更改一个属性的值不会影响其它属性。
-     * 
-     * 您可以使用 new Rectangle() 构造函数创建 Rectangle 对象。
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.Rectangle
+    * @classdesc
+    * Rectangle 类 表示矩形
+    * 
+    * Rectangle 对象是按其位置（由它左上角的点 (x, y) 确定）以及宽度和高度定义的区域。 
+    * 
+    * Rectangle 类的 x、y、width 和 height 属性相互独立；更改一个属性的值不会影响其它属性。
+    * 
+    * 您可以使用 new Rectangle() 构造函数创建 Rectangle 对象。
+    * @includeExample geom/Rectangle.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class Rectangle {
 
         /**
@@ -113,6 +114,10 @@
          * 检测x y 是否在当前矩形内
          * @param x  x 坐标。 
          * @param y  y 坐标。
+         * @param lt_x  矩形左x坐标。
+         * @param lt_y  矩形上y坐标。
+         * @param rb_x  矩形右x坐标。
+         * @param rb_y  矩形下y坐标。
          * @returns boolean 是否在当前矩形内
          * @version Egret 3.0
          * @platform Web,Native
@@ -128,7 +133,7 @@
 
         /**
          * @language zh_CN
-         * 是否相等
+         * 检测另外一个矩形是否和当前矩形等价
          * @param rectangle  比较的对象
          * @returns boolean 相等返回ture
          * @version Egret 3.0
@@ -143,8 +148,11 @@
 
         /**
          * @language zh_CN
-         * 是否相等
-         * @param rectangle  比较的对象
+         * 检测传入的数据构成的矩形是否和当前矩形等价
+         * @param x  x坐标
+         * @param y  y坐标
+         * @param width  矩形宽度
+         * @param height  矩形高度
          * @returns boolean 相等返回ture
          * @version Egret 3.0
          * @platform Web,Native
@@ -156,16 +164,10 @@
                 (this.height != height));
         }
 
-       /**
-         * @language zh_CN
-         * 返回相交区域
-         * @param source  比较区域
-         * @param target  目标接参
-         * @returns Rectangle 返回相交的区域
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
-        public equalInnerArea(source: Rectangle, target: Rectangle): boolean {
+        /*
+        * @private
+        */
+        private equalInnerArea(source: Rectangle, target: Rectangle): boolean {
             var Xa1 = this.x; 
             var Ya1 = this.y; 
 
@@ -185,6 +187,15 @@
             return false;
         }
 
+        /**
+        * @language zh_CN
+        * 输入一个矩形和当前矩形做比较，获得交叉区域的矩形
+        * @param source  比较区域
+        * @param target  目标接参
+        * @returns Rectangle 返回相交的区域
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public innerArea(source: Rectangle, target: Rectangle): Rectangle {
             target = target || new Rectangle();
             var Xa1 = this.x;
@@ -218,6 +229,16 @@
         }
 
 
+        /**
+        * @language zh_CN
+        * 重置一个矩形数据
+        * @param x  x坐标
+        * @param y  y坐标
+        * @param width  宽度
+        * @param height  高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public setTo(x: number, y: number, width: number, height: number): void {
             this.x = x;
             this.y = y;

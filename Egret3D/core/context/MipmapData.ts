@@ -1,7 +1,6 @@
 ﻿module egret3d {
 
     /**
-    * @private
     * @class egret3d.MipmapData
     * @classdesc
     * 一个贴图的不同LOD层级数据。</p>

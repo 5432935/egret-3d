@@ -1,15 +1,14 @@
 ﻿module egret3d {
 
     /**
-     * @language zh_CN
-     * @class egret3d.AnimationNode
-     * @classdesc
-     * 动画效果节点
-     * 
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
-    export class AnimationNode extends EventDispatcher {
+    * @language zh_CN
+    * @class egret3d.AnimationNode
+    * @classdesc
+    * 动画效果节点
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
+    export class AnimationNode {
         
         /**
         * @language zh_CN
@@ -18,7 +17,6 @@
         * @platform Web,Native
         */
         public name: string; 
-
                 
         /**
         * @language zh_CN

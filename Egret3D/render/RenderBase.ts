@@ -8,39 +8,43 @@
     */
     export class RenderBase {
 
-
+        /**
+        * @language zh_CN
+        * 渲染器名字
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public name: string = "default";
 
-
         /**
-        * @public
         * @language zh_CN
         * 是否启用当前渲染器，善用当前开关，可以优化渲染性能
-        * @classdesc
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public enabled: boolean = true;
 
         /**
-        * @public
         * @language zh_CN
         * 渲染器使用的相机
-        * @classdesc
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public camera: Camera3D;
 
         /**
-        * @public
         * @language zh_CN
         * 渲染器使用的相机
-        * @classdesc
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public viewPort: Rectangle;
 
         /**
-        * @public
         * @language zh_CN
         * 如果设置了当前渲染的视图，需要渲染到贴图，此变量才会有值
-        * @classdesc
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public renderTexture: RenderTexture;
 
@@ -48,7 +52,8 @@
         * @public
         * @language zh_CN
         * 前渲染的视图，渲染物体的总数目
-        * @classdesc
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         public numEntity: number = 0; 
 

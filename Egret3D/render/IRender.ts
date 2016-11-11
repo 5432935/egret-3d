@@ -16,6 +16,47 @@
 
         /**
         * @language zh_CN
+        * IRender Mesh 类型
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static TYPE_MESH: string = "mesh";
+
+        /**
+        * @language zh_CN
+        * IRender Particle 类型
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static TYPE_PARTICLE_EMIT: string = "particleEmit";
+
+        /**
+        * @language zh_CN
+        * IRender Wireframe 类型
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static TYPE_WIREFRAME: string = "wireframe";
+
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public zIndex: number = -1;
+
+        ///**
+        //* @private
+        //* 需要进行alpha 排序
+        //* @language zh_CN
+        //* @version Egret 3.0
+        //* @platform Web,Native
+        //*/
+        //public alphaBlend: boolean = false ;
+
+        /**
+        * @language zh_CN
         * 构造函数
         * @version Egret 3.0
         * @platform Web,Native
@@ -33,10 +74,26 @@
         */
         protected _geometry: Geometry;
 
+
+        /**
+        * @language zh_CN
+        * 获取网格信息。</p>
+        * geometry 为渲染对象的网格信息 ，渲染对象需要 vertexBuffer  和 indexBuffer 信息 及顶点着色器shade。</p>
+        * @returns Geometry 网格信息
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get geometry(): Geometry {
             return this._geometry;
         }
 
+        /**
+        * @language zh_CN
+        * 设置网格信息。</p>
+        * @param value 网格信息
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set geometry(value: Geometry) {
             if (this._geometry == value) {
                 return;
@@ -53,6 +110,9 @@
         /**
         * @language zh_CN
         * 对象类型。</p>
+        * @see egret3d.IRender.TYPE_MESH
+        * @see egret3d.IRender.TYPE_PARTICLE_EMIT
+        * @see egret3d.IRender.TYPE_WIREFRAME
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -95,6 +155,7 @@
         * @language zh_CN
         * 动作对象，控制骨骼动画/特效动画等。</p>
         * 可拓展的动画功能属性，动画功能的驱动类总接口。</p>
+        * @see egret3d.IAnimation
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -187,8 +248,9 @@
 
         /**
         * @language zh_CN
-        * 用ID得到一个材质
+        * 根据id获取对应的材质
         * @param id 材质id
+        * @returns MaterialBase 材质信息对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -199,11 +261,11 @@
         /**
         * @language zh_CN
         * 得到所有材质的个数
-        * @returns number
+        * @returns number 个数
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public materialCount(): number {
+        public get materialCount(): number {
             return this._materialCount;
         }
 
@@ -246,6 +308,27 @@
             return this._multiMaterial;
         }
 
+        /**
+        * @language zh_CN
+        * 设置多材质
+        * @param multiMat 多个材质
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set multiMaterial(multiMat: { [matID: number]: MaterialBase }) {
+            this._multiMaterial = multiMat;
+            this._materialCount = 0;
+            for (var key in multiMat) {
+                this._materialCount++;
+            }
+        }
+
+        /**
+        * @private
+        * @language zh_CN
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public update(time: number, delay: number, camera: Camera3D) {
             super.update(time, delay, camera);
 

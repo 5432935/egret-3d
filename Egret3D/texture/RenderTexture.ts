@@ -1,9 +1,10 @@
 ﻿module egret3d {
 
     /**
+    * @private
     * @class egret3d.RenderTexture
     * @classdesc
-    * 渲染到内容到一张贴图
+    * 渲染目标贴图
     * @see egret3d.ITexture
     * @version Egret 3.0
     * @platform Web,Native

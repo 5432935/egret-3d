@@ -18,6 +18,7 @@
     * @see egret3d.Texture2D
     * @see egret3d.Shader
     * @see egret3d.CubeTexture
+    * @includeExample core/context/Program3D.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -39,7 +40,7 @@
                 
         /**
         * @language zh_CN
-        * 构造
+        * 构造函数
         * @param pg3D WebGLProgram对象
         * @version Egret 3.0
         * @platform Web,Native

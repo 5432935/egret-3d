@@ -3,8 +3,10 @@
     /**
     * @class egret3d.Quad
     * @classdesc
-    * gui中基础的2d显示单元</p>
-    * 在这个class中，主要完成更新顶点数据。</p>
+    * gui中基础显示单元</p>
+    * 在这个class中，主要完成更新顶点数据，更新贴图。</p>
+    * @see egret3d.DisplayObject
+    * @includeExample gui/Quad.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -23,13 +25,21 @@
         private static IdentityVector: Vector3D = new Vector3D(1, 1, 1, 1);
         private static TempVector: Vector3D = new Vector3D();
         private static DefaultUVRect: Rectangle = new Rectangle(0, 0, 1, 1);
+
+        /**
+        * @language zh_CN
+        * 构造函数
+        * @version Egret 3.0
+        * @platform Web,Native 
+        */
         constructor() {
             super();
         }
 
-         /**
+        /**
         * @language zh_CN
-        * @param value Quad对象中的Texture对象
+        * Quad对象中的Texture
+        * @param value Quad对象中的Texture
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -50,9 +60,10 @@
             }
         }
 
-            /**
+        /**
         * @language zh_CN
-        * @param value Quad对象中的Texture对象
+        * Quad对象中的Texture
+        * @returns Quad对象中的Texture
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -74,7 +85,7 @@
             if (!geometry.sharedVertexBuffer || !geometry.sharedVertexBuffer.arrayBuffer)
                 return;
 
-            var pos: Vector3D = this.globalPosition;
+            var pos: Point = this.globalPosition;
             var rot: Vector3D = this.globalRotation;
             var sca: Vector3D = this.globalScale;
 
@@ -268,6 +279,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 在渲染之前清理某个下标位置的顶点数据，标记为null状态
         * @param zIndex 在geometry中下标
@@ -275,7 +287,6 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-
         public static clear(zIndex: number, geometry: Geometry): void {
             if (geometry.sharedVertexBuffer && geometry.sharedVertexBuffer.arrayBuffer) {
 

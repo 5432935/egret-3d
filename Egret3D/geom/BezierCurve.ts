@@ -1,18 +1,34 @@
 ﻿module egret3d {
-     /**
-     * @private
-     * @language zh_CN
-     * @class egret3d.BezierCurve
-     * @classdesc
-     * 贝塞尔曲线
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    /**
+    * @private
+    * @language zh_CN
+    * @class egret3d.BezierCurve
+    * @classdesc
+    * 贝塞尔曲线
+    * @includeExample geom/BezierCurve.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class BezierCurve {
+
+        /**
+        * @language zh_CN
+        * 构造函数
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         constructor() {
 
         }
 
+        /**
+        * @language zh_CN
+        * 计算贝塞尔曲线在t值时候的y值
+        * @param pos 贝塞尔曲线的坐标列表
+        * @param t 时刻
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public calcLineX(pos: Array<Point>, t: number): number {
             var A0: Point;
             var A1: Point;
@@ -90,9 +106,6 @@
             return p0;
 
         }
-
-
-
     }
 
     /**

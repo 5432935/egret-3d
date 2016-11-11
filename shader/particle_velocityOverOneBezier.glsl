@@ -6,12 +6,9 @@ void calcVelocityOverBezier(float curTime, float totalTime)
 }
 
 void main() {
-	if(discard_particle < TrueOrFalse){
-
-		calcVelocityOverBezier(currentTime, curParticle.life);
-		//
-		velocityOverVec3.xyz = velocityTwoBezier.xyz;
-	}
+	calcVelocityOverBezier(currentTime, curParticle.life);
+	//
+	velocityOverVec3.xyz = velocityTwoBezier.xyz;
 }
 
 //##FilterEnd##

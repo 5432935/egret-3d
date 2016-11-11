@@ -56,8 +56,6 @@
                     this._mapConfigParser.calculateHudTask(hudNodeData);
                 }
             }
-
-            this._mapConfigParser.processNode();
         }     
 
         protected nodeFilter(node: Node): boolean {

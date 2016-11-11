@@ -1,16 +1,15 @@
 ﻿module egret3d {
-
-    /**
+   /**
    * @class egret3d.GrassMesh
    * @classdesc
-   * 草
-   * @see egret3d.Mesh
+   * 实现风吹草动，并且实现了单个角色在草丛中，挤压草的效果
+   * @see egret3d.plant.GrassMethod.ts
+   * @includeExample plant/GrassMesh.ts
    * @version Egret 3.0
    * @platform Web,Native 
    */
     export class GrassMesh extends Mesh {
 
-        private _node: ParticleDataShape;
         private _attrPosition: GLSL.VarRegister;
         private _attrAngleY: GLSL.VarRegister;
 
@@ -45,7 +44,7 @@
         /**
         * @language zh_CN
         * 获取GrassMethod
-        * @return 草的Method，用于外部控制
+        * @returns 草的Method，用于外部控制
         */
         public get method(): GrassMethod {
             return this._method;
@@ -260,7 +259,7 @@
 
         /**
         * @language zh_CN
-        * 克隆一个模型
+        * 克隆该风吹草动
         * @returns 克隆后的草
         * @version Egret 3.0
         * @platform Web,Native
@@ -288,6 +287,7 @@
                 this._plantShape = null;
             }
             this._birthPoints = null;
+            this._data = null;
 
         }
 
@@ -298,22 +298,93 @@
 
     /**
     * @language zh_CN
+    * @class egret3d.GrassMethod
+    * @classdesc
     * 构造函数，用于设置草的属性
     * @version Egret 3.0
     * @platform Web,Native 
     */
     export class GrassData{
+
+        /**
+        * @language zh_CN
+        * 面片的最小宽度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public minWidth: number = 100;
+
+        /**
+        * @language zh_CN
+        * 面片的最大宽度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public maxWidth: number = 100;
+
+        /**
+        * @language zh_CN
+        * 面片的最小高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public minHeight: number = 100;
+
+        /**
+        * @language zh_CN
+        * 面片的最大高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public maxHeight: number = 100;
 
+        /**
+        * @language zh_CN
+        * 草的噪波产生簇大小。越低的值意味着噪波越低。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public noiseSpread: number = 0;
+
+        /**
+        * @language zh_CN
+        * 健康颜色的草，在噪波中心非常显著
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public healthyColor: string;
+
+        /**
+        * @language zh_CN
+        * 干燥的草的颜色，在噪波边缘非常显著
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public dryColor: string;
 
+        /**
+        * @language zh_CN
+        * 如果选中，草将随着摄像机一起转动，面朝主摄像机
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public billboard: boolean = true;
+
+
+        /**
+        * @language zh_CN
+        * 草的分布图
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public detailTexture: string;
+
+        /**
+        * @language zh_CN
+        * 草的贴图
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public grassTexture: string;
 
 

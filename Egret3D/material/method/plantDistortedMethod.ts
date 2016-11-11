@@ -8,6 +8,7 @@
     * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
     * @see egret3d.MethodBase
     * @see egret3d.MaterialPass
+    * @includeExample material/method/PlantDistortedMethod.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -17,16 +18,25 @@
         private _time: number = 0.0;
 
         private _windData: Float32Array = new Float32Array(4);
+
         /**
-        * @private
         * @language zh_CN
+        * 构造函数
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         constructor() {
             super();
             this.vsShaderList[ShaderPhaseType.local_vertex] = this.vsShaderList[ShaderPhaseType.local_vertex] || [];
             this.vsShaderList[ShaderPhaseType.local_vertex].push("detail_Bending_vs");
         }
-
+        /**
+        * @language zh_CN
+        * 设置风的方向，Vector3D的长度代表其速度
+        * @param dirAndStr 风向和风的强度数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set windDirAndSpeed(dirAndStr: Vector3D) {
             this._speed = dirAndStr; 
             this._windData[1] = dirAndStr.x;

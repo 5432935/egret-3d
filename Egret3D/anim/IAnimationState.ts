@@ -1,14 +1,14 @@
 ﻿module egret3d {
     
     /**
-     * @language zh_CN
-     * @class egret3d.IAnimationState
-     * @classdesc
-     * 动画状态机
-     * 为粒子系统时,会保存相应的粒子功能节点
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.IAnimationState
+    * @classdesc
+    * 动画状态机
+    * 为粒子系统时,会保存相应的粒子功能节点
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export interface IAnimationState {
         
         /**

@@ -12,6 +12,8 @@
     * @see egret3d.VertexBuffer3D
     * @see egret3d.Shader
     * @see egret3d.CubeTexture
+    * @see egret3d.Context3DProxy
+	* @includeExample core/context/ContextTexture2D.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
@@ -67,11 +69,11 @@
         public imageData: HTMLImageElement;
 
         /**
-         * @language zh_CN
-         * mipmap数据
+        * @language zh_CN
+        * mipmap数据
         * @version Egret 3.0
         * @platform Web,Native
-         */
+        */
         public mimapData: Array<MipmapData>;
 
         /**
@@ -93,7 +95,7 @@
         */
         public width: number;
 
-             /**
+        /**
         * @language zh_CN
         * 提交给显卡的贴图尺寸大小 贴图高度
         * <p>当作为renderTexture使用时一定要传入真实尺寸
@@ -103,11 +105,11 @@
         public height: number;
 
         /**
-         * @language zh_CN
-         * 构造函数
+        * @language zh_CN
+        * 构造函数
         * @version Egret 3.0
         * @platform Web,Native
-         */
+        */
         constructor() {
             this.border = 0;
             this.imageData = null;

@@ -5,10 +5,9 @@
      * @class egret3d.IAnimation
      * @classdesc
      * 动画接口
-     * 
+     * 动画控制器的基类
      * @version Egret 3.0
      * @platform Web,Native
-     * @includeExample animation/IAnimation.ts
      */
     export interface IAnimation {
 
@@ -39,6 +38,22 @@
         * @platform Web,Native
         */
         propertyAnimController?: PropertyAnimController;
+
+        /**
+        * @language zh_CN
+        * 一个完整的动画播放时间周期
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        loopTime: number;
+
+        /**
+        * @language zh_CN
+        * 是否为一个循环播放的动画
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        isLoop: boolean;
 
         /**
         * @language zh_CN

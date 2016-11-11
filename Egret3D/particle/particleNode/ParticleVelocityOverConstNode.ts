@@ -2,6 +2,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleVelocityOverConstNode
     * @classdesc
     * 粒子速度节点叠加(常量的影响方式)

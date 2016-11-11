@@ -16,24 +16,24 @@
     * @see egret3d.Texture2D
     * @see egret3d.Shader
     * @see egret3d.CubeTexture
+    * @includeExample core/context/Context3DProxy.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
     export class Context3DProxy {
 
-
         /**
-         * @language zh_CN
-         * @private
-         * WebGLRenderingContext 的引用
+        * @language zh_CN
+        * @private
+        * WebGLRenderingContext 的引用
         */
         public static gl: WebGLRenderingContext;
 
         /**
-         * @language zh_CN
-         * @private
+        * @language zh_CN
+        * @private
         */
-        public version: string;
+        public version: string = "3.2.2";
 
         /**
         * @language zh_CN
@@ -284,10 +284,9 @@
         /**
         * @language zh_CN
         * 设置2D纹理状态 来确定贴图的采样方式
-        * @param min_filter
-        * @param mag_filter
-        * @param wrap_u_filter
-        * @param wrap_v_filter
+        * @param target 指定活动纹理单元的目标纹理
+        * @param pname 指定单值纹理参数的标记名
+        * @param param 指定 pname 的值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -323,6 +322,8 @@
             //texture.activeState( this );
         }
 
+
+
         /**
         * @language zh_CN
         * 提交2D压缩纹理，用硬件来解析dds贴图
@@ -338,6 +339,7 @@
         /**
         * @language zh_CN
         * 创建 2维贴图 向显卡提交buffer申请 并创建Texture2D对象
+        * @returns 创建的Texture2D对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -397,7 +399,6 @@
                 Context3DProxy.gl.texImage2D(Context3DProxy.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, Context3DProxy.gl.RGB, tex.image_front.mimapData[0].width, tex.image_front.mimapData[0].height, 0, Context3DProxy.gl.RGB, Context3DProxy.gl.UNSIGNED_BYTE, tex.image_front.mimapData[0].data);
             else
                 Context3DProxy.gl.texImage2D(Context3DProxy.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, Context3DProxy.gl.RGB, Context3DProxy.gl.RGB, Context3DProxy.gl.UNSIGNED_BYTE, tex.image_front.imageData);
-
 
             ///Context3DProxy.gl.generateMipmap(Context3DProxy.gl.TEXTURE_CUBE_MAP);
             ///gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_NEAREST);

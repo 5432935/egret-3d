@@ -12,8 +12,6 @@
     * @see egret3d.Object3D
     * @see egret3d.LightGroup
     * @see egret3d.LightBase
-    * @see egret3d.PointLight
-    * @see egret3d.SpotLight
     * @includeExample lights/PointLight.ts
     * @version Egret 3.0
     * @platform Web,Native
@@ -33,10 +31,11 @@
         * @language zh_CN
         * 创建一个点光源
         * @param color 灯光颜色值
+        * @default 0xffffff
         * @version Egret 3.0
         * @platform Web,Native
         */
-        constructor(color: number) {
+        constructor(color: number = 0xffffff) {
             super();
             this.lightType = LightType.pointlight;
             this.diffuse = color;

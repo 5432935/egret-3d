@@ -1,14 +1,15 @@
 ﻿module egret3d {
     /**
-     * @language zh_CN
-     * @class egret3d.Bound
-     * @classdesc
-     * 可使用 Bound 类 取得包围盒的数据。</p>
-     * 包含包围盒的各顶点信息，当包围盒要进行世界变换时，应当变换各顶点信息。</p>
-     * @see egret3d.Bound
-     * @version Egret 3.0
-     * @platform Web,Native
-     */
+    * @language zh_CN
+    * @class egret3d.BoundBox
+    * @classdesc
+    * 可使用 Bound 类取得包围盒的数据。使用包围盒简化一个复杂模型的空间信息，执行碰撞检测和可视检测，这样可以大大提高计算效率。</p>
+    * 包含包围盒的各顶点信息，当包围盒要进行世界变换时，应当变换各顶点信息。</p>
+    * @see egret3d.Bound
+    * @includeExample geom/BoundBox.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
     export class BoundBox extends Bound {
         
         /**

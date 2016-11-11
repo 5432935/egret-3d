@@ -1,4 +1,7 @@
 ﻿module egret3d {
+    /*
+    * @private
+    */
     export class Egret3DLog {
         public static outError(message: any) {
             console.log("Error:" + message);

@@ -1,7 +1,7 @@
 ﻿module egret3d {
-
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.ParticleStartColor
     * @classdesc
     * 粒子起始颜色，用顶点色实现

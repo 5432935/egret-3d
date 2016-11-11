@@ -6,8 +6,12 @@
     * @classdesc
     * 单个资源 加载器
     * 主要封装了esm/jpg/png/eam/epa/uinty3d导出的配置文件/的加载和组装，以及mesh的render method相关信息，和灯光数据的生效.
-    * 加载完毕后，会派发事件LoaderEvent3D.LOADER_COMPLETE
+    * 加载完毕后，会派发事件
+    * 1.LoaderEvent3D.LOADER_COMPLETE 加载完成后事件响应
+    * 1.LoaderEvent3D.LOADER_PROGRESS 加载过程中事件响应
+    *
     * @see egret3d.ILoader
+    * @see egret3d.LoaderEvent3D
     *
     * @includeExample loader/UnitLoader.ts
     * @version Egret 3.0
@@ -84,6 +88,7 @@
         /**
         * @language zh_CN
         * 场景对象的所有根节点.
+        * 如果是配置文件，加载完后将后有值
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -196,7 +201,8 @@
         protected autoAnimationList: any[] = [];
         /**
         * @language zh_CN
-        * 加载配置文件 .json 或 .xml
+        * 加载配置文件 .json 或 .xml,
+        * 如果是配置文件 暂时只能支持.json (Unity3d 中的egret3d插件可以直接导出)
         * @param url 默认参数为null  文件路径
         * @version Egret 3.0
         * @platform Web,Native
@@ -206,6 +212,19 @@
             if (url) {
                 this.load(url);
             }
+        }
+
+        /**
+        * @language zh_CN
+        * 获取每个资源的URLLoader对象
+        * 如果获取的是配置文件会返回配置文件的源数据，而不是解释后的数据
+        * @param url 文件路径
+        * @returns URLLoader  URLLoader对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public getAssetURLLoader(url: string): URLLoader {
+            return assetMgr.findAsset(url, this);
         }
 
         protected createObject(): Object3D {
@@ -276,8 +295,6 @@
                 }
 
                 this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
-                this._event.target = this;
-
                 this._event.loader = load;
                 this._event.data = load.data;
                 this._event.currentProgress = this.currentProgress;
@@ -315,8 +332,8 @@
         }
 
         private parseParticle() {
+            this.data = this._particleParser.data;
             if (!this._particleParser.data.shape.meshFile && !this._particleParser.data.property.meshFile) {
-                this.data = this._particleParser.data;
                 return;
             }
 
@@ -344,6 +361,7 @@
         }
 
         private parseUnit() {
+            this.processNode();
             this.processSkinClip();
             this.processProAnim();
             this.createLight();
@@ -353,10 +371,11 @@
                 if (!mapNodeData.object3d.parent) {
                     this.container.addChild(mapNodeData.object3d);
                 }
-
                 switch (mapNodeData.type) {
                     case "Object3D":
                     case "Camera3D":
+                    case "DirectLight":
+                    case "PointLight":
                         this.doLoadEpa(mapNodeData);
                         break;
                     case "CubeSky":
@@ -479,7 +498,7 @@
             this.processTask(load);
         }
 
-        private parseConfig(dataConfig: string, type: string):boolean {
+        private parseConfig(dataConfig: any, type: string):boolean {
             this._configParser = UnitParserUtils.parserConfig(dataConfig, type);
             if (!this._configParser) {
                 return false;
@@ -521,6 +540,10 @@
                     break;
                 default:
                     return false;
+            }
+
+            if (this.container) {
+                this.data = this.container;
             }
             return true;
         }
@@ -608,7 +631,10 @@
             object3d.position = nodeData.object3d.position;
             object3d.orientation = nodeData.object3d.orientation;
             object3d.scale = nodeData.object3d.scale;
-            object3d.tag = nodeData.object3d.tag;
+
+            if (nodeData.tagName != "") {
+                object3d.tag.name = nodeData.object3d.tag.name;
+            }
             nodeData.object3d.swapObject(object3d);
             nodeData.object3d = object3d;
         }
@@ -969,12 +995,13 @@
             var load: ILoader = e.loader;
             var loadData: any = e.param;
 
+
             var skeletonAnimation: SkeletonAnimation = loadData.skinClip;
             var skinData: any = loadData.skinData;
             var clipData: any = loadData.clip;
 
             var clip: SkeletonAnimationClip = load.data;
-            clip.animationName = loadData.name;
+            clip.animationName = clipData.name;
             clip = clip.clone();
             if (clipData.loop) {
                 clip.isLoop = (clipData.loop == "true" ? true : false);
@@ -1051,8 +1078,6 @@
                 }
             }
 
-           
-
             this.processTask(load);
         }        
 
@@ -1083,12 +1108,11 @@
 
             //this.currentProgress = this.taskCurrent / this.taskTotal;
 
-            //this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
-            //this._event.target = this;
-
-            //this._event.loader = load;
-            //this._event.data = load.data;
-            //this.dispatchEvent(this._event);
+            this._event.eventType = LoaderEvent3D.LOADER_ONCE_COMPLETE;
+            this._event.loader = load;
+            this._event.data = load.data;
+            this._event.currentProgress = this.currentProgress;
+            this.dispatchEvent(this._event);
         }
 
         private processTask(load: ILoader) {
@@ -1147,6 +1171,16 @@
                         tempEmitter.parent.removeChild(tempEmitter);
                     }
                 }
+
+                //**********场景加载完毕 自动 merge ****************
+                var auto: boolean = true;
+                if (auto) {
+                    var meshs: Mesh[] = StaticMergeUtil.bacthingMesh(this._mapParser);
+                    for (var m in meshs) {
+                        this.container.addChild(meshs[m]);
+                    }
+                }
+                //******************************
             }
 
 
@@ -1181,7 +1215,10 @@
             if (this._configParser.type == IConfigParser.TYPE_EFFECT_GROUP) {
                 var effect: EffectGroup = <EffectGroup>this.data;
                 if (effect) {
-                    effect.init();
+                    effect.init(this._mapParser.loop);
+                    if (this._mapParser.auto) {
+                        effect.play();
+                    }
                 }
             }
 
@@ -1457,6 +1494,76 @@
             }
         }
 
+        protected processNode() {
+            for (var i: number = 0; i < this._mapParser.nodeList.length; i++) {
+                var mapNodeData: UnitNodeData = this._mapParser.nodeList[i];
+
+                if (mapNodeData.type == "Camera3D") {
+                    var camera: Camera3D = new Camera3D();
+                    camera.fieldOfView = mapNodeData.fov;
+                    camera.near = mapNodeData.clipNear;
+                    camera.far = mapNodeData.clipFar;
+
+                    mapNodeData.object3d = camera;
+                }
+                else if (mapNodeData.type == "Billboard") {
+                    mapNodeData.object3d = new Billboard(new TextureMaterial(CheckerboardTexture.texture));
+                }
+                else if (mapNodeData.type == "Terrain") {
+                    mapNodeData.object3d = new Object3D();
+                }
+                else if (mapNodeData.type == "DirectLight") {
+                    var dirLight: DirectLight = new DirectLight();
+                    mapNodeData.object3d = dirLight;
+
+                    dirLight.lightId = mapNodeData.lightData.id;
+                    dirLight.diffuse = mapNodeData.lightData.diffuseColor;
+                    dirLight.ambient = mapNodeData.lightData.ambientColor;
+                    dirLight.halfIntensity = mapNodeData.lightData.halfIntensity;
+                    dirLight.intensity = mapNodeData.lightData.intensity;
+
+                    this.lightDict[mapNodeData.lightData.id] = dirLight;
+                }
+                else if (mapNodeData.type == "PointLight") {
+                    var pLight: PointLight = new PointLight();
+                    mapNodeData.object3d = pLight;
+
+                    pLight.lightId = mapNodeData.lightData.id;
+                    pLight.ambient = mapNodeData.lightData.ambientColor;
+                    pLight.diffuse = mapNodeData.lightData.diffuseColor;
+                    pLight.radius = mapNodeData.lightData.radius;
+
+                    pLight.cutoff = mapNodeData.lightData.falloff;
+                    pLight.intensity = mapNodeData.lightData.intensity;
+
+                    this.lightDict[mapNodeData.lightData.id] = dirLight;
+                }
+                else {
+                    mapNodeData.object3d = new Object3D();
+                }
+
+                mapNodeData.object3d.name = mapNodeData.name;
+                mapNodeData.object3d.visible = mapNodeData.visible;
+                mapNodeData.object3d.position = new Vector3D(mapNodeData.x, mapNodeData.y, mapNodeData.z);
+                mapNodeData.object3d.orientation = new Quaternion(mapNodeData.rx, mapNodeData.ry, mapNodeData.rz, mapNodeData.rw);
+                mapNodeData.object3d.scale = new Vector3D(mapNodeData.sx, mapNodeData.sy, mapNodeData.sz);
+                if (mapNodeData.tagName != "") {
+                    mapNodeData.object3d.tag.name = mapNodeData.tagName;
+                }
+            }
+
+            for (var i: number = 0; i < this._mapParser.nodeList.length; i++) {
+                var mapNodeData0: UnitNodeData = this._mapParser.nodeList[i];
+                for (var j: number = 0; j < this._mapParser.nodeList.length; j++) {
+                    var mapNodeData1: UnitNodeData = this._mapParser.nodeList[j];
+                    if (mapNodeData0.parent == mapNodeData1.insID) {
+                        mapNodeData1.object3d.addChild(mapNodeData0.object3d);
+                        break;
+                    }
+                }
+            }
+        }
+
         private processSkinClip() {
             for (var key in this._mapParser.skeletonAnimationDict) {
                 var skinClip: any = this._mapParser.skeletonAnimationDict[key];
@@ -1469,11 +1576,14 @@
                     var clip: any = skinClip.clips[i];
 
                     var path: string = this._pathRoot + clip.path;
-                    clip.skinClip = skeletonAnimation;
-                    clip.skinData = skinClip;
-                    clip.clip = clip;
+
+                    var clipData: any = {};
+                    clipData.skinClip = skeletonAnimation;
+                    clipData.skinData = skinClip;
+                    clipData.clip = clip;
+
                     this.addTask();
-                    var loader: URLLoader = assetMgr.loadAsset(path, this.onSkinClip, this, clip);
+                    var loader: URLLoader = assetMgr.loadAsset(path, this.onSkinClip, this, clipData);
                     assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                 }
             }
@@ -1509,7 +1619,6 @@
             for (var key in this._mapParser.lightDict) {
 
                 mapLightData = this._mapParser.lightDict[key];
-
                 if (mapLightData.type == LightType.directlight && this._mapParser.directLight) {
                     var dirLight: DirectLight = new DirectLight(mapLightData.direction);
                     dirLight.lightId = mapLightData.id;
@@ -1521,7 +1630,8 @@
 
                     this.lightDict[mapLightData.id] = dirLight;
 
-                } else if (mapLightData.type == LightType.pointlight && this._mapParser.pointLight) {
+                }
+                else if (mapLightData.type == LightType.pointlight && this._mapParser.pointLight) {
                     var pLight: PointLight = new PointLight(0);
                     pLight.lightId = mapLightData.id;
                     pLight.position = mapLightData.position;

@@ -1,29 +1,42 @@
 ﻿module egret3d {
     /**
-    * @private
     * @class egret3d.gui.DisplayObject
-    * @classdesc 2D显示对象基础类
+    * @classdesc 2D显示对象基础类,封装有坐标/尺寸/旋转/缩放/颜色/是否可见/遮罩信息；</p>
+    * GUI中鼠标事件的捕获最底层对象。</p>
+    * GUI树形结构的封装对象。
+    * @includeExample gui/DisplayObject.ts
     * @version Egret 3.0
     * @platform Web,Native
     */
     export class DisplayObject extends EventDispatcher {
-
+        /**
+        * @language zh_CN
+        * 该对象的属性标记
+        */
         public id: number;
+        /**
+        * @language zh_CN
+        * 该对象的名字
+        */
         public name: string;
-
+        /**
+        * @private
+        * 鼠标检测用的包围盒，不开放使用
+        */
         public aabb: Rectangle = new Rectangle();
-        public pickResult: PickResult;
 
+        /**
+        * @language zh_CN
+        * 是否响应鼠标检测
+        */
         public mouseEnable: boolean = true;
-        public mouseChildern: boolean = true;
 
-        public hasMouseMove: boolean = false;
-        public hasMouseDown: boolean = false;
-        public hasMouseUp: boolean = false;
-        public hasMouseClick: boolean = false;
-        public hasMouseOut: boolean = false;
+        /**
+        * @language zh_CN
+        * 孩子节点是否响应鼠标检测
+        */
+        public mouseChildren: boolean = true;
 
-        public mouseInState: boolean = false;
 
         protected _renderText: boolean = false;
         private _parent: DisplayObject;
@@ -36,12 +49,12 @@
         protected _alphaNumber: number = 1.0;
         protected _color: ColorTransform = new ColorTransform();
         protected _pivot: Vector3D = new Vector3D();
-        protected _pos: Vector3D = new Vector3D();
+        protected _pos: Point = new Point();
         protected _rot: Vector3D = new Vector3D();
         protected _sca: Vector3D = new Vector3D(1.0, 1.0, 100.0, 100.0);
 
         protected _globalColor: ColorTransform = new ColorTransform();
-        protected _globalPos: Vector3D = new Vector3D();
+        protected _globalPos: Point = new Point();
         protected _globalRot: Vector3D = new Vector3D();
         protected _globalSca: Vector3D = new Vector3D(1.0, 1.0, 100.0, 100.0);
 
@@ -66,15 +79,27 @@
         protected _textureInvalid: boolean = true;
         protected _visibleInvalid: boolean = true;
 
-        protected _qut: Quaternion = new Quaternion();
-        protected _vec: Vector3D = new Vector3D();
+
+        private static ThisVector: Vector3D = new Vector3D();
+        private static ThisPos: Vector3D = new Vector3D();
+        private static TargetPos: Vector3D = new Vector3D();
+        /**
+        * @private
+        * 是否父节点为stage对象，不对外开放
+        */
         public parentIsStage: boolean = false;
 
         constructor() {
             super();
         }
 
-
+        /**
+        * @language zh_CN
+        * 获取鼠标在该显示对象的相对位置X
+        * @returns 鼠标x方向位置
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get mouseX(): number {
             var temp: DisplayObject = this;
             var x: number = Input.mouseX;
@@ -89,6 +114,13 @@
             return x;
         }
 
+        /**
+        * @language zh_CN
+        * 获取鼠标在该显示对象的相对位置Y
+        * @returns 鼠标Y方向位置
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get mouseY(): number {
             var temp: DisplayObject = this;
             var y: number = Input.mouseY;
@@ -107,7 +139,7 @@
         /**
         * @language zh_CN
         * 获得当前舞台引用
-        * @return 所在舞台对象，有可能为null
+        * @returns 所在舞台对象，有可能为null
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -118,7 +150,7 @@
         /**
         * @language zh_CN
         * 获得子节点列表的引用
-        * @return DisplayObject的列表
+        * @returns DisplayObject的列表
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -130,7 +162,7 @@
         /**
         * @language zh_CN
         * 获得父亲节点，有可能为null
-        * @return DisplayObject 2d显示对象引用
+        * @returns DisplayObject 2d显示对象引用
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -138,13 +170,13 @@
             return this._parent;
         }
 
-     
+
 
 
         /**
         * @language zh_CN
-        * 设定渲染类型，目前支持textfield和默认类型2种
-        * @param number渲染类型，1.0为文本类型，其他未默认类型
+        * 设定渲染类型，指定当前quad是否为textfield
+        * @param value 渲染类型，true表示为文本
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -159,7 +191,7 @@
         /**
         * @language zh_CN
         * 设定宽度
-        * @value 宽度的数据
+        * @param value 宽度的数据
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -170,12 +202,21 @@
             }
         }
 
-        public get width(): number { return this._sca.z }
+
+        /**
+        * @language zh_CN
+        * @returns 获取显示对象宽度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get width(): number {
+            return this._sca.z;
+        }
 
 
         /**
         * @language zh_CN
-        * 设定高度数据
+        * 设定像素高度数据
         * @param value 高度数据
         * @version Egret 3.0
         * @platform Web,Native
@@ -187,6 +228,13 @@
             }
         }
 
+        /**
+        * @language zh_CN
+        * 获得像素高度数据
+        * @returns 像素高度数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get height(): number { return this._sca.w }
 
         /**
@@ -203,6 +251,13 @@
             }
         }
 
+        /**
+        * @language zh_CN
+        * 获得注册点x位置
+        * @returns 注册点x坐标数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get pivotX(): number { return this._pivot.x }
 
         /**
@@ -219,6 +274,13 @@
             }
         }
 
+        /**
+        * @language zh_CN
+        * 获得注册点y位置
+        * @returns 注册点y坐标数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get pivotY(): number { return this._pivot.y }
 
         /**
@@ -235,7 +297,16 @@
             }
         }
 
-        public get mask(): Rectangle { return this._localMaskRect; }
+         /**
+        * @language zh_CN
+        * 获得遮罩信息
+        * @returns Rectangle 遮罩信息
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get mask(): Rectangle {
+            return this._localMaskRect;
+        }
 
         /**
         * @language zh_CN
@@ -252,7 +323,11 @@
             this.updateMaskChange(true);
         }
 
+        /**
+        * @private
+        */
         public get pivotZ(): number { return this._pivot.z }
+        
 
         protected calculateTransform() {
             if (!this._transformChange)
@@ -264,8 +339,14 @@
                 this._globalOrientation.toEulerAngles(this._globalRot);
                 var parentScale: Vector3D = this._parent.globalScale;
                 this._globalSca.copyFrom(parentScale.multiply(this._sca));
-                parentOrientation.transformVector(parentScale.multiply(this._pos), this._globalPos);
-                this._globalPos.copyFrom(this._globalPos.add(this._parent.globalPosition));
+                DisplayObject.ThisPos.setTo(this._pos.x, this._pos.y, 0, 1);
+                parentScale.multiply(DisplayObject.ThisPos);
+                parentOrientation.transformVector(DisplayObject.ThisPos, DisplayObject.TargetPos);
+                this._pos.x = DisplayObject.ThisPos.x;
+                this._pos.y = DisplayObject.ThisPos.y;
+                this._globalPos.x = DisplayObject.TargetPos.x;
+                this._globalPos.y = DisplayObject.TargetPos.y;
+                this._globalPos.incrementBy(this._parent.globalPosition);
             }
             else {
                 this._globalOrientation.copyFrom(this._orientation);
@@ -324,75 +405,6 @@
         protected onUpdateTransform() {
         }
 
-
-        //------------------
-        //mouse event
-        public dispatchMuseDown() {
-            if (this.hasEventListener(MouseEvent3D.MOUSE_DOWN)) {
-                var mouseEvent: MouseEvent3D = new MouseEvent3D(MouseEvent3D.MOUSE_DOWN);
-                mouseEvent.target = this;
-                this.dispatchEvent(mouseEvent);
-            }
-        }
-
-        public dispatchMuseUp() {
-            if (this.hasEventListener(MouseEvent3D.MOUSE_UP)) {
-                var mouseEvent: MouseEvent3D = new MouseEvent3D(MouseEvent3D.MOUSE_UP);
-                mouseEvent.target = this;
-                this.dispatchEvent(mouseEvent);
-            }
-        }
-
-        public dispatchMuseClick() {
-            if (this.hasEventListener(MouseEvent3D.MOUSE_CLICK)) {
-                var mouseEvent: MouseEvent3D = new MouseEvent3D(MouseEvent3D.MOUSE_CLICK);
-                mouseEvent.target = this;
-                this.dispatchEvent(mouseEvent);
-            }
-        }
-
-        public dispatchMuseMove() {
-            if (this.hasEventListener(MouseEvent3D.MOUSE_MOVE)) {
-                var mouseEvent: MouseEvent3D = new MouseEvent3D(MouseEvent3D.MOUSE_MOVE);
-                mouseEvent.target = this;
-                this.dispatchEvent(mouseEvent);
-            }
-        }
-
-        public dispatchMuseOut() {
-            if (this.hasEventListener(MouseEvent3D.MOUSE_OUT)) {
-                var mouseEvent: MouseEvent3D = new MouseEvent3D(MouseEvent3D.MOUSE_OUT);
-                mouseEvent.target = this;
-                this.dispatchEvent(mouseEvent);
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         /**
         * @language zh_CN
         * 添加孩子节点
@@ -409,7 +421,7 @@
         * 添加孩子节点至某个index位置
         * @param object 被添加的孩子节点
         * @param index 指定的层级关系index
-        * @return DisplayObject 如果添加成功，返回当前object对象
+        * @returns DisplayObject 如果添加成功，返回当前object对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -446,7 +458,7 @@
         * @language zh_CN
         * 移除某个孩子节点
         * @param object 被移除的孩子节点
-        * @return DisplayObject 如果移除成功，返回当前object对象
+        * @returns DisplayObject 如果移除成功，返回当前object对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -458,7 +470,7 @@
         * @language zh_CN
         * 移除指定层级的孩子节点
         * @param index 指定的层级
-        * @return DisplayObject 如果移除成功，返回当前object对象
+        * @returns DisplayObject 如果移除成功，返回当前object对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -493,8 +505,9 @@
         }
 
         /**
-        * @language zh_CN
-        * 变更舞台信息，从舞台移除或者添加到舞台后触发
+        * @language zh_CN、
+        * @private
+        * 变更舞台信息，从舞台移除或者添加到舞台后触发（不予开发者使用）
         * @param stage 最新的舞台数据
         * @version Egret 3.0
         * @platform Web,Native
@@ -519,15 +532,47 @@
 
         }
 
-        public hasChild(display: DisplayObject): number {
-            return -1;
+        /**
+        * @language zh_CN
+        * 获取某个孩子节点的下标
+        * @param object 显示对象
+        * @returns number 下标数值，-1代表不含有这个显示对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public hasChild(object: DisplayObject): number {
+            return this.childs.indexOf(object);
         }
 
+        /**
+        * @language zh_CN
+        * 根据下标获取孩子节点
+        * @param index 下标
+        * @returns DisplayObject 孩子节点，有可能为null
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public getChildByIndex(index: number): DisplayObject {
-            return null;
+            return this.childs[index];
         }
 
+        /**
+        * @language zh_CN
+        * 根据名字获取孩子节点
+        * @param name 孩子节点的名字
+        * @returns DisplayObject 孩子节点，有可能为null
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public getChildByName(name: string): DisplayObject {
+            if (!name)
+                return null;
+
+            var child: DisplayObject;
+            for (child of this._childs) {
+                if (child.name == name)
+                    return child;
+            }
             return null;
         }
 
@@ -554,7 +599,7 @@
         protected updateMouseAABB(): void {
             if (this.mouseEnable) {
 
-                var pos: Vector3D = this.globalPosition;
+                var pos: Point = this.globalPosition;
                 var sca: Vector3D = this.globalScale;
 
                 if (this._maskRectInvalid || this._transformInvalid) {
@@ -616,6 +661,9 @@
             }
         }
 
+        /**
+        * @private
+        */
         public get globalVisible(): boolean {
             if (this._visibleChange) {
                 if (this._parent) {
@@ -642,6 +690,13 @@
             }
         }
 
+        /**
+        * @language zh_CN
+        * 获取是否可见
+        * @returns boolean 是否可见
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get visible(): boolean {
             return this._localVisible;
         }
@@ -664,17 +719,14 @@
         }
 
         /**
-        * @language zh_CN
-        * 返回 object 世界位置 x
-        * @returns object 世界位置x
-        * @version Egret 3.0
-        * @platform Web,Native
+        * @private
         */
         public get globalX(): number {
             return this.globalPosition.x;
         }
 
         /**
+        * @private
         * @language zh_CN
         * 返回 object 世界位置 y
         * @returns object 世界位置 y
@@ -688,62 +740,13 @@
 
         /**
         * @language zh_CN
-        * 返回 object 世界位置 z
-        * @returns object 世界位置 z
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get globalZ(): number {
-            return this.globalPosition.z;
-        }
-
-        /**
-        * @language zh_CN
-        * 设置 object 世界位置 x
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set globalX(value: number) {
-            this._vec.copyFrom(this.globalPosition);
-            this._vec.x = value;
-            this.globalPosition = this._vec;
-        }
-
-        /**
-        * @language zh_CN
-        * 设置 object 世界位置 y
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set globalY(value: number) {
-            this._vec.copyFrom(this.globalPosition);
-            this._vec.y = value;
-            this.globalPosition = this._vec;
-        }
-
-
-
-        /**
-        * @language zh_CN
-        * 设置 object 世界位置 z
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set globalZ(value: number) {
-            this._vec.copyFrom(this.globalPosition);
-            this._vec.z = value;
-            this.globalPosition = this._vec;
-        }
-
-        /**
-        * @language zh_CN
         * 返回 object 世界位置
         * 返回世界坐标系的 全局位置坐标
         * @returns object 世界位置
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public get globalPosition(): Vector3D {
+        public get globalPosition(): Point {
             if (this._transformChange) {
                 this.calculateTransform();
             }
@@ -751,27 +754,30 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 设置 object 世界位置
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public set globalPosition(pos: Vector3D) {
-            if (this._parent) {
-                this._parent.globalOrientation.inverse(this._qut);
-                pos.subtract(this._parent.globalPosition, this._vec);
-                this._qut.transformVector(this._vec, this._vec);
-                this._vec.divided(this._parent.globalScale, this._vec);
+        //public set globalPosition(pos: Point) {
+        //    if (this._parent) {
+        //        this._parent.globalOrientation.inverse(this._qut);
+        //        var vec: Vector3D = DisplayObject.ThisVector;
+        //        vec.setTo(this._parent.globalPosition.x - pos.x, this._parent.globalPosition.x - pos.x, 0, 1);
+        //        this._qut.transformVector(vec, vec);
+        //        vec.divided(this._parent.globalScale, vec);
 
-                this.position = this._vec;
-            }
-            else {
-                this.position = pos;
-            }
-        }
+        //        this.position.setTo(vec.x, vec.y);
+        //    }
+        //    else {
+        //        this.position = pos;
+        //    }
+        //}
 
 
         /**
+        * @private
         * @language zh_CN
         * 返回 object 世界旋转x
         * @returns object 世界旋转x
@@ -784,6 +790,7 @@
 
 
         /**
+        * @private
         * @language zh_CN
         * 返回 object 世界旋转y
         * @returns object 世界旋转y
@@ -796,6 +803,7 @@
 
 
         /**
+        * @private
         * @language zh_CN
         * 返回 object 世界旋转z
         * @returns object 世界旋转z
@@ -806,43 +814,9 @@
             return this.globalRotation.z;
         }
 
-        /**
-        * @language zh_CN
-        * 设置 object 世界旋转 x
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set globalRotationX(value: number) {
-            this._vec.copyFrom(this.globalRotation);
-            this._vec.x = value;
-            this.globalRotation = this._vec;
-        }
 
         /**
-        * @language zh_CN
-        * 设置 object 世界旋转 y
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set globalRotationY(value: number) {
-            this._vec.copyFrom(this.globalRotation);
-            this._vec.y = value;
-            this.globalRotation = this._vec;
-        }
-
-        /**
-        * @language zh_CN
-        * 设置 object 世界旋转 z
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set globalRotationZ(value: number) {
-            this._vec.copyFrom(this.globalRotation);
-            this._vec.z = value;
-            this.globalRotation = this._vec;
-        }
-
-        /**
+        * @private
         * @language zh_CN
         * 返回 object 世界旋转
         * 返回世界坐标系的 全局旋转信息
@@ -857,19 +831,20 @@
             return this._globalRot;
         }
 
-
         /**
+        * @private
         * @language zh_CN
         * 设置 object 世界旋转
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public set globalRotation(rot: Vector3D) {
-            this._qut.fromEulerAngles(rot.x, rot.y, rot.z);
-            this.globalOrientation = this._qut;
-        }
+        //public set globalRotation(rot: Vector3D) {
+        //    this._qut.fromEulerAngles(rot.x, rot.y, rot.z);
+        //    this.globalOrientation = this._qut;
+        //}
 
         /**
+        * @private
         * @language zh_CN
         * 返回 object 世界缩放
         * 返回世界坐标系的 全局缩放信息
@@ -883,60 +858,9 @@
             }
             return this._globalSca;
         }
-
+        
         /**
-        * @language zh_CN
-        * 设置 object 世界缩放
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set globalScale(sca: Vector3D) {
-            if (this._parent) {
-                sca.divided(this._parent.globalScale, this._vec);
-                this.scale = this._vec;
-            }
-            else {
-                this.scale = sca;
-            }
-        }
-
-        /**
-        * @language zh_CN
-        * 设置 object 世界缩放 x
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set globalScaleX(value: number) {
-            this._vec.copyFrom(this.globalScale);
-            this._vec.x = value;
-            this.globalScale = this._vec;
-        }
-
-        /**
-        * @language zh_CN
-        * 设置 object 世界缩放 y
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set globalScaleY(value: number) {
-            this._vec.copyFrom(this.globalScale);
-            this._vec.y = value;
-            this.globalScale = this._vec;
-        }
-
-        /**
-        * @language zh_CN
-        * 设置 object 世界缩放 z
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set globalScaleZ(value: number) {
-            this._vec.copyFrom(this.globalScale);
-            this._vec.z = value;
-            this.globalScale = this._vec;
-        }
-
-        /**
+        * @private
         * @language zh_CN
         * 获取 object 世界缩放 x
         * @version Egret 3.0
@@ -948,6 +872,7 @@
 
 
         /**
+        * @private
         * @language zh_CN
         * 获取 object 世界缩放 y
         * @version Egret 3.0
@@ -958,6 +883,7 @@
         }
 
         /**
+        * @private
         * @language zh_CN
         * 获取 object 世界缩放 z
         * @version Egret 3.0
@@ -968,7 +894,8 @@
         }
 
         /**
-        * @language zh_CN 
+        * @private
+        * @language zh_CN
         * 返回 object 世界旋转 四元数
         * 返回世界坐标系的 全局旋转信息，数据类型是 四元素
         * @returns object 世界旋转
@@ -983,22 +910,8 @@
         }
 
         /**
-        * @language zh_CN
-        * 设置 object 世界旋转 四元数
-        * @version Egret 3.0
-        * @platform Web,Native
+        * @private
         */
-        public set globalOrientation(ori: Quaternion) {
-            if (this._parent) {
-                this._parent.globalOrientation.inverse(this._qut);
-                this._qut.multiply(this._qut, ori);
-                this.orientation = this._qut;
-            }
-            else {
-                this.orientation = ori;
-            }
-        }
-
         public get globalMask(): Rectangle {
             if (this._maskRectChange) {
                 this.calculateMask();
@@ -1014,7 +927,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public get position(): Vector3D {
+        public get position(): Point {
             return this._pos;
         }
 
@@ -1026,7 +939,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public set position(vec: Vector3D) {
+        public set position(vec: Point) {
             this._pos.copyFrom(vec);
             this.updateTransformChange(true);
         }
@@ -1209,21 +1122,6 @@
 
         /**
         * @language zh_CN
-        * 设置z坐标。</p>
-        * 设置基于父容器的位置信息，当父容器发生变化时，子节点也会变化，值不变。</p>
-        * @param value z坐标
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set z(value: number) {
-            if (this._pos.z == value)
-                return;
-            this._pos.z = value;
-            this.updateTransformChange(true);
-        }
-
-        /**
-        * @language zh_CN
         * 设置x轴旋转。</p>
         * 设置基于父容器的旋转信息，当父容器发生变化时，子节点也会变化，值不变。</p>
         * @param value x轴旋转
@@ -1301,21 +1199,6 @@
             this._sca.y = value;
         }
 
-        /**
-        * @language zh_CN
-        * 设置z轴缩放
-        *  
-        * 设置基于父容器的旋转信息，当父容器发生变化时，子节点也会变化，值不变
-        * @param value z轴缩放
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set scaleZ(value: number) {
-            if (this._sca.z == value)
-                return;
-            this._sca.z = value;
-            this.updateTransformChange(true);
-        }
 
         /**
         * @language zh_CN
@@ -1342,18 +1225,6 @@
             return this._pos.y;
         }
 
-        /**
-        * @language zh_CN
-        * 返回z坐标
-        *  
-        * 返回基于父容器的位置坐标信息值
-        * @returns z坐标
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get z(): number {
-            return this._pos.z
-        }
 
         /**
         * @language zh_CN
@@ -1418,25 +1289,10 @@
             return this._sca.y;
         }
 
-        /**
-        * @language zh_CN
-        * 返回z缩放
-        * 返回基于父容器的缩放信息值
-        * @returns z缩放
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get scaleZ(): number {
-            return this._sca.z;
-        }
 
 
         /**
-        * @language zh_CN
-        * 返回全局的颜色变换信息
-        * @returns colorTransform
-        * @version Egret 3.0
-        * @platform Web,Native
+        * private
         */
         public get globalColor(): ColorTransform {
             if (this._colorChange) {
