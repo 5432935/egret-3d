@@ -4,8 +4,8 @@ attribute vec3 attribute_normal;
 attribute vec4 attribute_color;
 
 //uniform mat4 uniform_NormalMatrix;
-uniform mat4 uniform_modelMatrix;
-uniform mat4 uniform_viewMatrix;
+uniform mat4 uniform_ModelMatrix;
+uniform mat4 uniform_ViewMatrix;
 
 varying vec4 varying_mvPose;
 

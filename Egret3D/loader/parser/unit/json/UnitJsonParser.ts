@@ -25,7 +25,13 @@
             if (this._data.loop) {
                 this._mapConfigParser.loop = this._data.loop == "true" ? true : false;
             }
-            
+
+            if (this._data.uv2) {
+                this._mapConfigParser.uv2 = this._data.uv2;
+            }
+
+            this._mapConfigParser.calculateTask();
+
             if (this._data.propertyAnimations) {
                 for (var i: number = 0; i < this._data.propertyAnimations.length; i++) {
                     var proAnimation: any = this._data.propertyAnimations[i];

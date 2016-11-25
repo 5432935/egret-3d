@@ -32,9 +32,17 @@
 
         public textures: any = [];
 
+        public uv2: string;
+
         constructor(data: any, type: string, fileType:string) {
             super(fileType);
             UnitParserUtils.mapParser(type, data, this);
+        }
+
+        public calculateTask() {
+            if (this.uv2) {
+                this.taskDict[this.uv2] = 0;
+            }
         }
 
         public calculateProAnimationTask(data: any) {

@@ -8,6 +8,11 @@
     protected view: egret3d.View3D;
     protected cameraCtl: egret3d.LookAtController;
 
+    protected bigProgress: egret3d.gui.UIProgressBar;
+    protected smallProgress: egret3d.gui.UIProgressBar;
+    protected sceneProgress: egret3d.gui.UIProgressBar;
+
+    protected queueLoader: egret3d.QueueLoader;
     constructor() {
         // ------------------ 初始化引擎 ---------------------
         this.egret3DCanvas = new egret3d.Egret3DCanvas();
@@ -31,9 +36,41 @@
         this.egret3DCanvas.addEventListener(egret3d.Event3D.ENTER_FRAME, this.update, this);
         // ------------------ 初始化引擎 ---------------------
 
-        this.doURLLoader();
+        //this.doURLLoader();
+
+        this.queueLoader = new egret3d.QueueLoader();
+        this.queueLoader.loadDefaultGUISkin();
+        this.queueLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_COMPLETE, this.onGUISkin, this);
+
+    }
+
+    protected onGUISkin(e: egret3d.LoaderEvent3D) {
+
+        this.smallProgress = new egret3d.gui.UIProgressBar();
+        this.smallProgress.y = 175;
+        this.smallProgress.width = 500;
+        this.smallProgress.height = 20;
+
+        this.bigProgress = new egret3d.gui.UIProgressBar();
+        this.bigProgress.y = 200;
+        this.bigProgress.width = 500;
+        this.bigProgress.height = 20;
+
+
+        this.sceneProgress = new egret3d.gui.UIProgressBar();
+        this.sceneProgress.y = 500;
+        this.sceneProgress.width = 500;
+        this.sceneProgress.height = 20;
+
 
         this.doQueueLoader();
+
+        this.view.addGUI(this.bigProgress);
+        this.view.addGUI(this.smallProgress);
+        this.view.addGUI(this.sceneProgress);
+        //this.doURLLoader();
+
+        this.queueLoader.removeEventListener(egret3d.LoaderEvent3D.LOADER_COMPLETE, this.onGUISkin, this);
     }
 
     protected doURLLoader() {
@@ -51,52 +88,85 @@
 
         // ------------------ 使用QueueLoader加载 ---------------------
 
-        var queueLoader: egret3d.QueueLoader = new egret3d.QueueLoader();
+        this.queueLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_COMPLETE, this.onComplete, this);
+        this.queueLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
 
-        queueLoader.load("resource/doc/ganning/Ganning.esm");
-        queueLoader.load("resource/doc/ganning/Idle.eam");
-        queueLoader.load("resource/doc/ganning/Run.eam");
-        queueLoader.load("resource/doc/ganning/Attack1.eam");
-        queueLoader.load("resource/doc/ganning/Death.eam");
-        queueLoader.load("resource/doc/ganning/Ganning.png");
-        queueLoader.load("resource/doc/ganning/Ganning_f.png");
-        queueLoader.load("resource/doc/ganning/Ganning_Weapon.png");
+
+        var loadList: egret3d.UnitLoader[] = [];
 
 
         // 这个资源是unity3d插件导出的场景资源
-        queueLoader.load("resource/doc/sponza_Demo/MapConfig.json");
+        var sponazLoader: egret3d.UnitLoader = this.queueLoader.load("resource/doc/sponza_Demo/MapConfig.json");
+        loadList.push(this.queueLoader.load("resource/scene/Compress_Resource/Scene1.e3dPack"));
+
+        //var sponazLoader: egret3d.UnitLoader = this.queueLoader.load("resource/scene/s/MapConfig.json");
+
+
+        loadList.push(sponazLoader);
 
         // 监听某个文件的加载进度事件
-        queueLoader.addAssetEventListener("resource/doc/sponza_Demo/MapConfig.json", egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onSceneProgress, this);
+        sponazLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onSceneProgress, this);
 
         // 监听某个文件的加载完成事件
-        queueLoader.addAssetEventListener("resource/doc/sponza_Demo/MapConfig.json", egret3d.LoaderEvent3D.LOADER_ONCE_COMPLETE, this.onSceneOnceProgress, this);
+        sponazLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_ONCE_COMPLETE, this.onSceneOnceProgress, this);
 
+        loadList.push(this.queueLoader.load("resource/doc/ganning/Ganning.esm"));
+        loadList.push(this.queueLoader.load("resource/doc/ganning/Idle.eam"));
+        loadList.push(this.queueLoader.load("resource/doc/ganning/Run.eam"));
+        loadList.push(this.queueLoader.load("resource/doc/ganning/Attack1.eam"));
+        loadList.push(this.queueLoader.load("resource/doc/ganning/Death.eam"));
+        loadList.push(this.queueLoader.load("resource/doc/ganning/Ganning.png"));
+        loadList.push(this.queueLoader.load("resource/doc/ganning/Ganning_f.png"));
+        loadList.push(this.queueLoader.load("resource/doc/ganning/Ganning_Weapon.png"));
+
+        //loadList.push(this.queueLoader.load("resource/skill/MapConfig.json"));
+
+
+        //this.queueLoader.addAssetEventListener("resource/skill/MapConfig.json", egret3d.LoaderEvent3D.LOADER_COMPLETE, this.onSkill, this);
+
+        for (var i: number = 0; i < loadList.length; ++i) {
+            loadList[i].addEventListener(egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onOnceProgress, this);
+        }
 
         // 监听完成事件
-        queueLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_COMPLETE, this.onQueueLoader, this);
+        this.queueLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_COMPLETE, this.onQueueLoader, this);
 
         // 监听单个文件完成事件
-        queueLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_ONCE_COMPLETE, this.onOnceComplete, this);
+        this.queueLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_ONCE_COMPLETE, this.onOnceComplete, this);
         // ------------------ 使用QueueLoader加载 ---------------------
+
+
+    }
+
+    protected onSkill(e: egret3d.LoaderEvent3D) {
+         var o = e.data;
+    }
+
+    protected onOnceProgress(e: egret3d.LoaderEvent3D) {
+        this.smallProgress.ratio = e.currentProgress;
+        console.log(e.currentProgress);
+    }
+
+    protected onComplete(e: egret3d.LoaderEvent3D) {
+        this.bigProgress.ratio = e.currentProgress;
+    }
+
+    protected onProgress(e: egret3d.LoaderEvent3D) {
+        this.bigProgress.ratio = e.currentProgress;
     }
 
     protected onSceneProgress(e: egret3d.LoaderEvent3D) {
-        var loader: egret3d.ILoader = e.target;
-
-        var onceLoader: egret3d.ILoader = e.loader;
-
-
-        console.log(loader.currentProgress);
+        this.sceneProgress.ratio = e.currentProgress;
     }
+
     protected onSceneOnceProgress(e: egret3d.LoaderEvent3D) {
-        var loader: egret3d.ILoader = e.loader;
-        console.log("onSceneOnceProgress:" + loader.url);
     }
 
     protected onQueueLoader(e: egret3d.LoaderEvent3D) {
         var queueLoader: egret3d.QueueLoader = e.target;
 
+
+        
         // 加载完成后用url查找资源 
         var geo: egret3d.Geometry = queueLoader.getAsset("resource/doc/ganning/Ganning.esm");
         var clip0: egret3d.SkeletonAnimationClip = queueLoader.getAsset("resource/doc/ganning/Idle.eam");
@@ -134,13 +204,21 @@
         mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip3);
         mesh.animation.play("Idle");
 
-        this.view.addChild3D(mesh);
 
+        
 
         // 加载完场景资源可以直接替换View3D中的Scene对象
-        var scene3d: egret3d.Scene3D = queueLoader.getAsset("resource/doc/sponza_Demo/MapConfig.json");
+        //var scene3d: egret3d.Scene3D = queueLoader.getAsset("resource/doc/sponza_Demo/MapConfig.json");
+        var scene3d: egret3d.Scene3D = queueLoader.getAsset("resource/scene/Compress_Resource/Scene1.e3dPack");
+
+        
+        if (!scene3d)
+            return;
         this.view.scene = scene3d;
         this.view.scene.addChild(this.view.camera3D);
+
+
+        this.view.addChild3D(mesh);
     }
 
     protected onOnceComplete(e: egret3d.LoaderEvent3D) {

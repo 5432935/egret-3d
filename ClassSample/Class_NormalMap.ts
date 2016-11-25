@@ -30,10 +30,12 @@
             po.y = 200;
             po.z = 200;
             this.lights.addLight(po);
-
+            this.lights.addLight(view1.sunLight);
             this.matPlane = new TextureMaterial();
-            this.matPlane.lightGroup = this.lights;
+            this.matPlane.specularLevel = 0.25;
+
             this.plane = new Mesh(new PlaneGeometry(), this.matPlane);
+            this.plane.lightGroup = this.lights;
             this.view1.addChild3D(this.plane);
 
             var loadDiffuse: URLLoader = new URLLoader("resource/floor/WOOD_1.png");

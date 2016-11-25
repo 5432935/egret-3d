@@ -28,6 +28,7 @@
             }
 
             var geomtryData: GeometryData = new GeometryData();
+          
             ESMVersion.versionDictionary[version](bytes, geomtryData, param);
             var geomtry: Geometry;
             var vertexFormat: number = 0;

@@ -37,12 +37,14 @@
 
             Input.addEventListener(KeyEvent3D.KEY_DOWN, this.onKeyDown, this);
 
-            this.view1.openGui( this.onLoadFonts , this, false);
-
+            this._queueLoad = new QueueLoader();
+            this._queueLoad.loadDefaultGUISkin();
+            this._queueLoad.load("resource/terrain/ziyan_xinshou/Heightmap_0.jpg");
+            this._queueLoad.load("resource/terrain/331.png");
+            this._queueLoad.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadFonts, this);
 
         }
-        protected onLoadFonts() {
-            egret3d.gui.BitmapFont.load(textureResMgr.getTextureDic());
+        protected onLoadFonts(e: LoaderEvent3D) {
 
 
             this.textField = new gui.UITextField();
@@ -55,10 +57,14 @@
             this.textFieldTotalFace.textColor = 0xff0000;
 
 
-            this.matPlane = new TextureMaterial();
-            var loadtex: URLLoader = new URLLoader("resource/terrain/ziyan_xinshou/Heightmap_0.jpg");
-            loadtex.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadHeightMap, this);
-            loadtex["mat"] = this.matPlane;
+            this.matPlane = new TextureMaterial(this._queueLoad.getAsset("resource/terrain/331.png"));
+            var heightImage = this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/Heightmap_0.jpg");
+
+            var mesh: Terrain = new Terrain(heightImage, 10240, 1000, 10240, 128, 128, true, this.matPlane);
+            this.view1.addChild3D(mesh);
+            this.terrain = mesh;
+
+            this.textFieldTotalFace.text = "total face:" + (128 * 128 * 2).toString();
         }
 
         protected terrain: Terrain;
@@ -91,26 +97,6 @@
                 //    }
                 //    break;
             }
-        }
-
-        protected onLoadHeightMap2(e: LoaderEvent3D) {
-            e.loader["mat"].diffuseTexture = e.data;
-        }
-
-        protected onLoadHeightMap(e: LoaderEvent3D) {
-            var heightImage: ImageTexture = <ImageTexture>e.loader.data; 
-            var mat: TextureMaterial = new TextureMaterial();
-            //var mesh: Mesh = new Mesh(envHeightGeometry, mat);
-            
-            var mesh: Terrain = new Terrain(heightImage, 10240, 1000, 10240, 128, 128, true, mat);
-            this.view1.addChild3D(mesh);
-            this.terrain = mesh;
-
-            var loadmaptex: URLLoader = new URLLoader("resource/terrain/331.png");
-            loadmaptex.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadHeightMap2, this);
-            loadmaptex["mat"] = mat;
-
-            this.textFieldTotalFace.text = "total face:" + (128 * 128 * 2).toString();
         }
 
         public update(e: Event3D) {

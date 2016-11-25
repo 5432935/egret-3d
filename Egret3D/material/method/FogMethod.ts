@@ -1,5 +1,6 @@
 ﻿module egret3d {
     /**
+    * @private
     * @class egret3d.FogMethod
     * @classdesc
     * 继承自 MethodBase,为材质球附加特效的共有基类.

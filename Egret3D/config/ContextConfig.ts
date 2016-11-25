@@ -24,28 +24,35 @@
 
     /**
     * @language zh_CN
-    * 渲染混合模式
-    * BlendMode 类中的一个值，用于指定要使用的混合模式。 内部绘制位图的方法有两种。 如果启用了混合模式或外部剪辑遮罩，则将通过向矢量渲染器添加有位图填充的正方形来绘制位图。 如果尝试将此属性设置为无效值，则 Flash 运行时会将此值设置为 BlendMode.NORMAL。 
-    * blendMode 属性影响显示对象的每个像素。每个像素都由三种原色（红色、绿色和蓝色）组成，每种原色的值介于 0x00 和 0xFF 之间。Flash Player 或 Adobe AIR 将影片剪辑中一个像素的每种原色与背景中像素的对应颜色进行比较。例如，如果 blendMode 设置为 BlendMode.LIGHTEN，则 Flash Player 或 Adobe AIR 会将显示对象的红色值与背景的红色值进行比较，然后使用两者中较亮的一种颜色作为显示颜色的红色成分的值。
-    * 下表将对 blendMode 设置进行说明。BlendMode 类定义可使用的字符串值。表中的插图显示应用于交叠于显示对象 (1) 之上的圆形显示对象 (2) 的 blendMode 值。
+    * 渲染混合模式</p>
+    * BlendMode 类中的一个值，用于指定要使用的混合模式。 内部绘制位图的方法有两种。</p>
+    * 如果启用了混合模式或外部剪辑遮罩，则将通过向矢量渲染器添加有位图填充的正方形来绘制位图。</p>
+    * 如果尝试将此属性设置为无效值，运行时会将此值设置为 BlendMode.NORMAL。</p>
+    * blendMode 属性影响显示对象的每个像素。</p>
+    * 每个像素都由三种原色（红色、绿色和蓝色）组成，每种原色的值介于 0x00 和 0xFF 之间。</p>
+    * 将影片剪辑中一个像素的每种原色与背景中像素的对应颜色进行比较。</p>
+    * 下表将对 blendMode 设置进行说明。BlendMode 类定义可使用的字符串值。</p>
+    * 表中的插图显示应用于交叠于显示对象</p>
+    * (1) 之上的圆形显示对象 (2) 的 blendMode 值。</p>
     * @version Egret 3.0
     * @platform Web,Native
     */
     export enum BlendMode {
+
         /**
-         * @language zh_CN
-         * 将显示对象的每个像素的 Alpha 值应用于背景。
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 将显示对象的每个像素的 Alpha 值应用于背景。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         ALPHA,
         
         /**
-         * @language zh_CN
-         * 强制为该显示对象创建一个透明度组。
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 强制为该显示对象创建一个透明度组。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         LAYER, 
 
         /**
@@ -72,7 +79,6 @@
         */
         ADD, 
 
-
         /**
         * @language zh_CN
         * 从背景颜色的值中减去显示对象原色的值，下限值为 0。
@@ -80,6 +86,7 @@
         * @platform Web,Native
         */
         SUB, 
+
         /**
         * @language zh_CN
         * 将显示对象颜色的补色（反色）与背景颜色的补色相除。
@@ -87,6 +94,7 @@
         * @platform Web,Native
         */
         DIV, 
+
         /**
         * @language zh_CN
         * 将显示对象颜色的补色（反色）与背景颜色的补色相乘，会产生漂白效果。
@@ -94,6 +102,7 @@
         * @platform Web,Native
         */
         SCREEN,
+
         /**
         * @language zh_CN
         * 将显示对象的原色值添加到它的背景颜色中(较ADD稍微暗一些)，上限值为 0xFF。
@@ -101,8 +110,8 @@
         * @platform Web,Native
         */
         SOFT_ADD,
-
     }
+
     /**
     * @private
     * @class egret3d.ContextSamplerType
@@ -187,45 +196,59 @@
     /**
     * @class egret3d.DrawMode
     * @classdesc
-    * 渲染模式
-    * LINES 线框显示模式
-    * POINTS 点显示模式
-    * TRIANGLES 三角形显示模式
-    * LINE_STRIP 连接线显示模式
+    * 渲染模式。
+    * LINES 线框显示模式。
+    * POINTS 点显示模式。
+    * TRIANGLES 三角形显示模式。
+    * LINE_STRIP 连接线显示模式。
+    * @version Egret 3.0
+    * @platform Web,Native
     */
     export class DrawMode {
                     
         /**
-         * @language zh_CN
-         * 线框显示模式
-         */
+        * @language zh_CN
+        * 线框显示模式
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         static LINES: number;
                             
         /**
-         * @language zh_CN
-         * 点显示模式
-         */
+        * @language zh_CN
+        * 点显示模式
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         static POINTS: number;
                                     
         /**
-         * @language zh_CN
-         * 三角形显示模式
-         */
+        * @language zh_CN
+        * 三角形显示模式
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         static TRIANGLES: number;
                                     
         /**
-         * @language zh_CN
-         * 连接线显示模式
-         */
+        * @language zh_CN
+        * 连接线显示模式
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         static LINE_STRIP: number;
 
     }
           
-
     /**
-    * @class egret3d.Egret3DDrive
+    * @class egret3d.ContextConfig
     * @classdesc
-    * 3d 驱动 一些配置类型
+    *
+    * 一些渲染状态，裁剪模式和数据类型的一些常量值。
+    * 对应WebGLRenderingContext中的常量值。
+    * 
+    * @version Egret 3.0
+    * @platform Web,Native
     */
     export class ContextConfig {
                     
@@ -267,11 +290,6 @@
         /**
         * @private
         */
-        static context3D: Context3DProxy;
-                            
-        /**
-        * @private
-        */
         static canvas: HTMLCanvasElement;
                             
         /**
@@ -288,19 +306,27 @@
         * @private
         */
         static BLEND: number;
-                            
+
         /**
-        * @private
+        * @language zh_CN
+        * UNSIGNED_BYTE 数据类型
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        static UNSIGNED_BYTE: number;
+
+        /**
+        * @language zh_CN
+        * FLOAT 数据类型
+        * @version Egret 3.0
+        * @platform Web,Native
         */
         static FLOAT: number;
 
-        static UNSIGNED_BYTE: number;
-                            
         /**
         * @private
         */
-        static CULL_FACE: number;
-                            
+        static CULL_FACE: number;                            
                 
         /**
         * @language zh_CN
@@ -452,10 +478,5 @@
         */
         static LEQUAL: number;
 
-
-
-
-
-        
     }
 }

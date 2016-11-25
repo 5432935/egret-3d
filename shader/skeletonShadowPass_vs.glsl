@@ -52,6 +52,6 @@ void main(void){
 	outPosition += m3 * temp_position * e_boneWeight.w;
 	
 	e_position = outPosition.xyz;
-	outPosition = uniform_modelMatrix * uniform_viewMatrix *  outPosition; 
+	outPosition = uniform_ModelMatrix * uniform_ViewMatrix *  outPosition; 
     
 }

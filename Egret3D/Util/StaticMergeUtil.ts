@@ -49,8 +49,10 @@
             for (var i: number = 0; i < preNodes.length; i++) {
                 geometry = (<Mesh>preNodes[i].object3d).geometry;
                 for (var j: number = 0; j < geometry.subGeometrys.length; j++) {
-                    geometryMatID = preNodes[i]["geometryMatID" + matID.toString()];
-                    if (geometry.subGeometrys[j].matID == geometryMatID) {
+                    
+                    //geometryMatID = preNodes[i]["geometryMatID" + matID.toString()];
+
+                    if (preNodes[i].materialIDs[j] == matID) {
                         if (indexCount + geometry.subGeometrys[j].count < maxVerticeIndex) {
                             packs[listCount] = packs[listCount] || [];
                             packs[listCount].push(preNodes[i]);
@@ -83,10 +85,9 @@
                     len = mesh.geometry.subGeometrys.length;
                     for (var j: number = 0; j < len; j++) {
                         matID = nodes[i].materialIDs[mesh.geometry.subGeometrys[j].matID];
-                        nodes[i]["geometryMatID"+ matID.toString()] = mesh.geometry.subGeometrys[j].matID;
+                        //nodes[i]["geometryMatID"+ matID.toString()] = mesh.geometry.subGeometrys[j].matID;
                         arr_staticMesh[matID] = arr_staticMesh[matID] || [];
                         arr_staticMesh[matID].push(nodes[i]);
-
                     }
                 }
             }
@@ -111,13 +112,16 @@
             var subGeometry: SubGeometry;
             var geometryMatID: number;
             var final: Mesh[] = [];
+            var indexValue: number = 0;
+            var currentVertexOffset: number = 0;
+            var currentIndexOffset: number = 0;
 
             //当前材质 如果超过最大值就需要分pack
             for (var packIndex: number = 0; packIndex < nodes.length; packIndex++) {
                 meshs = nodes[packIndex];
                 totalVertexLength = 0;
-                totalIndexLength = 0;
-                //meshs = meshs.sort( (a,b) => this.sortByZ(a,b) );
+                totalIndexLength = 0;  
+                meshs = meshs.sort( (a,b) => this.sortByZ(a,b) );
                 for (i = 0; i < meshs.length; i++) {
                     mesh = <Mesh>meshs[i].object3d;
 
@@ -125,10 +129,10 @@
 
                     for (var g: number = 0; g < mesh.geometry.subGeometrys.length;g++) {
                         subGeometry = mesh.geometry.subGeometrys[g];
-                        geometryMatID = meshs[i]["geometryMatID" + matID.toString()];
-
-                        if (subGeometry.matID == geometryMatID) {
-                            totalVertexLength += subGeometry.count * vertexLenth ;
+                        if (meshs[i].materialIDs[g] == matID) {
+                            geometryMatID = g;
+                            //totalVertexLength += subGeometry.count * vertexLenth ;
+                            totalVertexLength += subGeometry.count;
                             totalIndexLength += subGeometry.count;
                         }
                     }
@@ -157,36 +161,63 @@
                     var indexBuffer: Float32Array;
                     for (var g: number = 0; g < mesh.geometry.subGeometrys.length; g++) {
                         subGeometry = mesh.geometry.subGeometrys[g];
-                        geometryMatID = meshs[count]["geometryMatID" + matID.toString()];
-                        if (subGeometry.matID == geometryMatID) {
+                        if (meshs[count].materialIDs[g] == matID) {
+                            geometryMatID = g;
+
                             vertexBuffer = mesh.geometry.vertexArray;
                             indexBuffer = mesh.geometry.indexArray;
-
                             //geomety 顶点拼接
-                            for (i = 0; i < subGeometry.count + 1; i++) {
-                                pos.x = vertexBuffer[subGeometry.start * vertexLenth + vertexLenth * i];
-                                pos.y = vertexBuffer[subGeometry.start * vertexLenth + vertexLenth * i + 1];
-                                pos.z = vertexBuffer[subGeometry.start * vertexLenth + vertexLenth * i + 2];
+                            for (var i: number = 0; i < subGeometry.count; ++i) {
+                                indexValue = indexBuffer[subGeometry.start + i];
+                                currentVertexOffset = vertexOffset + i;
 
+                                pos.x = vertexBuffer[indexValue * vertexLenth];
+                                pos.y = vertexBuffer[indexValue * vertexLenth + 1];
+                                pos.z = vertexBuffer[indexValue * vertexLenth + 2];
                                 modelMatrix.transformVector(pos, Vector3D.HELP_1);
 
-                                vertexs[vertexOffset + i * vertexLenth + 0] = Vector3D.HELP_1.x;
-                                vertexs[vertexOffset + i * vertexLenth + 1] = Vector3D.HELP_1.y;
-                                vertexs[vertexOffset + i * vertexLenth + 2] = Vector3D.HELP_1.z;
+                                vertexs[currentVertexOffset * vertexLenth + 0] = Vector3D.HELP_1.x;
+                                vertexs[currentVertexOffset * vertexLenth + 1] = Vector3D.HELP_1.y;
+                                vertexs[currentVertexOffset * vertexLenth + 2] = Vector3D.HELP_1.z;
 
-                                for (var j: number = 3; j < vertexLenth; j++) {
-                                    vertexs[vertexOffset + i * vertexLenth + j] = vertexBuffer[subGeometry.start * vertexLenth + vertexLenth * i + j];
+                                for (var j: number = 3; j < vertexLenth; ++j) {
+                                    vertexs[currentVertexOffset * vertexLenth + j] = vertexBuffer[indexValue * vertexLenth + j];
                                 }
                             }
 
-                            //顶点拼接
-                            for (i = 0; i < subGeometry.count; i++) {
-                                indexs[indexOffset + i] = indexOffset + indexBuffer[subGeometry.start + i] - subGeometry.start ;
+                            for (var i: number = 0; i < subGeometry.count; ++i) {
+                                currentIndexOffset = vertexOffset + i;
+                                indexs[currentIndexOffset] = currentIndexOffset; 
                             }
 
-                            //偏移总数
-                            vertexOffset += subGeometry.count * vertexLenth;
+                            vertexOffset += subGeometry.count;
                             indexOffset += subGeometry.count;
+
+                            ////geomety 顶点拼接
+                            //for (i = 0; i < subGeometry.count + 1; i++) {
+                            //    pos.x = vertexBuffer[subGeometry.start * vertexLenth + vertexLenth * i];
+                            //    pos.y = vertexBuffer[subGeometry.start * vertexLenth + vertexLenth * i + 1];
+                            //    pos.z = vertexBuffer[subGeometry.start * vertexLenth + vertexLenth * i + 2];
+
+                            //    modelMatrix.transformVector(pos, Vector3D.HELP_1);
+
+                            //    vertexs[vertexOffset + i * vertexLenth + 0] = Vector3D.HELP_1.x;
+                            //    vertexs[vertexOffset + i * vertexLenth + 1] = Vector3D.HELP_1.y;
+                            //    vertexs[vertexOffset + i * vertexLenth + 2] = Vector3D.HELP_1.z;
+
+                            //    for (var j: number = 3; j < vertexLenth; j++) {
+                            //        vertexs[vertexOffset + i * vertexLenth + j] = vertexBuffer[subGeometry.start * vertexLenth + vertexLenth * i + j];
+                            //    }
+                            //}
+
+                            ////顶点拼接
+                            //for (i = 0; i < subGeometry.count; i++) {
+                            //    indexs[indexOffset + i] = indexOffset + indexBuffer[subGeometry.start + i] - subGeometry.start ;
+                            //}
+
+                            ////偏移总数
+                            //vertexOffset += subGeometry.count * vertexLenth;
+                            //indexOffset += subGeometry.count;
                         }
                     }
                         
@@ -194,16 +225,8 @@
 
                 //取共享的材质球
                 shareMat = mesh.getMaterial(geometryMatID);
-
-                var subGeometry: SubGeometry = new SubGeometry();
-                subGeometry.matID = geometryMatID;
-                subGeometry.geometry = geometry;
-                subGeometry.start = 0;
-                subGeometry.count = indexOffset;
                 final.push(new Mesh(geometry, shareMat));
             }
-
-          
             return final;
         }
     }

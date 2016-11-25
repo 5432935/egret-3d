@@ -1,15 +1,20 @@
 //##FilterBegin## ##Particle##
 
 float updateStretchedBillBoard(vec4 startPos, vec4 newPos){
-	vec3 dirVector = newPos.xyz - startPos.xyz;
-
-	float speed = dot(dirVector, dirVector);
-	speed = sqrt(speed) * 0.01 / currentTime;
-
-	localPosition.x *= particleStateData.lengthScale + speed * particleStateData.speedScale;
-	if(particleStateData.speedScale != 0.0){
-	  localPosition.x /= 10.0 * scaleSize;
+	//第一帧无法计算方向
+	if(currentTime < 0.016){
+		return 0.0;
 	}
+	vec3 dirVector = newPos.xyz - startPos.xyz; 
+	float speed = dot(dirVector, dirVector); 
+	speed = sqrt(speed) / currentTime; 
+	speed /= 100.0; 
+	localPosition.x *= speed * particleStateData.speedScale + particleStateData.lengthScale; 
+	if(particleStateData.speedScale != 0.0){ 
+		localPosition.x /= scaleSize; 
+		localPosition.x *= scaleChange; 
+		localPosition.x /= particleScale; 
+	} 
 
 	mat4 temp = uniform_ViewMatrix;
 	startPos = temp * startPos; 

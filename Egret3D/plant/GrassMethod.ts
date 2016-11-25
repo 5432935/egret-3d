@@ -14,16 +14,18 @@
         private _start: boolean;
         private _time: number = 0.0;
         private _windSpeed: number = 200;
-        private _windStrength: number = 0.2;
+        private _windStrength: number = 0.1;
         private _shakeScale: number = 0.1;
         private _windDirection: Vector3D = new Vector3D(1, 0, 0);
         private _windSpace: Vector3D = new Vector3D(400, 0, 300);
 
         private _windData: Float32Array = new Float32Array(9);
         private _squeezeData: Float32Array = new Float32Array(6);
+        private _lightMapData: Float32Array = new Float32Array(5);
 
         private _data: GrassData;
-
+        private _lightMapTexture: ITexture = CheckerboardTexture.texture;
+        private _lightMapRect: Rectangle;
         /**
         * @language zh_CN
         * @构造函数
@@ -34,9 +36,13 @@
         */
         constructor(data:GrassData) {
             super();
+
             this._data = data;
             this.vsShaderList[ShaderPhaseType.start_vertex] = this.vsShaderList[ShaderPhaseType.start_vertex] || [];
             this.vsShaderList[ShaderPhaseType.start_vertex].push("grass_vs");
+
+            this.fsShaderList[ShaderPhaseType.diffuse_fragment] = this.fsShaderList[ShaderPhaseType.diffuse_fragment] || [];
+            this.fsShaderList[ShaderPhaseType.diffuse_fragment].push("grass_fs");
 
             this.fillGrassData();
 
@@ -44,6 +50,35 @@
             
         }
 
+        /**
+        * @language zh_CN
+        * 设置草用到的灯光图和数据
+        * @param lightMap 灯光贴图
+        * @param lightMapRect 用于计算UV的数据xy代表偏移，width/height为用于和场景xz的缩放系数
+        * @version Egret 3.0
+        * @platform Web,Native 
+        */
+        public setLightMapData(lightMap?: ITexture, lightMapRect?: Rectangle): void {
+            this._lightMapRect = lightMapRect;
+            this._lightMapTexture = lightMap || CheckerboardTexture.texture;
+            this.updateLightMapData();
+        }
+
+
+        private updateLightMapData(): void {
+            if (!this._lightMapTexture || this._lightMapTexture == CheckerboardTexture.texture || !this._lightMapRect) {
+                this._lightMapData[0] = 0;
+            } else {
+                this._lightMapData[0] = 1;
+                this._lightMapData[1] = this._lightMapRect.x;
+                this._lightMapData[2] = this._lightMapRect.y;
+                this._lightMapData[3] = this._lightMapRect.width;
+                this._lightMapData[4] = this._lightMapRect.height;
+            }
+
+            this.materialData["lightMapTexture"] = this._lightMapTexture;
+            this.materialData.textureChange = true; 
+        }
         /**
         * @language zh_CN
         * 更新风的参数
@@ -136,6 +171,7 @@
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
             usage["uniform_grass_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_grass_data");
             usage["uniform_squeeze_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_squeeze_data");
+            usage["uniform_lightMap_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_lightMap_data");
         }
         
         /**
@@ -150,6 +186,7 @@
             this._windData[8] = this._data.billboard ? 1 : 0;
             context3DProxy.uniform1fv(usage["uniform_grass_data"].uniformIndex, this._windData);
             context3DProxy.uniform1fv(usage["uniform_squeeze_data"].uniformIndex, this._squeezeData);
+            context3DProxy.uniform1fv(usage["uniform_lightMap_data"].uniformIndex, this._lightMapData);
 
 
         }

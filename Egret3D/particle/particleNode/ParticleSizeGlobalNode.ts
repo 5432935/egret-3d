@@ -19,6 +19,7 @@
 
         private attribute_bezierRandomSeed: GLSL.VarRegister;
         private attribute_scaleSizeConst: GLSL.VarRegister;
+        private _scaleResult: number[];
         constructor() {
             super();
             //##FilterBegin## ##Particle##
@@ -28,33 +29,35 @@
 
         /**
         * @language zh_CN
-        * 填充粒子初始旋转数据
+        * 填充粒子初始缩放数据
         * @param data ParticleDataNode 粒子数据来源
         * @version Egret 3.0
         * @platform Web,Native
         */
         public initNode(data: ParticleDataNode): void {
             //##FilterBegin## ##Particle##
-            this._node = <ParticleDataScaleSize>data;
 
-            if (this._node.type == ParticleValueType.Const || this._node.type == ParticleValueType.RandomConst) {
-                this.attribute_scaleSizeConst = new GLSL.VarRegister();
-                this.attribute_scaleSizeConst.name = "attribute_scaleSizeConst";
-                this.attribute_scaleSizeConst.size = 1;
-                this.attributes.push(this.attribute_scaleSizeConst);
+            this._node = <ParticleDataScaleSize>data;
+            //由于初始缩放也要在这里输入，所以为必备的一个元素
+            this.attribute_scaleSizeConst = new GLSL.VarRegister();
+            this.attribute_scaleSizeConst.name = "attribute_scaleSizeConst";
+            this.attribute_scaleSizeConst.size = 1;
+            this.attributes.push(this.attribute_scaleSizeConst);
+
+            this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
+            this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_scaleSizeConst");
+
+            if (this._node) {
 
                 this._sizeScale = new ConstRandomValueShape();
                 this._sizeScale.max = this._node.max;
                 this._sizeScale.min = this._node.min;
-                this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
-                this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_scaleSizeConst");
-            }
-            else {
+
                 if (this._node.type == ParticleValueType.OneBezier) {
                     this._floatCompressData1 = this._node.bezier1.sampler();
                     this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
                     this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_scaleSizeBezier1");
-                } else {
+                } else if (this._node.type == ParticleValueType.TwoBezier) {
                     this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
                     this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_scaleSizeBezier2");
                     this._floatCompressData2 = this._node.bezier1.sampler();
@@ -66,9 +69,7 @@
                     this.attribute_bezierRandomSeed.size = 1;
                     this.attributes.push(this.attribute_bezierRandomSeed);
                 }
-
             }
-
 
             //##FilterEnd##
         }
@@ -82,31 +83,42 @@
         * @platform Web,Native
         */
         public build(geometry: Geometry, count: number) {
+            //##FilterBegin## ##Particle##
+            var pState: ParticleAnimationState = <ParticleAnimationState>this.state;
+            this._scaleResult = pState.scaleBirthArray;
+            //
             var index: number = 0;
             var vertices: number = geometry.vertexCount / count;
-            if (this._node.type == ParticleValueType.Const || this._node.type == ParticleValueType.RandomConst) {
-                var data: any[] = this._sizeScale.calculate(count);
+            if (this._node) {
+                if (this._node.type == ParticleValueType.TwoBezier) {
+                    for (var i: number = 0; i < count; ++i) {
+                        var random: number = Math.random();
+                        for (var j: number = 0; j < vertices; ++j) {
+                            index = i * vertices + j;
+                            index = index * geometry.vertexAttLength + this.attribute_bezierRandomSeed.offsetIndex;
 
-                for (var i: number = 0; i < count; ++i) {
-                    var scale: number = data[i];
-                    for (var j: number = 0; j < vertices; ++j) {
-                        index = i * vertices + j;
-                        index = index * geometry.vertexAttLength + this.attribute_scaleSizeConst.offsetIndex;
-
-                        geometry.vertexArray[index + 0] = scale;
+                            geometry.vertexArray[index + 0] = random;
+                        }
                     }
                 }
-            } else if(this._node.type == ParticleValueType.TwoBezier){
-                for (var i: number = 0; i < count; ++i) {
-                    var random: number = Math.random();
-                    for (var j: number = 0; j < vertices; ++j) {
-                        index = i * vertices + j;
-                        index = index * geometry.vertexAttLength + this.attribute_bezierRandomSeed.offsetIndex;
 
-                        geometry.vertexArray[index + 0] = random;
+                if (this._node.type == ParticleValueType.Const || this._node.type == ParticleValueType.RandomConst) {
+                    var data: any = this._sizeScale.calculate(count);
+                    for (var i: number = 0; i < count; i++) {
+                        this._scaleResult[i] *= data[i];
                     }
+                }
+
+            }
+
+            for (var i: number = 0; i < count; ++i) {
+                for (var j: number = 0; j < vertices; ++j) {
+                    index = i * vertices + j;
+                    index = index * geometry.vertexAttLength + this.attribute_scaleSizeConst.offsetIndex;
+                    geometry.vertexArray[index + 0] = this._scaleResult[i];
                 }
             }
+            //##FilterEnd##
         }
 
         /**

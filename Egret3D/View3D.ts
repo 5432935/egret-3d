@@ -394,65 +394,65 @@
             return this._entityCollect;
         }
 
-        /**
-        * @language zh_CN
-        * 开启Gui功能.
-        * 需要以下两个资源
-        * resource/ui/fonts.json 
-        * resource/ui/GUI.json 
-        * @param initedFun Gui初始化完成后要执行的函数
-        * @param thisObj initedFun回调函数的this指向
-        * @param loadDefaultGuiSkin 是否加载默认的组件皮肤
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public openGui(initedFun: Function, thisObj: any = null, loadDefaultGuiSkin: boolean = true) {
-            this._guiInitFun = initedFun;
-            this._guiCallbackThisObj = thisObj;
-            textureResMgr.guiStage = this.getGUIStage();
-            let queueLoader: QueueLoader = new QueueLoader("resource/ui/fonts.json");
-            queueLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onGuiAssetLoaded, this);
-            if (loadDefaultGuiSkin) {
-                queueLoader.load("resource/ui/GUI.json");
-            }
-        }
+//        /**
+//        * @language zh_CN
+//        * 开启Gui功能.
+//        * 需要以下两个资源
+//        * resource/ui/fonts.json 
+//        * resource/ui/GUI.json 
+//        * @param initedFun Gui初始化完成后要执行的函数
+//        * @param thisObj initedFun回调函数的this指向
+//        * @param loadDefaultGuiSkin 是否加载默认的组件皮肤
+//        * @version Egret 3.0
+//        * @platform Web,Native
+//        */
+//        public openGui(initedFun: Function, thisObj: any = null, loadDefaultGuiSkin: boolean = true) {
+//            this._guiInitFun = initedFun;
+//            this._guiCallbackThisObj = thisObj;
+//            textureResMgr.guiStage = this.getGUIStage();
+//            let queueLoader: QueueLoader = new QueueLoader("resource/ui/fonts.json");
+//            queueLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onGuiAssetLoaded, this);
+//            if (loadDefaultGuiSkin) {
+//                queueLoader.load("resource/ui/GUI.json");
+//            }
+//        }
 
-        private runGuiInitFun() {
-            if (this._guiInitFun) {
-                if (this._guiCallbackThisObj) {
-                    this._guiInitFun.call(this._guiCallbackThisObj);
-                } else {
-                    this._guiInitFun();
-                }
-            }
-        }
+//        private runGuiInitFun() {
+//            if (this._guiInitFun) {
+//                if (this._guiCallbackThisObj) {
+//                    this._guiInitFun.call(this._guiCallbackThisObj);
+//                } else {
+//                    this._guiInitFun();
+//                }
+//            }
+//        }
 
-        /**
-        * @private
-        * @language zh_CN
-        * Gui所需资源加载完成后的事件处理
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        private onGuiAssetLoaded(event: LoaderEvent3D) {
-            gui.BitmapFont.load(textureResMgr.getTextureDic());
-            this.initDefaultSkin();
-            this.runGuiInitFun();
-
-        }
-
-        /**
-        * @private
-        * @language zh_CN
-        * 初始化Gui默认皮肤
-         * todo 改成json配置表进行处理
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        private initDefaultSkin() {
+//        /**
+//        * @private
+//        * @language zh_CN
+//        * Gui所需资源加载完成后的事件处理
+//        * @version Egret 3.0
+//        * @platform Web,Native
+//        */
+//        private onGuiAssetLoaded(event: LoaderEvent3D) {
 //            gui.BitmapFont.load(textureResMgr.getTextureDic());
-           gui.SkinManager.instance.initDefaultSkin();
-        }
+//            this.initDefaultSkin();
+//            this.runGuiInitFun();
+
+//        }
+
+//        /**
+//        * @private
+//        * @language zh_CN
+//        * 初始化Gui默认皮肤
+//         * todo 改成json配置表进行处理
+//        * @version Egret 3.0
+//        * @platform Web,Native
+//        */
+//        private initDefaultSkin() {
+////            gui.BitmapFont.load(textureResMgr.getTextureDic());
+//           gui.SkinManager.instance.initDefaultSkin();
+//        }
 
         /**
         * @private

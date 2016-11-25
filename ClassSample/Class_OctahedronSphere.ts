@@ -22,7 +22,7 @@
             this._egret3DCanvas.start();
             this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
 
-            var loadDiffuse: URLLoader = new URLLoader("resource/SkyBox/sky0026.png");
+            var loadDiffuse: URLLoader = new URLLoader("resource/scene/SkyBox/sky0026.png");
             loadDiffuse.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoadDiffuse, this);
         }
 

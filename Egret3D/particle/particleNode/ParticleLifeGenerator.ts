@@ -107,6 +107,11 @@
 
 
         private generatorConst(): void {
+            //补漏的代码，duration尽量和单个粒子的生命周期成整数倍，计算循环时间modTime的时候，会更加准确
+            if (this._data.emission.type == ParticleValueType.Const && this._data.life.type == ParticleValueType.Const) {
+                this._data.life.duration = Math.ceil(this._data.life.duration / this._data.life.max) * this._data.life.max;
+            }
+            //补漏结束
             var rate: number = this._data.emission.rate;
             if (rate == 0) {
                 //不发射粒子
@@ -118,8 +123,8 @@
 
             var createInterval: number = Math.max(1 / rate, this._tiny);
             var duration: number = this._data.life.duration;
-            var now: number = createInterval;
-            var next: number = now + createInterval;
+            var now: number = 0;
+            var next: number = createInterval;
 
             while (now <= this._data.life.duration && this.planes.length < this._inputCount) {
                 this.tryCreatePlane(now);
@@ -182,10 +187,9 @@
             for (var i: number = 0, count: number = this.planes.length; i < count; i++) {
                 pt = this.planes[i];
                 bornTime = pt.x;
-                if (pt.x + pt.y > now) {
+                if (pt.x + pt.y > now + 0.01) {
                     liveCount++;
                 }
-
             }
             //当前存活数在范围之内
             if (liveCount < maxCount) {

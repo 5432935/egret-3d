@@ -3,6 +3,9 @@
     export class Class_DirectLight extends Class_View3D {
         private cameraCtl: LookAtController;
         private cube: Mesh;
+
+        protected lights: LightGroup;
+        protected dirLight: DirectLight;
         constructor() {
             super();
 
@@ -32,8 +35,10 @@
             view1.addChild3D(cube2);
 
             var lights: LightGroup = new LightGroup();
+            this.lights = lights;
 
             var dirLight: DirectLight = new DirectLight(new Vector3D(-0.5, -0.6, 0.2));
+            this.dirLight = dirLight;
             dirLight.diffuse = 0xffffff ;
             lights.addLight(dirLight);
 
@@ -41,6 +46,21 @@
 
             this._egret3DCanvas.start();
             this._egret3DCanvas.addEventListener(Event3D.ENTER_FRAME, this.update, this);
+
+            Input.addEventListener(KeyEvent3D.KEY_DOWN, this.onKeyDown, this);
+        }
+
+
+        private onKeyDown(e: KeyEvent3D) {
+            switch (e.keyCode) {
+                case KeyCode.Key_1:
+                    this.lights.removeLight(this.dirLight);
+                    break;
+                case KeyCode.Key_2:
+
+                    this.lights.addLight(this.dirLight);
+                    break;
+            }
         }
 
         public update(e: Event3D) {

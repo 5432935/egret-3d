@@ -67,7 +67,29 @@
         /**
         * @private
         */
-        public lightGroup: LightGroup;
+        protected _lightGroup: LightGroup;
+
+
+        /**
+        * @private
+        */
+        public get lightGroup(): LightGroup {
+            return this._lightGroup;
+
+        }
+
+        /**
+        * @private
+        */
+        public set lightGroup(lightGroup: LightGroup) {
+            if (this._lightGroup) {
+                this._lightGroup.removeEventListener(LightGroup.EVENT_LIGHT_RESET, this.onLightReset, this);
+            }
+            this._lightGroup = lightGroup;
+            if (this._lightGroup) {
+                this._lightGroup.addEventListener(LightGroup.EVENT_LIGHT_RESET, this.onLightReset, this);
+            }
+        }
 
         private _shadowMethod: ShadowMethod;
 
@@ -94,6 +116,10 @@
             if (data) {
                 this.materialData = data;
             }
+        }
+
+        protected onLightReset(e: Event3D) {
+            this._passChange = true;
         }
 
         /**
@@ -129,7 +155,7 @@
         public removeMethod(method: MethodBase) {
             var index: number = this.methodList.indexOf(method);
             if (index != -1) {
-                this.methodList.slice(index);
+                this.methodList.splice(index, 1);
                 this._passChange = true;
             }
         }
@@ -352,6 +378,10 @@
         protected phaseEnd(animation: IAnimation) {
             var shaderList: string[];
             //---vs---shadering
+            //utils Phase
+            shaderList = this._vs_shader_methods[ShaderPhaseType.utils_vertex];
+            if (shaderList && shaderList.length > 0)
+                this.addMethodShaders(this._passUsage.vertexShader, shaderList);
             //base Phase
             shaderList = this._vs_shader_methods[ShaderPhaseType.base_vertex];
             if (shaderList && shaderList.length > 0) {
@@ -665,8 +695,8 @@
                 context3DProxy.uniformMatrix4fv(this._passUsage.uniform_ViewProjectionMatrix.uniformIndex, false, camera3D.viewProjectionMatrix.rawData);
             }
 
-            if (this._passUsage.uniform_orthProectMatrix) {
-                context3DProxy.uniformMatrix4fv(this._passUsage.uniform_orthProectMatrix.uniformIndex, false, camera3D.orthProjectionMatrix.rawData);
+            if (this._passUsage.uniform_orthProjectMatrix) {
+                context3DProxy.uniformMatrix4fv(this._passUsage.uniform_orthProjectMatrix.uniformIndex, false, camera3D.orthProjectionMatrix.rawData);
             }
 
             if (render.animation) {
@@ -716,7 +746,7 @@
             }
 
             context3DProxy.drawElement(this._materialData.drawMode, subGeometry.start * Uint16Array.BYTES_PER_ELEMENT, subGeometry.count);
-
+           // gl.drawElements(gl.POINTS, 8, gl.UNSIGNED_INT, 0);
             if (this._materialData.alphaBlending)
                 Context3DProxy.gl.depthMask(true);
 

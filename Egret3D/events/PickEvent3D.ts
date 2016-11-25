@@ -91,7 +91,7 @@
         
         /**
         * @language zh_CN
-        * MouseEvent3D TouchEvent3D 事件对象
+        * MouseEvent3D TouchEvent3D 事件对象 鼠标则返回MouseEvent3D  触摸 TouchEvent3D
         * @see egret3d.Event3D
         * @version Egret 3.0
         * @platform Web,Native

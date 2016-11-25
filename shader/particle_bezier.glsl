@@ -1,5 +1,5 @@
 //##FilterBegin## ##Particle##
-const float Tiny = 0.0001;
+//const float Tiny1 = 0.0001;
 float calcBezierArea(float bzData[35], float tCurrent, float tTotal){
 	float res = 0.0;
 
@@ -10,22 +10,22 @@ float calcBezierArea(float bzData[35], float tCurrent, float tTotal){
 	float deltaTime = 0.0;
 	float a_deltaTime;
 
-	float segmentCount = bzData[34] - 1.0;//最后一个点不需要记录，如9个点只有8条线段
-	float iFloat = 0.0;
+	//float segmentCount = bzData[34] - 1.0;//最后一个点不需要记录，如9个点只有8条线段
+	//float iFloat = 0.0;
 	for(int i = 0; i < 16; i ++)
 	{
-		iFloat = float(i);
-		if(iFloat - segmentCount > Tiny)
-			break;
+		//iFloat = float(i);
+		//if(iFloat - segmentCount > Tiny1)
+		//	break;
+		t0 = bzData[i * 2 + 0] * tTotal;
 		v0 = bzData[i * 2 + 1];
-		t0 = bzData[i * 2 + 2] * tTotal;
+		t1 = bzData[i * 2 + 2] * tTotal;
 		v1 = bzData[i * 2 + 3];
-		t1 = bzData[i * 2 + 4] * tTotal;
 
 		deltaTime = t1 - t0;
 
-		if(deltaTime > Tiny)
-		{
+		//if(deltaTime > Tiny1)
+		//{
 			a_deltaTime = 0.5 * (v1 - v0);
 			if(tCurrent >= t1)
 			{
@@ -36,7 +36,7 @@ float calcBezierArea(float bzData[35], float tCurrent, float tTotal){
 				res += deltaTime * (v0 + a_deltaTime);
 				break;
 			}
-		}
+		//}
 
 	}
 
@@ -53,23 +53,23 @@ float calcBezierSize(float bzData[35], float tCurrent, float tTotal){
 	float t1;
 	float deltaTime = 0.0;
 	float v;
-	float segmentCount = bzData[34] - 1.0;//最后一个点不需要记录，如9个点只有8条线段
-	float iFloat = 0.0;
+	//float segmentCount = bzData[34] - 1.0;//最后一个点不需要记录，如9个点只有8条线段
+	//float iFloat = 0.0;
 
 	for(int i = 0; i < 16; i ++)
 	{
-		iFloat = float(i);
-		if(iFloat - segmentCount > Tiny)
-			break;
+		//iFloat = float(i);
+		//if(iFloat - segmentCount > Tiny1)
+		//	break;
+		t0 = bzData[i * 2 + 0] * tTotal;
 		y0 = bzData[i * 2 + 1];
-		t0 = bzData[i * 2 + 2] * tTotal;
+		t1 = bzData[i * 2 + 2] * tTotal;
 		y1 = bzData[i * 2 + 3];
-		t1 = bzData[i * 2 + 4] * tTotal;
 
 		deltaTime = t1 - t0;
 
-		if(deltaTime > Tiny)
-		{
+		//if(deltaTime > Tiny1)
+		//{
 			if(tCurrent <= t1)
 			{
 				v = (y1 - y0) / deltaTime;
@@ -77,7 +77,7 @@ float calcBezierSize(float bzData[35], float tCurrent, float tTotal){
 				res = y0 + v * deltaTime;
 				break;
 			}
-		}
+		//}
 
 	}
 

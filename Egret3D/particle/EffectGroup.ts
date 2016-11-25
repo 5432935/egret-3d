@@ -24,6 +24,10 @@
         private _prewarm: boolean;
 
         private _noLoopAnims: IAnimation[] = [];
+
+        //播放完毕事件
+        private _event3D: AnimationEvent3D = new AnimationEvent3D();
+        private _lastAnimTime: number = 0;
         /**
         * @language zh_CN
         * 初始化所有动画
@@ -72,11 +76,12 @@
             }
 
             //修改当前最大循环时间
-            if (!this._loop) {
+            if (this._loop) {
                 for (animation of this._noLoopAnims) {
-                    this._loopTime = Math.max(this._loopTime, animation.loopTime);
+                    this._loopTime = Math.max(this._loopTime, animation.loopTime * 1000);
                 }
             }
+
         }
 
         /**
@@ -89,6 +94,10 @@
         * @platform Web,Native
         */
         public play(speed?: number, reset?: boolean, prewarm?: boolean): void {
+            speed = speed || 1;
+            reset = reset || false;
+            prewarm = prewarm || false;
+
             for (var index: number = 0; index < this._animCount; index++) {
                 var animator: IAnimation = this._animations[index];
                 animator.play("", speed, reset, prewarm);
@@ -101,9 +110,11 @@
 
             this._isPlay = true;
             this._prewarm = prewarm;
+            this._speed = speed;
             if (reset) {
                 this._animTime = 0;
             }
+
         }
 
         /**
@@ -126,6 +137,30 @@
         }
 
 
+        /**
+        * @language zh_CN
+        * 设置动画当前的播放速度
+        * @param value 播放速度值，不能小于等于0
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set speed(value: number) {
+            if (value < 0.0000001) {
+                value = 0.0000001;
+            }
+            this._speed = value;
+        }
+
+        /**
+        * @language zh_CN
+        * 设置动画当前的播放速度
+        * @return 播放速度值，不能小于等于0
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get speed(): number {
+            return this._speed;
+        }
 
 
         /**
@@ -169,7 +204,6 @@
         */
         public update(time: number, delay: number, camera: Camera3D) {
             super.update(time, delay, camera);
-            this._animTime += delay * this._speed;
 
             if (this._loop && this._animTime > this._loopTime) {
                 this._animTime -= this._loopTime;
@@ -178,6 +212,20 @@
                     anim.play("", this._speed, true, this._prewarm);
                 }
             }
+
+            this._animTime += this._speed * delay;
+
+            if (!this._loop) {
+                var endTime: number = this._loopTime * 1000;
+                if (this._lastAnimTime <= endTime && this._animTime > endTime) {
+                    this._event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
+                    this._event3D.target = this;
+                    this.dispatchEvent(this._event3D);
+                }
+
+            }
+
+            this._lastAnimTime = this._animTime;
         }
         /**
         * @language zh_CN

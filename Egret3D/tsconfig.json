@@ -7,6 +7,21 @@
         "out": "./egret3d.js"
     },
     "files": [
+        "Util/ByteArray.ts",
+        "Util/BooleanArray.ts",
+        "Util/Debug.ts",
+        "Util/StringUtil.ts",
+
+        "Util/lzma/MEMORY.ts",
+        "Util/lzma/LZMADecoder.ts",
+        "Util/lzma/LZMA.ts",
+        "Util/lzma/OutWindow.ts",
+        "Util/lzma/RangeDecoder.ts",
+        "Util/lzma/BitTreeDecoder.ts",
+        "Util/lzma/LenDecoder.ts",
+        "Util/lzma/LZMAWorker.ts",
+        "Util/lzma/LZMAHelper.ts",
+
         "Egret3DLog.ts",
         "Egret3DState.ts",
         "config/TextureMethodType.ts",
@@ -66,7 +81,7 @@
         "shader/ShaderUtil.ts",
 
         "shadow/ShadowCast.ts",
-        
+
         "anim/AnimationNode.ts",
         "anim/AnimationCurve.ts",
         "anim/IAnimationState.ts",
@@ -94,9 +109,10 @@
         "controller/ControllerBase.ts",
         "controller/LookAtController.ts",
         "controller/HoverController.ts",
+
         "controller/PanController.ts",
         "controller/CameraAnimationController.ts",
-        
+
         "core/context/Reference.ts",
         "core/context/Context3DProxy.ts",
         "core/context/FrameBuffer.ts",
@@ -116,9 +132,9 @@
         "core/node/Sky.ts",
         "core/node/Wireframe.ts",
         "core/node/WireframeLine.ts",
-        "core/node/terrain/LODQuadTree.ts",        
+        "core/node/terrain/LODQuadTree.ts",
         "core/node/terrain/Terrain.ts",
-        
+
         "gui/BitmapFont.ts",
         "gui/DisplayObject.ts",
         "gui/QuadData.ts",
@@ -127,7 +143,7 @@
         "gui/QuadMesh.ts",
         "gui/GUITextureGroup.ts",
         "gui/QuadStage.ts",
-        "gui/SkinManager.ts",
+        "gui/GUISkinManager.ts",
 
         "gui/component/UILayout.ts",
         "gui/component/UIElement.ts",
@@ -170,14 +186,15 @@
         "geometry/ElevationGeometry.ts",
         "geometry/OctahedronSphereGeometry.ts",
 
-        
-        
+
+
 
         "input/input.ts",
         "input/OrientationController.ts",
 
         "loader/ILoader.ts",
         "loader/URLLoader.ts",
+        "loader/BinaryLoader.ts",
         "loader/AssetManager.ts",
         "loader/TextureResourceManager.ts",
 
@@ -193,8 +210,12 @@
         "loader/parser/ECA/ECAVersion.ts",
         "loader/parser/ESM/ESMParser.ts",
         "loader/parser/ESM/ESMVersion.ts",
+        "loader/parser/E3dPack/E3dPackParser.ts",
+        "loader/parser/E3dPack/E3dPackVersion.ts",
         "loader/parser/EPA/EPAParser.ts",
         "loader/parser/EPA/EPAVersion.ts",
+        "loader/parser/EUM/EUMParser.ts",
+        "loader/parser/EUM/EUMVersion.ts",
         "loader/parser/XML/XMLParser.ts",
 
         "loader/parser/unit/UnitParserUtils.ts",
@@ -250,14 +271,13 @@
         "material/method/ColorMethod.ts",
         "material/method/WaterWaveMethod.ts",
         "material/method/WaterNormalMethod.ts",
+        "material/method/WaterBumpMethod.ts",
         "material/method/EnvironmentMethod.ts",
         "material/method/RimlightMethod.ts",
 
         "plant/GrassMesh.ts",
         "plant/GrassMethod.ts",
 
-
-        "material/method/WaterBumpMethod.ts",
 
         "material/pass/PassUsage.ts",
         "material/MaterialData.ts",
@@ -272,9 +292,9 @@
         "material/pass/GbufferPass.ts",
         "material/pass/OutLinePass.ts",
         "material/pass/PickPass.ts",
-        
+
         "material/pass/PassUtil.ts",
-        
+
 
         "material/MaterialBase.ts",
 
@@ -298,7 +318,7 @@
         "particle/particleNode/ParticleRotation.ts",
         "particle/particleNode/ParticleScale.ts",
         "particle/particleNode/ParticleStartColor.ts",
-        
+
         "particle/particleNode/ParticleFollowNode.ts",
         "particle/particleNode/ParticleVelocityNode.ts",
         "particle/particleNode/ParticleColorGlobalNode.ts",
@@ -322,7 +342,7 @@
         "particle/particleNode/ParticleTrackPositionNode.ts",
 
 
-        
+
         "particle/ParticleAnimationState.ts",
         "particle/ParticleAnimation.ts",
         "particle/ParticleData.ts",
@@ -342,10 +362,7 @@
         "texture/VideoTexture.ts",
         "texture/RenderTexture.ts",
 
-        "Util/ByteArray.ts",
-        "Util/BooleanArray.ts",
-        "Util/Debug.ts",
-        "Util/StringUtil.ts",
+
 
         "camera/CameraManager.ts",
         "camera/Camera3D.ts",
@@ -358,7 +375,7 @@
 
         "Util/DoubleArray.ts",
         "Util/StaticMergeUtil.ts",
-        
+
         "hud/HUD.ts",
 
         "View3D.ts",
@@ -371,6 +388,6 @@
         "post/BloomPost.ts",
         "post/PostProcessing.ts",
         "post/ColorCorrectionPost.ts"
-        
-    ]      
-}	
+
+    ]
+}

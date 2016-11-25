@@ -24,7 +24,7 @@
         private _view3D: View3D;
         private _guiEventFire: GUIEventFire;
         private _renderListInvalid: boolean = false;
-        private _guiContainer: Object3D;
+        private _guiContainer: GUIRootContainer;
 
         /*
         * @private
@@ -45,7 +45,7 @@
             this._view3D = view3D;
             this._guiEventFire = new GUIEventFire(this);
             this._textureGroup = new GUITextureGroup();
-            this._guiContainer = new Object3D();
+            this._guiContainer = new GUIRootContainer();
             this.changeCamera();
         }
 
@@ -185,6 +185,7 @@
                 this._renderListInvalid = false;
                 this.updateRenderList();
             }
+
             Context3DProxy.gl.disable(Context3DProxy.gl.DEPTH_TEST);
 
             //update data

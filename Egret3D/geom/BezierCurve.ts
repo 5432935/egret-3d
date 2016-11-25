@@ -214,6 +214,9 @@
 
                 for (j = 0; j < SampleNum; j++) {
                     now += tempTime;
+                    if (now > 1) {
+                        now = 1;
+                    }
                     res[position] = now;
                     position++;
                     res[position] = this.calc(now);

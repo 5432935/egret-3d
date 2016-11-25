@@ -15,6 +15,7 @@
     * @private
     */
     export enum ShaderPhaseType {
+        utils_vertex,
         base_vertex,
         start_vertex,
         local_vertex,

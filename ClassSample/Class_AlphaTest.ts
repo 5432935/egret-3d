@@ -29,7 +29,7 @@
             this._queueLoad.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.quenLoadComplete, this);
             this._queueLoad.load("resource/effect/blossom_01.png");
             this._queueLoad.load("resource/effect/smoke_0008.png");
-            this._queueLoad.load("resource/SkyBox/2.JPG");
+            this._queueLoad.load("resource/scene/SkyBox/2.JPG");
         }
 
         private quenLoadComplete(e: LoaderEvent3D) {

@@ -1,5 +1,19 @@
 ﻿module egret3d {
-    
+
+    /**
+    * @private
+    * @language zh_CN
+    * 注册GUI使用的Texture
+    * GUI 使用的贴图只能是公用型的材质,为了提高渲染效率，减少提交次数，gui使用的材质均需要pack起来进行注册
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
+    export var registGUITexture = function (texture: Texture) {
+        for (const v of Egret3DCanvas._instance.view3Ds) {
+            v.getGUIStage().registerTexture(texture);
+        }
+    }
+
     /**
     * @class egret3d.Egret3DCanvas
     * @classdesc
@@ -14,7 +28,12 @@
     * @platform Web,Native
     */
     export class Egret3DCanvas extends EventDispatcher {
-            
+
+        /**
+        * @private
+        */
+        static _instance: Egret3DCanvas;
+
         /**
         * @private
         */
@@ -75,6 +94,11 @@
         */
         constructor(blend2D: boolean = false) {
             super();
+
+            if (Egret3DCanvas._instance)
+                throw new Error("不能重复实例化这个类!");
+            Egret3DCanvas._instance = this;
+
             ShaderUtil.instance.load();
             this._envetManager = new EventManager(this);
             this.canvas = document.createElement("canvas");
@@ -105,7 +129,8 @@
                 // ...
                 //alert("you drivers not suport WEBGL_draw_buffers");
             }
-
+            ext = Context3DProxy.gl.getExtension('OES_element_index_uint');
+            
             this.create2dContext();
 
             if (!Context3DProxy.gl)
@@ -384,4 +409,7 @@
             this.canvas.height = this.canvas3DRectangle.height;
         }
     }
+
+
+
 }

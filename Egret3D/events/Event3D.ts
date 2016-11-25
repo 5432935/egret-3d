@@ -132,6 +132,8 @@
         */
         public delay: number = 0;
 
+        private _stopImmediatePropagation:boolean   = false;
+
         /**
         * @language zh_CN
         * 创建一个作为参数传递给事件侦听器的 Event3D 对象。
@@ -143,6 +145,37 @@
         constructor(eventType: string = null, data: any = null) {
             this.eventType = eventType;
             this.data = data;
+        }
+        /**
+        * @language zh_CN
+        * 防止对事件流中当前节点的后续节点中的所有事件侦听器进行处理。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public stopImmediatePropagation() {
+            this._stopImmediatePropagation = true;
+        }
+
+
+         /**
+          * @private 
+        * @language zh_CN
+        * 重置_stopImmediatePropagation等属性为默认值.引擎内部使用.不对外开放
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public reset() {
+            this._stopImmediatePropagation = false;
+        }
+
+        /**
+        * @language zh_CN
+        * (只读)是否调用过 stopImmediatePropagation() 方法.
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get isStopImmediatePropagation(): boolean {
+            return this._stopImmediatePropagation;
         }
     }
 }

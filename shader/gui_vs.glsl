@@ -14,7 +14,7 @@ vec4 outPosition;
 uniform mat4 uniform_ModelMatrix; 
 uniform mat4 uniform_ViewMatrix; 
 uniform mat4 uniform_ProjectionMatrix; 
-uniform mat4 uniform_orthProectMatrix; 
+uniform mat4 uniform_orthProjectMatrix; 
 uniform float uniform_materialSource[20]; 
 
 mat4 buildMat4Quat(vec4 quat){ 
@@ -68,7 +68,7 @@ void main(void){
     float devicePixelRatio = 1.0;//uniform_materialSource[19];
     mat4 mvMatrix = mat4(uniform_ViewMatrix * uniform_ModelMatrix); 
     mat4 po = buildMat4Quat(attribute_rotate.xyzw); 
-    mat4 oth = uniform_orthProectMatrix; 
+    mat4 oth = uniform_orthProjectMatrix; 
     float px = oth[0].x ;
     float py = oth[1].y ;
     

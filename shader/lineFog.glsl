@@ -19,5 +19,5 @@ void main(void){
     
 	float d = varying_mvPose.z ; 
 	float distFog = max( 0.0 , d -  fog.fogStartDistance ) ; 
-	diffuseColor.xyz = mix( diffuseColor.xyz,fog.fogColor, clamp(distFog/fog.fogFarDistance,0.0,1.0) * fog.fogAlpha ) ; 
+	outColor.xyz = mix( outColor.xyz,fog.fogColor, clamp(distFog/fog.fogFarDistance,0.0,1.0) * fog.fogAlpha ) ; 
 }

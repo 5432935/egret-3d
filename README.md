@@ -16,7 +16,6 @@ http://developer.egret.com/cn/apidoc/index/name/
 ### 为了让egret3D更加强大，故收集大多数意见，在稳定版来临之时，我们将修改更高级层次的引擎，性能更高，api更简易，功能更强大
 ----
 
-
 Release Notes
 --------------------
 [Egret 3.1.5 Release Notes 2016-07-11](/docs/cn/3.1.5_ReleaseNotes.md)
@@ -30,3 +29,5 @@ Release Notes
 [Egret 3.2.2 Release Notes 2016-10-31](/docs/cn/3.2.2_ReleaseNotes.md)
 
 [Egret 3.2.3 Release Notes 2016-11-14](/docs/cn/3.2.3_ReleaseNotes.md)
+
+[Egret 3.2.4 Release Notes 2016-11-28](/docs/cn/3.2.4_ReleaseNotes.md)

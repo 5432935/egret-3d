@@ -50,9 +50,9 @@
     export class OrientationEvent3D extends Event3D {
         /**
          * @language zh_CN
-         * ORIENTATION_CHANGE 常量定义 方向改变事件标识。
+         * ORIENTATION_CHANGE 常量定义 屏幕方向改变事件标识。
          * 可注册对象 : Input类型。
-         * 事件响应状态 : 方向改变事件时响应。
+         * 事件响应状态 : 屏幕方向改变事件时响应。
          * 响应事件参数 : OrientationEvent3D类型,其中OrientationEvent3D.Orientation的内容即为方向枚举值。
          * @see egret3d.Input
          * @version Egret 3.0

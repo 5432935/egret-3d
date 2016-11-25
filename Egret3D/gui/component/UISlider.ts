@@ -100,7 +100,9 @@
         private onMouseDown(event: MouseEvent3D) {
             this.addEventListener(MouseEvent3D.MOUSE_MOVE, this.onMouseMove, this);
 //            this.addEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
-            this.stage.addEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
+            if (this.stage) {
+                this.stage.addEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
+            }
             var cx: number = this.mouseX;
             this.value = cx / this._background.width * (this._maximum - this._minimum) + this._minimum;
         }
@@ -108,7 +110,7 @@
         * @private
         */
         private updateBar() {
-            var ratio: number = Math.abs(this._value / (this._maximum + this._minimum));
+            var ratio: number = Math.abs((this._value-this._minimum) / (this._maximum - this._minimum));
             this._bar.width = this._background.width * ratio;
             this._text.text = this.value.toString();
         }

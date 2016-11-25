@@ -13,8 +13,12 @@
     export class AssetManager {
 
         private _loaderDict: any = {};
+        private _queueLoader: string[] = [];
+        private _currentLoader: URLLoader;
 
         private _loaderEvent: LoaderEvent3D = new LoaderEvent3D();
+        private _binaryDict: { [url: string]: ByteArray } = {};
+        private _binaryUrlDict:{[url:string]: string[] } = {};
 
         /**
         * @language zh_CN
@@ -49,13 +53,29 @@
             if (!asset) {
                 asset = {};
                 this._loaderDict[url] = asset;
-                asset.loader = new URLLoader(url);
+
+                if (this.getByteArray(url)) {
+                    asset.loader = new BinaryLoader();
+                }
+                else {
+                    asset.loader = new URLLoader();
+                }
+
                 asset.objects = [];
+                var loader: URLLoader = asset.loader;
+                loader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onComplete, this);
+
+                this._queueLoader.push(url);
+
+                if (!this._currentLoader) {
+                    this._currentLoader = loader;
+                    this._currentLoader.load(url);
+                }
             }
 
             var loader: URLLoader = asset.loader;
             loader.param = param;
-            if (param instanceof UnitLoader) {
+            if (param instanceof UnitNodeData) {
                 loader.unitNodeData = param;
             }
             if (loader.data) {
@@ -141,11 +161,51 @@
                 data.objects = null;
                 delete this._loaderDict[keys[i]];
             }
-            window
+            
             keys = null;
+        }
+
+        protected onComplete(e: LoaderEvent3D) {
+            this._queueLoader.shift();
+            if (this._queueLoader.length > 0) {
+                var data: any = this._loaderDict[this._queueLoader[0]];
+                var loader: URLLoader = data.loader;
+                loader.load(this._queueLoader[0]);
+                this._currentLoader = loader;
+            }
+            else {
+                this._currentLoader = null;
+            }
+        }
+
+        public addByteArray(url: string, byte: ByteArray, parentUrl:string) {
+            this._binaryDict[url] = byte;
+
+            var urlArray: string[] = this._binaryUrlDict[parentUrl];
+            if (!urlArray) {
+                urlArray = [];
+                this._binaryUrlDict[parentUrl] = urlArray;
+            }
+
+            urlArray.push(url);
+        }
+
+        public removeByteArray(parentUrl: string) {
+            var urlArray: string[] = this._binaryUrlDict[parentUrl];
+            if (urlArray) {
+                for (var i: number = 0; i < urlArray.length; ++i) {
+                    delete this._binaryDict[urlArray[i]];
+                }
+                delete this._binaryUrlDict[parentUrl];
+            }
+        }
+
+        public getByteArray(url: string): ByteArray {
+            return this._binaryDict[url];
         }
     }
 
+    
     /**
     * @private
     * @language zh_CN

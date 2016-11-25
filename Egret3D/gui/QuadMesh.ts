@@ -40,5 +40,22 @@
         public setTexture(index: number,texture:ITexture) {
             this.guiMethod.setTextures(index, texture);
         }
+
     } 
+
+
+    /*
+    *@private
+    * GUI的根容器
+    */
+    export class GUIRootContainer extends Object3D {
+        constructor() {
+            super();
+        }
+
+        public dispose(): void {
+            //啥也不干
+        }
+    }
+
 }

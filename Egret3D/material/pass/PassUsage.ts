@@ -216,7 +216,7 @@
         /**
          * @language zh_CN
          */
-        public uniform_orthProectMatrix: GLSL.Uniform;
+        public uniform_orthProjectMatrix: GLSL.Uniform;
         /**
          * @language zh_CN
          */

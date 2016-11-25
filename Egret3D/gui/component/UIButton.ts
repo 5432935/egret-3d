@@ -20,10 +20,10 @@
         protected _state: string;
         protected _isDowning:boolean;
 
-        protected static STATE_DOWN: string = "down";
-        protected static STATE_UP: string = "up";
-        protected static STATE_OVER:string = "over";
-        protected static STATE_DISABLE: string = "disable";
+        static STATE_DOWN: string = "down";
+        static STATE_UP: string = "up";
+        static STATE_OVER:string = "over";
+        static STATE_DISABLE: string = "disable";
         /**
         * @language zh_CN
         * 构造函数
@@ -125,7 +125,7 @@
             }else if (event.eventType === MouseEvent3D.MOUSE_OUT) {
                 this.mouseOut();
             }else if (event.eventType === MouseEvent3D.MOUSE_OVER) {
-                this.mouseOver();
+//                this.mouseOver();
             }
         }
          /**
@@ -148,8 +148,11 @@
         * @private
         */
         protected startPress(): void {
+            
             this.addEventListener(MouseEvent3D.MOUSE_UP, this.mouseEventHandler, this);
-            this.stage.addEventListener(MouseEvent3D.MOUSE_UP, this.onStageEnd, this);
+            if (this.stage) {
+                this.stage.addEventListener(MouseEvent3D.MOUSE_UP, this.onStageEnd, this);
+            }
             this._isDowning = true;
 
             this.setMouseState(UIButton.STATE_DOWN);
@@ -158,7 +161,9 @@
         * @private
         */
         protected onStageEnd(event: MouseEvent3D): void {
-            this.stage.removeEventListener(MouseEvent3D.MOUSE_UP, this.onStageEnd, this);
+            if (this.stage) {
+                this.stage.removeEventListener(MouseEvent3D.MOUSE_UP, this.onStageEnd, this);
+            }
             this.removeEventListener(MouseEvent3D.MOUSE_UP, this.mouseEventHandler,this);
             this.setMouseState(UIButton.STATE_UP);
             this._isDowning = false;
@@ -169,7 +174,9 @@
         protected endPress(): void {
             this.setMouseState(UIButton.STATE_UP);
             this._isDowning = false;
-            this.stage.removeEventListener(MouseEvent3D.MOUSE_UP, this.onStageEnd, this);
+            if (this.stage) {
+                this.stage.removeEventListener(MouseEvent3D.MOUSE_UP, this.onStageEnd, this);
+            }
             this.removeEventListener(MouseEvent3D.MOUSE_UP, this.mouseEventHandler, this);
         }
          /**

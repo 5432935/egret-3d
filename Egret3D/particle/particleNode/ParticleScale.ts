@@ -14,9 +14,11 @@
         private _scaleValue: ConstRandomValueShape;
         private _animationState: ParticleAnimationState;
         private _node: ParticleDataScaleBirth;
+        /*
+        *@private
+        */
         constructor() {
             super();
-
             this.name = "ParticleScale";
         }
 
@@ -61,7 +63,6 @@
             var timeIndex: number;
             var bornTime: number;
 
-
             var scale: number = 0;
             for (var i: number = 0; i < count; ++i) {
                 //
@@ -76,25 +77,13 @@
                         scale *= random;
                         scale += this._node.bezier2.calc(progress) * (1 - random);
                     }
+                    scaleArray[i] = scale;
                 } else {
                     scale = scaleArray[i];
                 }
 
-                if (scale == 1) {
-                    continue;
-                }
-
-                for (var j: number = 0; j < vertices; ++j) {
-                    index = i * vertices + j;
-                    index = index * geometry.vertexAttLength;
-                    geometry.vertexArray[index + 0] *= scale;
-                    geometry.vertexArray[index + 1] *= scale;
-                    geometry.vertexArray[index + 2] *= scale;
-
-                }
             }
-
-
+            this._animationState.scaleBirthArray = scaleArray;
             //##FilterEnd##
         }
 

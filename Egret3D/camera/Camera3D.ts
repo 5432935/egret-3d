@@ -1,15 +1,21 @@
 ﻿module egret3d {
 
     /**
+    * @language zh_CN
     * @class egret3d.CameraType
     * @classdesc
-    * 摄像机类型
+    * 摄像机类型</p>
+    * 不同的摄像机类型，会产生不同的渲染视觉效果。</p>
+    * 透视投影 是从某个投射中心将物体投射到单一投影面上所得到的图形。</p>
+    * 正交投影 投影线垂直于投影面的投影。</p>
+    * orthogonal 和 orthogonalToCenter都是正交投影，只是使用不同的方式创建</p>
     * @version Egret 3.0
     * @platform Web,Native
     */
     export enum CameraType {
 
         /**
+        * @language zh_CN
         * 透视投影
         * @version Egret 3.0
         * @platform Web,Native
@@ -17,14 +23,18 @@
         perspective,
 
         /**
+        * @language zh_CN
         * 正交投影
+        * @see egret3d.Matrix4_4.ortho
         * @version Egret 3.0
         * @platform Web,Native
         */
         orthogonal,
 
         /**
+        * @language zh_CN
         * 正交投影
+        * @see egret3d.Matrix4_4.orthoOffCenter
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -44,7 +54,7 @@
     * @classdesc
     * 相机数据处理，生成3D摄相机。</p>
     * 渲染场景从摄像机视点到缓冲区。</p>
-    * 相机分为透视摄像机、正交摄像机、VR摄像机。</p>
+    * 相机分为透视摄像机、正交摄像机。</p>
     * 默认相机朝向是(0, 0, 1) 头朝向是(0, 1, 0)
     *
     * @see egret3d.Matrix4_4
@@ -426,14 +436,14 @@
         }
 
         /**
-         * @language zh_CN
-         * 当前对象对视位置
-         * @param pos 相机的位置     (全局坐标)
-         * @param target 目标的位置  (全局坐标)
-         * @param up 向上的方向
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 当前对象对视位置 (全局坐标) (修改的是自身的全局变换)
+        * @param pos 相机的位置     (全局坐标)
+        * @param target 目标的位置  (全局坐标)
+        * @param up 向上的方向
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public lookAt(pos: Vector3D, target: Vector3D, up: Vector3D = Vector3D.Y_AXIS) {
             this.globalPosition = pos;
             this._lookAtPosition.copyFrom(target);
@@ -450,6 +460,31 @@
             this.globalOrientation = this._tempQuat;
         }
 
+        /**
+        * @language zh_CN
+        * 当前对象对视位置 (本地坐标) (修改的是自身的本地变换)
+        * @param pos 相机的位置     (本地坐标)
+        * @param target 目标的位置  (本地坐标)
+        * @param up 向上的方向
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public lookAtLocal(pos: Vector3D, target: Vector3D, up: Vector3D = Vector3D.Y_AXIS) {
+            this.position = pos;
+            this._lookAtPosition.copyFrom(target);
+            this._up.copyFrom(up);
+            this._viewMatrix.lookAt(pos, target, up);
+            this._mat.copyFrom(this._viewMatrix);
+            this._mat.invert();
+
+            var prs: Vector3D[] = this._mat.decompose(Orientation3D.QUATERNION);
+            this._tempQuat.x = prs[1].x;
+            this._tempQuat.y = prs[1].y;
+            this._tempQuat.z = prs[1].z;
+            this._tempQuat.w = prs[1].w;
+            this.orientation = this._tempQuat;
+        }
+
         protected onMakeTransform() {
             Vector3D.HELP_1.setTo(1, 1, 1, 1);
             Vector3D.HELP_0.setTo(0, 0, 0, 1);
@@ -463,7 +498,7 @@
             //this.billboardX.appendRotation(this._angleVector.x, Vector3D.X_AXIS);
 
             this.billboardY.identity();
-            this.billboardY.appendRotation(this._angleVector.y, Vector3D.Y_AXIS);
+            this.billboardY.createByRotation(this._angleVector.y, Vector3D.Y_AXIS);
 
             //this.billboardZ.identity();
             //this.billboardZ.appendRotation(this._angleVector.z, Vector3D.Z_AXIS);

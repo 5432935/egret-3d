@@ -16,6 +16,9 @@
     export class LightmapMethod extends MethodBase {
 
         private texture: ITexture;
+
+        private _globalColorData: Float32Array = new Float32Array(3);
+
         /**
         * @language zh_CN
         * 创建一个LightmapMethod对象
@@ -39,6 +42,7 @@
                 this.fsShaderList[ShaderPhaseType.shadow_fragment] = this.fsShaderList[ShaderPhaseType.shadow_fragment] || [];
                 this.fsShaderList[ShaderPhaseType.shadow_fragment].push("lightMap_fs");
             }
+
         }
 
         /**
@@ -52,7 +56,8 @@
             this.texture = texture;
             if (this.materialData.lightTexture != this.texture) {
                 this.materialData.lightTexture = this.texture;
-                this.materialData.lightTexture.useMipmap = true;
+                this.materialData.lightTexture.useMipmap = false;
+                this.materialData.lightTexture.smooth = true;
                 this.materialData.textureChange = true;
             }
         }
@@ -71,7 +76,6 @@
         * @param camera3D
         */
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
-            
         }
 
         /**
@@ -80,7 +84,6 @@
         */
         public activeState(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
         }
-
 
     }
 }

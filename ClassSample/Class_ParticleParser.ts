@@ -6,8 +6,8 @@
 
         private _particle: ParticleEmitter;
         private _cube: Mesh;
-        private _particleLoader: UnitLoader;
-
+        private _particleLoader: QueueLoader;
+        private _url: string;
         public static view: View3D;
         constructor() {
             super();
@@ -16,7 +16,7 @@
             var view1: View3D = new View3D(0, 0, 1920, 1080);
             this._view3D = view1;
 
-            var scale: number = 100;
+            var scale: number = 5;
 
             view1.camera3D.lookAt(new Vector3D(0, -500, -500), new Vector3D(0, 0, 0));
             view1.camera3D.far = 10000 * scale;
@@ -26,12 +26,12 @@
 
             this._cameraCrl = new LookAtController(this._view3D.camera3D, new Object3D());
             this._cameraCrl.distance = 100 * scale;
-
-            //this._particleLoader = new EffectGroupLoader("resource/scene/waterwave/MapConfig.json");
-            this._particleLoader = new UnitLoader("resource/scene/ocean/MapConfig.json");
+            //this._url = "resource/doc/effect_doc/main/MapConfig.json";
+            this._url = "resource/scene/ocean/MapConfig.json";
+            this._particleLoader = new QueueLoader(this._url);
             this._particleLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onParticleLoad, this);
 
-            view1.addChild3D(new AxisMesh(1000));
+            view1.addChild3D(new AxisMesh(50));
             Class_ParticleParser.view = this._view3D;
             //var loader: URLLoader = new URLLoader("resource/scene/test/Texture/foam_tiled3.png");
             //loader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onTex, this);
@@ -48,20 +48,19 @@
 
 
         private onParticleLoad(e: LoaderEvent3D): void {
-            this._view3D.addChild3D(this._particleLoader.container);
+            this._view3D.addChild3D(this._particleLoader.getUnitLoader(this._url).container);
         }
         
         private angle: number = 0;
         public update(e: Event3D) {
             this._cameraCrl.update();
-            //this.obj.rotationY++;
-            //if (this.angle > 180) {
+            //if (this.angle > 300) {
             //    this.angle = 0;
             //    ParticleAnimation.Reset = true;
             //} else {
             //    ParticleAnimation.Reset = false;
             //}
-            //this.angle += 1;
+            this.angle += 1;
 
         }
 

@@ -77,8 +77,8 @@
         * @platform Web,Native
         */
         public sourceData: ByteArray = null;
-        private _frameCount: number = 0;
 
+        private _frameCount: number = 0;
         private _timeLength: number = 0;
         private _skeletonPose: SkeletonPose = null;
         private _temp_scale: Vector3D = new Vector3D();

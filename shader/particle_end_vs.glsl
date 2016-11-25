@@ -102,7 +102,13 @@ void main(void) {
 
 	mat4 followRotQuat = buildMat4Quat(followTargetRotation);
 	velocityLocalVec3 = (followRotQuat * vec4(velocityLocalVec3, 1.0)).xyz;
-
+	if(particleStateData.renderMode == Mesh){ 
+		rotVertexMatrix = followRotQuat * rotVertexMatrix; 
+	}
+	scaleSize *= particleScale;
+	localPosition.xyz *= scaleSize;
+	localPosition = rotVertexMatrix * localPosition; 
+	trackPosition();
 	mat4 modelMatrix = buildModelMatrix(followTargetRotation, followTargetScale, followTargetPosition);
 	position_emitter = (modelMatrix * vec4(position_emitter, 1.0)).xyz; 
 
@@ -115,7 +121,7 @@ void main(void) {
 		
 	//是否需要修改local position指向运动方向，直接修改localPosition
 	vec3 origPosition = position_emitter;
-	position_emitter += velocityMultiVec3; 
+	position_emitter += velocityMultiVec3 * particleScale; 
 
 	float dirEnable = updateStretchedBillBoard(vec4(origPosition, 1.0), vec4(position_emitter, 1.0));
 	if(dirEnable > TrueOrFalse){

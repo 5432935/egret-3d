@@ -76,8 +76,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        constructor(targetObject: Object3D = null, lookAtObject: Object3D = null, needCtl: boolean = false,needAlt:boolean=false)
-        {
+        constructor(targetObject: Object3D = null, lookAtObject: Object3D = null, needCtl: boolean = false,needAlt:boolean=false) {
             super(targetObject);
 
             this._needctl = needCtl;
@@ -404,7 +403,7 @@
                 if (this._keyArray[1]) {
                     this._tempVec.copyFrom(this._rotaEyesLine);
                     this._matTemp.identity();
-                    this._matTemp.appendRotation(90, Vector3D.Y_AXIS);
+                    this._matTemp.createByRotation(90, Vector3D.Y_AXIS);
                     this._tempVec.copyFrom(this._matTemp.transformVector(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._tempVec.y = 0;
                     this._tempVec.normalize();
@@ -426,7 +425,7 @@
                 if (this._keyArray[3]) {
                     this._tempVec.copyFrom(this._rotaEyesLine);
                     this._matTemp.identity();
-                    this._matTemp.appendRotation(90, Vector3D.Y_AXIS);
+                    this._matTemp.createByRotation(90, Vector3D.Y_AXIS);
                     this._tempVec.copyFrom(this._matTemp.transformVector(this._tempVec, MathUtil.CALCULATION_VECTOR3D));
                     this._tempVec.y = 0;
                     this._tempVec.normalize();

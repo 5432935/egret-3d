@@ -49,7 +49,7 @@
             var objects: IRender[] = [];
 
             var t0: number = Date.now();
-            Picker.pickObject3DList(this.view1, [this.meshs[0]], false, objects);
+            Picker.pickObject3DList(this.view1, [this.meshs[0]], objects);
             var t1: number = Date.now();
             console.log(t1 - t0);
             for (var i: number = 0; i < objects.length; ++i) {

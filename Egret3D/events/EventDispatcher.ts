@@ -29,6 +29,9 @@
             if (list != null) {
                 list = list.slice();
                 for (var i: number = 0; i < list.length; i++) {
+                    if (event3D.isStopImmediatePropagation) {
+                        break;
+                    }
                     var listener: EventListener = list[i];
                     try {
                         event3D.param = listener.param;
@@ -101,11 +104,11 @@
          * @platform Web,Native
          */
         public removeEventListener(type: string, callback: Function, thisObject: any): void {
-            if (this.hasEventListener(type, thisObject, callback)) {
+            if (this.hasEventListener(type, callback, thisObject)) {
 
                 for (var i: number = 0; i < this.listeners[type].length; i++) {
                     var listener: EventListener = this.listeners[type][i];
-                    if (listener.equalCurrentListener(type, thisObject, callback, listener.param)) {
+                    if (listener.equalCurrentListener(type, callback, thisObject, listener.param)) {
                         listener.handler = null;
                         listener.thisObject = null;
                         this.listeners[type].splice(i, 1);
@@ -164,23 +167,22 @@
         * @language zh_CN
         * 检测是否存在监听器。
         * @param type {string} 事件名
-        * @param thisObject {any} 注册对象。
         * @param callback {Function} 处理事件的侦听器函数
+        * @param thisObject {any} 注册对象。
         * @returns {boolean} 是否存在该事件，true为存在，反之不存在。
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public hasEventListener(type: string, thisObject: any = null, callback: Function = null): boolean {
+        public hasEventListener(type: string, callback: Function = null, thisObject: any = null): boolean {
             if (this.listeners[type] == null) return false;
             if (thisObject && callback) {
                 for (var i: number = 0; i < this.listeners[type].length; i++) {
                     var listener: EventListener = this.listeners[type][i];
-                    if (listener.equalCurrentListener(type, thisObject, callback, listener.param)) {
+                    if (listener.equalCurrentListener(type, callback, thisObject, listener.param)) {
                         return true;
                     }
                 }
-            } else
-                return true;
+            }
             return false;
         }
     }
@@ -219,14 +221,14 @@
         * @language zh_CN
         * 比较两个事件是否是同一事件。
         * @param type {string} 事件的类型。
-        * @param thisObject {any} 注册的对象
         * @param handler {Function} 处理事件的侦听器函数
+        * @param thisObject {any} 注册的对象
         * @param param {any} 注册事件时指定的参数，事件响应时传出
         * @returns {boolean} 一致时返回true，反之为false
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public equalCurrentListener(type: string, thisObject: any, handler: Function, param: any): boolean {
+        public equalCurrentListener(type: string, handler: Function, thisObject: any, param: any): boolean {
             if (this.type == type && this.thisObject == thisObject && this.handler == handler && this.param == param) {
                 return true;
             }

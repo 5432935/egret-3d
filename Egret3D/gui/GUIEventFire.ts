@@ -6,26 +6,39 @@
 
         private _finalist: DisplayObject[];
         private _mouseList: DisplayObject[];
+        private _lastMouseList:DisplayObject[];
         private _quadStage: QuadStage;
         constructor( quadStage:QuadStage ) {
             this._mouseList = [];
+            this._lastMouseList = [];
             this._quadStage = quadStage;
 
-            Input.addEventListener(MouseEvent3D.MOUSE_DOWN, this.mouseDown, this);
-            Input.addEventListener(MouseEvent3D.MOUSE_UP, this.mouseUp, this);
-            Input.addEventListener(MouseEvent3D.MOUSE_OVER, this.mouseOver, this);
-            Input.addEventListener(MouseEvent3D.MOUSE_CLICK, this.mouseClick, this);
-            Input.addEventListener(MouseEvent3D.MOUSE_MOVE, this.mouseMove, this);
-            Input.addEventListener(MouseEvent3D.MOUSE_OUT, this.mouseOut, this);
+            Input.addEventListener(MouseEvent3D.MOUSE_DOWN, this.mouseDown, this, null, Number.MAX_VALUE);
+            Input.addEventListener(MouseEvent3D.MOUSE_UP, this.mouseUp, this, null, Number.MAX_VALUE);
+            Input.addEventListener(MouseEvent3D.MOUSE_OVER, this.mouseOver, this, null, Number.MAX_VALUE);
+            Input.addEventListener(MouseEvent3D.MOUSE_CLICK, this.mouseClick, this, null, Number.MAX_VALUE);
+            Input.addEventListener(MouseEvent3D.MOUSE_MOVE, this.mouseMove, this, null, Number.MAX_VALUE);
+            Input.addEventListener(MouseEvent3D.MOUSE_OUT, this.mouseOut, this, null, Number.MAX_VALUE);
 
-            Input.addEventListener(TouchEvent3D.TOUCH_START, this.mouseDown, this);
-            Input.addEventListener(TouchEvent3D.TOUCH_END, this.mouseUp, this);
-            Input.addEventListener(TouchEvent3D.TOUCH_MOVE, this.mouseMove, this);
+            Input.addEventListener(TouchEvent3D.TOUCH_START, this.mouseDown, this, null, Number.MAX_VALUE);
+            Input.addEventListener(TouchEvent3D.TOUCH_END, this.mouseUp, this, null, Number.MAX_VALUE);
+            Input.addEventListener(TouchEvent3D.TOUCH_MOVE, this.mouseMove, this, null, Number.MAX_VALUE);
         }
 
-        private dispatchMouseEvent(eventType: string) {
+        private dispatchMouseEvent(e:MouseEvent3D) {
             //todo 事件冒泡加入捕获阶段
             //todo 事件阻断机制
+            var eventType: string = e.eventType;
+            if (eventType === TouchEvent3D.TOUCH_START) {
+                eventType = MouseEvent3D.MOUSE_DOWN;
+            }else if (eventType === TouchEvent3D.TOUCH_END) {
+                eventType = MouseEvent3D.MOUSE_UP;
+            }else if (eventType === TouchEvent3D.TOUCH_MOVE) {
+                eventType = MouseEvent3D.MOUSE_MOVE;
+            }
+            if (eventType === MouseEvent3D.MOUSE_MOVE) {
+                this._lastMouseList = this._mouseList;
+            }
             var list = this.getMousePickList();
             var target: DisplayObject;
             var currentTraget: DisplayObject;
@@ -37,6 +50,7 @@
                 this._quadStage.dispatchEvent(evt);
                 return;
             }
+            e.stopImmediatePropagation();
             target = list[0];//最上层显示对象
             currentTraget = target;
 
@@ -71,27 +85,27 @@
         }
 
         private mouseOut(e: MouseEvent3D) {
-            this.dispatchMouseEvent(MouseEvent3D.MOUSE_DOWN);
+            this.dispatchMouseEvent(e);
         }
 
         private mouseDown(e: MouseEvent3D) {
-            this.dispatchMouseEvent(MouseEvent3D.MOUSE_DOWN);
+            this.dispatchMouseEvent(e);
         }
 
         private mouseUp(e: MouseEvent3D) {
-            this.dispatchMouseEvent(MouseEvent3D.MOUSE_UP);
+            this.dispatchMouseEvent(e);
         }
 
         private mouseOver(e: MouseEvent3D) {
-            this.dispatchMouseEvent(MouseEvent3D.MOUSE_OVER);
+            this.dispatchMouseEvent(e);
         }
 
         private mouseMove(e: MouseEvent3D) {
-            this.dispatchMouseEvent(MouseEvent3D.MOUSE_MOVE);
+            this.dispatchMouseEvent(e);
         }
 
         private mouseClick(e: MouseEvent3D) {
-            this.dispatchMouseEvent(MouseEvent3D.MOUSE_CLICK);
+            this.dispatchMouseEvent(e);
         }
 
     

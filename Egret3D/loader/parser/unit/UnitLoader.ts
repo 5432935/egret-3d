@@ -4,11 +4,12 @@
     * @language zh_CN
     * @class egret3d.UnitLoader
     * @classdesc
-    * 单个资源 加载器
-    * 主要封装了esm/jpg/png/eam/epa/uinty3d导出的配置文件/的加载和组装，以及mesh的render method相关信息，和灯光数据的生效.
-    * 加载完毕后，会派发事件
-    * 1.LoaderEvent3D.LOADER_COMPLETE 加载完成后事件响应
-    * 1.LoaderEvent3D.LOADER_PROGRESS 加载过程中事件响应
+    * 单个资源 加载器</p>
+    * 主要封装了esm/jpg/png/eam/epa/uinty3d导出的配置文件/的加载和组装</p>
+    * 以及mesh的render method相关信息，和灯光数据的生效.</p>
+    * 加载完毕后，会派发事件</p>
+    * 1.LoaderEvent3D.LOADER_COMPLETE 加载完成后事件响应</p>
+    * 1.LoaderEvent3D.LOADER_PROGRESS 加载过程中事件响应</p>
     *
     * @see egret3d.ILoader
     * @see egret3d.LoaderEvent3D
@@ -151,6 +152,7 @@
 
         private _type: string = "";
 
+
         /**
         * @private
         * @language zh_CN
@@ -179,6 +181,9 @@
         public proAnimDict: any = {};
 
         protected unitLoaderList: UnitLoader[] = [];
+        protected _dictUnitLoader: { [url: string]: { pathRoot:string, loader:UnitLoader} } = {};
+        protected _unitQueue: string[] = [];
+        protected _currentUnitLoader: UnitLoader;
 
         /**
         * @private
@@ -199,6 +204,16 @@
         protected texturePackerUrl: string;
 
         protected autoAnimationList: any[] = [];
+        protected continueProgressEvent: string[] = [];
+
+
+        /**
+        * @language zh_CN
+        * uv2 数据
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        protected uv2Dict: { [key: number]: ByteArray };
         /**
         * @language zh_CN
         * 加载配置文件 .json 或 .xml,
@@ -251,23 +266,31 @@
         public load(url: string) {
             this.reset();
 
-            var s_pos: number = url.lastIndexOf("/");
-            s_pos++;
-            this._pathRoot = url.substr(0, s_pos);
+            this.resourceName = StringUtil.getURLName(url);
             this.url = url;
-
-            s_pos = url.lastIndexOf(".");
-            s_pos++;
-            this._type = url.substr(s_pos, url.length - s_pos);
+            this.pathRoot = StringUtil.getPath(url);
+            this._type = StringUtil.getFileFormat(url);
 
             this.taskTotal++;
             this._taskDict[this.url] = {};
             this._taskDict[this.url].status = 1;
             this._taskDict[this.url].currentProgress = 0;
 
-            this.addTask();
-            this.loader = assetMgr.loadAsset(this.url, this.onConfigLoad, this);
-            assetMgr.addEventListener(this.url, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+            this.loader = this.doAssetLoader(this.url, this.onConfigLoad);
+
+            this.processUrlContinue(url);
+        }
+
+        // 是否跳过
+        protected processUrlContinue(url: string) {
+            var format: string = StringUtil.getFileFormat(url);
+            if (format == ILoader.DATAFORMAT_E3DPACK) {
+                this.continueProgressEvent.push(url);
+            }
+
+            if (format == ILoader.DATAFORMAT_JSON) {
+                this.continueProgressEvent.push(url);
+            }
         }
 
         /**
@@ -279,26 +302,32 @@
         public dispose() {
             super.dispose();
             this.reset();
-            if (this.container) {
-                this.container.dispose();
-                this.container = null;
-            }
+            this.container = null;
         }
 
         protected onProgress(e: LoaderEvent3D) {
-            var load: ILoader = e.loader;
-            if (this._taskDict[load.url]) {
-                this._taskDict[load.url].currentProgress = load.currentProgress;
-                this.currentProgress = 0;
-                for (var key in this._taskDict) {
-                    this.currentProgress += 1 / this.taskTotal * this._taskDict[key].currentProgress;
+
+            var targetLoader: ILoader = e.target;
+
+            if (this._taskDict[targetLoader.url]) {
+                for (var i: number = 0; i < this.continueProgressEvent.length; ++i) {
+                    if (targetLoader.url == this.continueProgressEvent[i]) {
+                        return;
+                    }
                 }
 
-                this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
-                this._event.loader = load;
-                this._event.data = load.data;
-                this._event.currentProgress = this.currentProgress;
-                this.dispatchEvent(this._event);
+                this._taskDict[targetLoader.url].currentProgress = targetLoader.currentProgress;
+
+                this.currentProgress = this.calculateProgress();
+
+                if (this.currentProgress < 1.0) {
+                    var loader: ILoader = e.loader;
+                    this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
+                    this._event.loader = loader;
+                    this._event.data = loader.data;
+                    this._event.currentProgress = this.currentProgress;
+                    this.dispatchEvent(this._event);
+                }
             }
         }
 
@@ -306,6 +335,7 @@
             assetMgr.dispose(this);
 
             if (this.url) {
+                assetMgr.removeByteArray(this.url);
                 textureResMgr.removeTexture(this.url);
                 this.url = null;
             }
@@ -329,6 +359,11 @@
                 this.unitLoaderList[i].dispose();
             }
             this.unitLoaderList.length = 0;
+
+            this._dictUnitLoader = {};
+            this._unitQueue.length = 0;
+            this._currentUnitLoader = null;
+            this.continueProgressEvent.length = 0;
         }
 
         private parseParticle() {
@@ -340,23 +375,21 @@
             if (this._particleParser.data.shape.meshFile) {
                 var path: string = this._pathRoot + this._particleParser.data.shape.meshFile;
 
-                this.addTask();
                 var parData: any = {};
                 parData.particle = this._particleParser.data;
                 parData.type = "shape";
 
-                var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleEsmLoad1, this, parData);
-                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                this.doAssetLoader(path, this.onParticleEsmLoad1, parData);
             }
 
             if (this._particleParser.data.property.meshFile) {
                 var path: string = this._pathRoot + this._particleParser.data.property.meshFile;
-                this.addTask();
+
                 var parData: any = {};
                 parData.particle = this._particleParser.data;
                 parData.type = "property";
-                var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleEsmLoad1, this, parData);
-                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+
+                this.doAssetLoader(path, this.onParticleEsmLoad1, parData);
             }
         }
 
@@ -366,6 +399,25 @@
             this.processProAnim();
             this.createLight();
 
+            if (this._mapParser.uv2) {
+                var path: string = this.pathRoot + this._mapParser.uv2;
+                this.doAssetLoader(path, this.onCompleteUv2);
+            }
+            else {
+                this.onProcessNodeLoad();
+            }
+        }
+
+        protected onCompleteUv2(e: LoaderEvent3D) {
+            var load: ILoader = e.loader;
+            this.uv2Dict = e.data;
+
+            this.onProcessNodeLoad();
+
+            this.processTask(load);
+        }
+
+        protected onProcessNodeLoad() {
             for (var i: number = 0; i < this._mapParser.nodeList.length; i++) {
                 var mapNodeData: UnitNodeData = this._mapParser.nodeList[i];
                 if (!mapNodeData.object3d.parent) {
@@ -384,9 +436,7 @@
                         if (mapNodeData.path) {
                             var path: string = this._pathRoot + mapNodeData.path;
 
-                            this.addTask();
-                            var loader: URLLoader = assetMgr.loadAsset(path, this.onEsmLoad, this, mapNodeData);
-                            assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                            this.doAssetLoader(path, this.onEsmLoad, mapNodeData);
                         }
                         else if (mapNodeData.geometry) {
                             this.processMesh(mapNodeData, GeometryUtil.createGemetryForType(mapNodeData.geometry.type, mapNodeData.geometry));
@@ -396,43 +446,24 @@
                         if (mapNodeData.path) {
                             var path: string = this._pathRoot + mapNodeData.path;
 
-                            this.addTask();
-                            var loader: URLLoader = assetMgr.loadAsset(path, this.onHeightImg, this, mapNodeData);
-                            assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                            this.doAssetLoader(path, this.onHeightImg, mapNodeData);
                         }
                         break;
                     case "ParticleEmitter":
                         if (mapNodeData.path) {
                             var path: string = this._pathRoot + mapNodeData.path;
 
-                            //this.addTask();
-                            //var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleXML, this, mapNodeData);
-
-                            this.addTask();
-                            var unitLoader: UnitLoader = new UnitLoader(path);
+                            var loader: { pathRoot: string, loader: UnitLoader } = this.doUnitLoader(path, this.onUnitLoader, mapNodeData);
                             if (this._configParser.version == 1) {
-                                unitLoader.pathRoot = this._pathRoot;
+                                loader.pathRoot = this._pathRoot;
                             }
-
-                            this.unitLoaderList.push(unitLoader);
-                            unitLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onUnitLoader, this, mapNodeData);
-                            unitLoader.addEventListener(LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
                         }
                         break;
                     case "EffectGroup":
                         if (mapNodeData.path) {
                             var path: string = this._pathRoot + mapNodeData.path;
 
-                            //this.addTask();
-                            //var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleXML, this, mapNodeData);
-
-                            this.addTask();
-                            var unitLoader: UnitLoader = new UnitLoader(path);
-                            //unitLoader.pathRoot = this._pathRoot;
-
-                            this.unitLoaderList.push(unitLoader);
-                            unitLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onUnitLoader, this, mapNodeData);
-                            unitLoader.addEventListener(LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                            this.doUnitLoader(path, this.onUnitLoader, mapNodeData);
                         }
                         break;
                 }
@@ -442,9 +473,7 @@
                 var data: any = this._mapParser.textures[i];
                 var path: string = this._pathRoot + data.path;
 
-                this.addTask();
-                var loader: URLLoader = assetMgr.loadAsset(path, this.onTexture, this, data.name);
-                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                this.doAssetLoader(path, this.onTexture, data.name);
             }
 
             for (var i: number = 0; i < this._mapParser.hudList.length; ++i) {
@@ -476,18 +505,16 @@
                     continue;
                 }
                 var path: string = this._pathRoot + hudData.texture;
-                this.addTask();
-                assetMgr.loadAsset(path, this.onHudTexture, this, hudData);
-                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+
+                this.doAssetLoader(path, this.onHudTexture, hudData);
             }
         }
 
         private parseTexturePacker() {
             if (this._texturePackerParser.data.meta && this._texturePackerParser.data.meta.image) {
                 var path: string = this._pathRoot + this._texturePackerParser.data.meta.image;
-                this.addTask();
-                assetMgr.loadAsset(path, this.onTexturePackerLoad, this);
-                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+
+                this.doAssetLoader(path, this.onTexturePackerLoad);
             }
         }
 
@@ -548,23 +575,6 @@
             return true;
         }
 
-        private onParticleXML(e:LoaderEvent3D) {
-            var load: ILoader = e.loader;
-            var mapNodeData: UnitNodeData = e.param;
-
-            var particleData: ParticleData = load["ParticleData"];
-            if (!particleData) {
-                particleData = UnitParserUtils.particleParser(this._type, load.data);
-                load["ParticleData"] = particleData;
-                particleData.fileUrl = load.url;
-                //particleData.fileName = load.fileName;
-            }
-
-            this.processParticle(particleData, mapNodeData);
-
-            this.processTask(load);
-        }
-
         private processParticle(particleData: ParticleData, nodeData: UnitNodeData): ParticleEmitter {
             if (!particleData.shape.meshFile && !particleData.property.meshFile) {
                 this.processParticleGeometry(particleData, nodeData);
@@ -574,30 +584,25 @@
                 if (particleData.shape.meshFile) {
                     var path: string = this._pathRoot + particleData.shape.meshFile;
 
-                    this.addTask();
 
                     var parData: any = {};
                     parData.particle = particleData;
                     parData.nodeData = nodeData;
                     parData.type = "shape";
 
-                    var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleEsmLoad, this, parData);
-                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                    this.doAssetLoader(path, this.onParticleEsmLoad, parData);
                 }
 
                 if (particleData.property.meshFile) {
 
                     var path: string = this._pathRoot + particleData.property.meshFile;
 
-                    this.addTask();
-
                     var parData: any = {};
                     parData.particle = particleData;
                     parData.nodeData = nodeData;
                     parData.type = "property";
 
-                    var loader: URLLoader = assetMgr.loadAsset(path, this.onParticleEsmLoad, this, parData);
-                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                    this.doAssetLoader(path, this.onParticleEsmLoad, parData);
                 }
             }
 
@@ -643,10 +648,26 @@
             var loader: ILoader = e.loader;
 
             switch (this._type) {
-                case "xml":
-                case "json":
+                case ILoader.DATAFORMAT_XML:
+                case ILoader.DATAFORMAT_JSON:
                     if (!this.parseConfig(loader.data, this._type)) {
                         this.data = loader.data;
+                    }
+                    break;
+                case ILoader.DATAFORMAT_E3DPACK:
+                    this._type = ILoader.DATAFORMAT_JSON;
+                    this.pathRoot += this.resourceName + "/";
+
+                    var path: string = this.pathRoot + "MapConfig.json";
+
+                    if (assetMgr.getByteArray(path)) {
+                        this.taskTotal++;
+                        this._taskDict[path] = {};
+                        this._taskDict[path].status = 1;
+                        this._taskDict[path].currentProgress = 0;
+
+                        this.doAssetLoader(path, this.onConfigLoad, this);
+                        this.processUrlContinue(path);
                     }
                     break;
                 default:
@@ -672,16 +693,86 @@
                 for (var i: number = 0; i < grass.length; ++i) {
                     var grassData: any = grass[i];
                     var path: string = this._pathRoot + grassData.detailTexture;
-                    this.addTask();
                     var paramData: any = {};
                     paramData.grassData = grassData;
                     paramData.mapNodeData = mapNodeData;
-                    var loader: URLLoader = assetMgr.loadAsset(path, this.onGrassDetailTexture, this, paramData);
-                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+
+                    this.doAssetLoader(path, this.onGrassDetailTexture, paramData);
                 }
             }
 
             this.processTask(load);
+        }
+
+        private doAssetLoader(url: string, callback: Function, param: any = null): URLLoader {
+            this.addTask();
+
+            var loader: URLLoader = assetMgr.loadAsset(url, callback, this, param);
+            assetMgr.addEventListener(url, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+            return loader;
+        }
+
+        private doUnitLoader(url: string, callback: Function, param: any = null): { pathRoot: string, loader: UnitLoader } {
+            this.addTask();
+            var loader: { pathRoot:string, loader: UnitLoader} = this._dictUnitLoader[url];
+            if (!loader) {
+                loader = { pathRoot: null, loader: new UnitLoader() };
+
+                this._dictUnitLoader[url] = loader;
+
+                loader.loader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onUnitComplete, this, param);
+
+                this.unitLoaderList.push(loader.loader);
+
+                this._unitQueue.push(url);
+
+                if (!this._currentUnitLoader) {
+                    this._currentUnitLoader = loader.loader;
+                    this._currentUnitLoader.load(url);
+                }
+            }
+
+            if (loader.loader.data) {
+
+                setTimeout(() => {
+
+                    if (callback) {
+                        var loaderEvent: LoaderEvent3D = new LoaderEvent3D();
+                        loaderEvent.eventType = LoaderEvent3D.LOADER_COMPLETE;
+                        loaderEvent.target = loader.loader;
+                        loaderEvent.loader = loader.loader;
+                        loaderEvent.data = loader.loader.data;
+                        loaderEvent.param = param;
+
+                        callback.call(this, loaderEvent);
+                    }
+
+                }, 0);
+
+            }
+            else {
+                loader.loader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, callback, this, param);
+                loader.loader.addEventListener(LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+            }
+
+            return loader;
+        }
+
+        private onUnitComplete(e: LoaderEvent3D) {
+            this._unitQueue.shift();
+
+            if (this._unitQueue.length > 0) {
+                var url: string = this._unitQueue[0];
+                var loader: { pathRoot: string, loader: UnitLoader } = this._dictUnitLoader[url];
+                this._currentUnitLoader = loader.loader;
+                this._currentUnitLoader.load(url);
+                if (loader.pathRoot) {
+                    this._currentUnitLoader.pathRoot = loader.pathRoot; 
+                }
+            }
+            else {
+                this._currentUnitLoader = null;
+            }
         }
 
         private onTexture(e: LoaderEvent3D) {
@@ -733,15 +824,17 @@
                 mat.ambientColor = 0xffffff;
                 mat.blendMode = BlendMode.NORMAL;
                 mat.cutAlpha = 0.4;
-
+                //todo草的lightmap需要后期加入
+                var rect: Rectangle = new Rectangle(terrain.x, terrain.z, terrain.x * 2, terrain.z * 2);
                 var grassMesh: GrassMesh = new GrassMesh(list, mat, grassData);
-                terrain.addChild(grassMesh);
+                grassMesh.method.setLightMapData(CheckerboardTexture.texture, rect);
+                //end
+                terrain.addChild(grassMesh); terrain.x;terrain.y;
                 var data: any = paramData.grassData;
                 if (data.grassTexture) {
                     var path: string = this._pathRoot + data.grassTexture;
-                    this.addTask();
-                    var loader: URLLoader = assetMgr.loadAsset(path, this.onGrassDiffuseTexture, this, grassMesh.material);
-                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+
+                    this.doAssetLoader(path, this.onGrassDiffuseTexture, grassMesh.material);
                 }
             }
 
@@ -814,9 +907,7 @@
 
                     var path: string = this._pathRoot + propertyAnimsData["path"];
 
-                    this.addTask();
-                    var loader: URLLoader = assetMgr.loadAsset(path, this.onEpaLoad, this, mapNodeData);
-                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                    this.doAssetLoader(path, this.onEpaLoad, mapNodeData);
                 }
             }
 
@@ -854,6 +945,27 @@
             var animation: SkeletonAnimation = this.skinClipDict[mapNodeData.skeletonAnimation];
             var mesh: Mesh = null;
             if (mapNodeData.type == "Mesh") {
+                   //var hasMirrorX: boolean = false;
+                   //var hasMirrorY: boolean = false;
+                   //var hasMirrorZ: boolean = false;
+                   //if (mapNodeData.sx < 0) {
+                   //    hasMirrorX = true;
+                   //    mapNodeData.sx = Math.abs(mapNodeData.sx);
+                   //    mapNodeData.object3d.scaleX = mapNodeData.sx;
+                   //}
+                   //if (mapNodeData.sy < 0) {
+                   //    hasMirrorY = true;
+                   //    mapNodeData.sy = Math.abs(mapNodeData.sy);
+                   //    mapNodeData.object3d.scaleY = mapNodeData.sy;
+                   //}
+                   //if (mapNodeData.sz < 0) {
+                   //    hasMirrorZ = true;
+                   //    mapNodeData.sz = Math.abs(mapNodeData.sz);
+                   //    mapNodeData.object3d.scaleZ = mapNodeData.sz;
+                   //}
+                   //if (hasMirrorX || hasMirrorY || hasMirrorZ) {
+                   //    geometry = geometry.cloneMirror(hasMirrorX, hasMirrorY, hasMirrorZ);
+                   //}
                 mesh = new Mesh(geometry, new TextureMaterial(), animation);
             }
             else if (mapNodeData.type == "CubeSky") {
@@ -862,6 +974,8 @@
             else if (mapNodeData.type == "SphereSky") {
                 mesh = new Sky(geometry, new TextureMaterial());
             }
+
+            EUMVersion.fillGeometryUv2(mapNodeData.uv2Id, this.uv2Dict, mesh.geometry);
 
             this.processObject3d(mapNodeData, mesh);
 
@@ -877,9 +991,7 @@
                 loadData.eamData = eamData;
                 loadData.mapNodeData = mapNodeData;
 
-                this.addTask();
-                var loader: URLLoader = assetMgr.loadAsset(path, this.onEamLoad, this, loadData);
-                assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                this.doAssetLoader(path, this.onEamLoad, loadData);
             }
 
             this.doLoadEpa(mapNodeData);
@@ -1095,24 +1207,52 @@
             this._taskCount++;
         }
 
+        protected calculateProgress(): number {
+            var progress: number = 0;
+            for (var key in this._taskDict) {
+                progress += 1 / this.taskTotal * this._taskDict[key].currentProgress;
+            }
+
+            return progress;
+        }
+
         private processTaskCurrent(load: ILoader) {
             if (this._taskDict[load.url]) {
                 if (this._taskDict[load.url].status == 1) {
                     this.taskCurrent++;
                     this._taskDict[load.url].status = 2;
                     this._taskDict[load.url].currentProgress = 1;
+
+                    this._event.loader = load;
+                    this._event.data = load.data;
+
+                    var isDisEventProgress: boolean = true;
+                    for (var i: number = 0; i < this.continueProgressEvent.length; ++i) {
+                        if (load.url == this.continueProgressEvent[i]) {
+                            isDisEventProgress = false;
+                            break;
+                        }
+                    }
+                    // 触发 LOADER_PROGRESS
+                    if (isDisEventProgress) {
+                        this.currentProgress = this.calculateProgress();
+
+                        if (this.currentProgress < 1.0) {
+
+                            this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
+                            this._event.currentProgress = this.currentProgress;
+
+                            this.dispatchEvent(this._event);
+                        }
+                    }
+
+                    this._event.currentProgress = this.currentProgress;
+
+                    // 某一个文件加载完成  
+                    this._event.eventType = LoaderEvent3D.LOADER_ONCE_COMPLETE;
+                    this.dispatchEvent(this._event);
                 }
-                
-                //delete this._taskDict[load.url];
             }
-
-            //this.currentProgress = this.taskCurrent / this.taskTotal;
-
-            this._event.eventType = LoaderEvent3D.LOADER_ONCE_COMPLETE;
-            this._event.loader = load;
-            this._event.data = load.data;
-            this._event.currentProgress = this.currentProgress;
-            this.dispatchEvent(this._event);
         }
 
         private processTask(load: ILoader) {
@@ -1123,11 +1263,17 @@
 
                 this.onLoaderComplete();
 
-                this._event.eventType = LoaderEvent3D.LOADER_COMPLETE;
-                this._event.target = this;
                 this._event.loader = this;
                 this._event.data = this.data;
                 this._event.currentProgress = this.currentProgress;
+
+                // 触发 LOADER_PROGRESS
+      
+                this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
+                this.dispatchEvent(this._event);
+
+                // 全部文件加载完成
+                this._event.eventType = LoaderEvent3D.LOADER_COMPLETE;
                 this.dispatchEvent(this._event);
             }
         }
@@ -1241,9 +1387,7 @@
             textureData.matID = matID;
             textureData.mapNodeData = mapNodeData;
 
-            this.addTask();
-            var loader: URLLoader = assetMgr.loadAsset(path, this.onMaterialTexture, this, textureData);
-            assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+            this.doAssetLoader(path, this.onMaterialTexture, textureData);
 
             return load;
         }
@@ -1255,9 +1399,7 @@
             methodData.method = method;
             methodData.textureName = textureName;
 
-            this.addTask();
-            var loader: URLLoader = assetMgr.loadAsset(path, this.onMethodTexture, this, methodData);
-            assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+            var loader:URLLoader = this.doAssetLoader(path, this.onMethodTexture, methodData);
 
             return loader;
         }
@@ -1582,9 +1724,7 @@
                     clipData.skinData = skinClip;
                     clipData.clip = clip;
 
-                    this.addTask();
-                    var loader: URLLoader = assetMgr.loadAsset(path, this.onSkinClip, this, clipData);
-                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                    this.doAssetLoader(path, this.onSkinClip, clipData);
                 }
             }
         }
@@ -1606,9 +1746,7 @@
                     clipData.proAnimation = proAnimation;
                     clipData.proData = proData;
                     clipData.clip = clip;
-                    this.addTask();
-                    var loader: URLLoader = assetMgr.loadAsset(path, this.onProAnim, this, clipData);
-                    assetMgr.addEventListener(path, LoaderEvent3D.LOADER_PROGRESS, this.onProgress, this);
+                    this.doAssetLoader(path, this.onProAnim, clipData);
                 }
             }
         }

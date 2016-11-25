@@ -10,10 +10,11 @@
     * @see egret3d.LightBase
     * @see egret3d.PointLight
     * @see egret3d.SpotLight
+    * @see egret3d.EventDispatcher
     * @version Egret 3.0
     * @platform Web,Native
     */
-    export class LightGroup {
+    export class LightGroup extends EventDispatcher {
 
         /**
         * @language zh_CN  
@@ -51,6 +52,13 @@
         */
         public pointLightList: Array<PointLight>;
 
+        protected event: Event3D = new Event3D();
+
+        /**
+        * @private
+        */
+        public static EVENT_LIGHT_RESET: string = "Event_Light_Reset";
+
         /**
         * @language zh_CN
         * 创建一个灯光组
@@ -58,6 +66,7 @@
         * @platform Web,Native
         */
         constructor() {
+            super();
             this.directLightList = new Array<DirectLight>();
             this.spotLightList = new Array<SpotLight>();
             this.pointLightList = new Array<PointLight>();
@@ -75,24 +84,33 @@
                 case LightType.directlight:
                     this.directLightList.push(<DirectLight>light);
                     this.lightNum++;
+
+                    this.event.eventType = LightGroup.EVENT_LIGHT_RESET;
+                    this.dispatchEvent(this.event);
                     break;
 
                 case LightType.pointlight:
                     this.pointLightList.push(<PointLight>light);
                     this.lightNum++;
+
+                    this.event.eventType = LightGroup.EVENT_LIGHT_RESET;
+                    this.dispatchEvent(this.event);
                     break;
 
                 case LightType.spotLightlight:
                     this.spotLightList.push(<SpotLight>light);
                     this.lightNum++;
+
+                    this.event.eventType = LightGroup.EVENT_LIGHT_RESET;
+                    this.dispatchEvent(this.event);
                     break;
             }
+
         }
                 
         /**
-        * @private
         * @language zh_CN
-        * 灯光不能动态移除,此接口不生效，不要使用
+        * 移除某个灯光
         * @param light 灯光实例对象
         * @version Egret 3.0
         * @platform Web,Native
@@ -104,6 +122,9 @@
                     if (index >= 0 && index < this.directLightList.length) {
                         this.directLightList.splice(index, 1);
                         this.lightNum--;
+
+                        this.event.eventType = LightGroup.EVENT_LIGHT_RESET;
+                        this.dispatchEvent(this.event);
                     }
                     break;
                 case LightType.pointlight:
@@ -111,6 +132,9 @@
                     if (index >= 0 && index < this.pointLightList.length) {
                         this.pointLightList.splice(index, 1);
                         this.lightNum--;
+
+                        this.event.eventType = LightGroup.EVENT_LIGHT_RESET;
+                        this.dispatchEvent(this.event);
                     }
                     break;
                 case LightType.spotLightlight:
@@ -118,6 +142,9 @@
                     if (index >= 0 && index < this.spotLightList.length) {
                         this.spotLightList.splice(index, 1);
                         this.lightNum--;
+
+                        this.event.eventType = LightGroup.EVENT_LIGHT_RESET;
+                        this.dispatchEvent(this.event);
                     }
                     break;
             }

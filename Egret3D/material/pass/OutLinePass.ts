@@ -178,8 +178,8 @@
                 context3DProxy.uniformMatrix4fv(this._passUsage.uniform_ViewProjectionMatrix.uniformIndex, false, camera3D.viewProjectionMatrix.rawData);
             }
 
-            if (this._passUsage.uniform_orthProectMatrix) {
-                context3DProxy.uniformMatrix4fv(this._passUsage.uniform_orthProectMatrix.uniformIndex, false, camera3D.orthProjectionMatrix.rawData);
+            if (this._passUsage.uniform_orthProjectMatrix) {
+                context3DProxy.uniformMatrix4fv(this._passUsage.uniform_orthProjectMatrix.uniformIndex, false, camera3D.orthProjectionMatrix.rawData);
             }
 
             if (this._passUsage["uniform_ouline"]) {

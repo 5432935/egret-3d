@@ -174,5 +174,7 @@
 
         public auto: boolean = false;
         public loop: boolean = false;
+
+        public uv2Id: number = -1;
     }
 }

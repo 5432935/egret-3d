@@ -340,7 +340,7 @@ module egret3d {
                     }
                 }
 
-                for (var j = 0; j < keyFrames.length - 1; j++) {
+                for (var j = 0; j < keyFrames.length; j++) {
 
                     if (keyFrames[j].start.x <= propertyData.timePosition && keyFrames[j].end.x > propertyData.timePosition) {
 

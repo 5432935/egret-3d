@@ -83,7 +83,7 @@
         * @private
         */
         private getDefaultStyle(style: string): Texture {
-            return SkinManager.instance.getDefaultSkin(this.getDefaultStyleNameByStyleName(style));
+            return GUISkinManager.instance.getDefaultSkin(this.getDefaultStyleNameByStyleName(style));
         }
 
         /**

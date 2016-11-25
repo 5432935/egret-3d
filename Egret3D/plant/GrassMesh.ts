@@ -206,8 +206,7 @@
             var g: number;
             var b: number;
 
-            var noiseSpread: number = Math.abs(this._data.noiseSpread);
-            noiseSpread = Math.min(noiseSpread, 1);
+            var noiseSpread: number = Math.abs(this._data.noiseSpread) * 10;
             var scaleValue: number = 1 / 0xff;
 
             var healthyColor: Color = new Color();
@@ -217,14 +216,14 @@
             dryColor.setColorRGB(Number(this._data.dryColor));
 
             for (var i: number = 0; i < count; ++i) {
-                if (Math.random() > noiseSpread) {
-                    continue;
+                random = Math.random() * noiseSpread;
+                if (random > 1) {
+                    random = 1;
                 }
-
-                random = Math.random() * noiseSpread * 0.5;
-                random = MathUtil.mix(0.5 - random, 0.5 + random, Math.random());
+                random *= random;
                 tempColor.lerp(healthyColor, dryColor, random);
                 tempColor.scaleBy(scaleValue);
+
                 for (var j: number = 0; j < vertices; ++j) {
                     index = i * vertices + j;
                     index = index * geometry.vertexAttLength + colorPosIndex;

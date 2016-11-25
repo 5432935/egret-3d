@@ -137,7 +137,7 @@
 
             var vv: HTMLInputElement = <HTMLInputElement>document.createElement("input");
             vv.type = "submit";
-            vv.value = "rest";
+            vv.value = "点我";
             document.body.appendChild(vv);
             vv.onmousedown = (e: MouseEvent) => this.mouseDown(e);
 

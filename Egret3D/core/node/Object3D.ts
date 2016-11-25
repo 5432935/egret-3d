@@ -43,6 +43,7 @@
 
     /**
     * @language zh_CN
+    * @private
     * @class egret3d.BillboardType
     * @classdesc
     * billboard类型
@@ -158,6 +159,7 @@
 
         /**
         * @language zh_CN
+        * @private
         * 该对象所使用的面向相机模式，默认为关闭状态
         * @see egret3d.BillboardType
         * @version Egret 3.0
@@ -1273,7 +1275,7 @@
         /**
         * @language zh_CN 
         * 返回 object 世界旋转 四元数 (全局)
-        * 返回世界坐标系的 全局旋转信息，数据类型是 四元素
+        * 返回世界坐标系的 全局旋转信息，数据类型是 四元数
         * @returns object 世界旋转
         * @version Egret 3.0
         * @platform Web,Native
@@ -1398,7 +1400,7 @@
                         
         /**
         * @language zh_CN
-        * 返回子对角child的下标
+        * 返回子对象child的下标
         * @param child 子对象
         * @returns 如果有就返回子对象的下标,否则就返回-1.
         * @version Egret 3.0
@@ -1416,6 +1418,22 @@
             }
 
             return -1;
+        }
+
+
+        /**
+        * @language zh_CN
+        * 返回子对象
+        * @param index 索引
+        * @returns Object3D 子对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public getChild(index: number): Object3D {
+            if (index >= 0 && index < this.childs.length) {
+                return this.childs[index];
+            }
+            return null;
         }
                                 
         /**
@@ -1526,11 +1544,11 @@
 
             if (this.parent) {
                 var index: number = this.parent.getChildIndex(this);
-                this.parent.childs[index] = other;
+                var thisParent: Object3D = this.parent;
+                thisParent.removeChildAt(index);
+                thisParent.addChildAt(other, index);
+                //this.parent.childs[index] = other;
             }
-
-            other.parent = this.parent;
-            this.parent = null;
 
             var childs: Object3D[] = [];
             while (this.childs.length > 0) {
@@ -1661,7 +1679,7 @@
                                                                         
         /**
         * @language zh_CN
-        * 当前对象对视位置
+        * 当前对象对视位置 （全局） (修改的是自身的全局变换)
         * @param pos 自身的位置 （全局）
         * @param target 目标的位置 （全局）
         * @param up 向上的方向
@@ -1680,9 +1698,32 @@
             this.globalOrientation = MathUtil.CALCULATION_QUATERNION;
         }
 
+
         /**
         * @language zh_CN
-        * 看向目标
+        * 当前对象对视位置 （本地） (修改的是自身的本地变换)
+        * @param pos 自身的位置 （本地）
+        * @param target 目标的位置 （本地）
+        * @param up 向上的方向
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public lookAtLocal(pos: Vector3D, target: Vector3D, up: Vector3D = Vector3D.Y_AXIS) {
+            this.position = pos;
+            MathUtil.CALCULATION_MATRIX.lookAt(pos, target, up);
+            MathUtil.CALCULATION_MATRIX.invert();
+            var prs: Vector3D[] = MathUtil.CALCULATION_MATRIX.decompose(Orientation3D.QUATERNION);
+            MathUtil.CALCULATION_QUATERNION.x = prs[1].x;
+            MathUtil.CALCULATION_QUATERNION.y = prs[1].y;
+            MathUtil.CALCULATION_QUATERNION.z = prs[1].z;
+            MathUtil.CALCULATION_QUATERNION.w = prs[1].w;
+            this.orientation = MathUtil.CALCULATION_QUATERNION;
+        }
+
+
+        /**
+        * @language zh_CN
+        * 看向目标  (会根据目标对象的全局坐标进行改变) (修改的是自身的全局变换)
         * @param target 目标对象 (会根据目标对象的全局坐标进行改变)
         * @version Egret 3.0
         * @platform Web,Native
@@ -1697,6 +1738,25 @@
             MathUtil.CALCULATION_QUATERNION.w = prs[1].w;
 
             this.globalOrientation = MathUtil.CALCULATION_QUATERNION;
+        }
+
+        /**
+        * @language zh_CN
+        * 看向目标 (会根据目标对象的本地坐标进行改变) (修改的是自身的本地变换)
+        * @param target 目标对象 (会根据目标对象的本地坐标进行改变)
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public lookAtTargetLocal(target: Object3D) {
+            MathUtil.CALCULATION_MATRIX.lookAt(this.position, target.position, Vector3D.Y_AXIS);
+            MathUtil.CALCULATION_MATRIX.invert();
+            var prs: Vector3D[] = MathUtil.CALCULATION_MATRIX.decompose(Orientation3D.QUATERNION);
+            MathUtil.CALCULATION_QUATERNION.x = prs[1].x;
+            MathUtil.CALCULATION_QUATERNION.y = prs[1].y;
+            MathUtil.CALCULATION_QUATERNION.z = prs[1].z;
+            MathUtil.CALCULATION_QUATERNION.w = prs[1].w;
+
+            this.orientation = MathUtil.CALCULATION_QUATERNION;
         }
 
         /**

@@ -101,6 +101,11 @@
         * @private
         */
         public directionArray: Array<Vector3D>;
+
+        /**
+        * @private
+        */
+        public scaleBirthArray: number[];
         /**
         * @private
         */

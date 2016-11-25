@@ -6,6 +6,7 @@ struct DirectLight{
 	 vec3 diffuse;
 	 vec3 ambient;
 };
+
 //const int max_directLight = 1 ;
 uniform float uniform_directLightSource[9*max_directLight] ;
 varying vec4 varying_mvPose; 
@@ -114,23 +115,23 @@ return mat3(T * invmax, B * invmax, N);
 vec3 fakePBRLight( vec3 lightDir , vec3 viewDir , vec3 lightColor , vec3 ambient ){
     vec3 lightDirection = mat3(uniform_ViewMatrix) * normalize(lightDir);
     vec3 halfDirection = normalize( lightDirection + viewDir) ;
-//////lighting
+    //////lighting
     float attenuation = 1.0 ;// UnitySampleShadowmap(i._ShadowCoord)
     vec3 attenColor = attenuation * lightColor;
     float Pi = 3.141592654;
     float InvPi = 0.31830988618;
-//////gloss
+    //////gloss
     float gloss = glossTexColor.r;
     float specPow = exp2( gloss * 10.0 + 1.0 );
-////// Specular:lightDir + normalize(viewDir)
+    ////// Specular:lightDir + normalize(viewDir)
     float NdotL = max(0.0, dot( normalDirection, lightDirection ));
     float specularMonochrome = max( max(specularTexColor.r, specularTexColor.g), specularTexColor.b);
     float normTerm = (specPow + 8.0 ) / (8.0 * Pi);
-////// (floor(attenuation) * lightColor ) *  
+    ////// (floor(attenuation) * lightColor ) *  
     vec3 directSpecular =  (floor(attenuation) * lightColor ) * pow(max(0.0,dot(halfDirection,normalDirection)),normTerm) * specularTexColor.xyz * normTerm ;
     vec3 specular = directSpecular;
     //float specularPower = pow(max(0.0,dot(halfDirection,normalDirection)),5.0) ; 
-////// Diffuse:
+    ////// Diffuse:
     NdotL = max(0.0,dot( normalDirection , normalize(lightDirection) ));
     vec3 directDiffuse = max( 0.0, NdotL) * attenColor;
     vec3 indirectDiffuse = vec3(0.0,0.0,0.0);
@@ -157,23 +158,22 @@ void calculateDirectLight(  ){
 }
 
 void main(void){ 
-     //normalMatrix
-    //  normalMatrix = inverse(uniform_ViewMatrix);
-    //  normalMatrix = transpose(normalMatrix);
-     //TBN
+      //TBN
      TBN = cotangentFrame(normalize(varying_eyeNormal), normalize(-varying_mvPose.xyz) , uv_0); 
-     //sampler2D
-     normalTexColor = unpackNormal(texture2D(normalTex, uv_0 )) ; 
+  
+     albedoTexColor = texture2D(albedoTex, varying_uv0 );// vec4(0.2,0.2,0.2,1.0);//
+
+      normalTexColor = unpackNormal(texture2D(normalTex, uv_0 )) ; 
      opacityTexColor = texture2D(opacityTex, uv_0 ) ; 
      glossTexColor = texture2D(glossTex, uv_0 );
      specularTexColor = texture2D(specularTex, uv_0 );
-     albedoTexColor = texture2D(albedoTex, uv_0 );
      // Perturbed normals
      normalDirection = TBN * normalTexColor.xyz ;
      if( (step(materialSource.cutAlpha,opacityTexColor.g) - 0.5) < 0.0 ){
         discard;
      }
+
      calculateDirectLight();
-     vec4 finalRGBA = vec4(light,1.0) + textureCube(reflectionMap,varying_mvPose.xyz);
-     gl_FragColor = finalRGBA;    
+     vec4 finalRGBA = vec4(light,1.0) ;//+ textureCube(reflectionMap,varying_mvPose.xyz);
+     gl_FragColor = finalRGBA;   
 }

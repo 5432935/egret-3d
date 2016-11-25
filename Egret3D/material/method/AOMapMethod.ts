@@ -21,16 +21,14 @@
         /**
         * @language zh_CN
         * 创建AO贴图方法
-        * @param texture AO贴图
         * @version Egret 3.0
         * @platform Web,Native
         */
-        constructor(texture: ITexture) {
+        constructor() {
             super();
             this.fsShaderList[ShaderPhaseType.shadow_fragment] = this.fsShaderList[ShaderPhaseType.shadow_fragment] || [];
             this.fsShaderList[ShaderPhaseType.shadow_fragment].push("AOMap_fs");
 
-            this.lightTexture = texture;
         }
 
         /**

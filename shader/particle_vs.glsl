@@ -2,6 +2,7 @@
 //按秒为单位，当前时间
 float currentTime = 0.0;
 float totalTime = 0.0;
+float particleScale = 1.0 / 1.414;
 bool discard_particle = true;
 
 const float PI = 3.1415926;
@@ -36,6 +37,7 @@ vec3 followTargetScale = vec3(1.0,1.0,1.0);
 vec4 followTargetRotation = vec4(0.0,0.0,0.0,0.0);
 
 float scaleSize = 1.0;
+float scaleChange = 1.0;
 //render mode
 const float Billboard				= 0.0;
 const float StretchedBillboard		= 1.0;
@@ -203,9 +205,10 @@ void calcParticleTime()
 			return;
 		}
 		//单个粒子本身的生命周期已经结束
-		if(time >= curParticle.life + curParticle.bornTime){
+		if(currentTime >= curParticle.life){
 			return;
 		}
+		
 	}
 
 	//计算当前粒子在单次循环中的相对时间
@@ -238,21 +241,18 @@ void rotateParticleUnit()
 	rotResultVec3 *= PI / 180.0; 
 	if(particleStateData.renderMode == HorizontalBillboard){ 
 		rotVertexMatrix = buildRotMat4(vec3(0.5 * PI, 0.0, 0.0)); 
-		rotResultVec3 = vec3(rotResultVec3.z, 0.0, 0.0); 
-		rotVertexMatrix = buildRotMat4(rotResultVec3) * rotVertexMatrix; 
-	}else if(particleStateData.renderMode == VerticalBillboard){ 
-		rotVertexMatrix = buildRotMat4(vec3(-0.5 * PI, 0.0, 0.0)); 
-		rotResultVec3 = vec3(rotResultVec3.z, 0.0, 0.0); 
+		rotResultVec3 = vec3(0.0, rotResultVec3.z, 0.0); 
 		rotVertexMatrix = buildRotMat4(rotResultVec3) * rotVertexMatrix; 
 	}else{ 
 		rotVertexMatrix = buildRotMat4(rotResultVec3); 
 	} 
-	localPosition = rotVertexMatrix * localPosition; 
+	
 }
 
 void main(void) 
 {
 	localPosition = vec4(e_position, 1.0);
+
 	particleStateData.time							= uniform_particleState[0];
 	particleStateData.loop							= uniform_particleState[1];
 	particleStateData.worldSpace					= uniform_particleState[2];
@@ -281,11 +281,14 @@ void main(void)
 	particleStateData.stayAtEnd						= uniform_particleState[24];
 
 
+	if(particleStateData.renderMode == Mesh){
+		particleScale = 1.0;
+	}
 	calcParticleTime();
 	varying_particleData.x = currentTime;
 	varying_particleData.y = curParticle.life;
 	varying_particleData.z = curParticle.index;
-	
+
 	if(discard_particle){
 		varying_particleData.x = currentTime = 0.0;
 		gl_Position = varying_pos = vec4(0.0, 0.0, 0.0, 1.0);
@@ -295,7 +298,7 @@ void main(void)
 	getNodeData();
 	getUnitRotate();
 	rotateParticleUnit();
-	trackPosition();
+
 }
 
 

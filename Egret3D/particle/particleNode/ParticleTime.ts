@@ -17,8 +17,8 @@
 
             this.name = "ParticleSpeedNode";
 
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_bezier");
+            this.vertex_ShaderName[ShaderPhaseType.utils_vertex] = this.vertex_ShaderName[ShaderPhaseType.utils_vertex] || [];
+            this.vertex_ShaderName[ShaderPhaseType.utils_vertex].push("particle_bezier");
 
             this.fragment_ShaderName[ShaderPhaseType.diffuse_fragment] = this.fragment_ShaderName[ShaderPhaseType.diffuse_fragment] || [];
             this.fragment_ShaderName[ShaderPhaseType.diffuse_fragment].push("particle_diffuse_fragment");

@@ -8,7 +8,7 @@
         private lights: LightGroup = new LightGroup();
 
         protected queueLoader: QueueLoader;
-
+        protected plane: Mesh;
         public constructor() {
 
             super();
@@ -28,17 +28,6 @@
 
             Input.addEventListener(KeyEvent3D.KEY_DOWN, this.onKeyDown_Test, this);
 
-            //this.load3DModel("resource/anim/xiaoqiao/", "Object01.esm", ["Object01.eam"]);
-            //this.load3DModel("resource/anim/xiaoqiao/", "Plane01.esm", ["Plane01.eam"]);
-            //this.load3DModel("resource/anim/xiaoqiao/", "Plane02.esm", ["Plane02.eam"]);
-            //this.load3DModel("resource/anim/xiaoqiao/", "Object03.esm");
-            //this.load3DModel("resource/anim/xiaoqiao/", "Object07.esm", ["Object01.eam"]);
-            //this.load3DModel("resource/anim/xiaoqiao/", "1531_poisdragon02.esm", ["1531_poisdragon02_New Animation.eam"]);
-            //this.load3DModel("resource/anim/xiaoqiao/", "zhanshen.esm", ["zhanshen.eam"]);
-            //this.load3DModel("resource/anim/xiaoqiao/", "zhanshen_weapon.esm", ["zhanshen_weapon.eam"]);
-            //this.load3DModel("resource/anim/xiaoqiao/", "body_27.esm", ["idle_1.eam", "run_1.eam", "attack_1.eam", "attack_2.eam", "skill_1.eam", "skill_2.eam", "skill_3.eam", "skill_4.eam"]);
-            //this.load3DModel("resource/anim/ganning/", "Ganning.esm", ["Idle.eam", "Run.eam", "Attack1.eam", "Death.eam"]);
-
             this.queueLoader = new QueueLoader();
             this.queueLoader.load("resource/anim/ganning/Ganning.esm");
             this.queueLoader.load("resource/anim/ganning/Idle.eam");
@@ -49,6 +38,8 @@
             this.queueLoader.load("resource/anim/ganning/Ganning.png");
             this.queueLoader.load("resource/anim/ganning/Ganning_f.png");
             this.queueLoader.load("resource/anim/ganning/Ganning_Weapon.png");
+
+            this.queueLoader.load("resource/floor/brick-diffuse.jpg");
 
             this.queueLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onLoader, this);
 
@@ -73,11 +64,15 @@
             plane.material.acceptShadow = true;
             this.view1.addChild3D(plane);
 
+            this.plane = plane;
+
             Input.addEventListener(MouseEvent3D.MOUSE_DOWN, this.onMouseDown, this);
 
         }
 
         protected onLoader(e: LoaderEvent3D) {
+            this.plane.material.diffuseTexture = this.queueLoader.getAsset("resource/floor/brick-diffuse.jpg");
+
             var geo: Geometry = this.queueLoader.getAsset("resource/anim/ganning/Ganning.esm");
             var clip0: SkeletonAnimationClip = this.queueLoader.getAsset("resource/anim/ganning/Idle.eam");
             var clip1: SkeletonAnimationClip = this.queueLoader.getAsset("resource/anim/ganning/Run.eam");
@@ -87,6 +82,8 @@
             textures[0] = this.queueLoader.getAsset("resource/anim/ganning/Ganning.png");
             textures[1] = this.queueLoader.getAsset("resource/anim/ganning/Ganning_f.png");
             textures[2] = this.queueLoader.getAsset("resource/anim/ganning/Ganning_Weapon.png");
+
+
 
             clip0.animationName = "Idle";
             clip1.animationName = "Run";
@@ -112,7 +109,7 @@
             mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip2);
             mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip3);
 
-            for (var x: number = 0; x < 10; x++) {
+            for (var x: number = 0; x < 1; x++) {
 
                 var cloneMesh: Mesh = mesh.clone();
                 cloneMesh.pickType = PickType.PositionPick;
@@ -139,7 +136,7 @@
             var objects: IRender[] = [];
 
             var t0: number = Date.now();
-            Picker.pickObject3DList(this.view1, [this.meshs[0]], false, objects);
+            Picker.pickObject3DList(this.view1, [this.meshs[0]], objects);
             var t1: number = Date.now();
             console.log(t1 - t0);
             for (var i: number = 0; i < objects.length; ++i) {
@@ -168,21 +165,6 @@
                             this.meshs[i].animation.skeletonAnimationController.play(this.meshs[i].animation.animStateNames[Math.min(index, this.meshs[i].animation.animStateNames.length - 1)]);
                         }
                     }
-
-                    //var plane01: Mesh = this.findMeshFromName("Plane01.esm");
-
-                    //var plane02: Mesh = this.findMeshFromName("Plane02.esm");
-
-                    //var Object03: Mesh = this.findMeshFromName("Object03.esm");
-
-                    //var box: Mesh = new Mesh(new CubeGeometry(10, 10, 10), new ColorMaterial(0xff0000));
-                    //this.view1.addChild3D(box);
-                    //plane01.animation.skeletonAnimationController.bindToJointPose("Bone53", box);
-
-                    //var box2: Mesh = new Mesh(new CubeGeometry(10, 10, 10), new ColorMaterial(0xff0000));
-                    //this.view1.addChild3D(box2);
-                    //plane02.animation.skeletonAnimationController.bindToJointPose("Bone76", box2);
-
                     break;
             }
         }

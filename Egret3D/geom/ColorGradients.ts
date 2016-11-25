@@ -3,7 +3,9 @@
     * @language zh_CN
     * @class egret3d.ColorGradients
     * @classdesc
-    * 使用 ColorGradients记录一个颜色渐变信息
+    * 用于描述一个颜色渐变信息，由一个颜色数组和一个时间数组构成，并且数据一一对应。</p>
+    * [clr1, clr2, clr3...], [t1, t2, t3...]含义为在t1时间点颜色值为clr1，t2时间点颜色值为clr2，以此类推。</p>
+    * t1至t2之间的颜色信息渐变插值生成出来。该数据目前主要用于粒子在存活，颜色线性变化过渡过程。
     * @includeExample geom/ColorGradients.ts
     * @version Egret 3.0
     * @platform Web,Native
@@ -38,10 +40,9 @@
 
         /**
         * @language zh_CN
-        * 渐变颜色取插值
-        * @param c0 颜色1
-        * @param c1 颜色2
+        * 渐变颜色取插值，根据时间线性插值获得。
         * @param t (0.0-1.0)
+        * @returns Color，线性插值获得的颜色。
         * @version Egret 3.0
         * @platform Web,Native
         */

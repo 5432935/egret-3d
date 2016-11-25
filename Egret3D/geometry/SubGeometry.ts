@@ -22,20 +22,33 @@
          */
         public _start: number = 0; 
 
+
+        /**
+        * @language zh_CN
+        * 顶点索引中的索引
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public set start(val:number) {
             this._start = val;
         }
 
+        /**
+        * @language zh_CN
+        * 顶点索引中的索引
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get start(): number {
             return this._start;
         }
 
         /**
-         * @language zh_CN
-         * 顶点数量
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        * @language zh_CN
+        * 顶点索引数量
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public count: number = 0;
 
         /**

@@ -443,6 +443,10 @@
             var scaleNode: ParticleScale = new ParticleScale();
             scaleNode.initNode(this._data.scaleBirth);
             nodes.push(scaleNode);
+
+            var scaleSize: ParticleSizeGlobalNode = new ParticleSizeGlobalNode();
+            scaleSize.initNode(this._data.scaleSize);
+            nodes.push(scaleSize);
             //start color
             var colorNode: ParticleStartColor = new ParticleStartColor();
             colorNode.initNode(this._data.property);
@@ -453,13 +457,6 @@
                 var particleFollowNode: ParticleFollowNode = new ParticleFollowNode();
                 particleFollowNode.initNode(this._data.followTarget);
                 nodes.push(particleFollowNode);
-            }
-
-
-            if (this._data.scaleSize) {
-                var scaleSize: ParticleSizeGlobalNode = new ParticleSizeGlobalNode();
-                scaleSize.initNode(this._data.scaleSize);
-                nodes.push(scaleSize);
             }
 
             if (this._data.rotationSpeed) {

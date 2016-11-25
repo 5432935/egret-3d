@@ -129,22 +129,22 @@
     */
     export class KeyEvent3D extends Event3D {
 
-        /**
-        * @language zh_CN
-        * KEY_CLICK 常量定义 按键点击事件标识。
-        * 可注册对象 : Input类型。
-        * 事件响应状态 : 按键每次点击响应，按下回弹为一次点击。
-        * 响应事件参数 : KeyEvent3D类型,其中KeyEvent3D.keyCode的内容即为Key的值。
-        * @see egret3d.Input
-        * @default "onKeyClick"
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public static KEY_CLICK: string = "onKeyClick";
+        ///**
+        //* @language zh_CN
+        //* KEY_CLICK 常量定义 按键点击事件标识。
+        //* 可注册对象 : Input类型。
+        //* 事件响应状态 : 按键每次点击响应，按下回弹为一次点击。
+        //* 响应事件参数 : KeyEvent3D类型,其中KeyEvent3D.keyCode的内容即为Key的值。
+        //* @see egret3d.Input
+        //* @default "onKeyClick"
+        //* @version Egret 3.0
+        //* @platform Web,Native
+        //*/
+        //public static KEY_CLICK: string = "onKeyClick";
 
         /**
         * @language zh_CN
-        * KEY_DOWN 常量定义  按键点击事件标识。
+        * KEY_DOWN 常量定义  按键按下事件标识。
         * 可注册对象 : Input类型。
         * 事件响应状态 : 按键每次按下时响应。
         * 响应事件参数 : KeyEvent3D类型,其中KeyEvent3D.keyCode的内容即为Key的值。

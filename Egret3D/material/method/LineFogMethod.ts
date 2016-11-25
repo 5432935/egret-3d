@@ -17,9 +17,9 @@
 
         private _fogColor: number = 0x0000cc;
 
-        private _fogStartDistance: number = 1000;
-        private _fogFarDistance: number = 40000;
-        private _fogAlpha: number = 0.6;
+        private _fogStartDistance: number = 100;
+        private _fogFarDistance: number = 1000;
+        private _fogAlpha: number = 1.0;
 
         /**
         * @language zh_CN

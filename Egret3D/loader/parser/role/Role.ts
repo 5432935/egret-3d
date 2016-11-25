@@ -39,7 +39,6 @@
             super();
         }
 
-
         /**
         * @language zh_CN
         * @private
@@ -56,6 +55,21 @@
             }
             this.avatar[part] = mesh;
             super.addChild(mesh);
+        }
+
+
+        /**
+        * @language zh_CN
+        * @private
+        * 删除 avatar
+        * @param part
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public delAvatar(part: string) {
+            if (this.avatar[part]) {
+                delete this.avatar[part];
+            }
         }
 
         /**
@@ -75,6 +89,53 @@
             return child;
         }
 
+        /**
+        * @language zh_CN
+        * 增加一个子对象,并返回当前子对象
+        * 在容器中添加子对象，如果有显示接口的，将会放到场景显示树种进行渲染逻辑运算，及渲染
+        * @param child 增加的子对象
+        * @param index 子对象的下标
+        * @returns 子对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public addChildAt(child: Object3D, index: number): Object3D {
+            if (child instanceof Mesh) {
+                this.setAvatar(child.name, <Mesh>child);
+            }
+            return super.addChildAt(child, index);
+        }
+
+
+        /**
+        * @language zh_CN
+        * 移除child子对象 并返回
+        * 移除显示列表中的指定对象，如果为空将会返回
+        * @param child 子对象
+        * @returns Object3D 如果成功就返回child,否则返回null
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public removeChild(child: Object3D): Object3D {
+            this.delAvatar(child.name);
+            return super.removeChild(child);
+        }
+
+        /**
+        * @language zh_CN
+        * 移除下标为index的子对象 并返回
+        * @param index 子对象的下标
+        * @returns 如果成功就返回child,否则返回null
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public removeChildAt(index: number): Object3D {
+            var object3d: Object3D = this.getChild(index);
+            if (object3d) {
+                this.delAvatar(object3d.name);
+            }
+            return super.removeChildAt(index);
+        }
 
         /**
         * @language zh_CN

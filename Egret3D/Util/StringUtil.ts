@@ -579,5 +579,45 @@
             urlArray = urlArray[0].split("/");
             return urlArray[urlArray.length-1] ;
         }
+
+        public static getFileFormat(url: string): string {
+            var endPos: number = url.lastIndexOf(".");
+            endPos++;
+            var startPos: number = url.lastIndexOf("/");
+            var fileFormat: string = url.substr(endPos, url.length - endPos);
+            fileFormat = fileFormat.toLowerCase();
+            return fileFormat;
+        }
+
+        public static getPath(url: string): string {
+
+            var s_pos: number = url.lastIndexOf("/");
+            s_pos++;
+            return url.substr(0, s_pos);
+        }
+
+        public static ab2str(byte: ByteArray, block:number = 65535):string {
+          //  return String.fromCharCode.apply(null, new Uint8Array(buf));
+            var str: string = "";
+            var oldPos: number = byte.position;
+            var length: number = block;
+            while (byte.position < byte.buffer.byteLength) {
+                length = block;
+                if (byte.buffer.byteLength - byte.position < length) {
+                    length = byte.buffer.byteLength - byte.position;
+                }
+                str += byte.readUTFBytes(length);
+            }
+            byte.position = oldPos;
+
+            return str;
+        }
+
+        public static str2ab(str: string):ByteArray {
+            var byte: ByteArray = new ByteArray();
+
+            byte.writeUTFBytes(str);
+            return byte;
+        }
     }
 }

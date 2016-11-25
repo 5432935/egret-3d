@@ -532,24 +532,35 @@
         * @platform Web,Native
         */
         public rotation(x: number, y: number, z: number) {
-            this.appendRotation(x, Vector3D.X_AXIS);
-            this.appendRotation(y, Vector3D.Y_AXIS);
-            this.appendRotation(z, Vector3D.Z_AXIS);
+            this.createByRotation(x, Vector3D.X_AXIS);
+            this.createByRotation(y, Vector3D.Y_AXIS);
+            this.createByRotation(z, Vector3D.Z_AXIS);
+        }
+
+
+        /**
+       * @language zh_CN
+       * 给当前矩阵追加一个方向角旋转 (按axis轴旋转degrees角度创建出来的矩阵)
+       * @param degrees 旋转角度.
+       * @param axis 绕axis轴旋转角度
+       * @version Egret 3.0
+       * @platform Web,Native
+       */
+        public appendRotation(degrees: number, axis: Vector3D): void {
+            var m: Matrix4_4 = Matrix4_4.getAxisRotation(axis.x, axis.y, axis.z, degrees);
+            this.append(m);
         }
 
         /**
         * @language zh_CN
-        * 当前矩阵乘 (按axis轴旋转degrees角度创建出来的矩阵)
+        * 根据坐标轴和旋转角，创建矩阵 (按axis轴旋转degrees角度创建出来的矩阵)
         * @param degrees 旋转角度.
-        * @param axis 绕axis轴旋转角度.
+        * @param axis 绕axis轴旋转角度.axis需要指定为x/y/z之间的一个轴的朝向
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public appendRotation(degrees: number, axis: Vector3D): void
+        public createByRotation(degrees: number, axis: Vector3D): void
         {
-            var m: Matrix4_4 = Matrix4_4.getAxisRotation(axis.x, axis.y, axis.z, degrees);
-            ///this.append(m);
-
             var tmp: Matrix4_4 = MathUtil.CALCULATION_MATRIX;
             var s: number, c: number;
 

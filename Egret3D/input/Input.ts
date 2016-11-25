@@ -1,5 +1,107 @@
 ﻿module egret3d {
 
+
+    /**
+    * @language zh_CN
+    * @class egret3d.Input
+    * @classdesc
+    * 触摸事件信息参数。
+    * 作为触摸事件基本参数保存于TouchEvent3D，
+    * @see egret3d.TouchEvent3D
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
+    export class TouchData {
+
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        constructor(touch: Touch) {
+            this.canvasX = touch.clientX - Input.canvas.x + Input.canvas.offsetX;
+            this.canvasY = touch.clientY - Input.canvas.y + Input.canvas.offsetY;
+            this.identifier = touch.identifier;
+            this.clientX = touch.clientX;
+            this.clientY = touch.clientY;
+            this.pageX = touch.pageX;
+            this.pageY = touch.pageY;
+            this.screenX = touch.screenX;
+            this.screenY = touch.screenY;
+        }
+
+        /**
+       * @language zh_CN
+       * 相对于Egret3DCanvas左上角位置的水平偏移量。
+       * 基于 Egret3DCanvas 的x坐标
+       * @see egret3d.Egret3DCanvas
+       * @version Egret 3.0
+       * @platform Web,Native
+       */
+        public canvasX: number;
+        /**
+        * @language zh_CN
+        * 相对于Egret3DCanvas左上角位置的垂直偏移量。
+        * 基于 Egret3DCanvas 的y坐标
+        * @see egret3d.Egret3DCanvas
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public canvasY: number;
+
+        /**
+        * @language zh_CN
+        * touch id
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public identifier: number;
+
+        /**
+       * @language zh_CN
+       * 相对于浏览器内容区域左上角位置的水平偏移量，该参照点会随之滚动条的移动而移动。
+       * @version Egret 3.0
+       * @platform Web,Native
+       */
+        public clientX: number;
+        /**
+        * @language zh_CN
+        * 相对于浏览器内容区域左上角位置的垂直偏移量，该参照点会随之滚动条的移动而移动。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public clientY: number;
+        /**
+      * @language zh_CN
+      * 相对于浏览器内容区域左上角位置的水平偏移量，该参照点不会随之滚动条的移动而移动。
+      * @version Egret 3.0
+      * @platform Web,Native
+      */
+        public pageX: number;
+        /**
+        * @language zh_CN
+        * 相对于浏览器内容区域左上角位置的垂直偏移量，该参照点不会随之滚动条的移动而移动。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public pageY: number;
+        /**
+     * @language zh_CN
+     * 相对于用户屏幕左上角位置的水平偏移量。
+     * @version Egret 3.0
+     * @platform Web,Native
+     */
+        public screenX: number;
+        /**
+      * @language zh_CN
+      * 相对于用户屏幕左上角位置的垂直偏移量。
+      * @version Egret 3.0
+      * @platform Web,Native
+      */
+        public screenY: number;
+    }
+
     /**
      * @language zh_CN
      * @class egret3d.Input
@@ -176,13 +278,13 @@
             //window.addEventListener("resize", (e: UIEvent) => this.onWindowsResize(e));
             window.addEventListener("resize", (e: UIEvent) => this.onWindowsResize(e), true);
 
-            window.addEventListener("orientationchange", (e: Event) => this.onOrientationChange(e), true);
+            //window.addEventListener("orientationchange", (e: Event) => this.onOrientationChange(e), true);
 
-            window.addEventListener("devicemotion", (e: DeviceMotionEvent) => this.onDeviceMotion(e), true);
+            //window.addEventListener("devicemotion", (e: DeviceMotionEvent) => this.onDeviceMotion(e), true);
 
-            window.addEventListener("deviceorientation", (e: DeviceOrientationEvent) => this.onDeviceOrientation(e), true);
+            //window.addEventListener("deviceorientation", (e: DeviceOrientationEvent) => this.onDeviceOrientation(e), true);
 
-           
+
         }
 
 
@@ -204,6 +306,27 @@
         public static addEventListener(type: string, callback: Function, thisObject: any, param: any = null, priolity: number = 0): number {
             return Input.instance.addEventListener(type, callback, thisObject, param, priolity);
         }
+
+
+        public addEventListener(type: string, callback: Function, thisObject: any, param: any = null, priority: number = 0): number {
+
+   
+
+            if (type == OrientationEvent3D.ORIENTATION_CHANGE && !this.containEventListener(OrientationEvent3D.ORIENTATION_CHANGE)) {
+                window.addEventListener("orientationchange", (e: Event) => this.onOrientationChange(e), true);
+            }
+            else if (type == OrientationEvent3D.DEVICE_MOTION && !this.containEventListener(OrientationEvent3D.DEVICE_MOTION)) {
+                window.addEventListener("devicemotion", (e: DeviceMotionEvent) => this.onDeviceMotion(e), true);
+
+            }
+            else if (type == OrientationEvent3D.DEVICE_ORIENTATION && !this.containEventListener(OrientationEvent3D.DEVICE_ORIENTATION)) {
+                window.addEventListener("deviceorientation", (e: DeviceOrientationEvent) => this.onDeviceOrientation(e), true);
+            }
+
+            var id = super.addEventListener(type, callback, thisObject, param, priority);
+            return id;
+        }
+
 
         /**
          * @language zh_CN
@@ -228,6 +351,29 @@
             Input.instance.removeEventListenerAt(id);
         }
 
+        /**
+        * @private
+        * @language zh_CN
+        * 获取按键是否压下
+        * @param code  
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static getKeyPress(code: KeyCode): boolean {
+            return Input.instance._keyStatus[code];
+        }
+
+        /**
+        * @private
+        * @language zh_CN
+        * 获取鼠标是否压下
+        * @param code  
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static getMousePress(code: MouseCode): boolean {
+            return Input.instance._mouseStatus[code];
+        }
 
         private _gp: boolean = false;
         private ongamepaddisconnected(e: GamepadEvent) {
@@ -417,7 +563,7 @@
                 return;
             }
 
-            e.preventDefault();
+            //e.preventDefault();
 
             var x1: number = e.targetTouches[0].clientX - Input.canvas.x + Input.canvas.offsetX;
             var y1: number = e.targetTouches[0].clientY - Input.canvas.y + Input.canvas.offsetY;
@@ -431,9 +577,10 @@
             }
             else if (e.targetTouches.length == 1) {
                 this.onSwipe(x1, y1);
+                this._mouseStatus[MouseCode.Mouse_Left] = true;
             }
-
-            this._touchEvent3d.targetTouches = e.targetTouches;
+            this._touchEvent3d.reset();
+            this._touchEvent3d.targetTouches = this.GetTargetTouches(e.targetTouches);
             this._touchEvent3d.target = this;
 
             if (!this._isTouchStart) {
@@ -458,8 +605,8 @@
                 this.onPinch(x, y, x1, y1);
             }
             else if (e.targetTouches.length == 1) {
-
                 this.onSwipe(e.targetTouches[0].clientX - Input.canvas.x + Input.canvas.offsetX, e.targetTouches[0].clientY - Input.canvas.y + Input.canvas.offsetY);
+                this._mouseStatus[MouseCode.Mouse_Left] = false;
             }
             else {
 
@@ -468,13 +615,14 @@
                 this._time = 0;
             }
 
-
+            this._touchEvent3d.reset();
             this._isTouchStart = false;
-            this._touchEvent3d.targetTouches = e.targetTouches;
+            this._touchEvent3d.targetTouches = this.GetTargetTouches(e.targetTouches);
             this._touchEvent3d.target = this;
             this._touchEvent3d.eventType = TouchEvent3D.TOUCH_END;
             this.dispatchEvent(this._touchEvent3d);
         }
+
 
         private touchMove(e: TouchEvent) {
 
@@ -513,18 +661,27 @@
 
             }
 
-            this._touchEvent3d.targetTouches = e.targetTouches;
+            this._touchEvent3d.reset();
+            this._touchEvent3d.targetTouches = this.GetTargetTouches(e.targetTouches);
             this._touchEvent3d.target = this;
             this._touchEvent3d.eventType = TouchEvent3D.TOUCH_MOVE;
             this.dispatchEvent(this._touchEvent3d);
         }
 
+        private GetTargetTouches(targetTouches: TouchList): Array<TouchData> {
+            var array: Array<TouchData> = new Array<TouchData>();
+            for (var i = 0; i < targetTouches.length; i++) {
+                var touchData = new TouchData(targetTouches[i]);
+                array.push(touchData);
+            }
+            return array;
+        }
 
         private mouseClick(e: MouseEvent) {
             if (!this.deliverMessage()) {
                 return;
             }
-
+            this._mouseEvent3d.reset();
             this._mouseEvent3d.mouseCode = e.button;
             this._mouseEvent3d.target = this;
             this._mouseEvent3d.eventType = MouseEvent3D.MOUSE_CLICK;
@@ -532,6 +689,7 @@
         }
 
         private mouseEnd(e: MouseEvent) {
+            this._mouseEvent3d.reset();
             this._mouseEvent3d.mouseCode = e.button;
             this._mouseEvent3d.target = this;
 
@@ -555,6 +713,7 @@
                 return;
             }
 
+            this._mouseEvent3d.reset();
             this._mouseEvent3d.mouseCode = e.button;
             this._mouseEvent3d.target = this;
 
@@ -575,6 +734,7 @@
             Input.mouseOffsetX = Input.mouseX - Input.mouseLastX;
             Input.mouseOffsetY = Input.mouseY - Input.mouseLastY;
 
+            this._mouseEvent3d.reset();
             this._mouseEvent3d.target = this;
             this._mouseEvent3d.eventType = MouseEvent3D.MOUSE_MOVE;
 
@@ -583,6 +743,7 @@
         }
 
         private mouseOver(e: MouseEvent) {
+            this._mouseEvent3d.reset();
             this._mouseEvent3d.target = this;
             this._mouseEvent3d.eventType = MouseEvent3D.MOUSE_OVER;
             this.dispatchEvent(this._mouseEvent3d);
@@ -590,33 +751,35 @@
 
         private mouseWheel(e: MouseWheelEvent) {
             Input.wheelDelta = e.wheelDelta;
-
+            this._mouseEvent3d.reset();
             this._mouseEvent3d.target = this;
             this._mouseEvent3d.eventType = MouseEvent3D.MOUSE_WHEEL;
             this.dispatchEvent(this._mouseEvent3d);
         }
 
         private keyDown(e: KeyboardEvent) {
+            this._keyEvent3d.reset();
             this._keyEvent3d.keyCode = e.keyCode;
             this._keyEvent3d.target = this;
 
             if (!this._keyStatus[e.keyCode]) {
                 this._keyStatus[e.keyCode] = true;
-                this._keyEvent3d.eventType = KeyEvent3D.KEY_CLICK;
-                this.dispatchEvent(this._keyEvent3d);
+                //this._keyEvent3d.eventType = KeyEvent3D.KEY_CLICK;
+                //this.dispatchEvent(this._keyEvent3d);
                 this._keyEvent3d.eventType = KeyEvent3D.KEY_DOWN;
                 this.dispatchEvent(this._keyEvent3d);
             }
         }
 
         private keyUp(e: KeyboardEvent) {
+            this._keyEvent3d.reset();
             this._keyEvent3d.keyCode = e.keyCode;
             this._keyEvent3d.target = this;
 
-            if (this._keyStatus[e.keyCode]) {
-                this._keyEvent3d.eventType = KeyEvent3D.KEY_CLICK;
-                this.dispatchEvent(this._keyEvent3d);
-            }
+            //if (this._keyStatus[e.keyCode]) {
+            //    this._keyEvent3d.eventType = KeyEvent3D.KEY_CLICK;
+            //    this.dispatchEvent(this._keyEvent3d);
+            //}
 
             this._keyStatus[e.keyCode] = false;
 

@@ -1840,14 +1840,14 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public max: number = 0;
+        public max: number = 1;
         /**
         * @language zh_CN
         * 类型为随机常量时，指定的最小值；如果类型为常量时，max和min相等
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public min: number = 0;
+        public min: number = 1;
         /**
         * @language zh_CN
         * 类型为单贝塞尔曲线或者双贝塞尔曲线时，用到的贝塞尔曲线一

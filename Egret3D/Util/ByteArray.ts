@@ -446,6 +446,29 @@ module egret3d {
             return value;
         }
 
+         /**
+         * @language zh_CN
+         * 解压 压缩字节流 按类型划分
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        public uncompress(type: string = "7z") {
+            var tmp: ArrayBuffer = nid.LZMAHelper.decode(this.data.buffer);
+            this.buffer = tmp;
+        }
+
+         /**
+         * @language zh_CN
+         * 按7z的方式压缩字节
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        public compress(type: string = "7z") {
+            var decoder: nid.LZMA = new nid.LZMA();
+            var tmp: ArrayBuffer =  nid.LZMAHelper.encode(this.data.buffer);
+            this.buffer = tmp;
+        }
+
         /**
          * @language en_US
          * Read an IEEE 754 single-precision (32 bit) floating point number from the byte stream

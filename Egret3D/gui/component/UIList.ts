@@ -42,7 +42,9 @@
             this._startDrag = true;
             this.addEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
             this.addEventListener(MouseEvent3D.MOUSE_MOVE, this.onMouseMove, this);
-            this.stage.addEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
+            if (this.stage) {
+                this.stage.addEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
+            }
 
         }
         /**
@@ -52,7 +54,9 @@
             this._startDrag = false;
             this.removeEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
             this.removeEventListener(MouseEvent3D.MOUSE_MOVE, this.onMouseMove, this);
-            this.stage.removeEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
+            if (this.stage) {
+                this.stage.removeEventListener(MouseEvent3D.MOUSE_UP, this.onMouseUp, this);
+            }
             
         }
         /**

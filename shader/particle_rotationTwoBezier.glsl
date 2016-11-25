@@ -8,6 +8,6 @@ void getUnitRotate(){
 	rotationTwoBezier.x = calcBezierArea(uniform_rotationBezier, currentTime, curParticle.life);
 	rotationTwoBezier.y = calcBezierArea(uniform_rotationBezier2, currentTime, curParticle.life);
 	float rot = mix(rotationTwoBezier.x, rotationTwoBezier.y, attribute_rotationRandomSeed);
-	rotResultVec3.z = currentTime * rot;
+	rotResultVec3.z = rot;
 }
 //##FilterEnd##

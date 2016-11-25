@@ -78,11 +78,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        private loadTexture(jsonUrl: string, bitmapUrl: string, gui:QuadStage = null) {
-            var gui: QuadStage = this._guiStage;
-            if (!gui) {
-                console.log("ERROR!! 需要初始化TextureResourceManager中的guiStage对象");
-            }
+        private loadTexture(jsonUrl: string, bitmapUrl: string) {
             var jsonArrayParser:Function = (sourceTexture:Texture, jsonData) => {
                 var frames = jsonData["frames"];
                 for (var i: number = 0; i < frames.length; i++) {
@@ -95,7 +91,7 @@
                     tex.width = frameRect['w'];
                     tex.height = frameRect["h"];
                     if (this._textureDic[name]) {
-                        console.log("TextureResourceManager::loadTexture, 贴图缓存池里已经有相同名字的贴图. 请检查, url: " + jsonUrl);
+                        console.log("TextureResourceManager::loadTexture, 贴图缓存池里已经有相同名字的贴图. 请检查, name: " + name + " url:"  + jsonUrl);
                     }
                     this._textureDic[name] = tex;
                 }
@@ -109,9 +105,7 @@
                 jsonLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE,
                     e => {
                         sourceTex.useMipmap = false;
-                        if (gui) {
-                            gui.registerTexture(sourceTex);
-                        }
+                        registGUITexture(sourceTex);
                         jsonArrayParser(sourceTex, JSON.parse(jsonLoader.data));
                         this._count--;
                         this._loadedCount++;
@@ -164,18 +158,18 @@
 //        }
 
         public addTexture(url: string, json: any, texture: ITexture) {
-            if (this._guiStage) {
-                this._guiStage.registerTexture(texture);
-            }
+                   egret3d.registGUITexture(texture);
+
 
             this._bigTextureDic[url] = texture;
 
             let tempNameAry = [];
             this._urlTextureDic[url] = tempNameAry;
             const frames = json["frames"];
+            let name: string
             for (let i: number = 0; i < frames.length; i++) {
                 let frame = frames[i];
-                let name = frame["filename"];
+                name = frame["filename"];
                 let frameRect = frame["frame"];
                 let tex: Texture = new Texture();
                 tex.copyFromTexture(texture, frameRect["x"] / texture.width,
