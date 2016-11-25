@@ -15125,7 +15125,7 @@ var egret3d;
             * @version Egret 3.0
             * @platform Web,Native
             */
-            this.textureSizeWidth = 1024 * 4;
+            this.textureSizeWidth = 1024;
             /**
             * @language zh_CN
             * @private
@@ -15133,7 +15133,7 @@ var egret3d;
             * @version Egret 3.0
             * @platform Web,Native
             */
-            this.textureSizeHeight = 1024 * 4;
+            this.textureSizeHeight = 1024;
             this.shadowCamera = new egret3d.Camera3D(egret3d.CameraType.orthogonal);
             this.shadowRender = new egret3d.MultiRender(egret3d.PassType.shadowPass);
             this.shadowRender.name = egret3d.PassType.shadowPass.toString();
@@ -46817,6 +46817,191 @@ var egret3d;
 (function (egret3d) {
     /**
     * @language zh_CN
+    * @class egret3d.WaterBumpMethod
+    * @classdesc
+    * 材质中赋予灯光后，可以添加此方法，灯光和法线的变化而产生水面波光粼粼的效果
+    * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
+    * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
+    * @includeExample material/method/WaterBumpMethod.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
+    var WaterBumpMethod = (function (_super) {
+        __extends(WaterBumpMethod, _super);
+        /**
+        * @private
+        * @language zh_CN
+        */
+        function WaterBumpMethod() {
+            _super.call(this);
+            this._uvData = new Float32Array(8);
+            this._horizonColor = new Float32Array(4);
+            this._time = 0.0;
+            this._start = false;
+            this._distion_intensity = new egret3d.Point(0.02, 0.02);
+            //##FilterBegin## ##Water##
+            this.fsShaderList[egret3d.ShaderPhaseType.normal_fragment] = this.fsShaderList[egret3d.ShaderPhaseType.normal_fragment] || [];
+            this.fsShaderList[egret3d.ShaderPhaseType.normal_fragment].push("waterBump_fs");
+            this.start();
+            this._horizonColor[0] = 217 / 255;
+            this._horizonColor[1] = 235 / 255;
+            this._horizonColor[2] = 255 / 255;
+            this._horizonColor[3] = 255 / 255;
+            //---------------
+            this._uvData[0] = -0.000005 * 2.5;
+            this._uvData[1] = 0.0 * 2.5;
+            this._uvData[2] = 0.00001 * 2.5;
+            this._uvData[3] = 0.0 * 2.5;
+            this._uvData[4] = this._distion_intensity.x;
+            this._uvData[5] = this._distion_intensity.y;
+            this._uvData[6] = 1.0;
+            this._uvData[7] = 1.0;
+            //##FilterEnd##
+        }
+        /**
+        * @language zh_CN
+        * 开始播放uv动画
+        * @param rest 如果为ture就是重置播放
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        WaterBumpMethod.prototype.start = function (rest) {
+            //##FilterBegin## ##Water##
+            if (rest === void 0) { rest = false; }
+            if (rest)
+                this._time = 0;
+            this._start = true;
+            //##FilterEnd##
+        };
+        /**
+        * @language zh_CN
+        * 停止播放uv动画
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        WaterBumpMethod.prototype.stop = function () {
+            //##FilterBegin## ##Water##
+            this._start = false;
+            //##FilterEnd##
+        };
+        /**
+        * @language zh_CN
+        * 设置UV 速度
+        * @param index 0 或 1
+        * @param u
+        * @param v
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        WaterBumpMethod.prototype.setUvSpeed = function (index, u, v) {
+            //##FilterBegin## ##Water##
+            switch (index) {
+                case 0:
+                    this._uvData[0] = u;
+                    this._uvData[1] = v;
+                    break;
+                case 1:
+                    this._uvData[2] = u;
+                    this._uvData[3] = v;
+                    break;
+            }
+            //##FilterEnd##
+        };
+        /**
+        * @language zh_CN
+        * 设置UV repat次数
+        * @param u
+        * @param v
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        WaterBumpMethod.prototype.setUvScale = function (first, second) {
+            //##FilterBegin## ##Water##
+            //##FilterEnd##
+        };
+        Object.defineProperty(WaterBumpMethod.prototype, "bumpTexture", {
+            /**
+             * @language zh_CN
+             * 设置lightmap贴图
+             * @param texture lightmap贴图
+             * @version Egret 3.0
+             * @platform Web,Native
+             */
+            set: function (texture) {
+                //##FilterBegin## ##Water##
+                this._bumpTexture = texture;
+                if (this.materialData["bumpTexture"] != this._bumpTexture) {
+                    this.materialData["bumpTexture"] = this._bumpTexture;
+                    this.materialData.textureChange = true;
+                }
+                //##FilterEnd##
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(WaterBumpMethod.prototype, "colorTexture", {
+            /**
+             * @language zh_CN
+             * 设置lightmap贴图
+             * @param texture lightmap贴图
+             * @version Egret 3.0
+             * @platform Web,Native
+             */
+            set: function (texture) {
+                //##FilterBegin## ##Water##
+                this._colorControlTexture = texture;
+                if (this.materialData["colorControlTexture"] != this._colorControlTexture) {
+                    this.materialData["colorControlTexture"] = this._colorControlTexture;
+                    this.materialData.textureChange = true;
+                }
+                //##FilterEnd##
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+        * @private
+        * @language zh_CN
+        * @param time
+        * @param delay
+        * @param usage
+        * @param materialData
+        * @param geometry
+        * @param context3DProxy
+        * @param modeltransform
+        * @param modeltransform
+        * @param camera3D
+        */
+        WaterBumpMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
+            //##FilterBegin## ##Water##
+            usage["waterNormalData"] = context3DProxy.getUniformLocation(usage.program3D, "waterNormalData");
+            usage["horizonColor"] = context3DProxy.getUniformLocation(usage.program3D, "horizonColor");
+            usage["time"] = context3DProxy.getUniformLocation(usage.program3D, "time");
+            //##FilterEnd##
+        };
+        /**
+        * @private
+        * @language zh_CN
+        */
+        WaterBumpMethod.prototype.activeState = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
+            //##FilterBegin## ##Water##
+            if (this._start) {
+                this._time += delay;
+            }
+            context3DProxy.uniform4fv(usage["horizonColor"], this._horizonColor);
+            context3DProxy.uniform2fv(usage["waterNormalData"], this._uvData);
+            context3DProxy.uniform1f(usage["time"], this._time);
+            //##FilterEnd##
+        };
+        return WaterBumpMethod;
+    }(egret3d.MethodBase));
+    egret3d.WaterBumpMethod = WaterBumpMethod;
+})(egret3d || (egret3d = {}));
+var egret3d;
+(function (egret3d) {
+    /**
+    * @language zh_CN
     * @class egret3d.UVRollMethod
     * @classdesc
     * 继承自 MethodBase,为材质球附加特效的共有基类.
@@ -51048,6 +51233,7 @@ var egret3d;
             _super.call(this);
             this._i = 0;
             this._j = 0;
+            this.currentViewPort = new egret3d.Rectangle();
             this.pass = pass;
         }
         /**
@@ -51062,9 +51248,15 @@ var egret3d;
         MultiRender.prototype.draw = function (time, delay, context3D, collect, backViewPort, renderQuen, posList) {
             if (posList === void 0) { posList = null; }
             this.numEntity = collect.renderList.length;
+            this.viewPort = backViewPort;
             if (this.renderTexture) {
                 this.renderTexture.upload(context3D);
                 context3D.setRenderToTexture(this.renderTexture.texture2D, true, true, 0);
+                this.currentViewPort.x = 0;
+                this.currentViewPort.y = 0;
+                this.currentViewPort.width = this.renderTexture.texture2D.width;
+                this.currentViewPort.height = this.renderTexture.texture2D.height;
+                this.viewPort = this.currentViewPort;
             }
             var material;
             for (this._renderIndex = 0; this._renderIndex < this.numEntity; this._renderIndex++) {
@@ -51098,6 +51290,7 @@ var egret3d;
                 this.drawOver(collect, this.camera, time, delay, this.viewPort);
             }
             if (this.renderTexture) {
+                this.viewPort = backViewPort;
                 context3D.setRenderToBackBuffer();
                 if (this.viewPort) {
                     context3D.viewPort(this.viewPort.x, this.viewPort.y, this.viewPort.width, this.viewPort.height);

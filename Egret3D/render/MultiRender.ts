@@ -19,6 +19,7 @@
 
         public drawOver: Function;
 
+        protected currentViewPort: Rectangle = new Rectangle();
         /**
         * @language zh_CN
         * constructor
@@ -40,10 +41,18 @@
         public draw(time: number, delay: number, context3D: Context3DProxy, collect: CollectBase, backViewPort: Rectangle, renderQuen: RenderQuen, posList: any = null) {
             this.numEntity = collect.renderList.length;
 
+            this.viewPort = backViewPort;
+
             if (this.renderTexture) {
                 this.renderTexture.upload(context3D);
-                context3D.setRenderToTexture(this.renderTexture.texture2D,true, true, 0);
+                context3D.setRenderToTexture(this.renderTexture.texture2D, true, true, 0);
+                this.currentViewPort.x = 0;
+                this.currentViewPort.y = 0;
+                this.currentViewPort.width = this.renderTexture.texture2D.width;
+                this.currentViewPort.height = this.renderTexture.texture2D.height;
+                this.viewPort = this.currentViewPort;
             }
+
             var material: MaterialBase;
             for (this._renderIndex = 0; this._renderIndex < this.numEntity; this._renderIndex++) {
                 this._renderItem = collect.renderList[this._renderIndex];
@@ -81,6 +90,8 @@
             }
 
             if (this.renderTexture) {
+                this.viewPort = backViewPort;
+
                 context3D.setRenderToBackBuffer();
                 if (this.viewPort) {
                     context3D.viewPort(this.viewPort.x, this.viewPort.y, this.viewPort.width, this.viewPort.height);

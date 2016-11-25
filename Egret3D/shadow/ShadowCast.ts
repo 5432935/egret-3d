@@ -34,7 +34,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public textureSizeWidth: number = 1024 * 4;
+        public textureSizeWidth: number = 1024;
 
         /**
         * @language zh_CN
@@ -43,7 +43,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public textureSizeHeight: number = 1024 * 4;
+        public textureSizeHeight: number = 1024;
 
         /**
         * @language zh_CN

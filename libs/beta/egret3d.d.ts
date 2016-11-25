@@ -22323,6 +22323,103 @@ declare module egret3d {
 declare module egret3d {
     /**
     * @language zh_CN
+    * @class egret3d.WaterBumpMethod
+    * @classdesc
+    * 材质中赋予灯光后，可以添加此方法，灯光和法线的变化而产生水面波光粼粼的效果
+    * 使用方法 需要使用 $mesh.material.diffusePass.addMethod( this ) 向材质中添加效果方法
+    * @see egret3d.MethodBase
+    * @see egret3d.MaterialPass
+    * @includeExample material/method/WaterBumpMethod.ts
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
+    class WaterBumpMethod extends MethodBase {
+        private _uvData;
+        private _horizonColor;
+        private _time;
+        private _start;
+        private _bumpTexture;
+        private _colorControlTexture;
+        private _distion_intensity;
+        /**
+        * @private
+        * @language zh_CN
+        */
+        constructor();
+        /**
+        * @language zh_CN
+        * 开始播放uv动画
+        * @param rest 如果为ture就是重置播放
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        start(rest?: boolean): void;
+        /**
+        * @language zh_CN
+        * 停止播放uv动画
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        stop(): void;
+        /**
+        * @language zh_CN
+        * 设置UV 速度
+        * @param index 0 或 1
+        * @param u
+        * @param v
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        setUvSpeed(index: number, u: number, v: number): void;
+        /**
+        * @language zh_CN
+        * 设置UV repat次数
+        * @param u
+        * @param v
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        setUvScale(first: number, second: number): void;
+        /**
+         * @language zh_CN
+         * 设置lightmap贴图
+         * @param texture lightmap贴图
+         * @version Egret 3.0
+         * @platform Web,Native
+         */
+        bumpTexture: ITexture;
+        /**
+         * @language zh_CN
+         * 设置lightmap贴图
+         * @param texture lightmap贴图
+         * @version Egret 3.0
+         * @platform Web,Native
+         */
+        colorTexture: ITexture;
+        /**
+        * @private
+        * @language zh_CN
+        * @param time
+        * @param delay
+        * @param usage
+        * @param materialData
+        * @param geometry
+        * @param context3DProxy
+        * @param modeltransform
+        * @param modeltransform
+        * @param camera3D
+        */
+        upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D): void;
+        /**
+        * @private
+        * @language zh_CN
+        */
+        activeState(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D): void;
+    }
+}
+declare module egret3d {
+    /**
+    * @language zh_CN
     * @class egret3d.UVRollMethod
     * @classdesc
     * 继承自 MethodBase,为材质球附加特效的共有基类.
@@ -24856,6 +24953,7 @@ declare module egret3d {
         private _i;
         private _j;
         drawOver: Function;
+        protected currentViewPort: Rectangle;
         /**
         * @language zh_CN
         * constructor
