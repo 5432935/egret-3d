@@ -62,7 +62,7 @@
             return !!(typeof AudioContext !== 'undefined');
         }
 
-        private codecs = {};
+        private codecs = null;
 
 
         /**

@@ -44,8 +44,7 @@
             this.attribute_scaleSizeConst.size = 1;
             this.attributes.push(this.attribute_scaleSizeConst);
 
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_scaleSizeConst");
+            this.importShader(true, ShaderPhaseType.local_vertex, "particle_scaleSizeConst");
 
             if (this._node) {
 
@@ -55,11 +54,9 @@
 
                 if (this._node.type == ParticleValueType.OneBezier) {
                     this._floatCompressData1 = this._node.bezier1.sampler();
-                    this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
-                    this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_scaleSizeBezier1");
+                    this.importShader(true, ShaderPhaseType.local_vertex, "particle_scaleSizeBezier1");
                 } else if (this._node.type == ParticleValueType.TwoBezier) {
-                    this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
-                    this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_scaleSizeBezier2");
+                    this.importShader(true, ShaderPhaseType.local_vertex, "particle_scaleSizeBezier2");
                     this._floatCompressData2 = this._node.bezier1.sampler();
                     this._floatCompressData2 = this._node.bezier2.sampler();
 

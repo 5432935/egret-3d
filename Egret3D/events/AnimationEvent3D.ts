@@ -24,27 +24,27 @@
 
         /**
         * @language zh_CN
-        * EVENT_PLAY_COMPLETE 常量定义 属性动画播放完成事件标识。
-        * 可注册对象 : PropertyAnimController，SkeletonAnimation 
-        * 事件响应状态 : 属性动画播放完成时触发。
+        * 动画属性是循环状态下触发
+        * 动画一个周期结束后循环
+        * 可注册对象 : SkeletonAnimation 
         * 响应事件参数 : AnimationEvent3D类型。
         * @see egret3d.Event3D
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public static EVENT_PLAY_COMPLETE: string = "event_play_complete";
+        public static CYCLE: string = "cycle";
 
         /**
         * @language zh_CN
-        * EVENT_FRAME_CHANGE 常量定义 动画帧更改的事件标识。
-        * 可注册对象 : SkeletonAnimation
-        * 事件响应状态 :  动画帧更改时触发。
+        * 动画属性是非循环状态下触发
+        * 动画在不循环的时候完成动画触发
+        * 可注册对象 : SkeletonAnimation 
         * 响应事件参数 : AnimationEvent3D类型。
         * @see egret3d.Event3D
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public static EVENT_FRAME_CHANGE: string = "event_frame_change";
+        public static COMPLETE: string = "complete";
     }
 
 } 

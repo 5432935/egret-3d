@@ -61,6 +61,26 @@
 
         /**
         * @private
+        * 强制更新了时间之后，follow数据需要更新
+        */
+        public onAnimTimeChange(): void {
+             
+        }
+
+        /**
+        * @private
+        * 导入需要用到的glsl
+        */
+        protected importShader(isVertex: boolean, phase:number, name: string): void {
+            var shader: { [shaderPhase: number]: string[] } = isVertex ? this.vertex_ShaderName : this.fragment_ShaderName;
+            var list: string[] = shader[phase] = shader[phase] || [];
+            if (list.indexOf(name) == -1) {
+                list.push(name);
+            }
+        }
+
+        /**
+        * @private
         */
         public afterBuild():void {
 

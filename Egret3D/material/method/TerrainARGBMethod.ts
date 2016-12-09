@@ -35,7 +35,12 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        constructor(controlTex: ITexture, splat_0: ITexture, splat_1: ITexture, splat_2: ITexture, splat_3: ITexture) {
+        constructor(
+            controlTex: ITexture = CheckerboardTexture.texture,
+            splat_0: ITexture = CheckerboardTexture.texture,
+            splat_1: ITexture = CheckerboardTexture.texture,
+            splat_2: ITexture = CheckerboardTexture.texture,
+            splat_3: ITexture = CheckerboardTexture.texture) {
             super();
 
             this.fsShaderList[ShaderPhaseType.diffuse_fragment] = this.fsShaderList[ShaderPhaseType.diffuse_fragment] || [];

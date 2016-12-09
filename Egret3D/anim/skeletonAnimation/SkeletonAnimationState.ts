@@ -1,5 +1,8 @@
 ﻿module egret3d {
 
+
+
+
     /**
     * @language zh_CN
     * @class egret3d.SkeletonAnimationState
@@ -11,29 +14,66 @@
     * @version Egret 3.0
     * @platform Web,Native
     */
-    export class SkeletonAnimationState implements IAnimationState {
+    export class SkeletonAnimationState {
+
+    
+        private _animState: { [key: string]: AnimClipState };
+
+        private _canTransitionToSelf: boolean = false;
+
+        private _atomic: boolean = true;
+
+        private _crossFade: CrossFade;
+
+        private _time: number = 0;
+
+        private _weight: number = 0;
+
+        private _currentCrossFadeNode: CrossFadeNode;
+
+        private _currentState: AnimClipState;
 
         /**
         * @language zh_CN
-        * State名称
+        * @private
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public name: string = "";
+        public gpuSkeletonPose: SkeletonPose = null;
 
         /**
         * @language zh_CN
-        * 融合权重值
+        * @private
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public weight: number = 1.0;
+        public currentAnimName: string = "";
 
-        private _timeLength: number = 0;
-        private _timePosition: number = 0;
-        private _skeletonAnimation: SkeletonAnimation = null;
-        private _skeletonAnimationClip: SkeletonAnimationClip = null;
-        
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public nextAnimName: string = "";
+
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public bindList: { [nodeName: string]: { type: BindAnimType, node: Object3D } };
+
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public animation: SkeletonAnimation;
+
+
 
         /**
         * @language zh_CN
@@ -43,52 +83,17 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        constructor(name: string) {
-            this.name = name;
+        constructor() {
+            this._animState = {};
         }
 
-        /**
-        * @language zh_CN
-        * 获取骨骼动画控制器
-        * @returns SkeletonAnimation 骨骼动画控制器
-        * @version Egret 3.0
-        * @platform Web,Native
+        /*
+        * @private
         */
-        public get skeletonAnimation(): SkeletonAnimation {
-            return this._skeletonAnimation;
-        }
-
-        /**
-        * @language zh_CN
-        * 设置骨骼动画控制器
-        * @param skeletonAnimation 骨骼动画控制器
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set skeletonAnimation(skeletonAnimation: SkeletonAnimation) {
-            this._skeletonAnimation = skeletonAnimation;
-        }
-
-        /**
-        * @language zh_CN
-        * 获取骨骼动画剪辑
-        * @returns SkeletonAnimationClip 骨骼动画控制器
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get skeletonAnimationClip(): SkeletonAnimationClip {
-            return this._skeletonAnimationClip;
-        }
-
-        /**
-        * @language zh_CN
-        * 动画时间长度
-        * @returns number 时间长度 毫秒
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get timeLength(): number {
-            return this._timeLength;
+        public addCrossFadeNode(fade: CrossFadeNode) {
+            if (fade)
+                this._crossFade = this._crossFade || new CrossFade();
+            this._crossFade.addCrossFadeNode(fade);
         }
 
         /**
@@ -98,232 +103,203 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public addAnimationClip(animationClip: SkeletonAnimationClip): void {
-
-            this._skeletonAnimationClip = animationClip.cacheAnimationClip.clone();
-
-            this._timeLength = this._skeletonAnimationClip.timeLength;
-
-            //if (animationClip.sourceData) {
-            //    this._skeletonAnimationClip = animationClip;
-
-            //    this._timeLength = this._skeletonAnimationClip.timeLength;
-            //}
-            //else {
-
-            //    if (!this._skeletonAnimationClip) {
-            //        this._skeletonAnimationClip = new SkeletonAnimationClip();
-            //    }
-            //    else {
-            //        this._skeletonAnimationClip.poseArray = [];
-            //    }
-
-            //    if (animationClip.poseArray.length < 2) {
-            //        this._skeletonAnimationClip.poseArray = animationClip.poseArray;
-            //    }
-            //    else {
-            //        var skeletonPoseA: SkeletonPose = animationClip.poseArray[0];
-
-            //        var skeletonPoseB: SkeletonPose = animationClip.poseArray[1];
-
-            //        var nCount: number = Math.round((skeletonPoseB.frameTime - skeletonPoseA.frameTime) / SkeletonAnimation.fps);
-
-            //        if (nCount <= 1) {
-            //            this._skeletonAnimationClip.poseArray = animationClip.poseArray;
-            //        }
-            //        else {
-            //            for (var i: number = 1; i < animationClip.poseArray.length; ++i) {
-
-            //                skeletonPoseA = animationClip.poseArray[i - 1];
-
-            //                skeletonPoseB = animationClip.poseArray[i];
-
-            //                for (var j: number = 0; j < nCount; j++) {
-
-            //                    var skeletonPose: SkeletonPose = new SkeletonPose();
-            //                    skeletonPose.boneNameArray = animationClip.boneNameArray;
-
-            //                    skeletonPose.lerp(skeletonPoseA, skeletonPoseB, j / nCount);
-
-            //                    this._skeletonAnimationClip.poseArray.push(skeletonPose);
-            //                }
-            //            }
-
-            //            this._skeletonAnimationClip.poseArray.push(animationClip.poseArray[animationClip.poseArray.length - 1].clone());
-            //        }
-            //    }
-
-            //    this._timeLength = this._skeletonAnimationClip.poseArray[this._skeletonAnimationClip.poseArray.length - 1].frameTime;
-            //}
+        public addAnimClip(clip: SkeletonAnimationClip): void {
+            if (clip.animationName) {
+                var animState: AnimClipState = new AnimClipState(clip);
+                animState.animation = this.animation;
+                this._animState[clip.animationName] = animState;
+                this._currentState = animState;
+            }
         }
+
+        /*
+        * @private
+        */
+        public get animClip(): { [key: string]: AnimClipState } {
+            return this._animState;
+        }
+
+        /*
+        * @private
+        */
+        public getCurrentState(): AnimClipState {
+            return this._currentState;
+        }
+
+
+        private _reset: boolean = false;
+        private _offset: number = 0;
+        private _defaultFade: CrossFadeNode = new CrossFadeNode;
 
         /**
         * @language zh_CN
-        * 获取当前动画时间位置
-        * @returns number 当前动画时间位置
+        * 播放骨骼动画
+        * @param name 动画名称
+        * @param speed 播放速度
+        * @param reset 是否重置
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public get timePosition(): number {
-            return this._timePosition;
-        }
+        public play(name: string, speed?: number, reset: boolean = false) {
+            if (this.currentAnimName == name && !reset) return;
 
-        /**
-        * @language zh_CN
-        * 设置当前动画时间位置
-        * @param value 设置值
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public set timePosition(value: number) {
+            //let gpuSkeletonPose = this.gpuSkeletonPose;
+            let currentCrossFadeNode = this._currentCrossFadeNode;
+            let a: AnimClipState;//= this._currentCrossFadeNode.crossA_state;
+            let b: AnimClipState;// this._currentCrossFadeNode.crossB_state;
+            let defaultFade: CrossFadeNode = this._defaultFade ;// this._currentCrossFadeNode.crossB_state;
 
-            if (value == this._timePosition) {
+            this._currentCrossFadeNode = null;
+
+            if (this._crossFade)
+                this._currentCrossFadeNode = this._crossFade.checkCrossFade(this.currentAnimName, name, this._animState);
+
+            if (!this._currentCrossFadeNode && !reset) {
+                a = this._animState[this.currentAnimName];
+                b = this._animState[name];
+
+                if (a && b) {
+                    this._currentCrossFadeNode = defaultFade;
+                    defaultFade.crossA = this.currentAnimName;
+                    defaultFade.crossB = name;
+
+                    defaultFade.crossA_state = a;
+                    defaultFade.crossB_state = b;
+
+                    var defaultMixTime: number = 300;
+                    defaultFade.blend_startFrame = Math.floor((a.totalTime - defaultMixTime) / a.clip.frameRate);
+                    defaultFade.blend_endFrame = a.totalFrame;
+                    defaultFade.crossB_startFrame = defaultFade.blend_startFrame;
+
+                    defaultFade.blendTime = defaultMixTime;
+                    defaultFade.blendStartTime = defaultFade.blend_startFrame * a.clip.frameRate;
+                    defaultFade.totalTime = defaultFade.blendStartTime + b.totalTime;
+                }
+            }
+
+            this.currentAnimName = name;
+
+            if (this._animState[name]) {
+                this._currentState = this._animState[name];
+                this._currentState.speed = speed;
+            } else {
                 return;
             }
 
-            this._timePosition = value;
+            this._reset = true;
 
-            if (this._skeletonAnimation.isLoop) {
+            //-------初始化
+            if (!this.gpuSkeletonPose) {
+                this.gpuSkeletonPose = new SkeletonPose();
+                this.gpuSkeletonPose.initSkeletonPose(this._animState[name].clip.getSkeletonPose(0), this.gpuSkeletonPose);
+            }
+            if (Egret3DPolicy.useAnimMixInterpolation && !this._lerpAPose) {
+                this._lerpAPose = new SkeletonPose();
+                this.gpuSkeletonPose.initSkeletonPose(this._animState[name].clip.getSkeletonPose(0), this._lerpAPose);
+            }
+            if (Egret3DPolicy.useAnimMixInterpolation && !this._lerpBPose) {
+                this._lerpBPose = new SkeletonPose();
+                this.gpuSkeletonPose.initSkeletonPose(this._animState[name].clip.getSkeletonPose(0), this._lerpBPose);
+            }
+        }
 
-                if (this.name == this._skeletonAnimation.currentAnimName) {
-                    if (this._skeletonAnimation.speed < 0 && this._timePosition < 0) {
-                        this._skeletonAnimation.event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
-                        this._skeletonAnimation.dispatchEvent(this._skeletonAnimation.event3D);
+        //先算出交换动作后的时间起始点
+        //获取融合时间轴上的 指定时间的 a clip
+        //获取融合时间轴上的 指定时间的 b clip
+        //计算 A/B 的融合
+        //获取最终的clip
+        /*
+        * @private
+        */
+        public update(time: number, delay: number) {
+
+            if (this._reset) {
+                this._reset = false;
+                this._offset = time;
+                this._currentState.reset(time);
+            }
+
+            if (Egret3DPolicy.useAnimMixInterpolation && this._currentCrossFadeNode) {
+                this.mixUpdate(time, delay);
+            } else {
+                if (this._currentState) {
+                    this._currentState.update(delay, this.gpuSkeletonPose);
+                }
+            }
+
+            if (this.bindList) {
+                for (var node in this.bindList) {
+                    var joint = this.gpuSkeletonPose.jointsDictionary[node];
+                    joint.copyTo(this.bindList[node].node, this.bindList[node].type);
+                }
+            }
+        }
+
+        private _lerpAPose: SkeletonPose;
+        private _lerpBPose: SkeletonPose;
+        private mixUpdate(time: number, delay: number) {
+            let _lerpAPose: SkeletonPose = this._lerpAPose;
+            let _lerpBPose: SkeletonPose = this._lerpBPose;
+            let gpuSkeletonPose = this.gpuSkeletonPose;
+            let currentCrossFadeNode = this._currentCrossFadeNode; 
+            let a: AnimClipState = this._currentCrossFadeNode.crossA_state;
+            let b: AnimClipState = this._currentCrossFadeNode.crossB_state;
+            let hasA: boolean = false;
+            let hasB: boolean = false;
+            let mix: boolean = false;
+
+            this._time = time - this._offset + currentCrossFadeNode.blendStartTime;
+
+            if (this._time <= currentCrossFadeNode.totalTime) {
+                //动作A 部分
+                if (this._time < (currentCrossFadeNode.blendStartTime + currentCrossFadeNode.blendTime)) {
+                    hasA = true;
+                }
+                //动作B 部分
+                if (this._time >= currentCrossFadeNode.crossB_startFrame * 33 && this._time <= currentCrossFadeNode.crossB_startFrame * 33 + b.totalTime) {
+                    hasB = true;
+                }
+                //融合部分
+                if (this._time <= (currentCrossFadeNode.blendStartTime + currentCrossFadeNode.blendTime)) {
+                    mix = true;
+                }
+
+                if (mix) {
+                    this._weight = (this._time - currentCrossFadeNode.blendStartTime) / currentCrossFadeNode.blendTime;
+                    if (this._weight > 1) {
+                        this._weight = 1;
                     }
-                    else if (this._skeletonAnimation.speed > 0 && this._timePosition > this.timeLength) {
-                        this._skeletonAnimation.event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
-                        this._skeletonAnimation.dispatchEvent(this._skeletonAnimation.event3D);
+                    a.update(delay, _lerpAPose);
+                    b.update(delay, _lerpBPose);
+                    gpuSkeletonPose.mixAnim(_lerpAPose, _lerpBPose, this._weight, gpuSkeletonPose);
+                } else {
+                    if (hasA && !hasB) {
+                        a.update(delay, gpuSkeletonPose);
+                    } else if (hasB && !hasA) {
+                        b.update(delay, gpuSkeletonPose);
                     }
                 }
-
-                this._timePosition = value % this._timeLength;
-
-                if (this._timePosition < 0) {
-
-                    this._timePosition += this._timeLength;
-                }
-            }
-            else {
-
-                if (this._timePosition < 0) {
-
-                    this._timePosition = 0;
-
-                    if (this.name == this._skeletonAnimation.currentAnimName) {
-
-                        this._skeletonAnimation.stop();
-
-                        this._skeletonAnimation.event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
-                        this._skeletonAnimation.dispatchEvent(this._skeletonAnimation.event3D);
-                    }
-                }
-                else if (this._timePosition > this._timeLength) {
-
-                    this._timePosition = this._timeLength;
-
-                    if (this.name == this._skeletonAnimation.currentAnimName) {
-
-                        this._skeletonAnimation.stop();
-
-                        this._skeletonAnimation.event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
-                        this._skeletonAnimation.dispatchEvent(this._skeletonAnimation.event3D);
-                    }
-                }
-            }
-        }
-
-        /**
-        * @language zh_CN
-        * 获取当前帧的SkeletonPose
-        * @returns SkeletonPose 当前帧的SkeletonPose
-        * @see egret3d.SkeletonPose
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get currentSkeletonPose(): SkeletonPose {
-            return this._skeletonAnimationClip.getSkeletonPose(this.currentFrameIndex);
-        }
-        
-        /**
-        * @language zh_CN
-        * 获取上一帧的SkeletonPose
-        * @returns SkeletonPose 上一帧的SkeletonPose
-        * @see egret3d.SkeletonPose
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get previousSkeletonPose(): SkeletonPose {
-
-            var index: number = this.currentFrameIndex;
-
-            if (this._skeletonAnimation.speed > 0) {
-                index--;
-
-                if (index < 0) {
-                    index = this.frameNum - index;
-                }
-            }
-            else {
-                index = (index + 1) % this.frameNum;
+            } else {
+                if (this._crossFade)
+                    this.play(this._crossFade.getNextAnim(), 1);
+                else
+                    this._currentCrossFadeNode = null;
             }
 
-            return this._skeletonAnimationClip.getSkeletonPose(index);
         }
 
-        /**
-        * @language zh_CN
-        * 获取当前帧索引
-        * @returns number 当前帧索引
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get currentFrameIndex(): number {
-            return Math.floor(this._timePosition / SkeletonAnimation.fps);
-        }
-
-        /**
-        * @language zh_CN
-        * 获取帧数量
-        * @returns number 帧数量
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get frameNum(): number {
-            if (!this._skeletonAnimationClip) {
-                return 0;
-            }
-            return this._skeletonAnimationClip.frameCount;
-        }
-
-        /**
-        * @language zh_CN
-        * 使用帧索引获取SkeletonPose
-        * @returns SkeletonPose 获取SkeletonPose
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public getSkeletonPose(index: number): SkeletonPose {
-            return this._skeletonAnimationClip.getSkeletonPose(index);
-        }
-
-        /**
-        * @language zh_CN
-        * 克隆SkeletonAnimationState对象
-        * @returns SkeletonAnimationState 克隆后的对象
-        * @version Egret 3.0
-        * @platform Web,Native
+        /*
+        * @private
         */
         public clone(): SkeletonAnimationState {
-
-            var skeletonAnimationState: SkeletonAnimationState = new SkeletonAnimationState(this.name);
-
-            skeletonAnimationState._timeLength = this._timeLength;
-
-            skeletonAnimationState._skeletonAnimation = this._skeletonAnimation;
-
-            skeletonAnimationState._skeletonAnimationClip = this._skeletonAnimationClip;
-
-            return skeletonAnimationState;
+            var animationState = new SkeletonAnimationState();
+            var animState: AnimClipState;
+            for (var n in this._animState) {
+                animationState.addAnimClip(this._animState[n].clip);
+            }
+            animationState._crossFade = this._crossFade;
+            return animationState;
         }
+
     }
 }

@@ -22,6 +22,7 @@
         global_vertex,
         end_vertex,
 
+        utils_fragment,
         base_fragment,
         start_fragment,
         materialsource_fragment,

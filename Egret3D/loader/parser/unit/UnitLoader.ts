@@ -206,6 +206,18 @@
         protected autoAnimationList: any[] = [];
         protected continueProgressEvent: string[] = [];
 
+        /*
+        * @private
+        */
+        public addAutoAnimation(animation: any, speed: number = 1.0, reset: boolean = false, prewarm: boolean = false, name: string = "") {
+            var auto: any = {};
+            auto.animation = animation;
+            auto.speed = speed;
+            auto.reset = reset;
+            auto.prewarm = prewarm;
+            auto.name = name;
+            this.autoAnimationList.push(auto);
+        }
 
         /**
         * @language zh_CN
@@ -276,9 +288,36 @@
             this._taskDict[this.url].status = 1;
             this._taskDict[this.url].currentProgress = 0;
 
-            this.loader = this.doAssetLoader(this.url, this.onConfigLoad);
+            if (this._type == ILoader.DATAFORMAT_E3DPACK) {
+                this.loader = this.doAssetLoader(this.url, this.onE3dPack);
+                var path: string = this.pathRoot + "MapConfig.json";
+                this.processUrlContinue(path);
+            }
+            else {
+                this.loader = this.doAssetLoader(this.url, this.onConfigLoad);
+            }
 
             this.processUrlContinue(url);
+        }
+
+        protected onE3dPack(e: LoaderEvent3D) {
+            var loader: ILoader = e.loader;
+
+            this._type = ILoader.DATAFORMAT_JSON;
+            this.pathRoot += this.resourceName + "/";
+
+            var path: string = this.pathRoot + "MapConfig.json";
+
+            if (assetMgr.getByteArray(path)) {
+                this.taskTotal++;
+                this._taskDict[path] = {};
+                this._taskDict[path].status = 1;
+                this._taskDict[path].currentProgress = 0;
+
+                this.doAssetLoader(path, this.onConfigLoad, this);
+            }
+
+            this.processTask(loader);
         }
 
         // 是否跳过
@@ -307,14 +346,14 @@
 
         protected onProgress(e: LoaderEvent3D) {
 
-            var targetLoader: ILoader = e.target;
+            var targetLoader: ILoader = <ILoader>e.target;
 
             if (this._taskDict[targetLoader.url]) {
-                for (var i: number = 0; i < this.continueProgressEvent.length; ++i) {
-                    if (targetLoader.url == this.continueProgressEvent[i]) {
-                        return;
-                    }
-                }
+                //for (var i: number = 0; i < this.continueProgressEvent.length; ++i) {
+                //    if (targetLoader.url == this.continueProgressEvent[i]) {
+                //        return;
+                //    }
+                //}
 
                 this._taskDict[targetLoader.url].currentProgress = targetLoader.currentProgress;
 
@@ -613,18 +652,12 @@
             particleData.materialData = this._mapParser.matDict[nodeData.materialIDs[0]];
             var particleNode: ParticleEmitter = new ParticleEmitter(particleData, new TextureMaterial());
 
+            nodeData.visible = Egret3DPolicy.useParticle;
+
             this.processObject3d(nodeData, particleNode);
 
             if (this.autoPlayAnimation || particleData.property.playOnAwake) {
-                
-                var autoPlayData: any = {};
-                autoPlayData.type = "particleAnimation";
-                autoPlayData.animation = particleNode;
-                autoPlayData.speed = 1;
-                autoPlayData.reset = false;
-                autoPlayData.prewarm = particleData.property.prewarm;
-
-                this.autoAnimationList.push(autoPlayData);
+                this.addAutoAnimation(particleNode, 1, false, particleData.property.prewarm);
             }
            
             this.processMat(nodeData);
@@ -632,7 +665,7 @@
 
         private processObject3d(nodeData: UnitNodeData, object3d: Object3D) {
             object3d.name = nodeData.object3d.name;
-            object3d.visible = nodeData.object3d.visible;
+            object3d.visible = nodeData.visible;
             object3d.position = nodeData.object3d.position;
             object3d.orientation = nodeData.object3d.orientation;
             object3d.scale = nodeData.object3d.scale;
@@ -654,22 +687,22 @@
                         this.data = loader.data;
                     }
                     break;
-                case ILoader.DATAFORMAT_E3DPACK:
-                    this._type = ILoader.DATAFORMAT_JSON;
-                    this.pathRoot += this.resourceName + "/";
+                //case ILoader.DATAFORMAT_E3DPACK:
+                //    this._type = ILoader.DATAFORMAT_JSON;
+                //    this.pathRoot += this.resourceName + "/";
 
-                    var path: string = this.pathRoot + "MapConfig.json";
+                //    var path: string = this.pathRoot + "MapConfig.json";
 
-                    if (assetMgr.getByteArray(path)) {
-                        this.taskTotal++;
-                        this._taskDict[path] = {};
-                        this._taskDict[path].status = 1;
-                        this._taskDict[path].currentProgress = 0;
+                //    if (assetMgr.getByteArray(path)) {
+                //        this.taskTotal++;
+                //        this._taskDict[path] = {};
+                //        this._taskDict[path].status = 1;
+                //        this._taskDict[path].currentProgress = 0;
 
-                        this.doAssetLoader(path, this.onConfigLoad, this);
-                        this.processUrlContinue(path);
-                    }
-                    break;
+                //        this.doAssetLoader(path, this.onConfigLoad, this);
+                //        this.processUrlContinue(path);
+                //    }
+                //    break;
                 default:
                     this.data = loader.data;
                     break;
@@ -918,15 +951,10 @@
         }
 
         private processEpa(mapNodeData: UnitNodeData, pro: PropertyAnim) {
-            pro.name = "proAnim";
             mapNodeData.object3d.proAnimation.propertyAnimController.addPropertyAnim(pro);
             if (this.autoPlayAnimation) {
                 if (mapNodeData.object3d.proAnimation) {
-                    var autoPlayData: any = {};
-                    autoPlayData.type = "proAnimation";
-                    autoPlayData.animation = mapNodeData.object3d.proAnimation;
-                    autoPlayData.name = pro.name;
-                    this.autoAnimationList.push(autoPlayData);
+                    this.addAutoAnimation(mapNodeData.object3d.proAnimation);
                 }
             }
         }
@@ -1001,7 +1029,12 @@
             var load: ILoader = e.loader;
             var mapNodeData: UnitNodeData = e.param;
             if (mapNodeData) {
-                this.processMesh(mapNodeData, load.data);
+                var geo: Geometry = load.data;
+                if (this.uv2Dict && this.uv2Dict[mapNodeData.uv2Id]) {
+                    geo = new Geometry();
+                    geo.copy(load.data);
+                }
+                this.processMesh(mapNodeData, geo);
             }
 
             this.processTask(load);
@@ -1086,18 +1119,9 @@
             clip.animationName = loadData.eamData.name;
 
             var mesh: Mesh = <Mesh>loadData.mapNodeData.object3d;
-            mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip.clone());
+            mesh.animation.skeletonAnimationController.state.addAnimClip(clip);
             if (this.autoPlayAnimation) {
-                //mesh.animation.play(clip.animationName, 1.0, false, false);
-
-                var autoPlayData: any = {};
-                autoPlayData.type = "skeletonAnimation";
-                autoPlayData.animation = mesh.animation;
-                autoPlayData.name = clip.animationName;
-                autoPlayData.speed = 1.0;
-                autoPlayData.reset = false;
-                autoPlayData.prewarm = false;
-                this.autoAnimationList.push(autoPlayData);
+                this.addAutoAnimation(mesh.animation, 1, false, false, clip.animationName);
             }
             this.processTask(load);
         }
@@ -1114,36 +1138,19 @@
 
             var clip: SkeletonAnimationClip = load.data;
             clip.animationName = clipData.name;
-            clip = clip.clone();
+            //clip = clip.clone();
             if (clipData.loop) {
                 clip.isLoop = (clipData.loop == "true" ? true : false);
             }
-            skeletonAnimation.addSkeletonAnimationClip(clip);
+            skeletonAnimation.state.addAnimClip(clip);
 
             if (this.autoPlayAnimation) {
-                //skeletonAnimation.play(clip.animationName, 1.0, false, false);
-
-                var autoPlayData: any = {};
-                autoPlayData.type = "skeletonAnimation";
-                autoPlayData.animation = skeletonAnimation;
-                autoPlayData.name = clip.animationName;
-                autoPlayData.speed = 1.0;
-                autoPlayData.reset = false;
-                autoPlayData.prewarm = false;
-                this.autoAnimationList.push(autoPlayData);
+                this.addAutoAnimation(skeletonAnimation, 1, false, false, clip.animationName);
             }
             else {
                 if (skinData.auto && skinData.auto != "") {
                     //skeletonAnimation.play(skinData.auto, 1.0, false, false);
-
-                    var autoPlayData: any = {};
-                    autoPlayData.type = "skeletonAnimation";
-                    autoPlayData.animation = skeletonAnimation;
-                    autoPlayData.name = clip.animationName;
-                    autoPlayData.speed = 1.0;
-                    autoPlayData.reset = false;
-                    autoPlayData.prewarm = false;
-                    this.autoAnimationList.push(autoPlayData);
+                    this.addAutoAnimation(skeletonAnimation, 1, false, false, clip.animationName);
                 }
             }
 
@@ -1171,22 +1178,11 @@
 
             if (this.autoPlayAnimation) {
                 //proAnimation.play(clipData.name);
-
-                var autoPlayData: any = {};
-                autoPlayData.type = "proAnimation";
-                autoPlayData.animation = proAnimation;
-                autoPlayData.name = clipData.name;
-                this.autoAnimationList.push(autoPlayData);
+                this.addAutoAnimation(proAnimation, 1, false, false, clipData.name);
             }
             else {
-
                 if (proData.auto && proData.auto != "") {
-
-                    var autoPlayData: any = {};
-                    autoPlayData.type = "proAnimation";
-                    autoPlayData.animation = proAnimation;
-                    autoPlayData.name = proData.auto;
-                    this.autoAnimationList.push(autoPlayData);
+                    this.addAutoAnimation(proAnimation, 1, false, false, proData.auto);
                 }
             }
 
@@ -1209,8 +1205,23 @@
 
         protected calculateProgress(): number {
             var progress: number = 0;
+
+            
             for (var key in this._taskDict) {
-                progress += 1 / this.taskTotal * this._taskDict[key].currentProgress;
+
+                var has: boolean = false;
+                for (var i: number = 0; i < this.continueProgressEvent.length; ++i) {
+                    if (key == this.continueProgressEvent[i]) {
+                        has = true;
+                        break;
+                    }
+                }
+                if (has) {
+                    progress += 0.1 / this.continueProgressEvent.length * this._taskDict[key].currentProgress;
+                }
+                else {
+                    progress += 0.9 / (this.taskTotal - this.continueProgressEvent.length) * this._taskDict[key].currentProgress;
+                }
             }
 
             return progress;
@@ -1227,23 +1238,21 @@
                     this._event.data = load.data;
 
                     var isDisEventProgress: boolean = true;
-                    for (var i: number = 0; i < this.continueProgressEvent.length; ++i) {
-                        if (load.url == this.continueProgressEvent[i]) {
-                            isDisEventProgress = false;
-                            break;
-                        }
-                    }
+                    //for (var i: number = 0; i < this.continueProgressEvent.length; ++i) {
+                    //    if (load.url == this.continueProgressEvent[i]) {
+                    //        isDisEventProgress = false;
+                    //        break;
+                    //    }
+                    //}
                     // 触发 LOADER_PROGRESS
-                    if (isDisEventProgress) {
-                        this.currentProgress = this.calculateProgress();
+                    this.currentProgress = this.calculateProgress();
 
-                        if (this.currentProgress < 1.0) {
+                    if (this.currentProgress < 1.0) {
 
-                            this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
-                            this._event.currentProgress = this.currentProgress;
+                        this._event.eventType = LoaderEvent3D.LOADER_PROGRESS;
+                        this._event.currentProgress = this.currentProgress;
 
-                            this.dispatchEvent(this._event);
-                        }
+                        this.dispatchEvent(this._event);
                     }
 
                     this._event.currentProgress = this.currentProgress;
@@ -1260,6 +1269,8 @@
             this._taskCount--;
 
             if (this._taskCount <= 0) {
+
+                this.currentProgress = 1.0;
 
                 this.onLoaderComplete();
 
@@ -1336,25 +1347,22 @@
                 }
             }
 
-
             for (var i: number = 0; i < this.autoAnimationList.length; ++i) {
                 var autoPlayData: any = this.autoAnimationList[i];
-                switch (autoPlayData.type) {
-                    case "skeletonAnimation":
-                        autoPlayData.animation.play(autoPlayData.name, autoPlayData.speed, autoPlayData.reset, autoPlayData.prewarm);
-                        break;
-                    case "proAnimation":
-                        autoPlayData.animation.play(autoPlayData.name);
-                        break;
-                    case "methodAnimation":
-                        autoPlayData.animation.start(true);
-                        break;
-                    case "particleAnimation":
-                        autoPlayData.animation.play(autoPlayData.speed, autoPlayData.reset, autoPlayData.prewarm);
-                        break;
-                    case "effectGroup":
-                        autoPlayData.animation.play();
-                        break;
+                if (autoPlayData.animation instanceof SkeletonAnimation) {
+                    autoPlayData.animation.play(autoPlayData.name, autoPlayData.speed, autoPlayData.reset, autoPlayData.prewarm);
+                } 
+                else if (autoPlayData.animation instanceof PropertyAnimController) {
+                    autoPlayData.animation.play(autoPlayData.name);
+                }
+                else if (autoPlayData.animation instanceof MethodBase) {
+                    autoPlayData.animation.start(true);
+                }
+                else if (autoPlayData.animation instanceof ParticleEmitter) {
+                    autoPlayData.animation.play(autoPlayData.speed, autoPlayData.reset, autoPlayData.prewarm);
+                }
+                else if (autoPlayData.animation instanceof EffectGroup) {
+                    autoPlayData.animation.play();
                 }
             }
 
@@ -1392,7 +1400,10 @@
             return load;
         }
 
-        private addMethodImgTask(name:string, method:MethodBase, textureName:string): URLLoader {
+        /*
+        * @private
+        */
+        public addMethodImgTask(name:string, method:MethodBase, textureName:string): URLLoader {
             var path: string = this._pathRoot + name;
 
             var methodData: any = {};
@@ -1475,6 +1486,19 @@
                 this.processMethod(material, matData);
             }
 
+            var lg: LightGroup = mesh.lightGroup || new LightGroup();
+
+            for (var i: number = 0; i < mapNodeData.lightIds.length; ++i) {
+                var light: LightBase = this.lightDict[mapNodeData.lightIds[i]];
+                if (light) {
+                    lg.addLight(light);
+                }
+            }
+
+            if (lg.lightNum > 0) {
+                mesh.lightGroup = lg;
+            }
+
             //if (typeof mesh != "ParticleEmitter") {
             //    if (this.lightGroup.lightNum > 0) {
             //        mesh.lightGroup = this.lightGroup;
@@ -1487,152 +1511,7 @@
             var method: UnitMatMethodData = null;
 
             for (method of matData.methods) {
-                var defaultTexture: ITexture = CheckerboardTexture.texture;
-
-                if (method.type == UnitMatMethodData.methodType.lightmapMethod) {
-                    var lightmapMethod: LightmapMethod = new LightmapMethod(method.usePower);
-                    material.diffusePass.addMethod(lightmapMethod);
-                    lightmapMethod.lightTexture = defaultTexture;
-                    
-
-                    var textureData: any = method.texturesData[0];
-                    load = this.addMethodImgTask(textureData.path, lightmapMethod, textureData.attributeName);
-                }
-                else if (method.type == UnitMatMethodData.methodType.uvRollMethod) {
-                    var uvScrollMethod: UVRollMethod = new UVRollMethod();
-                    material.diffusePass.addMethod(uvScrollMethod);
-
-                    uvScrollMethod.speedU = method.uSpeed;
-                    uvScrollMethod.speedV = method.vSpeed;
-                    material.repeat = true;
-                    if (method.play) {
-
-                        var autoPlayData: any = {};
-                        autoPlayData.type = "methodAnimation";
-                        autoPlayData.animation = uvScrollMethod;
-                        this.autoAnimationList.push(autoPlayData);
-
-                        //uvScrollMethod.start(true);
-                    }
-                }
-                else if (method.type == UnitMatMethodData.methodType.uvSpriteSheetMethod) {
-                    var uvSpriteSheetMethod: UVSpriteSheetMethod = new UVSpriteSheetMethod(method.frameNum, method.row, method.col, method.totalTime);
-                    material.diffusePass.addMethod(uvSpriteSheetMethod);
-                    uvSpriteSheetMethod.isLoop = method.loop;
-                    uvSpriteSheetMethod.delayTime = method.delayTime;
-                    if (method.play) {
-                        //uvSpriteSheetMethod.start(true);
-                        var autoPlayData: any = {};
-                        autoPlayData.type = "methodAnimation";
-                        autoPlayData.animation = uvSpriteSheetMethod;
-                        this.autoAnimationList.push(autoPlayData);
-                    }
-                }
-                else if (method.type == UnitMatMethodData.methodType.mulUvRollMethod) {
-
-                    var uvMethod: MulUVRollMethod = new MulUVRollMethod();
-                    material.diffusePass.addMethod(uvMethod);
-
-                    uvMethod.diffuseTexture1 = defaultTexture;
-
-                    uvMethod.setSpeedU(0, method.uSpeed);
-                    uvMethod.setSpeedV(0, method.vSpeed);
-
-                    var textureData: any = method.texturesData[0];
-
-                    uvMethod.setSpeedU(1, textureData.uSpeed);
-                    uvMethod.setSpeedV(1, textureData.vSpeed);
-
-                    load = this.addMethodImgTask(textureData.path, uvMethod, textureData.attributeName);
-
-                    material.repeat = true;
-                    if (method.play) {
-                        //uvMethod.start(true);
-                        var autoPlayData: any = {};
-                        autoPlayData.type = "methodAnimation";
-                        autoPlayData.animation = uvMethod;
-                        this.autoAnimationList.push(autoPlayData);
-                    }
-                }
-                else if (method.type == UnitMatMethodData.methodType.alphaMaskMethod) {
-                    var maskmapMethod: AlphaMaskMethod = new AlphaMaskMethod();
-                    material.diffusePass.addMethod(maskmapMethod);
-
-                    maskmapMethod.maskTexture = defaultTexture;
-
-                    var textureData: any = method.texturesData[0];
-
-                    load = this.addMethodImgTask(textureData.path, maskmapMethod, textureData.attributeName);
-                }
-                else if (method.type == UnitMatMethodData.methodType.streamerMethod) {
-                    var streamerMethod: StreamerMethod = new StreamerMethod();
-                    material.diffusePass.addMethod(streamerMethod);
-                    streamerMethod.steamerTexture = defaultTexture;
-                    var textureData: any = method.texturesData[0];
-
-                    load = this.addMethodImgTask(textureData.path, streamerMethod, textureData.attributeName);
-
-                    streamerMethod.speedU = method.uSpeed;
-                    streamerMethod.speedV = method.vSpeed;
-                    if (method.play) {
-                        //streamerMethod.start(true);
-
-                        var autoPlayData: any = {};
-                        autoPlayData.type = "methodAnimation";
-                        autoPlayData.animation = streamerMethod;
-                        this.autoAnimationList.push(autoPlayData);
-                    }
-                }
-                else if (method.type == UnitMatMethodData.methodType.terrainARGBMethod) {
-                    var terrainARGBMethod: TerrainARGBMethod = new TerrainARGBMethod(defaultTexture, defaultTexture, defaultTexture, defaultTexture, defaultTexture);
-                    material.diffusePass.addMethod(terrainARGBMethod);
-                    var textureData: any = null;
-                    for (var i: number = 0; i < method.texturesData.length; ++i) {
-                        textureData = method.texturesData[i];
-
-                        load = this.addMethodImgTask(textureData.path, terrainARGBMethod, textureData.attributeName);
-
-                        if (i != 0) {
-                            
-                            terrainARGBMethod.setUVTitling(i - 1, Number(textureData.uvTitlingX), Number(textureData.uvTitlingY));
-                        }
-                    }
-
-                }
-                else if (method.type == UnitMatMethodData.methodType.waterWaveMethod) {
-                    var waterWaveMethod: WaterWaveMethod = new WaterWaveMethod();
-                    material.diffusePass.addMethod(waterWaveMethod);
-                    if (method["deepWaterColor"]) {
-                        waterWaveMethod.deepWaterColor = Number( method["deepWaterColor"]);
-                    }
-
-                    if (method["shallowWaterColor"]) {
-                        waterWaveMethod.shallowWaterColor = Number( method["shallowWaterColor"]);
-                    }
-
-                    material.repeat = true;
-                }
-                else if (method.type == UnitMatMethodData.methodType.waterNormalMethod) {
-
-                    var waterNormalMethod: WaterNormalMethod = new WaterNormalMethod();
-                    material.diffusePass.addMethod(waterNormalMethod);
-                    waterNormalMethod.normalTextureA = defaultTexture;
-                    waterNormalMethod.normalTextureB = defaultTexture;
-
-                    if (method["uScale"] && method["vScale"]) {
-                        waterNormalMethod.setUvScale(Number(method["uScale"]), Number( method["vScale"]));
-                    }
-
-
-                    var textureData: any = null;
-                    for (var i: number = 0; i < method.texturesData.length; ++i) {
-                        textureData = method.texturesData[i];
-
-                        waterNormalMethod.setUvSpeed(i, Number(textureData.uSpeed), Number(textureData.vSpeed));
-                        load = this.addMethodImgTask(textureData.path, waterNormalMethod, textureData.attributeName);
-                    }
-
-                }
+                MethodUtils.doMethod(material, method, this);
             }
         }
 
@@ -1678,7 +1557,7 @@
                     pLight.cutoff = mapNodeData.lightData.falloff;
                     pLight.intensity = mapNodeData.lightData.intensity;
 
-                    this.lightDict[mapNodeData.lightData.id] = dirLight;
+                    this.lightDict[mapNodeData.lightData.id] = pLight;
                 }
                 else {
                     mapNodeData.object3d = new Object3D();
@@ -1711,7 +1590,7 @@
                 var skinClip: any = this._mapParser.skeletonAnimationDict[key];
                 var id: number = Number(key);
 
-                var skeletonAnimation: SkeletonAnimation = new SkeletonAnimation();
+                var skeletonAnimation: SkeletonAnimation = new SkeletonAnimation(new SkeletonAnimationState());
                 this.skinClipDict[id] = skeletonAnimation;
 
                 for (var i: number = 0; i < skinClip.clips.length; ++i) {
@@ -1789,7 +1668,7 @@
         protected onUnitLoader(e: LoaderEvent3D) {
             var mapNodeData: UnitNodeData = e.param;
 
-            var unitLoader: UnitLoader = e.target;
+            var unitLoader: UnitLoader = <UnitLoader>e.target;
             unitLoader.removeEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onUnitLoader, this);
 
             switch (mapNodeData.type) {
@@ -1799,10 +1678,7 @@
                     var effectGroup: EffectGroup = <EffectGroup>unitLoader.container;
                     if (effectGroup) {
                         if (mapNodeData.auto) {
-                            var autoPlayData: any = {};
-                            autoPlayData.type = "effectGroup";
-                            autoPlayData.animation = effectGroup;
-                            this.autoAnimationList.push(autoPlayData);
+                            this.addAutoAnimation(effectGroup);
                         }
                     }
 
@@ -1813,18 +1689,12 @@
 
                     var particleNode: ParticleEmitter = new ParticleEmitter(particleData, new TextureMaterial());
 
+                    mapNodeData.visible = Egret3DPolicy.useParticle;
+
                     this.processObject3d(mapNodeData, particleNode);
 
                     if (this.autoPlayAnimation || particleData.property.playOnAwake) {
-
-                        var autoPlayData: any = {};
-                        autoPlayData.type = "particleAnimation";
-                        autoPlayData.animation = particleNode;
-                        autoPlayData.speed = 1;
-                        autoPlayData.reset = false;
-                        autoPlayData.prewarm = particleData.property.prewarm;
-
-                        this.autoAnimationList.push(autoPlayData);
+                        this.addAutoAnimation(particleNode, 1, false, particleData.property.prewarm);
                     }
 
                     this.processMat(mapNodeData);

@@ -487,10 +487,15 @@
         * @platform Web,Native
         */
         public toMatrix3D(target: Matrix4_4 = null): Matrix4_4 {
-            var rawData: Float32Array = MathUtil.RAW_DATA_CONTAINER;
-            var xy2: number = 2.0 * this.x * this.y, xz2: number = 2.0 * this.x * this.z, xw2: number = 2.0 * this.x * this.w;
-            var yz2: number = 2.0 * this.y * this.z, yw2: number = 2.0 * this.y * this.w, zw2: number = 2.0 * this.z * this.w;
-            var xx: number = this.x * this.x, yy: number = this.y * this.y, zz: number = this.z * this.z, ww: number = this.w * this.w;
+            let x: number = this.x;
+            let y: number = this.y;
+            let z: number = this.z;
+            let w: number = this.w ;
+
+            let rawData: Float32Array = MathUtil.RAW_DATA_CONTAINER;
+            let xy2: number = 2.0 * x * y, xz2: number = 2.0 * x * z, xw2: number = 2.0 * x * w;
+            let yz2: number = 2.0 * y * z, yw2: number = 2.0 * y * w, zw2: number = 2.0 * z * w;
+            let xx: number = x * x, yy: number = y * y, zz: number = z * z, ww: number = w * w;
 
             rawData[0] = xx - yy - zz + ww;
             rawData[4] = xy2 - zw2;
@@ -661,10 +666,11 @@
         * @platform Web,Native
         */
         public copyFrom(q: Quaternion) {
-            this.x = q.x;
-            this.y = q.y;
-            this.z = q.z;
-            this.w = q.w;
+            var v = this;
+            v.x = q.x;
+            v.y = q.y;
+            v.z = q.z;
+            v.w = q.w;
         }
     }
 

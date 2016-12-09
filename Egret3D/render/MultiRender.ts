@@ -29,6 +29,7 @@
             this.pass = pass; 
         }
 
+
         /**
         * @language zh_CN
         * 把所有需要渲染的对象，依次进行渲染
@@ -42,6 +43,7 @@
             this.numEntity = collect.renderList.length;
 
             this.viewPort = backViewPort;
+
 
             if (this.renderTexture) {
                 this.renderTexture.upload(context3D);

@@ -22,9 +22,7 @@
             super();
             //##FilterBegin## ##Particle##
             this.name = "ParticleVelocityNode";
-
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocity");
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocity");
 
             this.attribute_velocity = new GLSL.VarRegister();
             this.attribute_velocity.name = "attribute_velocity";

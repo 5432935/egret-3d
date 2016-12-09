@@ -18,9 +18,7 @@
             super();
             //##FilterBegin## ##Particle##
             this.name = "ParticleRotationXYZConstNode";
-
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_rotationXYZConst");
+            this.importShader(true, ShaderPhaseType.local_vertex, "particle_rotationXYZConst");
 
             this.attribute_rotBirthXYZ = new GLSL.VarRegister();
             this.attribute_rotBirthXYZ.name = "attribute_rotBirthXYZ";

@@ -166,6 +166,16 @@
         }
 
         /**
+        * @private
+        * 强制更新了时间之后，follow数据需要更新
+        */
+        public onAnimTimeChange(): void {
+            var node: AnimationNode;
+            for (var i: number = 0, count: number = this.animNodes.length; i < count; i++) {
+                this.animNodes[i].onAnimTimeChange();
+            }
+        }
+        /**
        * @language zh_CN
        * 清空分配好的动画节点
        * @version Egret 3.0
@@ -243,39 +253,39 @@
 
 
 
-        private _particleProperty: Float32Array = new Float32Array(25);
-        private _particleFsData: Float32Array = new Float32Array(3);
+        private _particleProperty: Float32Array = new Float32Array(27);
         /**
         * @language zh_CN
         * @private 
         */
         public activeState(time: number, animTime: number, delay: number, animDelay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, camera3D: Camera3D) {
             //##FilterBegin## ##Particle##
-            //var scaleData: Vector3D;
+            var scaleData: Vector3D;
             var rotateData: Quaternion;
             var positionData: Vector3D;
 
             var data: ParticleData = this._emitter.data;
 
             if (data.followTarget && this._emitter.followTarget) {
-                //scaleData = this._emitter.followTarget.globalScale;
+                scaleData = this._emitter.followTarget.globalScale;
                 rotateData = this._emitter.followTarget.globalOrientation;
                 positionData = this._emitter.followTarget.globalPosition;
             }
             else {
-                //scaleData = this._emitter.globalScale;
+                scaleData = this._emitter.globalScale;
                 rotateData = this._emitter.globalOrientation;
                 positionData = this._emitter.globalPosition;
             }
 
+            var multiAlpha: boolean = this._emitter.material.materialData.blendMode == BlendMode.ALPHA;
             //
             this._particleProperty[0] = animTime * 0.001;
             this._particleProperty[1] = data.life.loop ? 1 : 0;
             this._particleProperty[2] = data.followTarget ? 1 : 0;
 
-            this._particleProperty[3] = 1;//scaleData.x;
-            this._particleProperty[4] = 1;//scaleData.y;
-            this._particleProperty[5] = 1;//scaleData.z;
+            this._particleProperty[3] = scaleData.x;
+            this._particleProperty[4] = scaleData.y;
+            this._particleProperty[5] = scaleData.z;
             this._particleProperty[6] = rotateData.x;
             this._particleProperty[7] = rotateData.y;
             this._particleProperty[8] = rotateData.z;
@@ -297,15 +307,11 @@
             this._particleProperty[22] = data.property.lengthScale;
             this._particleProperty[23] = data.property.renderMode;
             this._particleProperty[24] = data.property.stayAtEnd ? 1 : 0;
+            this._particleProperty[25] = multiAlpha ? 1 : 0;
+            this._particleProperty[26] = data.shape.type ;
 
             context3DProxy.uniform1fv(usage["uniform_particleState"].uniformIndex, this._particleProperty);
-
-            if (usage["uniform_particleFsData"]) {
-                this._particleFsData[0] = camera3D.far;
-                this._particleFsData[1] = camera3D.near;
-                this._particleFsData[2] = this._emitter.material.materialData.blendMode;
-                context3DProxy.uniform1fv(usage["uniform_particleFsData"].uniformIndex, this._particleFsData);
-            }
+           
 
             for (var i: number = 0; i < this.animNodes.length; i++) {
                 this.animNodes[i].activeState(time, animTime, delay, animDelay, usage, geometry, context3DProxy);

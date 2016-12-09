@@ -171,6 +171,7 @@
 
         public boneBind: any = {};
         public lightData: UnitLightData;
+        public lightIds: any[] = [];
 
         public auto: boolean = false;
         public loop: boolean = false;

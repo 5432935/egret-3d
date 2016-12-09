@@ -74,7 +74,7 @@
             this.isLoaded = false;
 
             if (AudioManager.instance.hasAudioContext()) {
-                if (AudioManager.instance.isSupported(url, this.audio)) {
+                if (!AudioManager.instance.isSupported(url, this.audio)) {
                     console.warn('Audio format not supported');
 
                     this._event.eventType = Sound.SOUND_ERROR;
@@ -106,7 +106,7 @@
                     return;
                 }
 
-                if (AudioManager.instance.isSupported(url, this.audio)) {
+                if (!AudioManager.instance.isSupported(url, this.audio)) {
                     console.warn('Audio format not supported');
 
                     this._event.eventType = Sound.SOUND_ERROR;

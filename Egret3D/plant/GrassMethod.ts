@@ -14,7 +14,7 @@
         private _start: boolean;
         private _time: number = 0.0;
         private _windSpeed: number = 200;
-        private _windStrength: number = 0.1;
+        private _windStrength: number = 0.2;
         private _shakeScale: number = 0.1;
         private _windDirection: Vector3D = new Vector3D(1, 0, 0);
         private _windSpace: Vector3D = new Vector3D(400, 0, 300);

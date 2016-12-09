@@ -14,8 +14,9 @@
     * @platform Web,Native
     */
     export class Scene3D extends Object3D{
+
         private _tree: TreeBase;
-        
+
         /**
         * @language zh_CN
         * 四叉树根对象

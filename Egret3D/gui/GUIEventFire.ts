@@ -45,8 +45,6 @@
             if (list.length === 0) {
                 //当没有任何对象被点击时. 抛出舞台事件
                 var evt: MouseEvent3D = new MouseEvent3D(eventType);
-                evt.target = this._quadStage;
-                evt.currentTarget = this._quadStage;
                 this._quadStage.dispatchEvent(evt);
                 return;
             }
@@ -56,8 +54,6 @@
 
             while (currentTraget) {
                 var event: MouseEvent3D = new MouseEvent3D(eventType);
-                event.target = target;
-                event.currentTarget = currentTraget;
                 currentTraget.dispatchEvent(event);
                 if (!currentTraget.parentIsStage) {
                     currentTraget = currentTraget.parent;
@@ -67,8 +63,6 @@
             }
 
             var stageEvent: MouseEvent3D = new MouseEvent3D(eventType);
-            stageEvent.target = target;
-            stageEvent.currentTarget = this._quadStage;
             this._quadStage.dispatchEvent(stageEvent);
         }
 

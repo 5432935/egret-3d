@@ -1,4 +1,52 @@
 ﻿module egret3d {
+    /**
+    *
+    * @language zh_CN
+    * @class egret3d.EventListener
+    * @classdesc
+    * EventListener类，用于添加或删除事件侦听器。
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
+    export class EventListener {
+
+        /**
+        * @private
+        */
+        public static event_id_count = 0;
+
+        /**
+        * @language zh_CN
+        * @param type {string} 事件的类型。
+        * @param thisObject {any} 注册的对象
+        * @param handler {Function} 处理事件的侦听器函数
+        * @param param {any} 注册事件时指定的参数，事件响应时传出
+        * @param priority {number} 事件侦听器的优先级。优先级由一个带符号的 32 位整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在
+        * 优先级为 n -1 的侦听器之前得到处理。如果两个或更多个侦听器共享相同的优先级，则按照它们的添加顺序进行处理。默认优先级为 0。
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        constructor(public type: string = null, public thisObject: any = null, public handler: Function = null, public param: any = null, public priority: number = 0) {
+        }
+
+        /**
+        * @language zh_CN
+        * 比较两个事件是否是同一事件。
+        * @param type {string} 事件的类型。
+        * @param handler {Function} 处理事件的侦听器函数
+        * @param thisObject {any} 注册的对象
+        * @param param {any} 注册事件时指定的参数，事件响应时传出
+        * @returns {boolean} 一致时返回true，反之为false
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public equalCurrentListener(type: string, handler: Function, thisObject: any, param: any): boolean {
+            if (this.type == type && this.thisObject == thisObject && this.handler == handler && this.param == param) {
+                return true;
+            }
+            return false;
+        }
+    }
 
     /**
     * @language zh_CN
@@ -186,54 +234,4 @@
             return false;
         }
     }
-
-    /**
-    *
-    * @language zh_CN
-    * @class egret3d.EventListener
-    * @classdesc
-    * EventListener类，用于添加或删除事件侦听器。
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    class EventListener {
-
-        /**
-        * @private
-        */
-        public static event_id_count = 0;
-
-        /**
-        * @language zh_CN
-        * @param type {string} 事件的类型。
-        * @param thisObject {any} 注册的对象
-        * @param handler {Function} 处理事件的侦听器函数
-        * @param param {any} 注册事件时指定的参数，事件响应时传出
-        * @param priority {number} 事件侦听器的优先级。优先级由一个带符号的 32 位整数指定。数字越大，优先级越高。优先级为 n 的所有侦听器会在
-        * 优先级为 n -1 的侦听器之前得到处理。如果两个或更多个侦听器共享相同的优先级，则按照它们的添加顺序进行处理。默认优先级为 0。
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        constructor(public type: string = null, public thisObject: any = null, public handler: Function = null, public param: any = null, public priority: number = 0) {
-        }
-
-        /**
-        * @language zh_CN
-        * 比较两个事件是否是同一事件。
-        * @param type {string} 事件的类型。
-        * @param handler {Function} 处理事件的侦听器函数
-        * @param thisObject {any} 注册的对象
-        * @param param {any} 注册事件时指定的参数，事件响应时传出
-        * @returns {boolean} 一致时返回true，反之为false
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public equalCurrentListener(type: string, handler: Function, thisObject: any, param: any): boolean {
-            if (this.type == type && this.thisObject == thisObject && this.handler == handler && this.param == param) {
-                return true;
-            }
-            return false;
-        }
-    }
-
 }

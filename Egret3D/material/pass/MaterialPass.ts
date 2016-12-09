@@ -416,6 +416,11 @@
             }
             //---vs---shadering-------------------------------------------------
             //---fs---shadering-------------------------------------------------
+            //utils Phase
+            shaderList = this._fs_shader_methods[ShaderPhaseType.utils_fragment];
+            if (shaderList && shaderList.length > 0)
+                this.addMethodShaders(this._passUsage.fragmentShader, shaderList);
+
             shaderList = this._fs_shader_methods[ShaderPhaseType.base_fragment];
             if (shaderList && shaderList.length > 0) {
                 this.addMethodShaders(this._passUsage.fragmentShader, shaderList);

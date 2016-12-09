@@ -9,13 +9,8 @@
             super();
             //##FilterBegin## ##Particle##
             this.name = "ParticleEndNode";
-
-            this.vertex_ShaderName[ShaderPhaseType.end_vertex] = this.vertex_ShaderName[ShaderPhaseType.end_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.end_vertex].push("particle_end_vs");
-
-            this.fragment_ShaderName[ShaderPhaseType.end_fragment] = this.fragment_ShaderName[ShaderPhaseType.end_fragment] || [];
-            this.fragment_ShaderName[ShaderPhaseType.end_fragment].push("particle_end_fs");
-
+            this.importShader(true, ShaderPhaseType.end_vertex, "particle_end_vs");
+            this.importShader(false, ShaderPhaseType.end_fragment, "particle_end_fs");
             //##FilterEnd##
         }
 

@@ -12,6 +12,7 @@ module egret3d {
     */
     export class PropertyAnim  {
 
+        public frameRate: number = 16;
         /**
         * @language zh_CN
         * 播放速度
@@ -46,12 +47,11 @@ module egret3d {
 
         private _propertyArray: PropertyData[] = [];
         private _play: boolean = false;
-        private _timePosition: number = 0;
         private _target: Object3D;
         private _totalTime: number = 0;
         private _changeFrameTime: number = 0;
         private _oldFrameIndex: number = 0;
-
+        public totalTime: number = 0 ; 
         /**
         * @language zh_CN
         * 是否存在某个属性的曲线动画
@@ -94,18 +94,11 @@ module egret3d {
             propertyData.target = this._target;
             propertyData.isLoop = true;
             propertyData.timePosition = 0;
+            propertyData.totalFrame = keyFrames[keyFrames.length - 1].frame;
+            propertyData.totalTime = propertyData.totalFrame * this.frameRate ;
+
+            this.totalTime = Math.max(this.totalTime, propertyData.totalTime);
             this._propertyArray.push(propertyData);
-
-            for (var i = 0; i < keyFrames.length; i++) {
-
-                if (keyFrames[i].end.x > this._totalTime) {
-
-                    this._totalTime = keyFrames[i].end.x;
-
-                    keyFrames[i].cacheCurveData();
-                }
-            }
-
             this.updateBindData(propertyData);
         }
 
@@ -198,19 +191,15 @@ module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public play(): void {
-
-            if (this._play) {
+        public play(speed: number, reset: boolean): void {
+     
+            if (this._play && reset) {
                 return;
             }
-
-            this._play = true;
-
-            this._timePosition = 0;
-
             for (var i = 0; i < this._propertyArray.length; i++) {
-                this._propertyArray[i].timePosition = 0;
+                this._propertyArray[i].play(speed, reset);
             }
+            this._play = true;
         }
 
         /**
@@ -229,128 +218,128 @@ module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public set timePosition(value: number) {
+        //public set timePosition(value: number) {
 
-            if (value == this._timePosition) {
-                return;
-            }
+        //    if (value == this._timePosition) {
+        //        return;
+        //    }
 
-            var delay: number = value - this._timePosition;
+        //    var delay: number = value - this._timePosition;
 
-            this._timePosition = value;
+        //    this._timePosition = value;
 
-            if (this.isLoop) {
+        //    if (this.isLoop) {
 
-                if (this.proAnimController) {
-                    if (this.name == this.proAnimController.currentAnimName) {
+        //        if (this.proAnimController) {
+        //            if (this.name == this.proAnimController.currentAnimName) {
                         
-                        if (this.speed < 0 && this._timePosition < 0) {
-                            this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
-                        }
-                        else if (this.speed > 0 && this._timePosition > this.totalTime) {
-                            this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
-                        }
-                    }
-                }
+        //                if (this.speed < 0 && this._timePosition < 0) {
+        //                    this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
+        //                }
+        //                else if (this.speed > 0 && this._timePosition > this.totalTime) {
+        //                    this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
+        //                }
+        //            }
+        //        }
 
                
-                this._timePosition = value % this._totalTime;
+        //        this._timePosition = value % this._totalTime;
 
-                if (this._timePosition < 0) {
+        //        if (this._timePosition < 0) {
 
-                    this._timePosition += this._totalTime;
+        //            this._timePosition += this._totalTime;
 
-                }
+        //        }
 
-            }
-            else {
+        //    }
+        //    else {
 
-                if (this._timePosition < 0) {
+        //        if (this._timePosition < 0) {
 
-                    this._timePosition = 0;
+        //            this._timePosition = 0;
 
-                    if (this.proAnimController) {
-                        this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
-                    }
+        //            if (this.proAnimController) {
+        //                this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
+        //            }
 
-                    this.stop();
+        //            this.stop();
 
-                }
-                else if (this._timePosition > this._totalTime) {
+        //        }
+        //        else if (this._timePosition > this._totalTime) {
 
-                    this._timePosition = this._totalTime;
+        //            this._timePosition = this._totalTime;
 
-                    if (this.proAnimController) {
-                        this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
-                    }
+        //            if (this.proAnimController) {
+        //                this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
+        //            }
 
-                    this.stop();
+        //            this.stop();
 
-                }
+        //        }
 
-            }
+        //    }
 
-            if (!this._target) {
-                return;
-            }
+        //    if (!this._target) {
+        //        return;
+        //    }
 
-            var propertyData: PropertyData;
+        //    var propertyData: PropertyData;
 
-            var keyFrames: AnimCurve[];
+        //    var keyFrames: AnimCurve[];
 
-            for (var i = 0; i < this._propertyArray.length; i++) {
+        //    for (var i:number = 0, countI:number = this._propertyArray.length; i < countI; i++) {
 
-                propertyData = this._propertyArray[i];
+        //        propertyData = this._propertyArray[i];
 
-                keyFrames = propertyData.keyFrames;
+        //        keyFrames = propertyData.keyFrames;
 
-                var valueTime = propertyData.timePosition + delay;
+        //        var valueTime = propertyData.timePosition + delay;
 
-                if (valueTime == propertyData.timePosition) {
-                    continue;
-                }
+        //        if (valueTime == propertyData.timePosition) {
+        //            continue;
+        //        }
 
-                var timeLength: number = keyFrames[keyFrames.length - 1].end.x;
+        //        var timeLength: number = keyFrames[keyFrames.length - 1].end.x;
 
-                propertyData.timePosition = valueTime;
+        //        propertyData.timePosition = valueTime;
 
-                if (propertyData.isLoop) {
+        //        if (propertyData.isLoop) {
 
-                    propertyData.timePosition = value % timeLength;
+        //            propertyData.timePosition = value % timeLength;
 
-                    if (propertyData.timePosition < 0) {
+        //            if (propertyData.timePosition < 0) {
 
-                        propertyData.timePosition += timeLength;
+        //                propertyData.timePosition += timeLength;
 
-                    }
-                }
-                else {
+        //            }
+        //        }
+        //        else {
 
-                    if (propertyData.timePosition < 0) {
+        //            if (propertyData.timePosition < 0) {
 
-                        propertyData.timePosition = 0;
+        //                propertyData.timePosition = 0;
 
-                        continue;
-                    }
-                    else if (propertyData.timePosition > timeLength) {
+        //                continue;
+        //            }
+        //            else if (propertyData.timePosition > timeLength) {
 
-                        propertyData.timePosition = timeLength;
+        //                propertyData.timePosition = timeLength;
 
-                        continue;
-                    }
-                }
+        //                continue;
+        //            }
+        //        }
 
-                for (var j = 0; j < keyFrames.length; j++) {
+        //        for (var j:number = 0, countJ:number = keyFrames.length; j < countJ; j++) {
 
-                    if (keyFrames[j].start.x <= propertyData.timePosition && keyFrames[j].end.x > propertyData.timePosition) {
+        //            if (keyFrames[j].start.x <= propertyData.timePosition && keyFrames[j].end.x > propertyData.timePosition) {
 
-                        propertyData.target[propertyData.name] = keyFrames[j].calculateValue(propertyData.timePosition);
+        //                propertyData.target[propertyData.name] = keyFrames[j].calculateValue(propertyData.timePosition);
 
-                        break;
-                    }
-                }
-            }
-        }
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
 
         /**
         * @language zh_CN
@@ -358,21 +347,21 @@ module egret3d {
         * @returns number 当前时间
         * @version Egret 3.0
         * @platform Web,Native
-        */
-        public get timePosition(): number {
-            return this._timePosition;
-        }
+        //*/
+        //public get timePosition(): number {
+        //    return this._timePosition;
+        //}
 
-        /**
-        * @language zh_CN
-        * 获取动画总时间
-        * @returns number 动画总时间
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get totalTime(): number {
-            return this._totalTime;
-        }
+        ///**
+        //* @language zh_CN
+        //* 获取动画总时间
+        //* @returns number 动画总时间
+        //* @version Egret 3.0
+        //* @platform Web,Native
+        //*/
+        //public get totalTime(): number {
+        //    return this._totalTime;
+        //}
 
         /**
         * @language zh_CN
@@ -381,22 +370,26 @@ module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
+ 
         public update(delay: number): void {
 
             if (!this._play || !this._target) {
                 return;
             }
 
-            var beginTime: number = this.timePosition;
-
-            this.timePosition += delay * this.speed;
-
-            if (this.timePosition < beginTime) {
-
-                if (this.proAnimController) {
-                    this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
-                }
+            for (var i: number = 0; i < this._propertyArray.length; i++){
+                this._propertyArray[i].update(0,delay);
             }
+           
+            //var beginTime: number = this.timePosition;
+
+            //this.timePosition += delay * this.speed;
+
+            //if (this.timePosition < beginTime) {
+            //    if (this.proAnimController) {
+            //        this.proAnimController.doEvent(AnimationEvent3D.EVENT_PLAY_COMPLETE, this);
+            //    }
+            //}
         }
 
         /**
@@ -430,5 +423,57 @@ module egret3d {
         public property: string;
         public timePosition: number;
         public keyFrames: AnimCurve[];
+
+        public totalFrame: number = 0;
+        public totalTime: number = 0;
+        public frameRate: number = 16;
+        private time: number = 0;
+        private offset: number = 0;
+        private _time: number = 0;
+        private _frame: number = 0;
+        //private _nextframe: number = 0;
+        private _weight: number = 0;
+        private _frameTime: number = 0;
+        private _speed: number = 1;
+
+        private _change: boolean = false;
+
+        public play(speed: number, reset: boolean) {
+            this._change = reset;
+            this._speed = speed;
+            if (reset) {
+                this._time = 0;
+            }
+        }
+
+        public update(time: number, delay: number) {
+            var self = this;
+
+            if (this._change) {
+                this._change = false;
+                this.offset = self._time; 
+            }
+
+            self._time = self._time - this.offset;
+
+            self.time = self._time % self.totalTime;
+             
+            self._frameTime = self.time / this.frameRate;
+
+            self._frame = Math.floor(self._frameTime);
+
+            self._weight = (self._frameTime - self._frame);
+
+            //self._nextframe = self._frame + 1;
+
+            //if (self._nextframe >= self.totalFrame) {
+            //    self._nextframe = 0;
+            //}
+
+            if (self.keyFrames[self._frame])
+                self.target[self.name] = self.keyFrames[self._frame].value;
+
+            self._time += delay * this._speed;
+        }
     }
 }

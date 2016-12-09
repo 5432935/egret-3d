@@ -36,8 +36,7 @@
             //##FilterBegin## ##Particle##
             this.name = "ParticleFollowNode";
 
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_follow_vs");
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_follow_vs");
 
             this.attribute_followPosition = new GLSL.VarRegister();
             this.attribute_followPosition.name = "attribute_followPosition";
@@ -73,6 +72,16 @@
         }
 
         /**
+        * @private
+        * 强制更新了时间之后，follow数据需要更新
+        */
+        public onAnimTimeChange(): void {
+            super.onAnimTimeChange();
+            this.resetCircleData();
+        }
+
+
+        /**
         * @language zh_CN
         * 填充顶点数据
         * @param geometry 网格数据
@@ -86,10 +95,15 @@
             this._animationState = <ParticleAnimationState>this.state;
             //先重置成-1，然后每帧检测每个粒子的上一帧的所属出身次数和下一帧的出身次数，判定是否要刷新他的初始位置
             this._lifeCircles = [];
+            this.resetCircleData();
+            //##FilterEnd##
+        }
+
+
+        private resetCircleData(): void {
             for (var i: number = 0; i < this._count; i++) {
                 this._lifeCircles[i] = -1;
             }
-            //##FilterEnd##
         }
 
         private bornTime: number = 0;
@@ -155,6 +169,10 @@
                         continue;
 
                     curCircleIndex = Math.floor((particleTime - this.bornTime) / this._animationState.modTime);
+                    //
+                    if (((particleTime - this.bornTime) % this._animationState.modTime) > this.life) {
+                        continue;
+                    }
                     if (curCircleIndex != this._lifeCircles[i]) {
                         this._lifeCircles[i] = curCircleIndex;
                         changed = true;

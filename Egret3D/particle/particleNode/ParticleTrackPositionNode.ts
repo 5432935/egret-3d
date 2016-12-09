@@ -18,8 +18,7 @@
             //##FilterBegin## ##Particle##
             this.name = "ParticleTrackPositionNode";
 
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_trackPosition");
+            this.importShader(true, ShaderPhaseType.local_vertex, "particle_trackPosition");
 
             this.attribute_trackPosition = new GLSL.VarRegister();
             this.attribute_trackPosition.name = "attribute_trackPosition";

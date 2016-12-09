@@ -89,7 +89,7 @@
             this.terrainMethod.setUVTitling(1, 16, 16);
             this.terrainMethod.setUVTitling(2, 26.7, 26.7);
             this.terrainMethod.setUVTitling(3, 26.7, 26.7);
-            this.terrainMethod.controlTexture = this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/Alphamap_0.jpg");
+            this.terrainMethod.controlTexture = this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/Alphamap_0.png");
             this.terrainMethod.splat_0_Texture = this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/SplatPrototype_texture_0.jpg");
             this.terrainMethod.splat_1_Texture = this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/SplatPrototype_texture_1.jpg");
             this.terrainMethod.splat_2_Texture = this._queueLoad.getAsset("resource/terrain/ziyan_xinshou/SplatPrototype_texture_2.jpg");

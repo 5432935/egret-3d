@@ -969,8 +969,8 @@
         * @platform Web,Native
         */
         public enableBlend() {
-            //if (this.BLEND) return;
-            //this.BLEND = true;
+            if (this.BLEND) return;
+            this.BLEND = true;
             Context3DProxy.gl.enable(ContextConfig.BLEND);
         }
 
@@ -981,8 +981,8 @@
         * @platform Web,Native
         */
         public disableBlend() {
-            //if (!this.BLEND) return;
-            //this.BLEND = false;
+            if (!this.BLEND) return;
+            this.BLEND = false;
             Context3DProxy.gl.disable(ContextConfig.BLEND);
         }
 
@@ -1090,7 +1090,7 @@
         public activeAttribPointer(vertexFormat: number, formatLen: number): boolean {
             //if (this.cacheVertexFormat != vertexFormat) {
             for (var j: number = 0; j < 8; j++) {
-                Context3DProxy.gl.disableVertexAttribArray(j);
+                //Context3DProxy.gl.disableVertexAttribArray(j);
             }
             this.cacheVertexFormat = vertexFormat;
             //for (var j: number = 0; j < formatLen; j++) {
@@ -1098,6 +1098,12 @@
             // }
             //  }
             return this.cacheVertexFormat == vertexFormat;
+        }
+
+        public disAttribPointer() {
+            for (var j: number = 0; j < 8; j++) {
+                Context3DProxy.gl.disableVertexAttribArray(j);
+            }
         }
 
         /**

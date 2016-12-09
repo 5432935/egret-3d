@@ -22,9 +22,7 @@
             super();
             //##FilterBegin## ##Particle##
             this.name = "ParticleVelocityLimitTwoBezierNode";
-
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityLimitTwoBezier");
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityLimitTwoBezier");
 
             this.attribute_randomSeed = new GLSL.VarRegister();
             this.attribute_randomSeed.name = "attribute_velocityLimitRandomSeed";

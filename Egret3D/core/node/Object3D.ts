@@ -145,6 +145,9 @@
         protected _isRoot: boolean = true;
         protected _bound: Bound;
 
+        public inFrustum: boolean = false;
+        //public awayInFrustum: boolean = false;
+
         protected static qua0: Quaternion = new Quaternion();
         protected static mat0: Matrix4_4 = new Matrix4_4();
 
@@ -174,10 +177,7 @@
         * @platform Web,Native
         */
         public set proAnimation(animation: IAnimation) {
-            this._proAnimation = animation;
-            if (this._proAnimation) {
-                this._proAnimation.propertyAnimController.target = this;
-            }
+            this.setProAnimation(animation);
         }
 
         /**
@@ -188,6 +188,13 @@
         */
         public get proAnimation(): IAnimation {
             return this._proAnimation;
+        }
+
+        protected setProAnimation(animation: IAnimation) {
+            this._proAnimation = animation;
+            if (this._proAnimation) {
+                this._proAnimation.propertyAnimController.target = this;
+            }
         }
 
         /**
@@ -1377,7 +1384,8 @@
 
         /**
         * @language zh_CN
-        * @private
+        * 将一个2D GPU UI对象位置与该3d对象在屏幕位置投射位置相绑定
+        * @param ui 需要绑定的2d对象
         * @version Egret 3.0
         * @platform Web,Native
         */
@@ -1389,12 +1397,19 @@
                 this._displayList.push( ui );
         }
 
+        /**
+        * @language zh_CN
+        * 解除一个2D GPU UI对象位置与该3d对象在屏幕位置投射位置相绑定
+        * @param ui 需要解除绑定的2d对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public removeFollowUI(ui: DisplayObject) {
             if (!this._displayList) {
                 return;
             }
             var index: number = this._displayList.indexOf(ui);
-            if (index == -1)
+            if (index >= 0)
                 this._displayList.splice(index,1);
         }
                         
@@ -1825,9 +1840,11 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public update(time: number, delay: number, camera:Camera3D) {
-            if (this.proAnimation) {
-                this.proAnimation.update(time, delay, null);
+        public update(time: number, delay: number, camera: Camera3D) {
+            if (this.inFrustum) {
+                if (this.proAnimation) {
+                    this.proAnimation.update(time, delay, null);
+                }
             }
             if (this._displayList) {
                 for (var i: number = 0; i < this._displayList.length; i++) {

@@ -15,6 +15,14 @@ module egret3d {
 			"materialSource.alpha *= maskAlpha; \n" +
 			"} \n",
 
+			"AmbientOcclusion":
+			"varying vec2 varying_uv0; \n" +
+			"uniform sampler2D positionPass; \n" +
+			"uniform sampler2D normalPass; \n" +
+			"void main(){ \n" +
+			"gl_FragColor = texture2D(positionPass,varying_uv0) + texture2D(normalPass,varying_uv0) ; \n" +
+			"} \n",
+
 			"AOMap_fs":
 			"uniform sampler2D aoTexture ; \n" +
 			"uniform float aoPower ; \n" +
@@ -512,6 +520,7 @@ module egret3d {
 			"fog.fogStartDistance = uniform_globalFog[4] ; \n" +
 			"fog.fogHeightStart = uniform_globalFog[5] ; \n" +
 			"fog.fogAlpha = uniform_globalFog[6] ; \n" +
+			"fog.fogColor *= diffuseColor.w; \n" +
 			"float yd = uniform_eyepos.y - varying_pos.y ; \n" +
 			"diffuseColor.xyz = applyFog( yd , varying_pos.xyz , fog ); \n" +
 			"} \n" +
@@ -519,6 +528,153 @@ module egret3d {
 
 			"FakePBR":
 			"",
+
+			"FakePBR_fs.1":
+			"#extension GL_OES_standard_derivatives:enable \n" +
+			"#define max_directLight 1 \n" +
+			"struct DirectLight{ \n" +
+			"vec3 direction; \n" +
+			"vec3 diffuse; \n" +
+			"vec3 ambient; \n" +
+			"}; \n" +
+			"uniform float uniform_directLightSource[9*max_directLight] ; \n" +
+			"varying vec4 varying_mvPose; \n" +
+			"varying vec3 varying_eyeNormal; \n" +
+			"varying vec2 varying_uv0; \n" +
+			"uniform sampler2D albedoTex; \n" +
+			"uniform sampler2D normalTex; \n" +
+			"uniform sampler2D glossTex; \n" +
+			"uniform sampler2D specularTex; \n" +
+			"uniform sampler2D opacityTex; \n" +
+			"uniform samplerCube reflectionMap; \n" +
+			"uniform mat4 uniform_ViewMatrix; \n" +
+			"mat3 TBN; \n" +
+			"mat4 normalMatrix ; \n" +
+			"vec3 normalDirection; \n" +
+			"vec3 light; \n" +
+			"vec3 normalTexColor ; \n" +
+			"vec4 opacityTexColor ; \n" +
+			"vec4 glossTexColor ; \n" +
+			"vec4 specularTexColor ; \n" +
+			"vec4 albedoTexColor ; \n" +
+			"vec2 uv_0; \n" +
+			"mat4 transpose(mat4 inMatrix) { \n" +
+			"vec4 i0 = inMatrix[0]; \n" +
+			"vec4 i1 = inMatrix[1]; \n" +
+			"vec4 i2 = inMatrix[2]; \n" +
+			"vec4 i3 = inMatrix[3]; \n" +
+			"mat4 outMatrix = mat4( \n" +
+			"vec4(i0.x, i1.x, i2.x, i3.x), \n" +
+			"vec4(i0.y, i1.y, i2.y, i3.y), \n" +
+			"vec4(i0.z, i1.z, i2.z, i3.z), \n" +
+			"vec4(i0.w, i1.w, i2.w, i3.w) \n" +
+			"); \n" +
+			"return outMatrix; \n" +
+			"} \n" +
+			"mat4 inverse(mat4 m) { \n" +
+			"float \n" +
+			"a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3], \n" +
+			"a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3], \n" +
+			"a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3], \n" +
+			"a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3], \n" +
+			"b00 = a00 * a11 - a01 * a10, \n" +
+			"b01 = a00 * a12 - a02 * a10, \n" +
+			"b02 = a00 * a13 - a03 * a10, \n" +
+			"b03 = a01 * a12 - a02 * a11, \n" +
+			"b04 = a01 * a13 - a03 * a11, \n" +
+			"b05 = a02 * a13 - a03 * a12, \n" +
+			"b06 = a20 * a31 - a21 * a30, \n" +
+			"b07 = a20 * a32 - a22 * a30, \n" +
+			"b08 = a20 * a33 - a23 * a30, \n" +
+			"b09 = a21 * a32 - a22 * a31, \n" +
+			"b10 = a21 * a33 - a23 * a31, \n" +
+			"b11 = a22 * a33 - a23 * a32, \n" +
+			"det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06; \n" +
+			"return mat4( \n" +
+			"a11 * b11 - a12 * b10 + a13 * b09, \n" +
+			"a02 * b10 - a01 * b11 - a03 * b09, \n" +
+			"a31 * b05 - a32 * b04 + a33 * b03, \n" +
+			"a22 * b04 - a21 * b05 - a23 * b03, \n" +
+			"a12 * b08 - a10 * b11 - a13 * b07, \n" +
+			"a00 * b11 - a02 * b08 + a03 * b07, \n" +
+			"a32 * b02 - a30 * b05 - a33 * b01, \n" +
+			"a20 * b05 - a22 * b02 + a23 * b01, \n" +
+			"a10 * b10 - a11 * b08 + a13 * b06, \n" +
+			"a01 * b08 - a00 * b10 - a03 * b06, \n" +
+			"a30 * b04 - a31 * b02 + a33 * b00, \n" +
+			"a21 * b02 - a20 * b04 - a23 * b00, \n" +
+			"a11 * b07 - a10 * b09 - a12 * b06, \n" +
+			"a00 * b09 - a01 * b07 + a02 * b06, \n" +
+			"a31 * b01 - a30 * b03 - a32 * b00, \n" +
+			"a20 * b03 - a21 * b01 + a22 * b00) / det; \n" +
+			"} \n" +
+			"vec3 unpackNormal(vec4 packednormal) \n" +
+			"{ \n" +
+			"return packednormal.xyz * 2.0 - 1.0; \n" +
+			"} \n" +
+			"mat3 cotangentFrame(vec3 N, vec3 p, vec2 uv) { \n" +
+			"vec3 dp1 = dFdx(p); \n" +
+			"vec3 dp2 = dFdy(p); \n" +
+			"vec2 duv1 = dFdx(uv); \n" +
+			"vec2 duv2 = dFdy(uv); \n" +
+			"vec3 dp2perp = cross(dp2, N); \n" +
+			"vec3 dp1perp = cross(N, dp1); \n" +
+			"vec3 T = dp2perp * duv1.x + dp1perp * duv2.x; \n" +
+			"vec3 B = dp2perp * duv1.y + dp1perp * duv2.y; \n" +
+			"float invmax = 1.0 / sqrt(max(dot(T,T), dot(B,B))); \n" +
+			"return mat3(T * invmax, B * invmax, N); \n" +
+			"} \n" +
+			"vec3 fakePBRLight( vec3 lightDir , vec3 viewDir , vec3 lightColor , vec3 ambient ){ \n" +
+			"vec3 lightDirection = mat3(uniform_ViewMatrix) * normalize(lightDir); \n" +
+			"vec3 halfDirection = normalize( lightDirection + viewDir) ; \n" +
+			"float attenuation = 1.0 ; \n" +
+			"vec3 attenColor = attenuation * lightColor; \n" +
+			"float Pi = 3.141592654; \n" +
+			"float InvPi = 0.31830988618; \n" +
+			"float gloss = glossTexColor.r; \n" +
+			"float specPow = exp2( gloss * 10.0 + 1.0 ); \n" +
+			"float NdotL = max(0.0, dot( normalDirection, lightDirection )); \n" +
+			"float specularMonochrome = max( max(specularTexColor.r, specularTexColor.g), specularTexColor.b); \n" +
+			"float normTerm = (specPow + 8.0 ) / (8.0 * Pi); \n" +
+			"vec3 directSpecular =  (floor(attenuation) * lightColor ) * pow(max(0.0,dot(halfDirection,normalDirection)),normTerm) * specularTexColor.xyz * normTerm ; \n" +
+			"vec3 specular = directSpecular; \n" +
+			"NdotL = max(0.0,dot( normalDirection , normalize(lightDirection) )); \n" +
+			"vec3 directDiffuse = max( 0.0, NdotL) * attenColor; \n" +
+			"vec3 indirectDiffuse = vec3(0.0,0.0,0.0); \n" +
+			"indirectDiffuse +=  ambient ; \n" +
+			"vec3 diffuseColor = albedoTexColor.rgb; \n" +
+			"diffuseColor *= 1.0-specularMonochrome; \n" +
+			"vec3 diffuse = (directDiffuse + indirectDiffuse) * diffuseColor; \n" +
+			"vec3 finalColor = diffuse + specular ; \n" +
+			"return finalColor ; \n" +
+			"} \n" +
+			"void calculateDirectLight(  ){ \n" +
+			"float lambertTerm , specular ; \n" +
+			"vec3 dir ,viewDir = normalize(varying_mvPose.xyz/varying_mvPose.w); \n" +
+			"for(int i = 0 ; i < max_directLight ; i++){ \n" +
+			"DirectLight directLight ; \n" +
+			"directLight.direction = vec3(uniform_directLightSource[i*9],uniform_directLightSource[i*9+1],uniform_directLightSource[i*9+2]); \n" +
+			"directLight.diffuse = vec3(uniform_directLightSource[i*9+3],uniform_directLightSource[i*9+4],uniform_directLightSource[i*9+5]); \n" +
+			"directLight.ambient = vec3(uniform_directLightSource[i*9+6],uniform_directLightSource[i*9+7],uniform_directLightSource[i*9+8]); \n" +
+			"dir = normalize(directLight.direction) ; \n" +
+			"light.xyz += fakePBRLight( dir , viewDir , directLight.diffuse , directLight.ambient); \n" +
+			"} \n" +
+			"} \n" +
+			"void main(void){ \n" +
+			"TBN = cotangentFrame(normalize(varying_eyeNormal), normalize(-varying_mvPose.xyz) , uv_0); \n" +
+			"albedoTexColor = texture2D(albedoTex, uv_0 ); \n" +
+			"normalTexColor = vec3(0.0,1.0,0.0); \n" +
+			"opacityTexColor = vec4(0.0,0.0,0.0,0.0); \n" +
+			"glossTexColor = vec4(0.0,0.0,0.0,0.0); \n" +
+			"specularTexColor = vec4(0.0,0.0,0.0,0.0); \n" +
+			"normalDirection = TBN * normalTexColor.xyz ; \n" +
+			"if( (step(materialSource.cutAlpha,opacityTexColor.g) - 0.5) < 0.0 ){ \n" +
+			"discard; \n" +
+			"} \n" +
+			"calculateDirectLight(); \n" +
+			"vec4 finalRGBA = vec4(light,1.0) + textureCube(reflectionMap,varying_mvPose.xyz); \n" +
+			"gl_FragColor = finalRGBA; \n" +
+			"} \n",
 
 			"FakePBR_fs":
 			"#extension GL_OES_standard_derivatives:enable \n" +
@@ -1218,7 +1374,6 @@ module egret3d {
 			"sceneWH = vec3(2.0/px*devicePixelRatio,2.0/py*devicePixelRatio,1.0) ; \n" +
 			"varying_mask = vec4(maskk.xy/sceneWH.xy,(maskk.x+maskk.z)/sceneWH.x, (maskk.y+maskk.w)/(sceneWH.y)) ; \n" +
 			"varying_uv = attribute_uvRec; \n" +
-			"int texIndex = int(attribute_shapePosition.z); \n" +
 			"gl_Position = outPosition; \n" +
 			"} \n",
 
@@ -1337,6 +1492,7 @@ module egret3d {
 			"fog.fogStartDistance = uniform_globalFog[4] ; \n" +
 			"fog.fogFarDistance = uniform_globalFog[5] ; \n" +
 			"fog.fogAlpha = uniform_globalFog[6] ; \n" +
+			"fog.fogColor *= outColor.w; \n" +
 			"float d = varying_mvPose.z ; \n" +
 			"float distFog = max( 0.0 , d -  fog.fogStartDistance ) ; \n" +
 			"outColor.xyz = mix( outColor.xyz,fog.fogColor, clamp(distFog/fog.fogFarDistance,0.0,1.0) * fog.fogAlpha ) ; \n" +
@@ -1622,16 +1778,13 @@ module egret3d {
 			"} \n",
 
 			"particle_end_fs":
-			"const float TrueOrFalse = 0.5; \n" +
-			"uniform float uniform_particleFsData[3]; \n" +
-			"varying vec3 varying_particleData; \n" +
+			"varying vec4 varying_particleData; \n" +
 			"void main() { \n" +
-			"float blendMode = uniform_particleFsData[2]; \n" +
 			"materialSource.diffuse *= globalColor.xyz; \n" +
 			"outColor.xyz = (light.xyz+materialSource.ambient) * (diffuseColor.xyz * materialSource.diffuse * varying_color.xyz) + specularColor.xyz ; \n" +
 			"outColor.w = materialSource.alpha * diffuseColor.w * varying_color.w; \n" +
 			"outColor.w *= globalColor.w; \n" +
-			"if(blendMode < TrueOrFalse){ \n" +
+			"if(varying_particleData.w > 0.5){ \n" +
 			"outColor.xyz *= outColor.w; \n" +
 			"} \n" +
 			"outColor = clamp(outColor, 0.0, 1.0); \n" +
@@ -1696,6 +1849,7 @@ module egret3d {
 			"}else{ \n" +
 			"velocityWorldVec3 += velocityForceVec3; \n" +
 			"} \n" +
+			"position_emitter *= vec3(particleStateData.scaleX, particleStateData.scaleY, particleStateData.scaleZ); \n" +
 			"if(particleStateData.worldSpace > TrueOrFalse){ \n" +
 			"}else{ \n" +
 			"followTargetPosition.x = particleStateData.positionX; \n" +
@@ -1711,7 +1865,6 @@ module egret3d {
 			"if(particleStateData.renderMode == Mesh){ \n" +
 			"rotVertexMatrix = followRotQuat * rotVertexMatrix; \n" +
 			"} \n" +
-			"scaleSize *= particleScale; \n" +
 			"localPosition.xyz *= scaleSize; \n" +
 			"localPosition = rotVertexMatrix * localPosition; \n" +
 			"trackPosition(); \n" +
@@ -1721,7 +1874,7 @@ module egret3d {
 			"velocityMultiVec3 = calcParticleMove(velocityMultiVec3); \n" +
 			"velocityMultiVec3.y -= 4.9 * currentTime * currentTime * particleStateData.gravity; \n" +
 			"vec3 origPosition = position_emitter; \n" +
-			"position_emitter += velocityMultiVec3 * particleScale; \n" +
+			"position_emitter += velocityMultiVec3; \n" +
 			"float dirEnable = updateStretchedBillBoard(vec4(origPosition, 1.0), vec4(position_emitter, 1.0)); \n" +
 			"if(dirEnable > TrueOrFalse){ \n" +
 			"outPosition = uniform_billboardMatrix * localPosition; \n" +
@@ -1788,8 +1941,7 @@ module egret3d {
 			"particle_scaleSizeBezier1":
 			"uniform float uniform_scaleSizeBezier1[35]; \n" +
 			"void main() { \n" +
-			"scaleChange = calcBezierSize(uniform_scaleSizeBezier1, currentTime, curParticle.life); \n" +
-			"scaleSize *= scaleChange; \n" +
+			"scaleSize *= calcBezierSize(uniform_scaleSizeBezier1, currentTime, curParticle.life); \n" +
 			"} \n",
 
 			"particle_scaleSizeBezier2":
@@ -1800,8 +1952,7 @@ module egret3d {
 			"vec2 scaleVec2 = vec2(0.0); \n" +
 			"scaleVec2.x = calcBezierArea(uniform_scaleSizeBezier1, currentTime, curParticle.life); \n" +
 			"scaleVec2.y = calcBezierArea(uniform_scaleSizeBezier2, currentTime, curParticle.life); \n" +
-			"scaleChange = mix(scaleVec2.x, scaleVec2.y, attribute_bezierRandomSeed); \n" +
-			"scaleSize *= scaleChange; \n" +
+			"scaleSize * = mix(scaleVec2.x, scaleVec2.y, attribute_bezierRandomSeed); \n" +
 			"} \n",
 
 			"particle_scaleSizeConst":
@@ -1820,12 +1971,7 @@ module egret3d {
 			"float speed = dot(dirVector, dirVector); \n" +
 			"speed = sqrt(speed) / currentTime; \n" +
 			"speed /= 100.0; \n" +
-			"localPosition.x *= speed * particleStateData.speedScale + particleStateData.lengthScale; \n" +
-			"if(particleStateData.speedScale != 0.0){ \n" +
-			"localPosition.x /= scaleSize; \n" +
-			"localPosition.x *= scaleChange; \n" +
-			"localPosition.x /= particleScale; \n" +
-			"} \n" +
+			"localPosition.x = localPosition.x * particleStateData.lengthScale + speed * particleStateData.speedScale * localPosition.x/scaleSize; \n" +
 			"mat4 temp = uniform_ViewMatrix; \n" +
 			"startPos = temp * startPos; \n" +
 			"newPos = temp * newPos; \n" +
@@ -2222,12 +2368,11 @@ module egret3d {
 			"particle_vs":
 			"float currentTime = 0.0; \n" +
 			"float totalTime = 0.0; \n" +
-			"float particleScale = 1.0 / 1.414; \n" +
 			"bool discard_particle = true; \n" +
 			"const float PI = 3.1415926; \n" +
 			"const float TrueOrFalse = 0.5; \n" +
 			"const float Tiny = 0.0001; \n" +
-			"varying vec3 varying_particleData; \n" +
+			"varying vec4 varying_particleData; \n" +
 			"varying vec4 varying_mvPose; \n" +
 			"attribute vec3 attribute_time; \n" +
 			"attribute vec4 attribute_color; \n" +
@@ -2236,7 +2381,7 @@ module egret3d {
 			"uniform mat4 uniform_cameraMatrix; \n" +
 			"uniform mat4 uniform_billboardMatrix; \n" +
 			"uniform mat4 uniform_ViewMatrix; \n" +
-			"uniform float uniform_particleState[25]; \n" +
+			"uniform float uniform_particleState[27]; \n" +
 			"vec3 cubicPos = vec3(1.0,1.0,1.0); \n" +
 			"vec3 rotResultVec3 = vec3(0.0); \n" +
 			"vec4 localPosition = vec4(0.0,0.0,0.0,1.0); \n" +
@@ -2249,7 +2394,6 @@ module egret3d {
 			"vec3 followTargetScale = vec3(1.0,1.0,1.0); \n" +
 			"vec4 followTargetRotation = vec4(0.0,0.0,0.0,0.0); \n" +
 			"float scaleSize = 1.0; \n" +
-			"float scaleChange = 1.0; \n" +
 			"const float Billboard				= 0.0; \n" +
 			"const float StretchedBillboard		= 1.0; \n" +
 			"const float HorizontalBillboard		= 2.0; \n" +
@@ -2287,6 +2431,8 @@ module egret3d {
 			"float lengthScale; \n" +
 			"float renderMode; \n" +
 			"float stayAtEnd; \n" +
+			"float blendMode; \n" +
+			"float shapeType; \n" +
 			"}; \n" +
 			"ParticleStateData particleStateData; \n" +
 			"mat4 buildRotMat4(vec3 rot) \n" +
@@ -2384,7 +2530,7 @@ module egret3d {
 			"} \n" +
 			"} \n" +
 			"currentTime = mod(currentTime, particleStateData.loopTime); \n" +
-			"if(currentTime > curParticle.life || currentTime < 0.0){ \n" +
+			"if(currentTime > curParticle.life || currentTime <= 0.0){ \n" +
 			"return; \n" +
 			"} \n" +
 			"discard_particle = false; \n" +
@@ -2403,7 +2549,15 @@ module egret3d {
 			"{ \n" +
 			"rotResultVec3.z += attribute_rotationBirth; \n" +
 			"rotResultVec3 *= PI / 180.0; \n" +
-			"if(particleStateData.renderMode == HorizontalBillboard){ \n" +
+			"if(particleStateData.renderMode == Mesh){ \n" +
+			"if(particleStateData.shapeType > 0.5){ \n" +
+			"rotResultVec3 = vec3(0.0, rotResultVec3.z, 0.0); \n" +
+			"rotVertexMatrix = buildRotMat4(rotResultVec3); \n" +
+			"}else{ \n" +
+			"rotResultVec3 = vec3(0.0, 0.0, rotResultVec3.z); \n" +
+			"rotVertexMatrix = buildRotMat4(rotResultVec3); \n" +
+			"} \n" +
+			"}else if(particleStateData.renderMode == HorizontalBillboard){ \n" +
 			"rotVertexMatrix = buildRotMat4(vec3(0.5 * PI, 0.0, 0.0)); \n" +
 			"rotResultVec3 = vec3(0.0, rotResultVec3.z, 0.0); \n" +
 			"rotVertexMatrix = buildRotMat4(rotResultVec3) * rotVertexMatrix; \n" +
@@ -2439,13 +2593,13 @@ module egret3d {
 			"particleStateData.lengthScale					= uniform_particleState[22]; \n" +
 			"particleStateData.renderMode					= uniform_particleState[23]; \n" +
 			"particleStateData.stayAtEnd						= uniform_particleState[24]; \n" +
-			"if(particleStateData.renderMode == Mesh){ \n" +
-			"particleScale = 1.0; \n" +
-			"} \n" +
+			"particleStateData.blendMode						= uniform_particleState[25]; \n" +
+			"particleStateData.shapeType						= uniform_particleState[26]; \n" +
 			"calcParticleTime(); \n" +
 			"varying_particleData.x = currentTime; \n" +
 			"varying_particleData.y = curParticle.life; \n" +
 			"varying_particleData.z = curParticle.index; \n" +
+			"varying_particleData.w = particleStateData.blendMode; \n" +
 			"if(discard_particle){ \n" +
 			"varying_particleData.x = currentTime = 0.0; \n" +
 			"gl_Position = varying_pos = vec4(0.0, 0.0, 0.0, 1.0); \n" +
@@ -2454,6 +2608,511 @@ module egret3d {
 			"getNodeData(); \n" +
 			"getUnitRotate(); \n" +
 			"rotateParticleUnit(); \n" +
+			"} \n",
+
+			"PBR_":
+			"#extension GL_OES_standard_derivatives:enable \n" +
+			"#define baseColorMapEnabled true \n" +
+			"#define custom false \n" +
+			"precision highp float ; \n" +
+			"uniform sampler2D albedoTex; \n" +
+			"uniform sampler2D normalTex; \n" +
+			"uniform sampler2D glossTex; \n" +
+			"uniform sampler2D specularTex; \n" +
+			"uniform sampler2D opacityTex; \n" +
+			"uniform mat4 uniform_ViewMatrix; \n" +
+			"varying vec2 varying_uv0; \n" +
+			"varying vec3 varying_eyeNormal; \n" +
+			"varying vec4 varying_mvPose; \n" +
+			"varying vec3 wcNormal; \n" +
+			"varying vec3 wcCoords; \n" +
+			"uniform samplerCube reflectionMap; \n" +
+			"const float PI = 3.14159265358979323846; \n" +
+			"bool correctGamma =true; \n" +
+			"float globalRoughness = 0.1 ; \n" +
+			"float globalSpecular = 1.0 ; \n" +
+			"vec4 specularColor = vec4(1.0,1.0,1.0,1.0); \n" +
+			"mat4 invViewMatrix; \n" +
+			"mat4 normalMatrix ; \n" +
+			"mat3 TBN; \n" +
+			"float triPlanarScale = 0.5; \n" +
+			"vec4 baseColor = vec4(1.8,0.8,0.5,1.0) ; \n" +
+			"float material_cubemapSize = 128.0; \n" +
+			"float material_cubemapSize2 = 32.0; \n" +
+			"mat4 transpose(mat4 inMatrix) { \n" +
+			"vec4 i0 = inMatrix[0]; \n" +
+			"vec4 i1 = inMatrix[1]; \n" +
+			"vec4 i2 = inMatrix[2]; \n" +
+			"vec4 i3 = inMatrix[3]; \n" +
+			"mat4 outMatrix = mat4( \n" +
+			"vec4(i0.x, i1.x, i2.x, i3.x), \n" +
+			"vec4(i0.y, i1.y, i2.y, i3.y), \n" +
+			"vec4(i0.z, i1.z, i2.z, i3.z), \n" +
+			"vec4(i0.w, i1.w, i2.w, i3.w) \n" +
+			"); \n" +
+			"return outMatrix; \n" +
+			"} \n" +
+			"mat4 inverse(mat4 m) { \n" +
+			"float \n" +
+			"a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3], \n" +
+			"a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3], \n" +
+			"a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3], \n" +
+			"a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3], \n" +
+			"b00 = a00 * a11 - a01 * a10, \n" +
+			"b01 = a00 * a12 - a02 * a10, \n" +
+			"b02 = a00 * a13 - a03 * a10, \n" +
+			"b03 = a01 * a12 - a02 * a11, \n" +
+			"b04 = a01 * a13 - a03 * a11, \n" +
+			"b05 = a02 * a13 - a03 * a12, \n" +
+			"b06 = a20 * a31 - a21 * a30, \n" +
+			"b07 = a20 * a32 - a22 * a30, \n" +
+			"b08 = a20 * a33 - a23 * a30, \n" +
+			"b09 = a21 * a32 - a22 * a31, \n" +
+			"b10 = a21 * a33 - a23 * a31, \n" +
+			"b11 = a22 * a33 - a23 * a32, \n" +
+			"det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06; \n" +
+			"return mat4( \n" +
+			"a11 * b11 - a12 * b10 + a13 * b09, \n" +
+			"a02 * b10 - a01 * b11 - a03 * b09, \n" +
+			"a31 * b05 - a32 * b04 + a33 * b03, \n" +
+			"a22 * b04 - a21 * b05 - a23 * b03, \n" +
+			"a12 * b08 - a10 * b11 - a13 * b07, \n" +
+			"a00 * b11 - a02 * b08 + a03 * b07, \n" +
+			"a32 * b02 - a30 * b05 - a33 * b01, \n" +
+			"a20 * b05 - a22 * b02 + a23 * b01, \n" +
+			"a10 * b10 - a11 * b08 + a13 * b06, \n" +
+			"a01 * b08 - a00 * b10 - a03 * b06, \n" +
+			"a30 * b04 - a31 * b02 + a33 * b00, \n" +
+			"a21 * b02 - a20 * b04 - a23 * b00, \n" +
+			"a11 * b07 - a10 * b09 - a12 * b06, \n" +
+			"a00 * b09 - a01 * b07 + a02 * b06, \n" +
+			"a31 * b01 - a30 * b03 - a32 * b00, \n" +
+			"a20 * b03 - a21 * b01 + a22 * b00) / det; \n" +
+			"} \n" +
+			"mat3 cotangentFrame(vec3 N, vec3 p, vec2 uv) { \n" +
+			"vec3 dp1 = dFdx(p); \n" +
+			"vec3 dp2 = dFdy(p); \n" +
+			"vec2 duv1 = dFdx(uv); \n" +
+			"vec2 duv2 = dFdy(uv); \n" +
+			"vec3 dp2perp = cross(dp2, N); \n" +
+			"vec3 dp1perp = cross(N, dp1); \n" +
+			"vec3 T = dp2perp * duv1.x + dp1perp * duv2.x; \n" +
+			"vec3 B = dp2perp * duv1.y + dp1perp * duv2.y; \n" +
+			"float invmax = 1.0 / sqrt(max(dot(T,T), dot(B,B))); \n" +
+			"return mat3(T * invmax, B * invmax, N); \n" +
+			"} \n" +
+			"vec3 unpackNormal(vec4 packednormal) \n" +
+			"{ \n" +
+			"return packednormal.xyz * 2.0 - 1.0; \n" +
+			"} \n" +
+			"vec4 gammaToLinear(vec4 color) { \n" +
+			"if (correctGamma) { \n" +
+			"return vec4(pow(color.rgb, vec3(2.2)), color.a); \n" +
+			"} \n" +
+			"else { \n" +
+			"return color; \n" +
+			"} \n" +
+			"} \n" +
+			"vec4 linearToGamma(vec4 color) { \n" +
+			"if (correctGamma) { \n" +
+			"return vec4(pow(color.rgb, vec3(1.0 / 2.2)), color.a); \n" +
+			"} \n" +
+			"else { \n" +
+			"return color; \n" +
+			"} \n" +
+			"} \n" +
+			"vec4 sampleTex(sampler2D tex) { \n" +
+			"return gammaToLinear(texture2D(tex, varying_uv0)); \n" +
+			"} \n" +
+			"vec4 sampleEnvMap(samplerCube envMap, vec3 ecN, vec3 ecPos, float mipmapIndex, float size) { \n" +
+			"vec3 eyeDir = normalize(-ecPos); \n" +
+			"vec3 ecReflected = reflect(-eyeDir, ecN); \n" +
+			"float mipmap = mipmapIndex; \n" +
+			"vec3 wcReflected = vec3(invViewMatrix * vec4(ecReflected, 0.0)); \n" +
+			"return textureCube(envMap, wcReflected ); \n" +
+			"} \n" +
+			"void main(void){ \n" +
+			"vec4 albedo; \n" +
+			"vec2 vTexCoord; \n" +
+			"vec4 lightColor = vec4(1.0, 1.0, 1.0, 1.0); \n" +
+			"invViewMatrix = inverse(uniform_ViewMatrix); \n" +
+			"if (baseColorMapEnabled) { \n" +
+			"albedo = sampleTex(albedoTex); \n" +
+			"} \n" +
+			"else { \n" +
+			"albedo =  gammaToLinear(baseColor); \n" +
+			"} \n" +
+			"vec3 specular = sampleTex(specularTex).rgb; \n" +
+			"float glossines = (sampleTex(glossTex)).b; \n" +
+			"vec3 lightPos = vec3(0.0,200.0,0.0); \n" +
+			"vec3 ecNormal = varying_eyeNormal.xyz; \n" +
+			"vec3 ecLightPos = (uniform_ViewMatrix * vec4(lightPos, 1.0)).xyz; \n" +
+			"vec3 normal = sampleTex(normalTex).rgb * 2.0 - 1.0; \n" +
+			"vec3 eyePos = vec3(0.0, 0.0, -1.0); \n" +
+			"vec3 N = normalize(varying_eyeNormal); \n" +
+			"vec3 L = normalize(ecLightPos - varying_mvPose.xyz); \n" +
+			"vec3 V = normalize(eyePos - varying_mvPose.xyz); \n" +
+			"vec3 H = normalize(L + V); \n" +
+			"TBN = cotangentFrame(normalize(varying_eyeNormal), normalize(-varying_mvPose.xyz) , varying_uv0); \n" +
+			"if (!custom) { \n" +
+			"N = normalize(TBN * normal); \n" +
+			"} \n" +
+			"float dotNL = clamp(dot(N,L), 0.0, 1.0); \n" +
+			"float dotNV = clamp(dot(N,V), 0.0, 1.0); \n" +
+			"float dotNH = clamp(dot(N,H), 0.0, 1.0); \n" +
+			"float dotLH = clamp(dot(L,H), 0.0, 1.0); \n" +
+			"float dotVH = clamp(dot(V,H), 0.0, 1.0); \n" +
+			"float roughness = 1.0 - glossines; \n" +
+			"float smoothness = glossines; \n" +
+			"float dotLH5 = pow(1.0 - dotLH, 5.0); \n" +
+			"vec3 F0 = specular; \n" +
+			"vec3 Fschlick = F0 + (1.0 - F0) * dotLH5; \n" +
+			"vec3 F = Fschlick; \n" +
+			"float D = 1.0; \n" +
+			"float a = pow(1.0 - smoothness * 0.7, 6.0); \n" +
+			"float aSqr = a * a; \n" +
+			"float Ddenom = dotNH * dotNH * (aSqr - 1.0) + 1.0; \n" +
+			"float Dh = aSqr / ( PI * Ddenom * Ddenom); \n" +
+			"float FL = pow((1.0 - dotNL), 5.0); \n" +
+			"float FV = pow((1.0 - dotNV), 5.0); \n" +
+			"float Fd90 = 0.5 + 2.0 * roughness * dotLH*dotLH; \n" +
+			"vec3 Fd = (specularColor).rgb / PI * (1.0 + (Fd90 - 1.0) * FL) * (1.0 + (Fd90 - 1.0) * FV); \n" +
+			"vec3 Fvh = F0 + (1.0 - F0) * pow((1.0 - dotVH), 5.0); \n" +
+			"float k = pow(0.8 + 0.5 * a, 2.0) / 2.0; \n" +
+			"float G1l = dotNL / (dotNL * (1.0 - k) + k); \n" +
+			"float G1v = dotNV / (dotNV * (1.0 - k) + k); \n" +
+			"float Glvn = G1l * G1v; \n" +
+			"vec3 flv = Dh * Fvh * Glvn / (4.0 * dotNL * dotNV); \n" +
+			"float roughness2 = roughness; \n" +
+			"smoothness = 1.0 - roughness; \n" +
+			"float maxMipMapLevel = 8.0; \n" +
+			"vec4 ambientReflection = (sampleEnvMap(reflectionMap, N, varying_mvPose.xyz , roughness2 * maxMipMapLevel, material_cubemapSize)); \n" +
+			"vec4 color = vec4(0.0); \n" +
+			"color += albedo / PI; \n" +
+			"color += albedo * dotNL * lightColor / PI; \n" +
+			"vec3 Fs = specular + (max(vec3(smoothness), specular) - specular) * pow(1.0 - max(dot(V, N), 0.0), 5.0); \n" +
+			"color = mix(color, ambientReflection + vec4(Fs, 1.0), specular.r); \n" +
+			"float show = 7.0 ; \n" +
+			"if (show == 1.0) gl_FragColor = vec4(N * 0.5 + 0.5, 1.0); \n" +
+			"if (show == 2.0) gl_FragColor = linearToGamma(albedo); \n" +
+			"if (show == 3.0) gl_FragColor = vec4(glossines,glossines,glossines,1.0); \n" +
+			"if (show == 4.0) gl_FragColor = vec4(specular, 1.0); \n" +
+			"if (show == 6.0) gl_FragColor = linearToGamma(ambientReflection); \n" +
+			"if (show == 7.0) gl_FragColor = vec4(color.xyz,1.0) ; \n" +
+			"} \n",
+
+			"PBR_ALL":
+			"#ifdef GL_ES \n" +
+			"#ifdef GL_FRAGMENT_PRECISION_HIGH \n" +
+			"precision highp float; \n" +
+			"#else \n" +
+			"precision mediump float; \n" +
+			"#endif \n" +
+			"#endif \n" +
+			"#define FRAG \n" +
+			"#define textureCubeLod textureCubeLodEXT \n" +
+			"#define WEBGL 1 \n" +
+			"#define textureCubeLod textureCubeLodEXT \n" +
+			"#define WEBGL 1 \n" +
+			"#ifdef VERT \n" +
+			"uniform mat4 projectionMatrix; \n" +
+			"uniform mat4 modelViewMatrix; \n" +
+			"uniform mat4 modelWorldMatrix; \n" +
+			"uniform mat4 viewMatrix; \n" +
+			"uniform mat4 normalMatrix; \n" +
+			"uniform float pointSize; \n" +
+			"uniform vec3 lightPos; \n" +
+			"uniform vec3 cameraPos; \n" +
+			"attribute vec3 position; \n" +
+			"attribute vec3 normal; \n" +
+			"attribute vec2 texCoord; \n" +
+			"varying vec3 ecNormal; \n" +
+			"varying vec3 ecLightPos; \n" +
+			"varying vec3 ecPosition; \n" +
+			"varying vec3 wcNormal; \n" +
+			"varying vec3 wcCoords; \n" +
+			"void main() { \n" +
+			"vec4 worldPos = modelWorldMatrix * vec4(position, 1.0); \n" +
+			"ecPosition = vec3(modelViewMatrix * vec4(position, 1.0)); \n" +
+			"gl_Position = projectionMatrix * vec4(ecPosition, 1.0); \n" +
+			"ecNormal = (normalMatrix * vec4(normal, 0.0)).xyz; \n" +
+			"ecLightPos = (viewMatrix * vec4(lightPos, 1.0)).xyz; \n" +
+			"wcNormal = normal; \n" +
+			"wcCoords = (modelWorldMatrix * vec4(position, 1.0)).xyz; \n" +
+			"} \n" +
+			"#endif \n" +
+			"#ifdef FRAG \n" +
+			"#extension GL_EXT_shader_texture_lod : require \n" +
+			"/* \n" +
+			"#ifdef WEBL \n" +
+			"#extension GL_EXT_shader_texture_lod : require \n" +
+			"#else \n" +
+			"#extension GL_ARB_shader_texture_lod : require \n" +
+			"#endif \n" +
+			"*/ \n" +
+			"varying vec3      ecNormal; \n" +
+			"varying vec3      ecLightPos; \n" +
+			"varying vec3      ecPosition; \n" +
+			"varying vec3      wcNormal; \n" +
+			"varying vec3      wcCoords; \n" +
+			"uniform bool      correctGamma; \n" +
+			"uniform float     show; \n" +
+			"uniform bool      skyBox; \n" +
+			"uniform vec4      baseColor; \n" +
+			"uniform sampler2D baseColorMap; \n" +
+			"uniform bool      baseColorMapEnabled; \n" +
+			"uniform vec4      specularColor; \n" +
+			"uniform sampler2D specularMap; \n" +
+			"uniform bool      specularMapEnabled; \n" +
+			"uniform sampler2D glossMap; \n" +
+			"uniform sampler2D normalMap; \n" +
+			"uniform float     globalRoughness; \n" +
+			"uniform float     globalSpecular; \n" +
+			"uniform mat4      invViewMatrix; \n" +
+			"uniform samplerCube reflectionMap; \n" +
+			"uniform samplerCube diffuseMap; \n" +
+			"uniform sampler2D ssaoMap; \n" +
+			"uniform vec2 windowSize; \n" +
+			"uniform bool custom; \n" +
+			"const float PI = 3.14159265358979323846; \n" +
+			"float material_cubemapSize = 128.0; \n" +
+			"float material_cubemapSize2 = 32.0; \n" +
+			"vec3 fixSeams(vec3 vec, float mipmapIndex, float size) { \n" +
+			"float scale = 1.0 - exp2(mipmapIndex) / size; \n" +
+			"float M = max(max(abs(vec.x), abs(vec.y)), abs(vec.z)); \n" +
+			"if (abs(vec.x) != M) vec.x *= scale; \n" +
+			"if (abs(vec.y) != M) vec.y *= scale; \n" +
+			"if (abs(vec.z) != M) vec.z *= scale; \n" +
+			"return vec; \n" +
+			"} \n" +
+			"vec3 fixSeams(vec3 vec, float size ) { \n" +
+			"float scale = 1.0 - 1.0 / size; \n" +
+			"float M = max(max(abs(vec.x), abs(vec.y)), abs(vec.z)); \n" +
+			"if (abs(vec.x) != M) vec.x *= scale; \n" +
+			"if (abs(vec.y) != M) vec.y *= scale; \n" +
+			"if (abs(vec.z) != M) vec.z *= scale; \n" +
+			"return vec; \n" +
+			"} \n" +
+			"vec4 sampleEnvMap(samplerCube envMap, vec3 ecN, vec3 ecPos, float mipmapIndex, float size) { \n" +
+			"vec3 eyeDir = normalize(-ecPos); \n" +
+			"vec3 ecReflected = reflect(-eyeDir, ecN); \n" +
+			"float mipmap = mipmapIndex; \n" +
+			"if (skyBox) { \n" +
+			"ecReflected = normalize(ecPos); \n" +
+			"mipmap = 0.0; \n" +
+			"vec3 wcReflected = vec3(invViewMatrix * vec4(ecReflected, 0.0)); \n" +
+			"return textureCubeLod(envMap, fixSeams(wcReflected, mipmap, size), mipmap); \n" +
+			"} \n" +
+			"vec3 wcReflected = vec3(invViewMatrix * vec4(ecReflected, 0.0)); \n" +
+			"float lod = mipmap; \n" +
+			"float upLod = floor(lod); \n" +
+			"float downLod = ceil(lod); \n" +
+			"vec4 a = textureCubeLod(envMap, fixSeams(wcReflected, upLod, size), upLod); \n" +
+			"vec4 b = textureCubeLod(envMap, fixSeams(wcReflected, downLod, size), downLod + 0.1); \n" +
+			"return mix(a, b, lod - upLod); \n" +
+			"} \n" +
+			"vec4 gammaToLinear(vec4 color) { \n" +
+			"if (correctGamma) { \n" +
+			"return vec4(pow(color.rgb, vec3(2.2)), color.a); \n" +
+			"} \n" +
+			"else { \n" +
+			"return color; \n" +
+			"} \n" +
+			"} \n" +
+			"vec4 linearToGamma(vec4 color) { \n" +
+			"if (correctGamma) { \n" +
+			"return vec4(pow(color.rgb, vec3(1.0 / 2.2)), color.a); \n" +
+			"} \n" +
+			"else { \n" +
+			"return color; \n" +
+			"} \n" +
+			"} \n" +
+			"float triPlanarScale = 0.5; \n" +
+			"vec4 sampleTriPlanar(sampler2D tex, float scale) { \n" +
+			"vec3 blending = abs( normalize(wcNormal) ); \n" +
+			"blending = normalize(max(blending, 0.00001)); \n" +
+			"float b = (blending.x + blending.y + blending.z); \n" +
+			"blending /= vec3(b, b, b); \n" +
+			"vec4 xaxis = texture2D( tex, mod(wcCoords.zy * triPlanarScale, vec2(1.0, 1.0))); \n" +
+			"vec4 yaxis = texture2D( tex, mod(wcCoords.xz * triPlanarScale, vec2(1.0, 1.0))); \n" +
+			"vec4 zaxis = texture2D( tex, mod(wcCoords.xy * triPlanarScale, vec2(1.0, 1.0))); \n" +
+			"vec4 color = xaxis * blending.x + yaxis * blending.y + zaxis * blending.z; \n" +
+			"return color; \n" +
+			"} \n" +
+			"vec4 sampleTriPlanar(sampler2D tex) { \n" +
+			"return sampleTriPlanar(tex, triPlanarScale); \n" +
+			"} \n" +
+			"vec3 triPlanarTangent() { \n" +
+			"vec3 blending = abs( normalize(wcNormal) ); \n" +
+			"blending = normalize(max(blending, 0.00001)); \n" +
+			"float b = (blending.x + blending.y + blending.z); \n" +
+			"blending /= vec3(b, b, b); \n" +
+			"vec3 tanX = vec3(-wcNormal.x, -wcNormal.z, wcNormal.y); \n" +
+			"vec3 tanY = vec3( wcNormal.z, wcNormal.y, wcNormal.x); \n" +
+			"vec3 tanZ = vec3(-wcNormal.y, -wcNormal.x, wcNormal.z); \n" +
+			"return tanX * blending.x + tanY * blending.y + tanZ * blending.z; \n" +
+			"} \n" +
+			"void main() { \n" +
+			"gl_FragColor = textureCube(reflectionMap, ecNormal); \n" +
+			"vec4 albedo; \n" +
+			"vec2 vTexCoord; \n" +
+			"vec4 lightColor = vec4(0.4, 0.4, 0.4, 1.0); \n" +
+			"if (baseColorMapEnabled) { \n" +
+			"albedo = gammaToLinear(sampleTriPlanar(baseColorMap)); \n" +
+			"} \n" +
+			"else { \n" +
+			"albedo = gammaToLinear(baseColor); \n" +
+			"} \n" +
+			"vec3 specular = gammaToLinear(sampleTriPlanar(specularMap)).rgb; \n" +
+			"float glossines = (sampleTriPlanar(glossMap)).r; \n" +
+			"if (custom) { \n" +
+			"glossines = 1.0 - globalRoughness; \n" +
+			"specular = vec3(globalSpecular); \n" +
+			"} \n" +
+			"vec3 normal = sampleTriPlanar(normalMap).rgb * 2.0 - 1.0; \n" +
+			"vec3 eyePos = vec3(0.0, 0.0, -1.0); \n" +
+			"vec3 N = normalize(ecNormal); \n" +
+			"vec3 L = normalize(ecLightPos - ecPosition); \n" +
+			"vec3 V = normalize(eyePos - ecPosition); \n" +
+			"vec3 H = normalize(L + V); \n" +
+			"vec3 T = normalize(triPlanarTangent()); \n" +
+			"vec3 B = normalize(cross(wcNormal, T)); \n" +
+			"float invmax = inversesqrt( max( dot(T,T), dot(B,B) ) ); \n" +
+			"mat3 TBN = mat3( T * invmax, B * invmax, N ); \n" +
+			"if (!custom) { \n" +
+			"N = normalize(TBN * normal); \n" +
+			"} \n" +
+			"float dotNL = clamp(dot(N,L), 0.0, 1.0); \n" +
+			"float dotNV = clamp(dot(N,V), 0.0, 1.0); \n" +
+			"float dotNH = clamp(dot(N,H), 0.0, 1.0); \n" +
+			"float dotLH = clamp(dot(L,H), 0.0, 1.0); \n" +
+			"float dotVH = clamp(dot(V,H), 0.0, 1.0); \n" +
+			"float roughness = 1.0 - glossines; \n" +
+			"float smoothness = glossines; \n" +
+			"float dotLH5 = pow(1.0 - dotLH, 5.0); \n" +
+			"vec3 F0 = specular; \n" +
+			"vec3 Fschlick = F0 + (1.0 - F0) * dotLH5; \n" +
+			"vec3 F = Fschlick; \n" +
+			"float D = 1.0; \n" +
+			"float a = pow(1.0 - smoothness * 0.7, 6.0); \n" +
+			"float aSqr = a * a; \n" +
+			"float Ddenom = dotNH * dotNH * (aSqr - 1.0) + 1.0; \n" +
+			"float Dh = aSqr / ( PI * Ddenom * Ddenom); \n" +
+			"float FL = pow((1.0 - dotNL), 5.0); \n" +
+			"float FV = pow((1.0 - dotNV), 5.0); \n" +
+			"float Fd90 = 0.5 + 2.0 * roughness * dotLH*dotLH; \n" +
+			"vec3 Fd = (specularColor).rgb / PI * (1.0 + (Fd90 - 1.0) * FL) * (1.0 + (Fd90 - 1.0) * FV); \n" +
+			"vec3 Fvh = F0 + (1.0 - F0) * pow((1.0 - dotVH), 5.0); \n" +
+			"float k = pow(0.8 + 0.5 * a, 2.0) / 2.0; \n" +
+			"float G1l = dotNL / (dotNL * (1.0 - k) + k); \n" +
+			"float G1v = dotNV / (dotNV * (1.0 - k) + k); \n" +
+			"float Glvn = G1l * G1v; \n" +
+			"vec3 flv = Dh * Fvh * Glvn / (4.0 * dotNL * dotNV); \n" +
+			"float roughness2 = roughness; \n" +
+			"smoothness = 1.0 - roughness; \n" +
+			"float maxMipMapLevel = 8.0; \n" +
+			"vec4 ambientDiffuse = gammaToLinear(sampleEnvMap(diffuseMap, N, ecPosition, 0.0, material_cubemapSize2)); \n" +
+			"vec4 ambientReflection = gammaToLinear(sampleEnvMap(reflectionMap, N, ecPosition, roughness2 * maxMipMapLevel, material_cubemapSize)); \n" +
+			"vec4 color = vec4(0.0); \n" +
+			"vec4 ao = texture2D(ssaoMap, gl_FragCoord.xy/windowSize);; \n" +
+			"ao = ao * ao; \n" +
+			"color += ao * ambientDiffuse * albedo / PI; \n" +
+			"color += albedo * dotNL * lightColor / PI; \n" +
+			"vec3 Fs = specular + (max(vec3(smoothness), specular) - specular) * pow(1.0 - max(dot(V, N), 0.0), 5.0); \n" +
+			"color = mix(color, ao * ambientReflection * vec4(Fs, 1.0), specular.r); \n" +
+			"gl_FragColor = linearToGamma(color); \n" +
+			"if (show == 1.0) gl_FragColor = vec4(N * 0.5 + 0.5, 1.0); \n" +
+			"if (show == 2.0) gl_FragColor = linearToGamma(albedo); \n" +
+			"if (show == 3.0) gl_FragColor = vec4(glossines); \n" +
+			"if (show == 4.0) gl_FragColor = vec4(specular, 1.0); \n" +
+			"if (show == 5.0) gl_FragColor = linearToGamma(ambientDiffuse); \n" +
+			"if (show == 6.0) gl_FragColor = linearToGamma(ambientReflection); \n" +
+			"if (show == 7.0) gl_FragColor = vec4(dotNL * vec3(pow(1.0 - max(dot(V, N), 0.0), 5.0)), 1.0); \n" +
+			"if (show == 8.0) gl_FragColor = vec4(ao); \n" +
+			"if (skyBox) { \n" +
+			"vec4 ambientReflection = gammaToLinear(sampleEnvMap(reflectionMap, normalize(ecNormal), ecPosition, 1.0, material_cubemapSize2)); \n" +
+			"gl_FragColor = linearToGamma(ambientReflection); \n" +
+			"if (show == 1.0) gl_FragColor = vec4(N * 0.5 + 0.5, 1.0); \n" +
+			"if (show == 7.0) gl_FragColor = vec4(ao); \n" +
+			"} \n" +
+			"} \n" +
+			"#endif \n",
+
+			"PBR_VS":
+			"precision highp float; \n" +
+			"attribute vec3 attribute_position; \n" +
+			"attribute vec3 attribute_normal; \n" +
+			"attribute vec2 attribute_uv0; \n" +
+			"varying vec4 varying_mvPose; \n" +
+			"varying vec3 varying_eyeNormal; \n" +
+			"varying vec3 wcNormal; \n" +
+			"varying vec3 wcCoords; \n" +
+			"varying vec2 varying_uv0; \n" +
+			"vec4 outPosition; \n" +
+			"uniform mat4 uniform_ModelMatrix; \n" +
+			"uniform mat4 uniform_ViewMatrix; \n" +
+			"uniform mat4 uniform_ProjectionMatrix; \n" +
+			"mat4 transpose(mat4 inMatrix) { \n" +
+			"vec4 i0 = inMatrix[0]; \n" +
+			"vec4 i1 = inMatrix[1]; \n" +
+			"vec4 i2 = inMatrix[2]; \n" +
+			"vec4 i3 = inMatrix[3]; \n" +
+			"mat4 outMatrix = mat4( \n" +
+			"vec4(i0.x, i1.x, i2.x, i3.x), \n" +
+			"vec4(i0.y, i1.y, i2.y, i3.y), \n" +
+			"vec4(i0.z, i1.z, i2.z, i3.z), \n" +
+			"vec4(i0.w, i1.w, i2.w, i3.w) \n" +
+			"); \n" +
+			"return outMatrix; \n" +
+			"} \n" +
+			"mat4 inverse(mat4 m) { \n" +
+			"float \n" +
+			"a00 = m[0][0], a01 = m[0][1], a02 = m[0][2], a03 = m[0][3], \n" +
+			"a10 = m[1][0], a11 = m[1][1], a12 = m[1][2], a13 = m[1][3], \n" +
+			"a20 = m[2][0], a21 = m[2][1], a22 = m[2][2], a23 = m[2][3], \n" +
+			"a30 = m[3][0], a31 = m[3][1], a32 = m[3][2], a33 = m[3][3], \n" +
+			"b00 = a00 * a11 - a01 * a10, \n" +
+			"b01 = a00 * a12 - a02 * a10, \n" +
+			"b02 = a00 * a13 - a03 * a10, \n" +
+			"b03 = a01 * a12 - a02 * a11, \n" +
+			"b04 = a01 * a13 - a03 * a11, \n" +
+			"b05 = a02 * a13 - a03 * a12, \n" +
+			"b06 = a20 * a31 - a21 * a30, \n" +
+			"b07 = a20 * a32 - a22 * a30, \n" +
+			"b08 = a20 * a33 - a23 * a30, \n" +
+			"b09 = a21 * a32 - a22 * a31, \n" +
+			"b10 = a21 * a33 - a23 * a31, \n" +
+			"b11 = a22 * a33 - a23 * a32, \n" +
+			"det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06; \n" +
+			"return mat4( \n" +
+			"a11 * b11 - a12 * b10 + a13 * b09, \n" +
+			"a02 * b10 - a01 * b11 - a03 * b09, \n" +
+			"a31 * b05 - a32 * b04 + a33 * b03, \n" +
+			"a22 * b04 - a21 * b05 - a23 * b03, \n" +
+			"a12 * b08 - a10 * b11 - a13 * b07, \n" +
+			"a00 * b11 - a02 * b08 + a03 * b07, \n" +
+			"a32 * b02 - a30 * b05 - a33 * b01, \n" +
+			"a20 * b05 - a22 * b02 + a23 * b01, \n" +
+			"a10 * b10 - a11 * b08 + a13 * b06, \n" +
+			"a01 * b08 - a00 * b10 - a03 * b06, \n" +
+			"a30 * b04 - a31 * b02 + a33 * b00, \n" +
+			"a21 * b02 - a20 * b04 - a23 * b00, \n" +
+			"a11 * b07 - a10 * b09 - a12 * b06, \n" +
+			"a00 * b09 - a01 * b07 + a02 * b06, \n" +
+			"a31 * b01 - a30 * b03 - a32 * b00, \n" +
+			"a20 * b03 - a21 * b01 + a22 * b00) / det; \n" +
+			"} \n" +
+			"void main(void){ \n" +
+			"mat4 mvMatrix = mat4(uniform_ViewMatrix * uniform_ModelMatrix); \n" +
+			"varying_mvPose = mvMatrix * vec4( attribute_position *4.0, 1.0 )  ; \n" +
+			"mat4 normalMatrix = inverse(mvMatrix) ; \n" +
+			"normalMatrix = transpose(normalMatrix); \n" +
+			"varying_eyeNormal = mat3(normalMatrix) * -attribute_normal ; \n" +
+			"varying_uv0 = attribute_uv0 ; \n" +
+			"wcNormal = attribute_normal; \n" +
+			"wcCoords = (uniform_ModelMatrix * vec4( attribute_position * 4.0, 1.0 )).xyz; \n" +
+			"outPosition = uniform_ProjectionMatrix * varying_mvPose ; \n" +
+			"gl_Position = outPosition; \n" +
 			"} \n",
 
 			"pickPass_fs":
@@ -3055,7 +3714,8 @@ module egret3d {
 			"uniform float time ; \n" +
 			"uniform sampler2D normalTextureA; \n" +
 			"uniform sampler2D normalTextureB; \n" +
-			"varying vec2 varying_uv0        ; \n" +
+			"varying vec4 varying_mvPose; \n" +
+			"varying vec2 varying_uv0; \n" +
 			"mat3 TBN ; \n" +
 			"mat3 cotangentFrame(vec3 N, vec3 p, vec2 uv) { \n" +
 			"vec3 dp1 = dFdx(p); \n" +

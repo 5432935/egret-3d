@@ -48,6 +48,7 @@
         */
         constructor(data: ParticleData, material: MaterialBase = null) {
             super(null, material);
+
             //##FilterBegin## ##Particle##
             this.tag.name = "effect";
             this.type = IRender.TYPE_PARTICLE_EMIT;
@@ -61,11 +62,10 @@
             this._generator = new ParticleLifeGenerator();
             this._particleAnimation.emit = this;
 
-
             this.buildParticle();
 
             this.animation.isLoop = this._data.life.loop;
-            //##FilterEnd##
+                //##FilterEnd##
         }
 
         /**
@@ -145,9 +145,11 @@
             var mode: number = this._data.property.renderMode;
             if (mode == ParticleRenderModeType.Billboard || mode == ParticleRenderModeType.StretchedBillboard) {
                 this.billboard = BillboardType.STANDARD;
-            } else if (mode == ParticleRenderModeType.HorizontalBillboard || mode == ParticleRenderModeType.VerticalBillboard) {
+            } else if (mode == ParticleRenderModeType.VerticalBillboard) {
                 this.billboard = BillboardType.Y_AXIS;
             } else {
+                //ParticleRenderModeType.HorizontalBillboard
+                //ParticleRenderModeType.Mesh
                 this.billboard = BillboardType.DISABLE;
             }
 

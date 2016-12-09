@@ -142,7 +142,7 @@
                 if (this.isLoop == false) {
                     var endTime: number = this.loopTime * 1000;
                     if (this._lastAnimTime <= endTime && this.animTime > endTime) {
-                        this._event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
+                        this._event3D.eventType = AnimationEvent3D.COMPLETE;
                         this._event3D.target = this;
                         this.dispatchEvent(this._event3D);
                     }
@@ -195,7 +195,9 @@
             if (prewarm){
                 this.animTime = this.particleAnimationState.modTime;
             }
-
+            if (prewarm || reset) {
+                this.particleAnimationState.onAnimTimeChange();
+            }
             this.speed = speed;
         } 
 

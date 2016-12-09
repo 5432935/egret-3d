@@ -3,7 +3,8 @@ uniform float time ;
 uniform sampler2D normalTextureA;
 uniform sampler2D normalTextureB;
 
-varying vec2 varying_uv0        ;
+varying vec4 varying_mvPose;
+varying vec2 varying_uv0;
 mat3 TBN ;
 mat3 cotangentFrame(vec3 N, vec3 p, vec2 uv) {
     vec3 dp1 = dFdx(p);

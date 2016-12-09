@@ -22,8 +22,7 @@
             super();
             //##FilterBegin## ##Particle##
             this.name = "ParticleVelocityForceConstNode";
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityForceConst");
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityForceConst");
 
             this.attribute_accelerationSpeed = new GLSL.VarRegister();
             this.attribute_accelerationSpeed.name = "attribute_velocityForceConst";

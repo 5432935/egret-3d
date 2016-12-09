@@ -2,6 +2,30 @@
 
     /**
      * @private
+     * @class egret3D.Egret3DPolicy
+     * @classdesc
+     */
+    export class Egret3DPolicy {
+        public static useParticle: boolean = true;
+        public static useAnimEffect: boolean = true;
+        public static useEffect: boolean = true;
+        public static useRibbon: boolean = true;
+
+        public static useAnimPoseInterpolation: boolean = true;
+        public static useAnimMixInterpolation: boolean = true;
+        public static useAnimCache: boolean = false;
+
+        public static useLight: boolean = true;
+
+        public static usePost: boolean = true;
+
+        public static useCompress: boolean = false;
+
+        public static useLowLOD: boolean = false;
+    }
+
+    /**
+     * @private
      * @class egret3D.Egret3DEngine
      * @classdesc
      * 引擎库文件加载
@@ -40,6 +64,45 @@
             this._tsconfigs.push("Egret3D/tsconfig.json");
         }
 
+
+        public useDevicePOLICY(lv: number = 0) {
+            switch (lv){
+                case 0:
+                    if (this.isWeiXin()) {
+                      Egret3DPolicy.useAnimPoseInterpolation = false;
+                      Egret3DPolicy.useAnimMixInterpolation = false;
+                    }
+                    if (this.isAndroid()) {
+                        Egret3DPolicy.useAnimPoseInterpolation = false;
+                        Egret3DPolicy.useAnimMixInterpolation = false;
+                        Egret3DPolicy.useParticle = false;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private isWeiXin(): boolean{ 
+            let ua = self.navigator.userAgent.toLowerCase();
+            let index = ua.indexOf("micromessenger");
+            if (index != -1) {
+                return true;
+            } else {
+                return false;
+            }
+        } 
+
+        private isAndroid(): boolean {
+            let ua = self.navigator.userAgent.toLowerCase();
+            let index = ua.indexOf("android");
+            if (index != -1) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         public addTsconfig(path: string) {
             this._tsconfigs.push(path);
         }
@@ -76,6 +139,7 @@
                 alert("Your browser does not support XMLHTTP.");
                 return;
             }
+
             if (this._xhr.readyState > 0) {
                 this._xhr.abort();
             }

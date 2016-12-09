@@ -22,6 +22,13 @@ module nid
         static allocateUint32(len:number):void{
             MEMORY.u32 = new Uint32Array(len);
         }
+
+        static reset(): void {
+            MEMORY.u8Index = 0;
+            MEMORY.u16Index = 0;
+            MEMORY.u32Index = 0;
+        }
+
         static getUint8():number{
             if(!MEMORY.u8){
                 MEMORY.allocateUint8(10);

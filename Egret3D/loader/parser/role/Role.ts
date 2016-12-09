@@ -103,7 +103,10 @@
             if (child instanceof Mesh) {
                 this.setAvatar(child.name, <Mesh>child);
             }
-            return super.addChildAt(child, index);
+            else {
+                super.addChildAt(child, index);
+            }
+            return child;
         }
 
 
@@ -144,6 +147,7 @@
         * @platform Web,Native
         */
         public update(time: number, delay: number) {
+        
         }
 
         /**
@@ -155,7 +159,7 @@
         */
         public copy(other: Role) {
             super.copy(other);
-            this.skeletonAnimation = other.skeletonAnimation.clone();
+            //this.skeletonAnimation = other.skeletonAnimation.clone();
         }
 
         /**
@@ -167,9 +171,17 @@
         * @platform Web,Native
         */
         public clone(): Role {
-            var cloneObject: Role = new Role();
-            cloneObject.copy(this);
-            return cloneObject;
+            var cloneRole: Role = new Role();
+            var skeletonAnimation = <SkeletonAnimation>this.skeletonAnimation.clone();
+            cloneRole.skeletonAnimation = skeletonAnimation;
+            for (var i: number = 0; i < this.childs.length; i++) {
+                if (this.childs[i] instanceof Mesh) {
+                    var mesh = <Mesh>this.childs[i].clone();
+                    mesh.animation = skeletonAnimation; 
+                    cloneRole.setAvatar(mesh.name,mesh);
+                }
+            }
+            return cloneRole;
         }
     }
 }

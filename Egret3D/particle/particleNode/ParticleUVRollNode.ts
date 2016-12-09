@@ -24,8 +24,8 @@
             //##FilterBegin## ##Particle##
             this.name = "ParticleUVRollNode";
             //需要在之前进行设置UV
-            this.fragment_ShaderName[ShaderPhaseType.start_fragment] = this.fragment_ShaderName[ShaderPhaseType.start_fragment] || [];
-            this.fragment_ShaderName[ShaderPhaseType.start_fragment].push("particle_uv_roll_fs");
+            this.importShader(false, ShaderPhaseType.start_fragment, "particle_uv_roll_fs");
+
             //##FilterEnd##
         }
 

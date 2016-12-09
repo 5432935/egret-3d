@@ -473,9 +473,9 @@
             //    contextProxy.setScissorRectangle(this._viewPort.x, this._viewPort.y, this._viewPort.width, this._viewPort.height);
             //}
 
-            for (var i: number = 0; i < 8; i++) {
-                Context3DProxy.gl.disableVertexAttribArray(i);
-            }
+            //for (var i: number = 0; i < 8; i++) {
+            //    Context3DProxy.gl.disableVertexAttribArray(i);
+            //}
 
             for (var i: number = 0; i < this._attList.length; ++i) {
                 var attribute: GLSL.Attribute = this._attList[i];

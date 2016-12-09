@@ -26,9 +26,9 @@
             this._queueLoad = new QueueLoader();
             this._queueLoad.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.quenLoadComplete, this);
 
-            this._queueLoad.load("resource/anim/simayi/Simayi.esm");
-            this._queueLoad.load("resource/anim/simayi/idle.eam");
-            this._queueLoad.load("resource/anim/simayi/Simayi_d.png");
+            this._queueLoad.load("resource/0_Model/Esm/Zhouyu.esm");
+            this._queueLoad.load("resource/0_Model/Eam/idle.eam");
+            this._queueLoad.load("resource/0_Model/Texture/hero_01.png");
             this._queueLoad.load("resource/floor/brick-diffuse.jpg");
         }
 
@@ -41,10 +41,10 @@
             this.lights.addLight(p);
 
             //---------------------------
-            var skinGeometry: Geometry = <Geometry>this._queueLoad.getAsset("resource/anim/simayi/Simayi.esm");
-            var texture: Texture = <Texture>this._queueLoad.getAsset("resource/anim/simayi/Simayi_d.png");
-            var anim_idle: SkeletonAnimationClip = <SkeletonAnimationClip>this._queueLoad.getAsset("resource/anim/simayi/idle.eam");
-
+            var skinGeometry: Geometry = <Geometry>this._queueLoad.getAsset("resource/0_Model/Esm/Zhouyu.esm");
+            var texture: Texture = <Texture>this._queueLoad.getAsset("resource/0_Model/Texture/hero_01.png");
+            var anim_idle: SkeletonAnimationClip = <SkeletonAnimationClip>this._queueLoad.getAsset("resource/0_Model/Eam/idle.eam");
+            anim_idle.isLoop = true;
             var animMesh: Mesh = new Mesh(skinGeometry, new TextureMaterial(texture));
             animMesh.material.castShadow = true; 
             anim_idle.animationName = "idle";
@@ -57,10 +57,10 @@
             rimMethod.rimPow = 5.0;
             animMesh.material.diffusePass.addMethod(rimMethod);
 
-            animMesh.animation.skeletonAnimationController.addSkeletonAnimationClip(anim_idle);
+            animMesh.animation.skeletonAnimationController.state.addAnimClip(anim_idle);
 
             //你可以加快播放速度试一试
-            animMesh.animation.play( "idle" , 1.0 );
+            animMesh.animation.play("idle", 1.0);
             this.view1.addChild3D(animMesh);
             //---------------------------
 

@@ -16,12 +16,9 @@
             //##FilterBegin## ##Particle##
 
             this.name = "ParticleSpeedNode";
-
-            this.vertex_ShaderName[ShaderPhaseType.utils_vertex] = this.vertex_ShaderName[ShaderPhaseType.utils_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.utils_vertex].push("particle_bezier");
-
-            this.fragment_ShaderName[ShaderPhaseType.diffuse_fragment] = this.fragment_ShaderName[ShaderPhaseType.diffuse_fragment] || [];
-            this.fragment_ShaderName[ShaderPhaseType.diffuse_fragment].push("particle_diffuse_fragment");
+            this.importShader(true, ShaderPhaseType.utils_vertex, "particle_bezier");
+            this.importShader(false, ShaderPhaseType.utils_fragment, "particle_bezier");
+            this.importShader(false, ShaderPhaseType.diffuse_fragment, "particle_diffuse_fragment");
 
             this.attribute_time = new GLSL.VarRegister();
             this.attribute_time.name = "attribute_time";

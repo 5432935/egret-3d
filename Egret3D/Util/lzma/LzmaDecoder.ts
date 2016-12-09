@@ -66,6 +66,7 @@ module nid
 
         public init():void
         {
+            MEMORY.reset();
             this.loc1 = MEMORY.getUint32() | 0;
             this.loc2 = MEMORY.getUint32() | 0;
             this.matchBitI = MEMORY.getUint16() | 0;

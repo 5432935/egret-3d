@@ -72,7 +72,7 @@
         /**
         * @language zh_CN
         * 事件目标。
-        * 一般为注册事件的对象本身。
+        * 一般为注册事件的对象本身。 EventDispatcher
         * @see egret3d.EventDispatcher
         * @version Egret 3.0
         * @platform Web,Native
@@ -82,11 +82,11 @@
         /**
         * @language zh_CN
         * 当前正在使用某个事件侦听器处理 Event3D 对象的对象
-        * @see egret3d.EventDispatcher
+        * @see egret3d.EventListener
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public currentTarget: any;
+        public currentTarget: EventListener;
 
         /**
         * @language zh_CN

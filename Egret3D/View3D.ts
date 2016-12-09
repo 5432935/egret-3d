@@ -258,6 +258,8 @@
         public set scene(sc: Scene3D) {
             this._scene = sc;
             this._entityCollect.root = this._scene;
+            if (this.camera3D.parent)
+                this.addChild3D(this.camera3D);
         }
 
         /**
@@ -586,7 +588,9 @@
             //------------------
             if (Egret3DEngine.instance.debug)
                 this.a = new Date().getTime();
+
             this.updateObject3D(this._scene, time, delay);
+
             if (Egret3DEngine.instance.debug)
                 egret3d.Egret3DState.showDataInfo("updateObject3D: " + (new Date().getTime() - this.a) + " ms");
 
@@ -675,7 +679,7 @@
         }
 
         private updateObject3D(object3d: Object3D, time: number, delay: number) {
-            if (object3d) {
+            if (object3d && object3d.visible) {
                 object3d.update(time, delay, this.camera3D);
                 for (var i: number = 0; i < object3d.childs.length; ++i) {
                     this.updateObject3D(object3d.childs[i], time, delay);
@@ -709,6 +713,17 @@
             } else if (de.webkitCancelFullScreen) {
                 de.webkitCancelFullScreen();
             }
+        }
+
+        /**
+        * @private
+        * @language zh_CN
+        */
+        public static setObjectSrceenPos(x: number, y: number, target: Object3D, camera: Camera3D) {
+            camera.object3DToScreenRay(new Vector3D(), Vector3D.HELP_0);
+            Vector3D.HELP_0.setTo(x, y, Vector3D.HELP_0.z);
+            camera.ScreenRayToObject3D(Vector3D.HELP_0, Vector3D.HELP_1);
+            target.globalPosition = Vector3D.HELP_1;
         }
     }
 }

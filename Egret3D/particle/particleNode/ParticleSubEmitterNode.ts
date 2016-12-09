@@ -104,6 +104,10 @@
             this._animationState = <ParticleAnimationState>this.state;
             //先重置成-1，然后每帧检测每个粒子的上一帧的所属出身次数和下一帧的出身次数，判定是否要刷新他的初始位置
             this._lifeCircles = [];
+            this.resetCircleData();
+        }
+
+        private resetCircleData(): void {
             for (var i: number = 0; i < this.count; i++) {
                 this._lifeCircles[i] = -1;
             }

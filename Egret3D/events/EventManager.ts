@@ -85,7 +85,7 @@
                 var object3d: Object3D = null;
                 var ray: Ray = null;
                 this._retRenderList.length = 0;
-                var ret: Array<IRender> = this._retRenderList;
+                var ret: Array<Object3D> = this._retRenderList;
                 for (var j: number = 0; j < collect.length; ++j) {
                     object3d = collect[j];
                     if (!object3d.containEventListener(e.eventType) && !object3d.containEventListener(typeStr)) {
@@ -94,8 +94,8 @@
                     if (!ray) {
                         ray = Picker.createRayToView(view, this._ray);
                     }
-                    if (Picker.doPickerObject(this._ray, collect[i])) {
-                        ret.push(collect[i]);
+                    if (Picker.doPickerObject(this._ray, object3d)) {
+                        ret.push(object3d);
                     }
                 }
 
@@ -103,7 +103,7 @@
                 if (len <= 0) {
                     continue;
                 }
-                var render: IRender = null;
+                var render: Object3D = null;
                 var dis: number = MathUtil.MAX_VALUE;
                 var temp_dis: number = 0;
                 for (var j: number = 0; j < len; j++) {
@@ -112,7 +112,7 @@
                     temp_dis = Vector3D.distance(object3d.globalPosition, view.camera3D.globalPosition);
                     if (temp_dis < dis) {
                         dis = temp_dis;
-                        render = ret[j];
+                        render = object3d;
                     }
                 }
                 if (render) {

@@ -35,17 +35,16 @@
             this._floatCompressDataY = this._node.velocityOver.yBezier1.trySampler();
             this._floatCompressDataZ = this._node.velocityOver.zBezier1.trySampler();
 
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverOneBezier");
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverOneBezier");
 
             if (this._floatCompressDataX) {
-                this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverOneBezierX");
+                this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverOneBezierX");
             }
             if (this._floatCompressDataY) {
-                this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverOneBezierY");
+                this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverOneBezierY");
             }
             if (this._floatCompressDataZ) {
-                this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverOneBezierZ");
+                this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverOneBezierZ");
             }
 
             //##FilterEnd##

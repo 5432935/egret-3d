@@ -264,24 +264,33 @@
         //}
 
         public validate(): void {
-            if (this.posPoints == null) {
-                this.posPoints = [];
-            }
-            if (this.ctrlPoints == null) {
-                this.ctrlPoints = [];
-            }
             var i: number = 0, count: number = 0;
-            for (i = this.posPoints.length / 2, count = BezierData.SegCount; i < count; i++) {
-                this.posPoints.push(new Point(0, 0));
-                this.posPoints.push(new Point(1, 0));
-            }
-            for (i = this.ctrlPoints.length / 2, count = BezierData.SegCount; i < count; i++) {
-                this.ctrlPoints.push(new Point(0, 0));
-                this.ctrlPoints.push(new Point(1, 0));
-            }
+            if (!this.lineMode) {
+                if (this.posPoints == null) {
+                    this.posPoints = [];
+                }
+                if (this.ctrlPoints == null) {
+                    this.ctrlPoints = [];
+                }
+                for (i = this.posPoints.length / 2, count = BezierData.SegCount; i < count; i++) {
+                    this.posPoints.push(new Point(0, 0));
+                    this.posPoints.push(new Point(1, 0));
+                }
+                for (i = this.ctrlPoints.length / 2, count = BezierData.SegCount; i < count; i++) {
+                    this.ctrlPoints.push(new Point(0, 0));
+                    this.ctrlPoints.push(new Point(1, 0));
+                }
 
-            this.ctrlPoints.length = BezierData.SegCount * 2;
-            this.posPoints.length = BezierData.SegCount * 2;
+                this.ctrlPoints.length = BezierData.SegCount * 2;
+                this.posPoints.length = BezierData.SegCount * 2;
+            } else {
+                if (this.linePoints == null) {
+                    this.linePoints = [];
+                }
+                for (i = this.linePoints.length, count = 17/*(8 + 9)*/; i < count; i++) {
+                    this.linePoints.push(new Point(1, 0));
+                }
+            }
         }
 
         //___________压缩数据

@@ -25,6 +25,14 @@
         */
         public lodQuadTree: LODQuadTree;
 
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public cullCamrea: Camera3D;
+
         private vertex: any;
         private useLod: boolean;
 
@@ -153,7 +161,7 @@
 
                 var index: number = 0;
 
-                index = this.lodQuadTree.build(index, this.geometry.indexArray, camera);
+                index = this.lodQuadTree.build(index, this.geometry.indexArray, this.cullCamrea ? this.cullCamrea : camera);
                 this.geometry.indexCount = index;
                 this.geometry.bufferDiry = true;
                 this.geometry.subGeometrys[0].count = this.geometry.indexCount;

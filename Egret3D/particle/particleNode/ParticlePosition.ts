@@ -47,8 +47,7 @@
             //根据粒子的属性，选择使用相机方式
             var renderMode: number = (<ParticleDataProperty>arg).renderMode;
             if (renderMode == ParticleRenderModeType.StretchedBillboard) {
-                this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
-                this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_stretched_mode");
+                this.importShader(true, ShaderPhaseType.local_vertex, "particle_stretched_mode");
             }
 
             //初始化顶点数据
@@ -141,7 +140,7 @@
                 var pos: Vector3D = positionArray[i];
                 recordPos.copyFrom(pos);
                 //缩放______________________________________________________
-                pos.multiply(data.property.scale, pos);
+                //pos.multiply(data.property.scale, pos);
 
                 //粒子发射方向
                 var dir: Vector3D = new Vector3D();
@@ -149,7 +148,7 @@
                     dir.setTo(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
                 } else {
                     if (this._node.type == ParticleDataShapeType.Point) {
-                        dir.setTo(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+                        dir.setTo(0, 0, 1, 1);
                     } else if (this._node.type == ParticleDataShapeType.Cube) {
                         dir.setTo(0, 0, 1, 1);
                     } else if (this._node.type == ParticleDataShapeType.Sphere) {
@@ -160,7 +159,7 @@
                         dir = coneShape.directions[i];
                     } else if (this._node.type == ParticleDataShapeType.Mesh) {
                         dir.copyFrom(meshNormalArray[i]);
-                    } else if (this._node.type == ParticleDataShapeType.Mesh) {
+                    } else if (this._node.type == ParticleDataShapeType.External) {
                         dir.setTo(0, 0, 1, 1);
                     }
                 }

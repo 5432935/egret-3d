@@ -53,27 +53,25 @@
             this._floatCompressDataY2 = this._node.velocityOver.yBezier2.trySampler();
             this._floatCompressDataZ2 = this._node.velocityOver.zBezier2.trySampler();
 
-
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverTwoBezier");
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverTwoBezier");
 
             if (this._floatCompressDataX1) {
-                this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverTwoBezierX1");
+                this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverTwoBezierX1");
             }
             if (this._floatCompressDataX2) {
-                this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverTwoBezierX2");
+                this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverTwoBezierX2");
             }
             if (this._floatCompressDataY1) {
-                this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverTwoBezierY1");
+                this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverTwoBezierY1");
             }
             if (this._floatCompressDataY2) {
-                this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverTwoBezierY2");
+                this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverTwoBezierY2");
             }
             if (this._floatCompressDataZ1) {
-                this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverTwoBezierZ1");
+                this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverTwoBezierZ1");
             }
             if (this._floatCompressDataZ2) {
-                this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverTwoBezierZ2");
+                this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverTwoBezierZ2");
             }
             //##FilterEnd##
         }

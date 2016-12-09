@@ -23,11 +23,9 @@
             //##FilterBegin## ##Particle##
             this.name = "ParticleColorGlobalNode";
 
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_color_vs");
-
-            this.fragment_ShaderName[ShaderPhaseType.end_fragment] = this.fragment_ShaderName[ShaderPhaseType.end_fragment] || [];
-            this.fragment_ShaderName[ShaderPhaseType.end_fragment].push("particle_color_fs");
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_color_vs");
+            this.importShader(false, ShaderPhaseType.end_fragment, "particle_color_fs");
+           
             //##FilterEnd##
 
         }

@@ -20,6 +20,7 @@
 
             var iscompress = bytes.readByte();
 
+
             if (iscompress == 1) {
                 var len = bytes.readInt();
                 var context: ByteArray = new ByteArray();
@@ -27,6 +28,8 @@
                 bytes.readBytes(context, 0, len);
                 context.uncompress();
                 bytes = context;
+
+                iscompress = bytes.readByte();
             }
 
 

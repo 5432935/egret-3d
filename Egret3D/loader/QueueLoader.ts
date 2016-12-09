@@ -258,7 +258,7 @@
        * @version Egret 3.0
        * @platform Web,Native
        */   
-        public getSkeletonAnimationClip(url: string): SkeletonAnimationClip {
+        public getAnimClip(url: string): SkeletonAnimationClip {
             var obj = this.getAsset(url);
             if (obj instanceof SkeletonAnimationClip)
                 return <SkeletonAnimationClip>this.getAsset(url);

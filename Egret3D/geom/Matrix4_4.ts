@@ -19,7 +19,7 @@
         * @private
         */
         public static helpMatrix: Matrix4_4 = new Matrix4_4();
-        
+
         /**
         * @language zh_CN
         * 一个由 16 个数字组成的矢量，其中，每四个元素可以是 4x4 矩阵的一行或一列
@@ -28,6 +28,9 @@
         */
         public rawData: Float32Array;
 
+        private length: number = 16;
+
+        private rowLength:number = 4;
         /**
         * @language zh_CN
         * 构造
@@ -52,11 +55,12 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public lookAt(eye: Vector3D, at: Vector3D, up: Vector3D = Vector3D.Y_AXIS):void {
-            at.subtract(eye,Vector3D.HELP_0)
-            var zaxis: Vector3D = Vector3D.HELP_0;
+        public lookAt(eye: Vector3D, at: Vector3D, up: Vector3D = Vector3D.Y_AXIS): void {
+            let data = this.rawData; 
+            at.subtract(eye, Vector3D.HELP_0)
+            let zaxis: Vector3D = Vector3D.HELP_0;
             zaxis.normalize();
-            var xaxis: Vector3D = up.crossProduct(zaxis, Vector3D.HELP_1);
+            let xaxis: Vector3D = up.crossProduct(zaxis, Vector3D.HELP_1);
 
             if (xaxis.length < 0.05) {
                 xaxis.x = up.y;
@@ -72,28 +76,28 @@
             }
 
             xaxis.normalize();
-            var yaxis = zaxis.crossProduct(xaxis, Vector3D.HELP_2);
+            let yaxis = zaxis.crossProduct(xaxis, Vector3D.HELP_2);
 
-            this.rawData[0] = xaxis.x;
-            this.rawData[1] = yaxis.x;
-            this.rawData[2] = zaxis.x;
-            this.rawData[3] = 0;
+            data[0] = xaxis.x;
+            data[1] = yaxis.x;
+            data[2] = zaxis.x;
+            data[3] = 0;
 
-            this.rawData[4] = xaxis.y;
-            this.rawData[5] = yaxis.y;
-            this.rawData[6] = zaxis.y;
-            this.rawData[7] = 0;
+            data[4] = xaxis.y;
+            data[5] = yaxis.y;
+            data[6] = zaxis.y;
+            data[7] = 0;
 
-            this.rawData[8] = xaxis.z;
-            this.rawData[9] = yaxis.z;
-            this.rawData[10] = zaxis.z;
-            this.rawData[11] = 0;
+            data[8] = xaxis.z;
+            data[9] = yaxis.z;
+            data[10] = zaxis.z;
+            data[11] = 0;
 
-            this.rawData[12] = -xaxis.dotProduct(eye);
-            this.rawData[13] = -yaxis.dotProduct(eye);
-            this.rawData[14] = -zaxis.dotProduct(eye);
+            data[12] = -xaxis.dotProduct(eye);
+            data[13] = -yaxis.dotProduct(eye);
+            data[14] = -zaxis.dotProduct(eye);
 
-            this.rawData[15] = 1;
+            data[15] = 1;
         }
 
         /**
@@ -103,8 +107,8 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public multiply(mat4: Matrix4_4):void {
-            var a = this.rawData, b = mat4.rawData, r = Matrix4_4.helpMatrix;
+        public multiply(mat4: Matrix4_4): void {
+            let a = this.rawData, b = mat4.rawData, r = Matrix4_4.helpMatrix;
 
             r[0] = a[0] * b[0] + a[1] * b[4] + a[2] * b[8] + a[3] * b[12];
             r[1] = a[0] * b[1] + a[1] * b[5] + a[2] * b[9] + a[3] * b[13];
@@ -125,16 +129,32 @@
             r[13] = a[12] * b[1] + a[13] * b[5] + a[14] * b[9] + a[15] * b[13];
             r[14] = a[12] * b[2] + a[13] * b[6] + a[14] * b[10] + a[15] * b[14];
             r[15] = a[12] * b[3] + a[13] * b[7] + a[14] * b[11] + a[15] * b[15];
-            for (var i = 0; i < 16; i++) this.rawData[i] = r[i];
-        }
+
+            a[0] = r[0];
+            a[1] = r[1];
+            a[2] = r[2];
+            a[3] = r[3];
+            a[4] = r[4];
+            a[5] = r[5];
+            a[6] = r[6];
+            a[7] = r[7];
+            a[8] = r[8];
+            a[9] = r[9];
+            a[10] = r[10];
+            a[11] = r[11];
+            a[12] = r[12];
+            a[13] = r[13];
+            a[14] = r[14];
+            a[15] = r[15];
+        }   
 
         /**
         * @private
         * @language zh_CN
         */
-        public perspectiveB(fov: number, aspect: number, near: number, far: number) : Matrix4_4{
-            var y = Math.tan(fov * Math.PI / 360) * near;
-            var x = y * aspect;
+        public perspectiveB(fov: number, aspect: number, near: number, far: number): Matrix4_4 {
+            let y = Math.tan(fov * Math.PI / 360) * near;
+            let x = y * aspect;
             return this.frustum(-x, x, -y, y, near, far);
         }
 
@@ -143,7 +163,7 @@
         * @language zh_CN
         */
         public frustum(l: number, r: number, b: number, t: number, n: number, f: number): Matrix4_4 {
-            var m = this.rawData;
+            let m = this.rawData;
 
             m[0] = 2 * n / (r - l);
             m[1] = 0;
@@ -169,7 +189,7 @@
         }
 
         //public ortho(l: number, r: number, b: number, t: number, n: number, f: number): Matrix4_4 {
-        //    var m = this.rawData;
+        //    var m = data;
 
         //    m[0] = 2 / (r - l);
         //    m[1] = 0;
@@ -205,29 +225,31 @@
         * @platform Web,Native
         */
         public perspective(fovy: number, aspect: number, zn: number, zf: number) {
-            var angle: number = fovy * (Math.PI / 180.0);
-            var yScale: number = Math.tan((Math.PI  - angle) / 2.0);
-            var xScale: number = yScale / aspect;
 
-            this.rawData[0] = xScale;
-            this.rawData[1] = 0;
-            this.rawData[2] = 0;
-            this.rawData[3] = 0;
+            let data = this.rawData; 
+            let angle: number = fovy * (Math.PI / 180.0);
+            let yScale: number = Math.tan((Math.PI - angle) / 2.0);
+            let xScale: number = yScale / aspect;
 
-            this.rawData[4] = 0;
-            this.rawData[5] = yScale;
-            this.rawData[6] = 0;
-            this.rawData[7] = 0;
+            data[0] = xScale;
+            data[1] = 0;
+            data[2] = 0;
+            data[3] = 0;
 
-            this.rawData[8] = 0;
-            this.rawData[9] = 0;
-            this.rawData[10] = zf / (zf - zn);
-            this.rawData[11] = 1;
+            data[4] = 0;
+            data[5] = yScale;
+            data[6] = 0;
+            data[7] = 0;
 
-            this.rawData[12] = 0;
-            this.rawData[13] = 0;
-            this.rawData[14] = -zn * zf / (zf - zn);
-            this.rawData[15] = 0;
+            data[8] = 0;
+            data[9] = 0;
+            data[10] = zf / (zf - zn);
+            data[11] = 1;
+
+            data[12] = 0;
+            data[13] = 0;
+            data[14] = -zn * zf / (zf - zn);
+            data[15] = 0;
         }
 
         /**
@@ -241,25 +263,27 @@
         * @platform Web,Native
         */
         public ortho(w: number, h: number, zn: number, zf: number) {
-            this.rawData[0] = 2 / w;
-            this.rawData[1] = 0;
-            this.rawData[2] = 0;
-            this.rawData[3] = 0;
+            let data = this.rawData; 
 
-            this.rawData[4] = 0;
-            this.rawData[5] = 2 / h;
-            this.rawData[6] = 0;
-            this.rawData[7] = 0;
+            data[0] = 2 / w;
+            data[1] = 0;
+            data[2] = 0;
+            data[3] = 0;
 
-            this.rawData[8] = 0;
-            this.rawData[9] = 0;
-            this.rawData[10] = 1 / (zf - zn);
-            this.rawData[11] = 0;
+            data[4] = 0;
+            data[5] = 2 / h;
+            data[6] = 0;
+            data[7] = 0;
 
-            this.rawData[12] = 0;
-            this.rawData[13] = 0;
-            this.rawData[14] = zn / (zn - zf);
-            this.rawData[15] = 1 ;
+            data[8] = 0;
+            data[9] = 0;
+            data[10] = 1 / (zf - zn);
+            data[11] = 0;
+
+            data[12] = 0;
+            data[13] = 0;
+            data[14] = zn / (zn - zf);
+            data[15] = 1;
         }
 
         /**
@@ -275,25 +299,27 @@
         * @platform Web,Native
         */
         public orthoOffCenter(l: number, r: number, b: number, t: number, zn: number, zf: number) {
-            this.rawData[0] = 2 / (r - l);
-            this.rawData[1] = 0;
-            this.rawData[2] = 0;
-            this.rawData[3] = 0;
+            let data = this.rawData; 
 
-            this.rawData[4] = 0;
-            this.rawData[5] = 2 / (t - b);
-            this.rawData[6] = 0;
-            this.rawData[7] = 0;
+            data[0] = 2 / (r - l);
+            data[1] = 0;
+            data[2] = 0;
+            data[3] = 0;
 
-            this.rawData[8] = 0;
-            this.rawData[9] = 0;
-            this.rawData[10] = 1.0 / (zf - zn);
-            this.rawData[11] = 0;
-            
-            this.rawData[12] = (l + r) / (l - r);
-            this.rawData[13] = (t + b) / (b - t);
-            this.rawData[14] = zn / (zn - zf);
-            this.rawData[15] = 1;
+            data[4] = 0;
+            data[5] = 2 / (t - b);
+            data[6] = 0;
+            data[7] = 0;
+
+            data[8] = 0;
+            data[9] = 0;
+            data[10] = 1.0 / (zf - zn);
+            data[11] = 0;
+
+            data[12] = (l + r) / (l - r);
+            data[13] = (t + b) / (b - t);
+            data[14] = zn / (zn - zf);
+            data[15] = 1;
         }
 
         /**
@@ -305,23 +331,25 @@
         * @platform Web,Native
         */
         public fromToRotation(fromDirection: Vector3D, toDirection: Vector3D) {
-            var EPSILON: number = 0.000001;
-            var v: Vector3D = Vector3D.HELP_0;
+            let data = this.rawData; 
+
+            let EPSILON: number = 0.000001;
+            let v: Vector3D = Vector3D.HELP_0;
             toDirection.crossProduct(fromDirection, v);
-            var e: number = toDirection.dotProduct(fromDirection);
+            let e: number = toDirection.dotProduct(fromDirection);
 
             if (e > 1.0 - EPSILON) {
                 this.identity();
             }
             else if (3 < -1.0 + EPSILON) {
 
-                var up: Vector3D = Vector3D.HELP_1;
-                var left: Vector3D = Vector3D.HELP_2;
-                var invlen: number = 0;
+                let up: Vector3D = Vector3D.HELP_1;
+                let left: Vector3D = Vector3D.HELP_2;
+                let invlen: number = 0;
 
-                var fxx, fyy, fzz, fxy, fxz, fyz;
-                var uxx, uyy, uzz, uxy, uxz, uyz;
-                var lxx, lyy, lzz, lxy, lxz, lyz;
+                let fxx, fyy, fzz, fxy, fxz, fyz;
+                let uxx, uyy, uzz, uxy, uxz, uyz;
+                let lxx, lyy, lzz, lxy, lxz, lyz;
 
                 left.x = 0.0; left.y = fromDirection.z; left.z = -fromDirection.y;
                 if (left.dotProduct(left) < EPSILON) {
@@ -346,31 +374,31 @@
                 lxy = -left.x * left.y; lxz = -left.x * left.z; lyz = -left.y * left.z;
 
 
-                this.rawData[0] = fxx + uxx + lxx; this.rawData[1] = fxy + uxy + lxy; this.rawData[2] = fxz + uxz + lxz;
-                this.rawData[4] = this.rawData[1]; this.rawData[5] = fyy + uyy + lyy; this.rawData[6] = fyz + uyz + lyz;
-                this.rawData[8] = this.rawData[2]; this.rawData[9] = this.rawData[6]; this.rawData[10] = fzz + uzz + lzz;
+                data[0] = fxx + uxx + lxx; data[1] = fxy + uxy + lxy; data[2] = fxz + uxz + lxz;
+                data[4] = data[1]; data[5] = fyy + uyy + lyy; data[6] = fyz + uyz + lyz;
+                data[8] = data[2]; data[9] = data[6]; data[10] = fzz + uzz + lzz;
 
-                this.rawData[3] = 0;
-                this.rawData[7] = 0;
-                this.rawData[11] = 0;
-                this.rawData[15] = 1;
+                data[3] = 0;
+                data[7] = 0;
+                data[11] = 0;
+                data[15] = 1;
             }
             else {
-                var hvx, hvz, hvxy, hvxz, hvyz;
-                var h = (1.0 - e) / v.dotProduct(v);
+                let hvx, hvz, hvxy, hvxz, hvyz;
+                let h = (1.0 - e) / v.dotProduct(v);
                 hvx = h * v.x;
                 hvz = h * v.z;
                 hvxy = hvx * v.y;
                 hvxz = hvx * v.z;
                 hvyz = hvz * v.y;
-                this.rawData[0] = e + hvx * v.x; this.rawData[1] = hvxy - v.z; this.rawData[2] = hvxz + v.y;
-                this.rawData[4] = hvxy + v.z; this.rawData[5] = e + h * v.y * v.y; this.rawData[6] = hvyz - v.x;
-                this.rawData[8] = hvxz - v.y; this.rawData[9] = hvyz + v.x; this.rawData[10] = e + hvz * v.z;
+                data[0] = e + hvx * v.x; data[1] = hvxy - v.z; data[2] = hvxz + v.y;
+                data[4] = hvxy + v.z; data[5] = e + h * v.y * v.y; data[6] = hvyz - v.x;
+                data[8] = hvxz - v.y; data[9] = hvyz + v.x; data[10] = e + hvz * v.z;
 
-                this.rawData[3] = 0;
-                this.rawData[7] = 0;
-                this.rawData[11] = 0;
-                this.rawData[15] = 1;
+                data[3] = 0;
+                data[7] = 0;
+                data[11] = 0;
+                data[15] = 1;
             }
         }
 
@@ -401,28 +429,29 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public append(lhs: Matrix4_4):void {
-            var m111: number = this.rawData[0], m121: number = this.rawData[4], m131: number = this.rawData[8], m141: number = this.rawData[12], m112: number = this.rawData[1], m122: number = this.rawData[5], m132: number = this.rawData[9], m142: number = this.rawData[13], m113: number = this.rawData[2], m123: number = this.rawData[6], m133: number = this.rawData[10], m143: number = this.rawData[14], m114: number = this.rawData[3], m124: number = this.rawData[7], m134: number = this.rawData[11], m144: number = this.rawData[15], m211: number = lhs.rawData[0], m221: number = lhs.rawData[4], m231: number = lhs.rawData[8], m241: number = lhs.rawData[12], m212: number = lhs.rawData[1], m222: number = lhs.rawData[5], m232: number = lhs.rawData[9], m242: number = lhs.rawData[13], m213: number = lhs.rawData[2], m223: number = lhs.rawData[6], m233: number = lhs.rawData[10], m243: number = lhs.rawData[14], m214: number = lhs.rawData[3], m224: number = lhs.rawData[7], m234: number = lhs.rawData[11], m244: number = lhs.rawData[15];
+        public append(lhs: Matrix4_4): void {
+            let data = this.rawData;
+            let m111: number = data[0], m121: number = data[4], m131: number = data[8], m141: number = data[12], m112: number = data[1], m122: number = data[5], m132: number = data[9], m142: number = data[13], m113: number = data[2], m123: number = data[6], m133: number = data[10], m143: number = data[14], m114: number = data[3], m124: number = data[7], m134: number = data[11], m144: number = data[15];
 
-            this.rawData[0] = m111 * m211 + m112 * m221 + m113 * m231 + m114 * m241;
-            this.rawData[1] = m111 * m212 + m112 * m222 + m113 * m232 + m114 * m242;
-            this.rawData[2] = m111 * m213 + m112 * m223 + m113 * m233 + m114 * m243;
-            this.rawData[3] = m111 * m214 + m112 * m224 + m113 * m234 + m114 * m244;
+            data[0] = m111 * lhs.rawData[0] + m112 * lhs.rawData[4] + m113 * lhs.rawData[8] + m114 * lhs.rawData[12];
+            data[1] = m111 * lhs.rawData[1] + m112 * lhs.rawData[5] + m113 * lhs.rawData[9] + m114 * lhs.rawData[13];
+            data[2] = m111 * lhs.rawData[2] + m112 * lhs.rawData[6] + m113 * lhs.rawData[10] + m114 * lhs.rawData[14];
+            data[3] = m111 * lhs.rawData[3] + m112 * lhs.rawData[7] + m113 * lhs.rawData[11] + m114 * lhs.rawData[15];
 
-            this.rawData[4] = m121 * m211 + m122 * m221 + m123 * m231 + m124 * m241;
-            this.rawData[5] = m121 * m212 + m122 * m222 + m123 * m232 + m124 * m242;
-            this.rawData[6] = m121 * m213 + m122 * m223 + m123 * m233 + m124 * m243;
-            this.rawData[7] = m121 * m214 + m122 * m224 + m123 * m234 + m124 * m244;
+            data[4] = m121 * lhs.rawData[0] + m122 * lhs.rawData[4] + m123 * lhs.rawData[8] + m124 * lhs.rawData[12];
+            data[5] = m121 * lhs.rawData[1] + m122 * lhs.rawData[5] + m123 * lhs.rawData[9] + m124 * lhs.rawData[13];
+            data[6] = m121 * lhs.rawData[2] + m122 * lhs.rawData[6] + m123 * lhs.rawData[10] + m124 * lhs.rawData[14];
+            data[7] = m121 * lhs.rawData[3] + m122 * lhs.rawData[7] + m123 * lhs.rawData[11] + m124 * lhs.rawData[15];
 
-            this.rawData[8] = m131 * m211 + m132 * m221 + m133 * m231 + m134 * m241;
-            this.rawData[9] = m131 * m212 + m132 * m222 + m133 * m232 + m134 * m242;
-            this.rawData[10] = m131 * m213 + m132 * m223 + m133 * m233 + m134 * m243;
-            this.rawData[11] = m131 * m214 + m132 * m224 + m133 * m234 + m134 * m244;
+            data[8] = m131 * lhs.rawData[0] + m132 * lhs.rawData[4] + m133 * lhs.rawData[8] + m134 * lhs.rawData[12];
+            data[9] = m131 * lhs.rawData[1] + m132 * lhs.rawData[5] + m133 * lhs.rawData[9] + m134 * lhs.rawData[13];
+            data[10] = m131 * lhs.rawData[2] + m132 * lhs.rawData[6] + m133 * lhs.rawData[10] + m134 * lhs.rawData[14];
+            data[11] = m131 * lhs.rawData[3] + m132 * lhs.rawData[7] + m133 * lhs.rawData[11] + m134 * lhs.rawData[15];
 
-            this.rawData[12] = m141 * m211 + m142 * m221 + m143 * m231 + m144 * m241;
-            this.rawData[13] = m141 * m212 + m142 * m222 + m143 * m232 + m144 * m242;
-            this.rawData[14] = m141 * m213 + m142 * m223 + m143 * m233 + m144 * m243;
-            this.rawData[15] = m141 * m214 + m142 * m224 + m143 * m234 + m144 * m244;
+            data[12] = m141 * lhs.rawData[0] + m142 * lhs.rawData[4] + m143 * lhs.rawData[8] + m144 * lhs.rawData[12];
+            data[13] = m141 * lhs.rawData[1] + m142 * lhs.rawData[5] + m143 * lhs.rawData[9] + m144 * lhs.rawData[13];
+            data[14] = m141 * lhs.rawData[2] + m142 * lhs.rawData[6] + m143 * lhs.rawData[10] + m144 * lhs.rawData[14];
+            data[15] = m141 * lhs.rawData[3] + m142 * lhs.rawData[7] + m143 * lhs.rawData[11] + m144 * lhs.rawData[15];
         }
 
         /**
@@ -434,27 +463,28 @@
         * @platform Web,Native
         */
         public add(lhs: Matrix4_4): Matrix4_4 {
-            var m111: number = this.rawData[0], m121: number = this.rawData[4], m131: number = this.rawData[8], m141: number = this.rawData[12], m112: number = this.rawData[1], m122: number = this.rawData[5], m132: number = this.rawData[9], m142: number = this.rawData[13], m113: number = this.rawData[2], m123: number = this.rawData[6], m133: number = this.rawData[10], m143: number = this.rawData[14], m114: number = this.rawData[3], m124: number = this.rawData[7], m134: number = this.rawData[11], m144: number = this.rawData[15], m211: number = lhs.rawData[0], m221: number = lhs.rawData[4], m231: number = lhs.rawData[8], m241: number = lhs.rawData[12], m212: number = lhs.rawData[1], m222: number = lhs.rawData[5], m232: number = lhs.rawData[9], m242: number = lhs.rawData[13], m213: number = lhs.rawData[2], m223: number = lhs.rawData[6], m233: number = lhs.rawData[10], m243: number = lhs.rawData[14], m214: number = lhs.rawData[3], m224: number = lhs.rawData[7], m234: number = lhs.rawData[11], m244: number = lhs.rawData[15];
+            let data = this.rawData; 
+            let m111: number = data[0], m121: number = data[4], m131: number = data[8], m141: number = data[12], m112: number = data[1], m122: number = data[5], m132: number = data[9], m142: number = data[13], m113: number = data[2], m123: number = data[6], m133: number = data[10], m143: number = data[14], m114: number = data[3], m124: number = data[7], m134: number = data[11], m144: number = data[15], m211: number = lhs.rawData[0], m221: number = lhs.rawData[4], m231: number = lhs.rawData[8], m241: number = lhs.rawData[12], m212: number = lhs.rawData[1], m222: number = lhs.rawData[5], m232: number = lhs.rawData[9], m242: number = lhs.rawData[13], m213: number = lhs.rawData[2], m223: number = lhs.rawData[6], m233: number = lhs.rawData[10], m243: number = lhs.rawData[14], m214: number = lhs.rawData[3], m224: number = lhs.rawData[7], m234: number = lhs.rawData[11], m244: number = lhs.rawData[15];
 
-            this.rawData[0] = m111 + m211;
-            this.rawData[1] = m112 + m212;
-            this.rawData[2] = m113 + m213;
-            this.rawData[3] = m114 + m214;
+            data[0] = m111 + m211;
+            data[1] = m112 + m212;
+            data[2] = m113 + m213;
+            data[3] = m114 + m214;
 
-            this.rawData[4] = m121 + m221;
-            this.rawData[5] = m122 + m222;
-            this.rawData[6] = m123 + m223;
-            this.rawData[7] = m124 + m224;
+            data[4] = m121 + m221;
+            data[5] = m122 + m222;
+            data[6] = m123 + m223;
+            data[7] = m124 + m224;
 
-            this.rawData[8] =  m131 + m231;
-            this.rawData[9] =  m132 + m232;
-            this.rawData[10] = m133 + m233;
-            this.rawData[11] = m134 + m234;
+            data[8] = m131 + m231;
+            data[9] = m132 + m232;
+            data[10] = m133 + m233;
+            data[11] = m134 + m234;
 
-            this.rawData[12] = m141 + m241;
-            this.rawData[13] = m142 + m242;
-            this.rawData[14] = m143 + m243;
-            this.rawData[15] = m144 + m244;
+            data[12] = m141 + m241;
+            data[13] = m142 + m242;
+            data[14] = m143 + m243;
+            data[15] = m144 + m244;
             return this;
         }
 
@@ -467,27 +497,29 @@
         * @platform Web,Native
         */
         public sub(lhs: Matrix4_4): Matrix4_4 {
-            var m111: number = this.rawData[0], m121: number = this.rawData[4], m131: number = this.rawData[8], m141: number = this.rawData[12], m112: number = this.rawData[1], m122: number = this.rawData[5], m132: number = this.rawData[9], m142: number = this.rawData[13], m113: number = this.rawData[2], m123: number = this.rawData[6], m133: number = this.rawData[10], m143: number = this.rawData[14], m114: number = this.rawData[3], m124: number = this.rawData[7], m134: number = this.rawData[11], m144: number = this.rawData[15], m211: number = lhs.rawData[0], m221: number = lhs.rawData[4], m231: number = lhs.rawData[8], m241: number = lhs.rawData[12], m212: number = lhs.rawData[1], m222: number = lhs.rawData[5], m232: number = lhs.rawData[9], m242: number = lhs.rawData[13], m213: number = lhs.rawData[2], m223: number = lhs.rawData[6], m233: number = lhs.rawData[10], m243: number = lhs.rawData[14], m214: number = lhs.rawData[3], m224: number = lhs.rawData[7], m234: number = lhs.rawData[11], m244: number = lhs.rawData[15];
+            let data = this.rawData; 
 
-            this.rawData[0] = m111 - m211;
-            this.rawData[1] = m112 - m212;
-            this.rawData[2] = m113 - m213;
-            this.rawData[3] = m114 - m214;
+            var m111: number = data[0], m121: number = data[4], m131: number = data[8], m141: number = data[12], m112: number = data[1], m122: number = data[5], m132: number = data[9], m142: number = data[13], m113: number = data[2], m123: number = data[6], m133: number = data[10], m143: number = data[14], m114: number = data[3], m124: number = data[7], m134: number = data[11], m144: number = data[15], m211: number = lhs.rawData[0], m221: number = lhs.rawData[4], m231: number = lhs.rawData[8], m241: number = lhs.rawData[12], m212: number = lhs.rawData[1], m222: number = lhs.rawData[5], m232: number = lhs.rawData[9], m242: number = lhs.rawData[13], m213: number = lhs.rawData[2], m223: number = lhs.rawData[6], m233: number = lhs.rawData[10], m243: number = lhs.rawData[14], m214: number = lhs.rawData[3], m224: number = lhs.rawData[7], m234: number = lhs.rawData[11], m244: number = lhs.rawData[15];
 
-            this.rawData[4] = m121 - m221;
-            this.rawData[5] = m122 - m222;
-            this.rawData[6] = m123 - m223;
-            this.rawData[7] = m124 - m224;
+            data[0] = m111 - m211;
+            data[1] = m112 - m212;
+            data[2] = m113 - m213;
+            data[3] = m114 - m214;
 
-            this.rawData[8] = m131 - m231;
-            this.rawData[9] = m132 - m232;
-            this.rawData[10] = m133 - m233;
-            this.rawData[11] = m134 - m234;
+            data[4] = m121 - m221;
+            data[5] = m122 - m222;
+            data[6] = m123 - m223;
+            data[7] = m124 - m224;
 
-            this.rawData[12] = m141 - m241;
-            this.rawData[13] = m142 - m242;
-            this.rawData[14] = m143 - m243;
-            this.rawData[15] = m144 - m244;
+            data[8] = m131 - m231;
+            data[9] = m132 - m232;
+            data[10] = m133 - m233;
+            data[11] = m134 - m234;
+
+            data[12] = m141 - m241;
+            data[13] = m142 - m242;
+            data[14] = m143 - m243;
+            data[15] = m144 - m244;
             return this;
         }
 
@@ -499,29 +531,33 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public mult(v:number): Matrix4_4 {
-            this.rawData[0] *= v;
-            this.rawData[1] *= v;
-            this.rawData[2] *= v;
-            this.rawData[3] *= v;
+        public mult(v: number): Matrix4_4 {
+            let data = this.rawData; 
 
-            this.rawData[4] *= v;
-            this.rawData[5] *= v;
-            this.rawData[6] *= v;
-            this.rawData[7] *= v;
+            data[0] *= v;
+            data[1] *= v;
+            data[2] *= v;
+            data[3] *= v;
 
-            this.rawData[8] *= v;
-            this.rawData[9] *= v;
-            this.rawData[10] *= v;
-            this.rawData[11] *= v;
+            data[4] *= v;
+            data[5] *= v;
+            data[6] *= v;
+            data[7] *= v;
 
-            this.rawData[12] *= v;
-            this.rawData[13] *= v;
-            this.rawData[14] *= v;
-            this.rawData[15] *= v;
+            data[8] *= v;
+            data[9] *= v;
+            data[10] *= v;
+            data[11] *= v;
+
+            data[12] *= v;
+            data[13] *= v;
+            data[14] *= v;
+            data[15] *= v;
             return this;
         }
-        
+
+        private static position_000: Vector3D = new Vector3D();
+        private static scale_111: Vector3D = new Vector3D(1, 1, 1);
         /**
         * @language zh_CN
         * 创建一个欧拉旋转矩阵.
@@ -532,9 +568,8 @@
         * @platform Web,Native
         */
         public rotation(x: number, y: number, z: number) {
-            this.createByRotation(x, Vector3D.X_AXIS);
-            this.createByRotation(y, Vector3D.Y_AXIS);
-            this.createByRotation(z, Vector3D.Z_AXIS);
+            MathUtil.CALCULATION_QUATERNION.fromEulerAngles(x, y, z);
+            this.makeTransform(Matrix4_4.position_000, Matrix4_4.scale_111, MathUtil.CALCULATION_QUATERNION);
         }
 
 
@@ -559,8 +594,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public createByRotation(degrees: number, axis: Vector3D): void
-        {
+        public createByRotation(degrees: number, axis: Vector3D): void {
             var tmp: Matrix4_4 = MathUtil.CALCULATION_MATRIX;
             var s: number, c: number;
 
@@ -615,11 +649,12 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public createByScale(xScale: number, yScale: number, zScale: number): void{
-            this.rawData[0] = xScale; this.rawData[1] = 0.0; this.rawData[2] = 0.0; this.rawData[3] = 0.0; 
-            this.rawData[4] = 0.0; this.rawData[5] = yScale; this.rawData[6] = 0.0; this.rawData[7] = 0.0; 
-            this.rawData[8] = 0.0; this.rawData[9] = 0.0; this.rawData[10] = zScale; this.rawData[11] = 0.0;
-            this.rawData[12] = 0.0; this.rawData[13] = 0.0; this.rawData[14] = 0.0; this.rawData[15] = 1.0;
+        public createByScale(xScale: number, yScale: number, zScale: number): void {
+            var data = this.rawData;
+            data[0] = xScale;   data[1] = 0.0;      data[2] = 0.0;      data[3] = 0.0;
+            data[4] = 0.0;      data[5] = yScale;   data[6] = 0.0;      data[7] = 0.0;
+            data[8] = 0.0;      data[9] = 0.0;      data[10] = zScale;  data[11] = 0.0;
+            data[12] = 0.0;     data[13] = 0.0;     data[14] = 0.0;     data[15] = 1.0;
         }
 
         /**
@@ -632,9 +667,10 @@
         * @platform Web,Native
         */
         public appendTranslation(x: number, y: number, z: number) {
-            this.rawData[12] += x;
-            this.rawData[13] += y;
-            this.rawData[14] += z;
+            var data = this.rawData;
+            data[12] += x;
+            data[13] += y;
+            data[14] += z;
         }
 
         /**
@@ -659,33 +695,34 @@
         * @platform Web,Native
         */
         public copyRowFrom(row: number, vector3D: Vector3D) {
+            var data = this.rawData;
             switch (row) {
                 case 0:
-                    this.rawData[0] = vector3D.x;
-                    this.rawData[1] = vector3D.y;
-                    this.rawData[2] = vector3D.z;
-                    this.rawData[3] = vector3D.w;
+                    data[0] = vector3D.x;
+                    data[1] = vector3D.y;
+                    data[2] = vector3D.z;
+                    data[3] = vector3D.w;
                     break;
                 case 1:
-                    this.rawData[4] = vector3D.x;
-                    this.rawData[5] = vector3D.y;
-                    this.rawData[6] = vector3D.z;
-                    this.rawData[7] = vector3D.w;
+                    data[4] = vector3D.x;
+                    data[5] = vector3D.y;
+                    data[6] = vector3D.z;
+                    data[7] = vector3D.w;
                     break;
                 case 2:
-                    this.rawData[8] = vector3D.x;
-                    this.rawData[9] = vector3D.y;
-                    this.rawData[10] = vector3D.z;
-                    this.rawData[11] = vector3D.w;
+                    data[8] = vector3D.x;
+                    data[9] = vector3D.y;
+                    data[10] = vector3D.z;
+                    data[11] = vector3D.w;
                     break;
                 case 3:
-                    this.rawData[12] = vector3D.x;
-                    this.rawData[13] = vector3D.y;
-                    this.rawData[14] = vector3D.z;
-                    this.rawData[15] = vector3D.w;
+                    data[12] = vector3D.x;
+                    data[13] = vector3D.y;
+                    data[14] = vector3D.z;
+                    data[15] = vector3D.w;
                     break;
                 default:
-                    ///throw new ArgumentError("ArgumentError, Column " + column + " out of bounds [0, ..., 3]");
+                ///throw new ArgumentError("ArgumentError, Column " + column + " out of bounds [0, ..., 3]");
             }
         }
 
@@ -698,33 +735,34 @@
         * @platform Web,Native
         */
         public copyRowTo(row: number, vector3D: Vector3D) {
+            var data = this.rawData;
             switch (row) {
                 case 0:
-                    vector3D.x = this.rawData[0];
-                    vector3D.y = this.rawData[1];
-                    vector3D.z = this.rawData[2];
-                    vector3D.w = this.rawData[3];
+                    vector3D.x = data[0];
+                    vector3D.y = data[1];
+                    vector3D.z = data[2];
+                    vector3D.w = data[3];
                     break;
                 case 1:
-                    vector3D.x = this.rawData[4];
-                    vector3D.y = this.rawData[5];
-                    vector3D.z = this.rawData[6];
-                    vector3D.w = this.rawData[7];
+                    vector3D.x = data[4];
+                    vector3D.y = data[5];
+                    vector3D.z = data[6];
+                    vector3D.w = data[7];
                     break;
                 case 2:
-                    vector3D.x = this.rawData[8];
-                    vector3D.y = this.rawData[9];
-                    vector3D.z = this.rawData[10];
-                    vector3D.w = this.rawData[11];
+                    vector3D.x = data[8];
+                    vector3D.y = data[9];
+                    vector3D.z = data[10];
+                    vector3D.w = data[11];
                     break;
                 case 3:
-                    vector3D.x = this.rawData[12];
-                    vector3D.y = this.rawData[13];
-                    vector3D.z = this.rawData[14];
-                    vector3D.w = this.rawData[15];
+                    vector3D.x = data[12];
+                    vector3D.y = data[13];
+                    vector3D.z = data[14];
+                    vector3D.w = data[15];
                     break;
                 default:
-                   /// throw new ArgumentError("ArgumentError, Column " + column + " out of bounds [0, ..., 3]");
+                /// throw new ArgumentError("ArgumentError, Column " + column + " out of bounds [0, ..., 3]");
             }
         }
 
@@ -737,9 +775,23 @@
         * @platform Web,Native
         */
         public copyFrom(sourceMatrix3D: Matrix4_4): Matrix4_4 {
-            var len: number = sourceMatrix3D.rawData.length;
-            for (var c: number = 0; c < len; c++)
-                this.rawData[c] = sourceMatrix3D.rawData[c];
+            var data: Float32Array = this.rawData;
+            data[0] = sourceMatrix3D.rawData[0];
+            data[1] = sourceMatrix3D.rawData[1];
+            data[2] = sourceMatrix3D.rawData[2];
+            data[3] = sourceMatrix3D.rawData[3];
+            data[4] = sourceMatrix3D.rawData[4];
+            data[5] = sourceMatrix3D.rawData[5];
+            data[6] = sourceMatrix3D.rawData[6];
+            data[7] = sourceMatrix3D.rawData[7];
+            data[8] = sourceMatrix3D.rawData[8];
+            data[9] = sourceMatrix3D.rawData[9];
+            data[10] = sourceMatrix3D.rawData[10];
+            data[11] = sourceMatrix3D.rawData[11];
+            data[12] = sourceMatrix3D.rawData[12];
+            data[13] = sourceMatrix3D.rawData[13];
+            data[14] = sourceMatrix3D.rawData[14];
+            data[15] = sourceMatrix3D.rawData[15];
             return this;
         }
 
@@ -753,17 +805,25 @@
         * @platform Web,Native
         */
         public copyRawDataFrom(vector: Float32Array, index: number = 0, transpose: boolean = false): void {
-            if (transpose)
-                this.transpose();
-
-            var len: number = vector.length - index;
-            for (var c: number = 0; c < len; c++)
-                this.rawData[c] = vector[c + index];
-
-            if (transpose)
-                this.transpose();
+            let data: Float32Array = this.rawData;
+            data[0] = vector[0 + index];
+            data[1] = vector[1 + index];
+            data[2] = vector[2 + index];
+            data[3] = vector[3 + index];
+            data[4] = vector[4 + index];
+            data[5] = vector[5 + index];
+            data[6] = vector[6 + index];
+            data[7] = vector[7 + index];
+            data[8] = vector[8 + index];
+            data[9] = vector[9 + index];
+            data[10] = vector[10 + index];
+            data[11] = vector[11 + index];
+            data[12] = vector[12 + index];
+            data[13] = vector[13 + index];
+            data[14] = vector[14 + index];
+            data[15] = vector[15 + index];
         }
-        
+
         /**
         * @language zh_CN
         * 把当前矩阵的值拷贝给一个 float 数组.
@@ -774,15 +834,23 @@
         * @platform Web,Native
         */
         public copyRawDataTo(vector: Float32Array, index: number = 0, transpose: boolean = false) {
-            if (transpose)
-                this.transpose();
-
-            var len: number = this.rawData.length
-            for (var c: number = 0; c < len; c++)
-                vector[c + index] = this.rawData[c];
-
-            if (transpose)
-                this.transpose();
+            let data: Float32Array = this.rawData;
+            vector[0 + index] = data[0];
+            vector[1 + index] = data[1];
+            vector[2 + index] = data[2];
+            vector[3 + index] = data[3];
+            vector[4 + index] = data[4];
+            vector[5 + index] = data[5];
+            vector[6 + index] = data[6];
+            vector[7 + index] = data[7];
+            vector[8 + index] = data[8];
+            vector[9 + index] = data[9];
+            vector[10 + index] = data[10];
+            vector[11 + index] = data[11];
+            vector[12 + index] = data[12];
+            vector[13 + index] = data[13];
+            vector[14 + index] = data[14];
+            vector[15 + index] = data[15];
         }
 
 
@@ -795,36 +863,37 @@
         * @platform Web,Native
         */
         public copyColFrom(col: number, vector3D: Vector3D) {
+            let data: Float32Array = this.rawData;
             switch (col) {
                 case 0:
-                    this.rawData[0] = vector3D.x;
-                    this.rawData[4] = vector3D.y;
-                    this.rawData[8] = vector3D.z;
-                    this.rawData[12] = vector3D.w;
+                    data[0] = vector3D.x;
+                    data[4] = vector3D.y;
+                    data[8] = vector3D.z;
+                    data[12] = vector3D.w;
                     break;
                 case 1:
-                    this.rawData[1] = vector3D.x;
-                    this.rawData[5] = vector3D.y;
-                    this.rawData[9] = vector3D.z;
-                    this.rawData[13] = vector3D.w;
+                    data[1] = vector3D.x;
+                    data[5] = vector3D.y;
+                    data[9] = vector3D.z;
+                    data[13] = vector3D.w;
                     break;
                 case 2:
-                    this.rawData[2] = vector3D.x;
-                    this.rawData[6] = vector3D.y;
-                    this.rawData[10] = vector3D.z;
-                    this.rawData[14] = vector3D.w;
+                    data[2] = vector3D.x;
+                    data[6] = vector3D.y;
+                    data[10] = vector3D.z;
+                    data[14] = vector3D.w;
                     break;
                 case 3:
-                    this.rawData[3] = vector3D.x;
-                    this.rawData[7] = vector3D.y;
-                    this.rawData[11] = vector3D.z;
-                    this.rawData[15] = vector3D.w;
+                    data[3] = vector3D.x;
+                    data[7] = vector3D.y;
+                    data[11] = vector3D.z;
+                    data[15] = vector3D.w;
                     break;
                 default:
-                    new Error( "no more raw!" );
+                    new Error("no more raw!");
             }
         }
-        
+
         /**
         * @language zh_CN
         * 拷贝当前矩阵的某一列
@@ -834,37 +903,37 @@
         * @platform Web,Native
         */
         public copyColTo(col: number, vector3D: Vector3D) {
+            let data: Float32Array = this.rawData;
             switch (col) {
                 case 0:
-                    vector3D.x = this.rawData[0];
-                    vector3D.y = this.rawData[4];
-                    vector3D.z = this.rawData[8];
-                    vector3D.w = this.rawData[12];
+                    vector3D.x = data[0];
+                    vector3D.y = data[4];
+                    vector3D.z = data[8];
+                    vector3D.w = data[12];
                     break;
                 case 1:
-                    vector3D.x = this.rawData[1];
-                    vector3D.y = this.rawData[5];
-                    vector3D.z = this.rawData[9];
-                    vector3D.w = this.rawData[13];
+                    vector3D.x = data[1];
+                    vector3D.y = data[5];
+                    vector3D.z = data[9];
+                    vector3D.w = data[13];
                     break;
                 case 2:
-                    vector3D.x = this.rawData[2];
-
-                    vector3D.y = this.rawData[6];
-                    vector3D.z = this.rawData[10];
-                    vector3D.w = this.rawData[14];
+                    vector3D.x = data[2];
+                    vector3D.y = data[6];
+                    vector3D.z = data[10];
+                    vector3D.w = data[14];
                     break;
                 case 3:
-                    vector3D.x = this.rawData[3];
-                    vector3D.y = this.rawData[7];
-                    vector3D.z = this.rawData[11];
-                    vector3D.w = this.rawData[15]
+                    vector3D.x = data[3];
+                    vector3D.y = data[7];
+                    vector3D.z = data[11];
+                    vector3D.w = data[15]
                     break;
                 default:
                     new Error("no more raw!");
             }
         }
-                
+
         /**
         * @language zh_CN
         * 拷贝当前矩阵
@@ -877,6 +946,7 @@
         }
 
         private static prs: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
+
         /**
         * @language zh_CN
         * 分解当前矩阵
@@ -1006,7 +1076,7 @@
             return vec;
         }
 
-        
+
         /**
         * @language zh_CN
         * 当前矩阵变换一个向量
@@ -1020,14 +1090,15 @@
             if (!target) {
                 target = new Vector3D();
             }
-            var x: number = v.x;
-            var y: number = v.y;
-            var z: number = v.z;
+            let data: Float32Array = this.rawData;
+            let x: number = v.x;
+            let y: number = v.y;
+            let z: number = v.z;
 
-            target.x = x * this.rawData[0] + y * this.rawData[4] + z * this.rawData[8];
-            target.y = x * this.rawData[1] + y * this.rawData[5] + z * this.rawData[9];
-            target.z = x * this.rawData[2] + y * this.rawData[6] + z * this.rawData[10];
-            target.w = x * this.rawData[3] + y * this.rawData[7] + z * this.rawData[11];
+            target.x = x * data[0] + y * data[4] + z * data[8];
+            target.y = x * data[1] + y * data[5] + z * data[9];
+            target.z = x * data[2] + y * data[6] + z * data[10];
+            target.w = x * data[3] + y * data[7] + z * data[11];
             return target;
         }
 
@@ -1038,23 +1109,23 @@
         * @platform Web,Native
         */
         public identity() {
-            this.rawData[1] = 0;
-            this.rawData[2] = 0;
-            this.rawData[3] = 0;
-            this.rawData[4] = 0;
-            this.rawData[6] = 0;
-            this.rawData[7] = 0;
-            this.rawData[8] = 0;
-            this.rawData[9] = 0;
-            this.rawData[11] = 0;
-            this.rawData[12] = 0;
-            this.rawData[13] = 0;
-            this.rawData[14] = 0;
-
-            this.rawData[0]     = 1;
-            this.rawData[5]     = 1;
-            this.rawData[10]    = 1;
-            this.rawData[15]    = 1;
+            let data: Float32Array = this.rawData;
+            data[1] = 0;
+            data[2] = 0;
+            data[3] = 0;
+            data[4] = 0;
+            data[6] = 0;
+            data[7] = 0;
+            data[8] = 0;
+            data[9] = 0;
+            data[11] = 0;
+            data[12] = 0;
+            data[13] = 0;
+            data[14] = 0;
+            data[0] = 1;
+            data[5] = 1;
+            data[10] = 1;
+            data[15] = 1;
 
         }
 
@@ -1065,23 +1136,24 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public fill( value:number ) {
-            this.rawData[1] = value;
-            this.rawData[2] = value;
-            this.rawData[3] = value;
-            this.rawData[4] = value;
-            this.rawData[6] = value;
-            this.rawData[7] = value;
-            this.rawData[8] = value;
-            this.rawData[9] = value;
-            this.rawData[11] = value;
-            this.rawData[12] = value;
-            this.rawData[13] = value;
-            this.rawData[14] = value;
-            this.rawData[0] = value;
-            this.rawData[5] = value;
-            this.rawData[10] = value;
-            this.rawData[15] = value;
+        public fill(value: number) {
+            let data: Float32Array = this.rawData;
+            data[1] = value;
+            data[2] = value;
+            data[3] = value;
+            data[4] = value;
+            data[6] = value;
+            data[7] = value;
+            data[8] = value;
+            data[9] = value;
+            data[11] = value;
+            data[12] = value;
+            data[13] = value;
+            data[14] = value;
+            data[0] = value;
+            data[5] = value;
+            data[10] = value;
+            data[15] = value;
         }
 
         /**
@@ -1093,34 +1165,35 @@
         public invers33() {
             /// Invert a 3x3 using cofactors.  This is about 8 times faster than
             /// the Numerical Recipes code which uses Gaussian elimination.
+            let data: Float32Array = this.rawData;
 
-           var rkInverse_00 = this.rawData[5] * this.rawData[10] - this.rawData[9] * this.rawData[6];
-           var rkInverse_01 = this.rawData[8] * this.rawData[6] - this.rawData[4] * this.rawData[10];
-           var rkInverse_02 = this.rawData[4] * this.rawData[9] - this.rawData[8] * this.rawData[5];
-           var rkInverse_10 = this.rawData[9] * this.rawData[2] - this.rawData[1] * this.rawData[10];
-           var rkInverse_11 = this.rawData[0] * this.rawData[10] - this.rawData[8] * this.rawData[2];
-           var rkInverse_12 = this.rawData[8] * this.rawData[1] - this.rawData[0] * this.rawData[9];
-           var rkInverse_20 = this.rawData[1] * this.rawData[6] - this.rawData[5] * this.rawData[2];
-           var rkInverse_21 = this.rawData[4] * this.rawData[2] - this.rawData[0] * this.rawData[6];
-           var rkInverse_22 = this.rawData[0] * this.rawData[5] - this.rawData[4] * this.rawData[1];
+            var rkInverse_00 = data[5] * data[10] - data[9] * data[6];
+            var rkInverse_01 = data[8] * data[6] - data[4] * data[10];
+            var rkInverse_02 = data[4] * data[9] - data[8] * data[5];
+            var rkInverse_10 = data[9] * data[2] - data[1] * data[10];
+            var rkInverse_11 = data[0] * data[10] - data[8] * data[2];
+            var rkInverse_12 = data[8] * data[1] - data[0] * data[9];
+            var rkInverse_20 = data[1] * data[6] - data[5] * data[2];
+            var rkInverse_21 = data[4] * data[2] - data[0] * data[6];
+            var rkInverse_22 = data[0] * data[5] - data[4] * data[1];
 
-           var fDet: number =
-               this.rawData[0] * rkInverse_00 +
-               this.rawData[4] * rkInverse_10 +
-               this.rawData[8] * rkInverse_20;
+            var fDet: number =
+                data[0] * rkInverse_00 +
+                data[4] * rkInverse_10 +
+                data[8] * rkInverse_20;
 
             if (Math.abs(fDet) > 0.00000000001) {
                 var fInvDet: number = 1.0 / fDet;
 
-                this.rawData[0] = fInvDet * rkInverse_00;
-                this.rawData[4] = fInvDet * rkInverse_01;
-                this.rawData[8] = fInvDet * rkInverse_02;
-                this.rawData[1] = fInvDet * rkInverse_10;
-                this.rawData[5] = fInvDet * rkInverse_11;
-                this.rawData[9] = fInvDet * rkInverse_12;
-                this.rawData[2] = fInvDet * rkInverse_20;
-                this.rawData[6] = fInvDet * rkInverse_21;
-                this.rawData[10] = fInvDet * rkInverse_22  ;
+                data[0] = fInvDet * rkInverse_00;
+                data[4] = fInvDet * rkInverse_01;
+                data[8] = fInvDet * rkInverse_02;
+                data[1] = fInvDet * rkInverse_10;
+                data[5] = fInvDet * rkInverse_11;
+                data[9] = fInvDet * rkInverse_12;
+                data[2] = fInvDet * rkInverse_20;
+                data[6] = fInvDet * rkInverse_21;
+                data[10] = fInvDet * rkInverse_22;
             }
         }
 
@@ -1179,46 +1252,47 @@
         public invert(): boolean {
             var d = this.determinant;
             var invertable = Math.abs(d) > 0.00000000001;
+            let data: Float32Array = this.rawData;
 
             if (invertable) {
                 d = 1 / d;
-                var m11: number = this.rawData[0];
-                var m21: number = this.rawData[4];
-                var m31: number = this.rawData[8];
-                var m41: number = this.rawData[12];
-                var m12: number = this.rawData[1];
-                var m22: number = this.rawData[5];
-                var m32: number = this.rawData[9];
-                var m42: number = this.rawData[13];
-                var m13: number = this.rawData[2];
-                var m23: number = this.rawData[6];
-                var m33: number = this.rawData[10];
-                var m43: number = this.rawData[14];
-                var m14: number = this.rawData[3];
-                var m24: number = this.rawData[7];
-                var m34: number = this.rawData[11];
-                var m44: number = this.rawData[15];
+                var m11: number = data[0];
+                var m21: number = data[4];
+                var m31: number = data[8];
+                var m41: number = data[12];
+                var m12: number = data[1];
+                var m22: number = data[5];
+                var m32: number = data[9];
+                var m42: number = data[13];
+                var m13: number = data[2];
+                var m23: number = data[6];
+                var m33: number = data[10];
+                var m43: number = data[14];
+                var m14: number = data[3];
+                var m24: number = data[7];
+                var m34: number = data[11];
+                var m44: number = data[15];
 
-                this.rawData[0] = d * (m22 * (m33 * m44 - m43 * m34) - m32 * (m23 * m44 - m43 * m24) + m42 * (m23 * m34 - m33 * m24));
-                this.rawData[1] = -d * (m12 * (m33 * m44 - m43 * m34) - m32 * (m13 * m44 - m43 * m14) + m42 * (m13 * m34 - m33 * m14));
-                this.rawData[2] = d * (m12 * (m23 * m44 - m43 * m24) - m22 * (m13 * m44 - m43 * m14) + m42 * (m13 * m24 - m23 * m14));
-                this.rawData[3] = -d * (m12 * (m23 * m34 - m33 * m24) - m22 * (m13 * m34 - m33 * m14) + m32 * (m13 * m24 - m23 * m14));
-                this.rawData[4] = -d * (m21 * (m33 * m44 - m43 * m34) - m31 * (m23 * m44 - m43 * m24) + m41 * (m23 * m34 - m33 * m24));
-                this.rawData[5] = d * (m11 * (m33 * m44 - m43 * m34) - m31 * (m13 * m44 - m43 * m14) + m41 * (m13 * m34 - m33 * m14));
-                this.rawData[6] = -d * (m11 * (m23 * m44 - m43 * m24) - m21 * (m13 * m44 - m43 * m14) + m41 * (m13 * m24 - m23 * m14));
-                this.rawData[7] = d * (m11 * (m23 * m34 - m33 * m24) - m21 * (m13 * m34 - m33 * m14) + m31 * (m13 * m24 - m23 * m14));
-                this.rawData[8] = d * (m21 * (m32 * m44 - m42 * m34) - m31 * (m22 * m44 - m42 * m24) + m41 * (m22 * m34 - m32 * m24));
-                this.rawData[9] = -d * (m11 * (m32 * m44 - m42 * m34) - m31 * (m12 * m44 - m42 * m14) + m41 * (m12 * m34 - m32 * m14));
-                this.rawData[10] = d * (m11 * (m22 * m44 - m42 * m24) - m21 * (m12 * m44 - m42 * m14) + m41 * (m12 * m24 - m22 * m14));
-                this.rawData[11] = -d * (m11 * (m22 * m34 - m32 * m24) - m21 * (m12 * m34 - m32 * m14) + m31 * (m12 * m24 - m22 * m14));
-                this.rawData[12] = -d * (m21 * (m32 * m43 - m42 * m33) - m31 * (m22 * m43 - m42 * m23) + m41 * (m22 * m33 - m32 * m23));
-                this.rawData[13] = d * (m11 * (m32 * m43 - m42 * m33) - m31 * (m12 * m43 - m42 * m13) + m41 * (m12 * m33 - m32 * m13));
-                this.rawData[14] = -d * (m11 * (m22 * m43 - m42 * m23) - m21 * (m12 * m43 - m42 * m13) + m41 * (m12 * m23 - m22 * m13));
-                this.rawData[15] = d * (m11 * (m22 * m33 - m32 * m23) - m21 * (m12 * m33 - m32 * m13) + m31 * (m12 * m23 - m22 * m13));
+                data[0] = d * (m22 * (m33 * m44 - m43 * m34) - m32 * (m23 * m44 - m43 * m24) + m42 * (m23 * m34 - m33 * m24));
+                data[1] = -d * (m12 * (m33 * m44 - m43 * m34) - m32 * (m13 * m44 - m43 * m14) + m42 * (m13 * m34 - m33 * m14));
+                data[2] = d * (m12 * (m23 * m44 - m43 * m24) - m22 * (m13 * m44 - m43 * m14) + m42 * (m13 * m24 - m23 * m14));
+                data[3] = -d * (m12 * (m23 * m34 - m33 * m24) - m22 * (m13 * m34 - m33 * m14) + m32 * (m13 * m24 - m23 * m14));
+                data[4] = -d * (m21 * (m33 * m44 - m43 * m34) - m31 * (m23 * m44 - m43 * m24) + m41 * (m23 * m34 - m33 * m24));
+                data[5] = d * (m11 * (m33 * m44 - m43 * m34) - m31 * (m13 * m44 - m43 * m14) + m41 * (m13 * m34 - m33 * m14));
+                data[6] = -d * (m11 * (m23 * m44 - m43 * m24) - m21 * (m13 * m44 - m43 * m14) + m41 * (m13 * m24 - m23 * m14));
+                data[7] = d * (m11 * (m23 * m34 - m33 * m24) - m21 * (m13 * m34 - m33 * m14) + m31 * (m13 * m24 - m23 * m14));
+                data[8] = d * (m21 * (m32 * m44 - m42 * m34) - m31 * (m22 * m44 - m42 * m24) + m41 * (m22 * m34 - m32 * m24));
+                data[9] = -d * (m11 * (m32 * m44 - m42 * m34) - m31 * (m12 * m44 - m42 * m14) + m41 * (m12 * m34 - m32 * m14));
+                data[10] = d * (m11 * (m22 * m44 - m42 * m24) - m21 * (m12 * m44 - m42 * m14) + m41 * (m12 * m24 - m22 * m14));
+                data[11] = -d * (m11 * (m22 * m34 - m32 * m24) - m21 * (m12 * m34 - m32 * m14) + m31 * (m12 * m24 - m22 * m14));
+                data[12] = -d * (m21 * (m32 * m43 - m42 * m33) - m31 * (m22 * m43 - m42 * m23) + m41 * (m22 * m33 - m32 * m23));
+                data[13] = d * (m11 * (m32 * m43 - m42 * m33) - m31 * (m12 * m43 - m42 * m13) + m41 * (m12 * m33 - m32 * m13));
+                data[14] = -d * (m11 * (m22 * m43 - m42 * m23) - m21 * (m12 * m43 - m42 * m13) + m41 * (m12 * m23 - m22 * m13));
+                data[15] = d * (m11 * (m22 * m33 - m32 * m23) - m21 * (m12 * m33 - m32 * m13) + m31 * (m12 * m23 - m22 * m13));
             }
             return invertable;
         }
-        
+
         /**
         * @language zh_CN
         * 生成一个变换矩阵
@@ -1229,6 +1303,19 @@
         * @platform Web,Native
         */
         public makeTransform(pos: Vector3D, scale: Vector3D, rot: Quaternion) {
+            //let data: Float32Array = this.rawData;
+            //data[0] = scale.x;
+            //data[5] = scale.y;
+            //data[10] = scale.z;
+
+            //rot.toMatrix3D(Matrix4_4.helpMatrix);
+            //this.append(Matrix4_4.helpMatrix);
+
+            //data[12] = pos.x;
+            //data[13] = pos.y;
+            //data[14] = pos.z;
+            //data[15] = 1.0;
+
             this.createByScale(scale.x, scale.y, scale.z);
             rot.toMatrix3D(MathUtil.CALCULATION_MATRIX);
             this.append(MathUtil.CALCULATION_MATRIX);
@@ -1237,6 +1324,7 @@
             this.rawData[13] = pos.y;
             this.rawData[14] = pos.z;
             this.rawData[15] = 1;
+
         }
 
         /**
@@ -1264,6 +1352,8 @@
         * @platform Web,Native
         */
         public transformVector(v: Vector3D, target: Vector3D = null): Vector3D {
+            let data: Float32Array = this.rawData;
+
             if (!target) {
                 target = new Vector3D();
             }
@@ -1272,10 +1362,10 @@
             var y: number = v.y;
             var z: number = v.z;
 
-            target.x = x * this.rawData[0] + y * this.rawData[4] + z * this.rawData[8] + this.rawData[12];
-            target.y = x * this.rawData[1] + y * this.rawData[5] + z * this.rawData[9] + this.rawData[13];
-            target.z = x * this.rawData[2] + y * this.rawData[6] + z * this.rawData[10] + this.rawData[14];
-            target.w = x * this.rawData[3] + y * this.rawData[7] + z * this.rawData[11] + this.rawData[15];
+            target.x = x * data[0] + y * data[4] + z * data[8] + data[12];
+            target.y = x * data[1] + y * data[5] + z * data[9] + data[13];
+            target.z = x * data[2] + y * data[6] + z * data[10] + data[14];
+            target.w = x * data[3] + y * data[7] + z * data[11] + data[15];
 
             return target;
         }
@@ -1290,19 +1380,21 @@
         * @platform Web,Native
         */
         public transformVector4(v: Vector3D, target: Vector3D = null): Vector3D {
+            let data: Float32Array = this.rawData ;
+
             if (!target) {
                 target = new Vector3D();
             }
 
-            var x: number = v.x;
-            var y: number = v.y;
-            var z: number = v.z;
-            var w: number = v.w;
+            let x: number = v.x;
+            let y: number = v.y;
+            let z: number = v.z;
+            let w: number = v.w;
 
-            target.x = x * this.rawData[0] + y * this.rawData[4] + z * this.rawData[8] + w * this.rawData[12];
-            target.y = x * this.rawData[1] + y * this.rawData[5] + z * this.rawData[9] + w * this.rawData[13];
-            target.z = x * this.rawData[2] + y * this.rawData[6] + z * this.rawData[10] + w * this.rawData[14];
-            target.w = x * this.rawData[3] + y * this.rawData[7] + z * this.rawData[11] + w * this.rawData[15];
+            target.x = x * data[0] + y * data[4] + z * data[8] + w * data[12];
+            target.y = x * data[1] + y * data[5] + z * data[9] + w * data[13];
+            target.z = x * data[2] + y * data[6] + z * data[10] + w * data[14];
+            target.w = x * data[3] + y * data[7] + z * data[11] + w * data[15];
 
             return target;
         }
@@ -1317,21 +1409,23 @@
         * @platform Web,Native
         */
         public mat3TransformVector(v: Vector3D, target: Vector3D = null): Vector3D {
+            let data: Float32Array = this.rawData ;
+
             if (!target) {
                 target = new Vector3D();
             }
 
-            var x: number = v.x;
-            var y: number = v.y;
-            var z: number = v.z;
+            let x: number = v.x;
+            let y: number = v.y;
+            let z: number = v.z;
 
-            target.x = x * this.rawData[0] + y * this.rawData[4] + z * this.rawData[8] ;
-            target.y = x * this.rawData[1] + y * this.rawData[5] + z * this.rawData[9] ;
-            target.z = x * this.rawData[2] + y * this.rawData[6] + z * this.rawData[10];
+            target.x = x * data[0] + y * data[4] + z * data[8];
+            target.y = x * data[1] + y * data[5] + z * data[9];
+            target.z = x * data[2] + y * data[6] + z * data[10];
 
             return target;
         }
-        
+
         /**
         * @language zh_CN
         * 用当前矩阵变换一个3D平面
@@ -1341,13 +1435,13 @@
         * @platform Web,Native
         */
         public transformPlane(plane: Plane3D): Plane3D {
-            var mat: Matrix4_4 = new Matrix4_4();
+            let mat: Matrix4_4 = new Matrix4_4();
             mat.copyFrom(this);
             mat.invert();
             mat.transpose();
-            var v: Vector3D = new Vector3D(plane.a, plane.b, plane.c, plane.d);
+            let v: Vector3D = new Vector3D(plane.a, plane.b, plane.c, plane.d);
             v.copyFrom(mat.transformVector(v));
-            var p: Plane3D = new Plane3D();
+            let p: Plane3D = new Plane3D();
             p.a = v.x;
             p.b = v.y;
             p.c = v.z;
@@ -1357,7 +1451,7 @@
         }
 
 
-                
+
         /**
         * @language zh_CN
         * 当前矩阵转置
@@ -1365,25 +1459,26 @@
         * @platform Web,Native
         */
         public transpose() {
-           
-            for (var i: number = 0; i < Matrix4_4.helpMatrix.rawData.length; i++ ){
-                Matrix4_4.helpMatrix.rawData[i] = this.rawData[i] ;
+            let data: Float32Array = this.rawData;
+
+            for (var i: number = 0; i < Matrix4_4.helpMatrix.rawData.length; i++) {
+                Matrix4_4.helpMatrix.rawData[i] = data[i];
             }
 
-            this.rawData[1] = Matrix4_4.helpMatrix.rawData[4];
-            this.rawData[2] = Matrix4_4.helpMatrix.rawData[8];
-            this.rawData[3] = Matrix4_4.helpMatrix.rawData[12];
-            this.rawData[4] = Matrix4_4.helpMatrix.rawData[1];
-            this.rawData[6] = Matrix4_4.helpMatrix.rawData[9];
-            this.rawData[7] = Matrix4_4.helpMatrix.rawData[13];
-            this.rawData[8] = Matrix4_4.helpMatrix.rawData[2];
-            this.rawData[9] = Matrix4_4.helpMatrix.rawData[6];
-            this.rawData[11] = Matrix4_4.helpMatrix.rawData[14];
-            this.rawData[12] = Matrix4_4.helpMatrix.rawData[3];
-            this.rawData[13] = Matrix4_4.helpMatrix.rawData[7];
-            this.rawData[14] = Matrix4_4.helpMatrix.rawData[11];
+            data[1] = Matrix4_4.helpMatrix.rawData[4];
+            data[2] = Matrix4_4.helpMatrix.rawData[8];
+            data[3] = Matrix4_4.helpMatrix.rawData[12];
+            data[4] = Matrix4_4.helpMatrix.rawData[1];
+            data[6] = Matrix4_4.helpMatrix.rawData[9];
+            data[7] = Matrix4_4.helpMatrix.rawData[13];
+            data[8] = Matrix4_4.helpMatrix.rawData[2];
+            data[9] = Matrix4_4.helpMatrix.rawData[6];
+            data[11] = Matrix4_4.helpMatrix.rawData[14];
+            data[12] = Matrix4_4.helpMatrix.rawData[3];
+            data[13] = Matrix4_4.helpMatrix.rawData[7];
+            data[14] = Matrix4_4.helpMatrix.rawData[11];
         }
-                        
+
         /**
         * @language zh_CN
         * 生成一个(以x,y,z为中心轴旋转degrees角度)的矩阵
@@ -1396,13 +1491,13 @@
         * @platform Web,Native
         */
         public static getAxisRotation(x: number, y: number, z: number, degrees: number): Matrix4_4 {
-            var m: Matrix4_4 = new Matrix4_4();
+            let m: Matrix4_4 = new Matrix4_4();
 
-            var rad = degrees * (Math.PI / 180);
-            var c: number = Math.cos(rad);
-            var s: number = Math.sin(rad);
-            var t: number = 1 - c;
-            var tmp1: number, tmp2: number;
+            let rad = degrees * (Math.PI / 180);
+            let c: number = Math.cos(rad);
+            let s: number = Math.sin(rad);
+            let t: number = 1 - c;
+            let tmp1: number, tmp2: number;
 
             m.rawData[0] = c + x * x * t;
             m.rawData[5] = c + y * y * t;
@@ -1427,16 +1522,15 @@
         /**
         * @language zh_CN
         * 返回矩阵行列式
-        *  
         * @returns number 行列式值
         * @version Egret 3.0
         * @platform Web,Native
         */
         public get determinant(): number {
-            return ((this.rawData[0] * this.rawData[5] - this.rawData[4] * this.rawData[1]) * (this.rawData[10] * this.rawData[15] - this.rawData[14] * this.rawData[11]) - (this.rawData[0] * this.rawData[9] - this.rawData[8] * this.rawData[1]) * (this.rawData[6] * this.rawData[15] - this.rawData[14] * this.rawData[7]) + (this.rawData[0] * this.rawData[13] - this.rawData[12] * this.rawData[1]) * (this.rawData[6] * this.rawData[11] - this.rawData[10] * this.rawData[7]) + (this.rawData[4] * this.rawData[9] - this.rawData[8] * this.rawData[5]) * (this.rawData[2] * this.rawData[15] - this.rawData[14] * this.rawData[3]) - (this.rawData[4] * this.rawData[13] - this.rawData[12] * this.rawData[5]) * (this.rawData[2] * this.rawData[11] - this.rawData[10] * this.rawData[3]) + (this.rawData[8] * this.rawData[13] - this.rawData[12] * this.rawData[9]) * (this.rawData[2] * this.rawData[7] - this.rawData[6] * this.rawData[3]));
+            let data: Float32Array = this.rawData;
+            return ((data[0] * data[5] - data[4] * data[1]) * (data[10] * data[15] - data[14] * data[11]) - (data[0] * data[9] - data[8] * data[1]) * (data[6] * data[15] - data[14] * data[7]) + (data[0] * data[13] - data[12] * data[1]) * (data[6] * data[11] - data[10] * data[7]) + (data[4] * data[9] - data[8] * data[5]) * (data[2] * data[15] - data[14] * data[3]) - (data[4] * data[13] - data[12] * data[5]) * (data[2] * data[11] - data[10] * data[3]) + (data[8] * data[13] - data[12] * data[9]) * (data[2] * data[7] - data[6] * data[3]));
         }
 
-        
         /**
         * @language zh_CN
         * 返回矩阵位移
@@ -1446,7 +1540,8 @@
         * @platform Web,Native
         */
         public get position(): Vector3D {
-            return new Vector3D(this.rawData[12], this.rawData[13], this.rawData[14]);
+            let data: Float32Array = this.rawData;
+            return new Vector3D(data[12], data[13], data[14]);
         }
 
         /**
@@ -1458,9 +1553,10 @@
         * @platform Web,Native
         */
         public set position(value: Vector3D) {
-            this.rawData[12] = value.x;
-            this.rawData[13] = value.y;
-            this.rawData[14] = value.z;
+            let data: Float32Array = this.rawData ;
+            data[12] = value.x;
+            data[13] = value.y;
+            data[14] = value.z;
         }
 
         /**
@@ -1472,7 +1568,8 @@
         * @platform Web,Native
         */
         public get scale(): Vector3D {
-            return new Vector3D(this.rawData[0], this.rawData[5], this.rawData[10]);
+            let data: Float32Array = this.rawData;
+            return new Vector3D(data[0], data[5], data[10]);
         }
 
         /**
@@ -1484,7 +1581,8 @@
         * @platform Web,Native
         */
         public toString(): string {
-            return "matrix3d(" + Math.round(this.rawData[0] * 1000) / 1000 + "," + Math.round(this.rawData[1] * 1000) / 1000 + "," + Math.round(this.rawData[2] * 1000) / 1000 + "," + Math.round(this.rawData[3] * 1000) / 1000 + "," + Math.round(this.rawData[4] * 1000) / 1000 + "," + Math.round(this.rawData[5] * 1000) / 1000 + "," + Math.round(this.rawData[6] * 1000) / 1000 + "," + Math.round(this.rawData[7] * 1000) / 1000 + "," + Math.round(this.rawData[8] * 1000) / 1000 + "," + Math.round(this.rawData[9] * 1000) / 1000 + "," + Math.round(this.rawData[10] * 1000) / 1000 + "," + Math.round(this.rawData[11] * 1000) / 1000 + "," + Math.round(this.rawData[12] * 1000) / 1000 + "," + Math.round(this.rawData[13] * 1000) / 1000 + "," + Math.round(this.rawData[14] * 1000) / 1000 + "," + Math.round(this.rawData[15] * 1000) / 1000 + ")";
+            let data = this.rawData;
+            return "matrix3d(" + Math.round(data[0] * 1000) / 1000 + "," + Math.round(data[1] * 1000) / 1000 + "," + Math.round(data[2] * 1000) / 1000 + "," + Math.round(data[3] * 1000) / 1000 + "," + Math.round(data[4] * 1000) / 1000 + "," + Math.round(data[5] * 1000) / 1000 + "," + Math.round(data[6] * 1000) / 1000 + "," + Math.round(data[7] * 1000) / 1000 + "," + Math.round(data[8] * 1000) / 1000 + "," + Math.round(data[9] * 1000) / 1000 + "," + Math.round(data[10] * 1000) / 1000 + "," + Math.round(data[11] * 1000) / 1000 + "," + Math.round(data[12] * 1000) / 1000 + "," + Math.round(data[13] * 1000) / 1000 + "," + Math.round(data[14] * 1000) / 1000 + "," + Math.round(data[15] * 1000) / 1000 + ")";
         }
 
         /**

@@ -20,7 +20,7 @@
          * @version Egret 3.0
          * @platform Web,Native
          */
-        public _start: number = 0; 
+        protected _start: number = 0; 
 
 
         /**

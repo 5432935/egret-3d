@@ -119,7 +119,7 @@
         * @private
         */
         private onItemChange(event: Event3D) {
-            var target: UIRadioButton = event.target;
+            var target: UIRadioButton = <UIRadioButton>event.target;
             this.changeSelectedItem(target);
 //            if (target.selected === false) return;
 //            if (this._selection === target) {

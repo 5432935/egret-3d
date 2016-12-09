@@ -138,6 +138,9 @@
                 else if (key == "lightInfo") {
                     data.lightData = this.parseLight(node.lightInfo);
                 }
+                else if (key == "lightIds") {
+                    data.lightIds = (node[key] + "").split(",");
+                }
                 else {
                     var v: string = typeof data[key];
                     if (v == "number") {

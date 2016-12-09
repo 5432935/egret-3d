@@ -39,7 +39,7 @@
         }
 
         private static checkMaxBacthing(matID: number, preNodes: UnitNodeData[]): UnitNodeData[][] {
-            var maxVerticeIndex: number = 25000;
+            var maxVerticeIndex: number = 10000;
             var packs: UnitNodeData[][] = [];
             var geometry: Geometry;
             var indexCount: number = 0;

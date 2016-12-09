@@ -974,7 +974,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public type: number = ParticleDataShapeType.Cube;
+        public type: number = ParticleDataShapeType.Point;
         /**
         * @language zh_CN
         * 是否随机方向发射，制定为随机发射方向的粒子，会自动获取一个在xyz三轴随机取值方向作为默认运动方向。

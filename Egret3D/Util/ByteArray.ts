@@ -453,7 +453,8 @@ module egret3d {
          * @platform Web,Native
          */
         public uncompress(type: string = "7z") {
-            var tmp: ArrayBuffer = nid.LZMAHelper.decode(this.data.buffer);
+            var lzma: nid.LZMA = new nid.LZMA();
+            var tmp: ArrayBuffer = lzma.decode(new Uint8Array(this.data.buffer)).buffer;
             this.buffer = tmp;
         }
 

@@ -18,9 +18,7 @@
             super();
             //##FilterBegin## ##Particle##
             this.name = "ParticleRotationOneBezierNode";
-
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_rotationOneBezier");
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_rotationOneBezier");
             //##FilterEnd##
 
         }

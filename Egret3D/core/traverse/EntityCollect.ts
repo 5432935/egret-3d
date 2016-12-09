@@ -51,11 +51,15 @@
         }
 
         private applyRender(child: any, camera: Camera3D) {
-            if (!child.visible) {
-                return;
+            if (child.canPick) {
+                this.specialCastItem[SpecialCast.Pick].push(child);
+                this.numberPick++;
             }
-            if ( child["material"] )
-                this.addRenderList(<IRender>child, camera);
+            if (!child.visible) {
+                return;  
+            }
+            
+            this.addRenderList(child, camera);
 
             for (var i: number = 0; i < child.childs.length; i++) {
                 this.applyRender(child.childs[i], camera);
@@ -72,58 +76,57 @@
         */
         private addRenderList(renderItem: IRender, camera: Camera3D, cameraCulling:boolean = true) {
 
-            if (renderItem.enableCulling && cameraCulling) {
+            if (cameraCulling) {
                 if (!camera.isVisibleToCamera(renderItem)) {
                     return;
                 }
             }
-           
-            if (renderItem.material) {
 
+            if (!renderItem.material)
+                return;
 
-                //检查鼠标能pick
-                if (renderItem.enablePick) {
-                    this.specialCastItem[SpecialCast.Pick].push(renderItem);
-                    this.numberPick++;
-                }
-
-                //检查阴影产生者
-                if (renderItem.material.castShadow) {
-                    this.specialCastItem[SpecialCast.Shadow].push(renderItem);
-                    this.numberCastShadow++;
-                }
-
-                //检查阴影接受者
-                if (renderItem.material.acceptShadow) {
-                    this.numberAcceptShadow++;
-                }
-
-                //按 layer 进行渲染排序分类
-                for (var i: number = 0; i < Layer.layerType.length; i++) {
-                    if (renderItem.material.materialData.alphaBlending && renderItem.tag.name == "normalObject" ) {
-                        var scenePos: Vector3D = camera.object3DToScreenRay(renderItem.position, Vector3D.HELP_0);
-                        renderItem.zIndex = Vector3D.HELP_0.z;
-                        this.softLayerRenderItems["alphaObject"].push(renderItem);
-                    }
-                    else if (renderItem.tag.name == Layer.layerType[i]) {
-                        this.softLayerRenderItems[Layer.layerType[i]].push(renderItem);
-                    }
-                }
-
-                if (Egret3DEngine.instance.debug) {
-                    this.numberFace += renderItem.geometry.faceCount;
-                    this.numberVertex += renderItem.geometry.vertexCount;
-                    this.numberDraw += 1;
-
-                    if (renderItem.animation)
-                        this.numberSkin += 1;
-                    if (renderItem.proAnimation)
-                        this.numberAnimation += 1;
-                    if (renderItem.type == IRender.TYPE_PARTICLE_EMIT)
-                        this.numberParticle += 1;
-                }
-
+            //检查鼠标能pick
+            if (renderItem.enablePick) {
+                this.specialCastItem[SpecialCast.Pick].push(renderItem);
+                this.numberPick++;
             }
+
+            //检查阴影产生者
+            if (renderItem.material.castShadow) {
+                this.specialCastItem[SpecialCast.Shadow].push(renderItem);
+                this.numberCastShadow++;
+            }
+
+            //检查阴影接受者
+            if (renderItem.material.acceptShadow) {
+                this.numberAcceptShadow++;
+            }
+
+            //按 layer 进行渲染排序分类
+            for (var i: number = 0; i < Layer.layerType.length; i++) {
+                if (renderItem.material.materialData.alphaBlending && renderItem.tag.name == "normalObject" ) {
+                    var scenePos: Vector3D = camera.object3DToScreenRay(renderItem.position, Vector3D.HELP_0);
+                    renderItem.zIndex = Vector3D.HELP_0.z;
+                    this.softLayerRenderItems["alphaObject"].push(renderItem);
+                }
+                else if (renderItem.tag.name == Layer.layerType[i]) {
+                    this.softLayerRenderItems[Layer.layerType[i]].push(renderItem);
+                }
+            }
+
+            if (Egret3DEngine.instance.debug) {
+                this.numberFace += renderItem.geometry.faceCount;
+                this.numberVertex += renderItem.geometry.vertexCount;
+                this.numberDraw += 1;
+
+                if (renderItem.animation)
+                    this.numberSkin += 1;
+                if (renderItem.proAnimation)
+                    this.numberAnimation += 1;
+                if (renderItem.type == IRender.TYPE_PARTICLE_EMIT)
+                    this.numberParticle += 1;
+            }
+
 
         }
                 

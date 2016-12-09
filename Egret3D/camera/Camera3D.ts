@@ -610,11 +610,14 @@
             //尝试刷新modelMatrix的值，有可能changed为true
             renderItem.modelMatrix;
             this.modelMatrix;
-            if (renderItem.bound) {
-                return renderItem.bound.inBound(this.frustum);
-            }
 
-            return true;
+            //添加 手动让当前单位一直处于不剔除状态
+            var bool: boolean = true;
+            if (renderItem.bound) {
+                bool = renderItem.bound.inBound(this.frustum) || !renderItem.enableCulling;
+            }
+            renderItem.inFrustum = bool;
+            return bool;
         }
 
         /**

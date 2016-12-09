@@ -9,6 +9,7 @@
     * @platform Web,Native
     */
     export var registGUITexture = function (texture: Texture) {
+        texture.upload(Egret3DCanvas.context3DProxy);
         for (const v of Egret3DCanvas._instance.view3Ds) {
             v.getGUIStage().registerTexture(texture);
         }
@@ -320,13 +321,17 @@
             Egret3DCanvas.context3DProxy.enableCullFace();
             Context3DProxy.gl.enable(Context3DProxy.gl.SCISSOR_TEST);
 
-            Context3DProxy.gl.enableVertexAttribArray(0);
-            Context3DProxy.gl.enableVertexAttribArray(1);
-            Context3DProxy.gl.enableVertexAttribArray(2);
-            Context3DProxy.gl.enableVertexAttribArray(3);
-            Context3DProxy.gl.enableVertexAttribArray(4);
-            Context3DProxy.gl.enableVertexAttribArray(5);
-            Context3DProxy.gl.enableVertexAttribArray(6);
+            //Context3DProxy.gl.enableVertexAttribArray(0);
+            //Context3DProxy.gl.enableVertexAttribArray(1);
+            //Context3DProxy.gl.enableVertexAttribArray(2);
+            //Context3DProxy.gl.enableVertexAttribArray(3);
+            //Context3DProxy.gl.enableVertexAttribArray(4);
+            //Context3DProxy.gl.enableVertexAttribArray(5);
+            //Context3DProxy.gl.enableVertexAttribArray(6);
+
+            //for (var j: number = 0; j < 8; j++) {
+            //    Context3DProxy.gl.disableVertexAttribArray(j);
+            //}
         }
 
         /**
@@ -397,12 +402,17 @@
         * @param canvasRec
         * @event call
         */
-        private resize(x: number, y: number, width: number, height: number) {
+        public resize(x: number, y: number, width: number, height: number) {
+
+            //var meta: HTMLMetaElement = <HTMLMetaElement>document.getElementById("view");
+            //meta.content = "width=device-width, initial-scale=" + 1.0 / 2.0 + ", maximum-scale=" + 1.0 / 2.0+ ", user-scalable=no";
+
             this.canvas3DRectangle.x = x;
             this.canvas3DRectangle.y = y;
             this.canvas3DRectangle.width = width;
             this.canvas3DRectangle.height = height;
             ContextConfig.canvasRectangle = this.canvas3DRectangle;
+
             this.canvas.style.left = this.canvas3DRectangle.x.toString() + "px";
             this.canvas.style.top = this.canvas3DRectangle.y.toString() + "px";
             this.canvas.width = this.canvas3DRectangle.width;

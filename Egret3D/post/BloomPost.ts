@@ -14,7 +14,7 @@
         private _debugHud: HUD = new HUD();
         constructor() {
             this.postRender = new PostRender("hud_vs", "bloom_fs");
-            this.postRender.setRenderToTexture(2048, 2048, FrameBufferFormat.UNSIGNED_BYTE_RGB);
+            this.postRender.setRenderToTexture(256, 256, FrameBufferFormat.UNSIGNED_BYTE_RGB);
 
             this.gaussPass = new GaussPost();
 

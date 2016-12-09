@@ -4,7 +4,7 @@
         "noImplicitAny": false,
         "sourceMap": false,
         "declaration": true,
-        "out": "./egret3d.js"
+        "out": "../module/egret3d/egret3d.js"
     },
     "files": [
         "Util/ByteArray.ts",
@@ -80,7 +80,7 @@
         "shader/ShaderContent.ts",
         "shader/ShaderUtil.ts",
 
-        "shadow/ShadowCast.ts",
+        "core/partition/kdTree/KDTree.ts",
 
         "anim/AnimationNode.ts",
         "anim/AnimationCurve.ts",
@@ -96,6 +96,8 @@
         "anim/SkeletonAnimation/Skeleton.ts",
         "anim/SkeletonAnimation/SkeletonPose.ts",
         "anim/SkeletonAnimation/SkeletonAnimationClip.ts",
+        "anim/SkeletonAnimation/AnimClipState.ts",
+        "anim/SkeletonAnimation/CrossFade.ts",
         "anim/SkeletonAnimation/SkeletonAnimationState.ts",
         "anim/SkeletonAnimation/SkeletonAnimation.ts",
 
@@ -109,6 +111,7 @@
         "controller/ControllerBase.ts",
         "controller/LookAtController.ts",
         "controller/HoverController.ts",
+		"controller/FreeController.ts",
 
         "controller/PanController.ts",
         "controller/CameraAnimationController.ts",
@@ -188,7 +191,7 @@
 
 
 
-
+		"collision/TerrainCollision.ts",
         "input/input.ts",
         "input/OrientationController.ts",
 
@@ -219,6 +222,7 @@
         "loader/parser/XML/XMLParser.ts",
 
         "loader/parser/unit/UnitParserUtils.ts",
+        "loader/parser/unit/MethodUtils.ts",
         "loader/parser/unit/UnitParser.ts",
         "loader/parser/unit/binary/UnitBinParser.ts",
         "loader/parser/unit/json/UnitJsonParser.ts",
@@ -271,7 +275,6 @@
         "material/method/ColorMethod.ts",
         "material/method/WaterWaveMethod.ts",
         "material/method/WaterNormalMethod.ts",
-        "material/method/WaterBumpMethod.ts",
         "material/method/EnvironmentMethod.ts",
         "material/method/RimlightMethod.ts",
 
@@ -279,6 +282,7 @@
         "plant/GrassMethod.ts",
 
 
+		"material/method/WaterBumpMethod.ts",
         "material/pass/PassUsage.ts",
         "material/MaterialData.ts",
 
@@ -363,6 +367,7 @@
         "texture/RenderTexture.ts",
 
 
+		"shadow/ShadowCast.ts",
 
         "camera/CameraManager.ts",
         "camera/Camera3D.ts",

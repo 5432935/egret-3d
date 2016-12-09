@@ -130,7 +130,6 @@
                 }
                 if (this._camera) {
                     this._event.eventType = CameraAnimationController.EVENT_CAMERA_COMPLETE;
-                    this._event.target = this;
                     this._camera.dispatchEvent(this._event);
                 }
             }

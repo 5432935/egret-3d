@@ -20,9 +20,7 @@
             super();
             //##FilterBegin## ##Particle##
             this.name = "ParticleVelocityLimitConstNode";
-
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityLimitConst");
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityLimitConst");
 
             this.attribute_velocityLimit = new GLSL.VarRegister();
             this.attribute_velocityLimit.name = "attribute_velocityLimit";

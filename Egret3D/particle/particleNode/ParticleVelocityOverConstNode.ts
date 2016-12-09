@@ -19,8 +19,7 @@
             //##FilterBegin## ##Particle##
             this.name = "ParticleVelocityOverConstNode";
 
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityOverConst");
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityOverConst");
 
             this.attribute_velocityOver = new GLSL.VarRegister();
             this.attribute_velocityOver.name = "attribute_velocityOverConst";

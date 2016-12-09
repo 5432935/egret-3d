@@ -16,6 +16,8 @@
     export class PropertyAnimController extends EventDispatcher implements IAnimation {
 
         protected _animTime: number = 0;
+        skeletonAnimationController: SkeletonAnimation;
+        particleAnimationController: ParticleAnimation;
 
         /**
         * @language zh_CN
@@ -94,12 +96,12 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public set animTime(value: number) {
-            this._animTime = value;
-            if (this.current) {
-                this.current.timePosition = value;
-            }
-        }
+        //public set animTime(value: number) {
+        //    this._animTime = value;
+        //    if (this.current) {
+        //        this.current.timePosition = value;
+        //    }
+        //}
 
         /**
         * @language zh_CN
@@ -181,11 +183,11 @@
                     this.current.bindObject3D(this.target);
                 }
 
-                this.current.timePosition = this._animTime;
+                //this.current.timePosition = this._animTime;
 
                 this.currentAnimName = this.current.name;
 
-                this.current.play();
+                this.current.play(speed, reset);
             }
         }
      
@@ -253,7 +255,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public get animStates(): SkeletonAnimationState[] {
+        public get animStates(): IAnimationState[] {
             return null;
         }
 

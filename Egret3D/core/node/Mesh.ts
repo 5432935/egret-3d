@@ -41,7 +41,7 @@
             else {
                 if (geometry) {
                     if (this.geometry.vertexFormat & VertexFormat.VF_SKIN) {
-                        this.animation = new SkeletonAnimation();
+                        this.animation = new SkeletonAnimation(new SkeletonAnimationState());
                     }
                 }
             }

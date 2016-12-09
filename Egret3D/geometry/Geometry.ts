@@ -794,10 +794,20 @@
                         this.vertexArray[index * this.vertexAttLength + offset + 3] = src[srcOffset + 3];
                     }
                     else {
-                        this.vertexArray[index * this.vertexAttLength + offset + 0] = 1;
-                        this.vertexArray[index * this.vertexAttLength + offset + 1] = 1;
-                        this.vertexArray[index * this.vertexAttLength + offset + 2] = 1;
-                        this.vertexArray[index * this.vertexAttLength + offset + 3] = 1;
+                        if (this.vertexArray[index * this.vertexAttLength + offset + 0] == 0 &&
+                            this.vertexArray[index * this.vertexAttLength + offset + 1] == 0 &&
+                            this.vertexArray[index * this.vertexAttLength + offset + 2] == 0 &&
+                            this.vertexArray[index * this.vertexAttLength + offset + 3] == 0) {
+
+                            this.vertexArray[index * this.vertexAttLength + offset + 0] = 1;
+                            this.vertexArray[index * this.vertexAttLength + offset + 1] = 1;
+                            this.vertexArray[index * this.vertexAttLength + offset + 2] = 1;
+                            this.vertexArray[index * this.vertexAttLength + offset + 3] = 1;
+                        }
+                        //this.vertexArray[index * this.vertexAttLength + offset + 0] = 1;
+                        //this.vertexArray[index * this.vertexAttLength + offset + 1] = 1;
+                        //this.vertexArray[index * this.vertexAttLength + offset + 2] = 1;
+                        //this.vertexArray[index * this.vertexAttLength + offset + 3] = 1;
                     }
                     offset += Geometry.colorSize;
                 }
@@ -956,6 +966,37 @@
             }
             
             return geometry;
+        }
+
+        /*
+        * @private
+        */
+        public copy(other: Geometry) {
+            this.vertexFormat = other.vertexFormat;
+            this.vertexCount = other.vertexCount;
+            this.indexCount = other.indexCount;
+
+            for (var i: number = 0; i < other.vertexArray.length; ++i) {
+                this.vertexArray[i] = other.vertexArray[i];
+            }
+
+            for (var i: number = 0; i < other.indexArray.length; ++i) {
+                this.indexArray[i] = other.indexArray[i];
+            }
+
+            this.subGeometrys.length = 0;
+            for (var i: number = 0; i < other.subGeometrys.length; ++i) {
+                var sub: SubGeometry = new SubGeometry();
+                this.subGeometrys.push(sub);
+                var o_sub: SubGeometry = other.subGeometrys[i];
+                sub.geometry = this;
+                sub.start = o_sub.start;
+                sub.count = o_sub.count;
+                sub.matID = o_sub.matID;
+                sub.textureDiffuse = o_sub.textureDiffuse;
+                sub.textureNormal = o_sub.textureNormal;
+                sub.textureSpecular = o_sub.textureSpecular;
+            }
         }
 
         /**

@@ -18,6 +18,7 @@
         /**
         * @language zh_CN
         * LOADER_COMPLETE 常量定义 资源加载完成事件标识。
+        * (3.2.5版本后请使用COMPLETE)
         * 可注册对象 : URLLoader类型。
         * 事件响应状态 : 加载完成后触发。
         * 响应事件参数 : LoaderEvent3D类型,其中LoaderEvent3D.data的内容即为此次加载的内容。
@@ -27,10 +28,22 @@
         */
         public static LOADER_COMPLETE: string = "onLoadComplete";
 
+        /**
+        * @language zh_CN
+        * COMPLETE 常量定义 资源加载完成事件标识。
+        * 可注册对象 : URLLoader类型。
+        * 事件响应状态 : 加载完成后触发。
+        * 响应事件参数 : LoaderEvent3D类型,其中LoaderEvent3D.data的内容即为此次加载的内容。
+        * @see egret3d.URLLoader
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static COMPLETE: string = "onLoadComplete";
 
         /**
         * @language zh_CN
         * LOADER_ONCE_COMPLETE 常量定义 资源加载一个文件完成事件标识。
+        * (3.2.5版本后请使用ONCE_COMPLETE)
         * 可注册对象 : URLLoader类型。
         * 事件响应状态 : 加载一个文件完成触发。
         * 响应事件参数 : LoaderEvent3D类型,其中LoaderEvent3D.data的内容即为此次加载的内容。
@@ -42,7 +55,20 @@
 
         /**
         * @language zh_CN
+        * ONCE_COMPLETE 常量定义 资源加载一个文件完成事件标识。
+        * 可注册对象 : URLLoader类型。
+        * 事件响应状态 : 加载一个文件完成触发。
+        * 响应事件参数 : LoaderEvent3D类型,其中LoaderEvent3D.data的内容即为此次加载的内容。
+        * @see egret3d.URLLoader
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static ONCE_COMPLETE: string = "onLoadOnceComplete";
+
+        /**
+        * @language zh_CN
         * LOADER_PROGRESS 常量定义 加载进度事件标识。
+        * (3.2.5版本后请使用PROGRESS)
         * 可注册对象 : URLLoader类型。
         * 事件响应状态 : 加载过程中事件响应。
         * 响应事件参数 : LoaderEvent3D类型,其中LoaderEvent3D.currentProgress的内容即为此次加载的进度。
@@ -54,7 +80,20 @@
 
         /**
         * @language zh_CN
+        * PROGRESS 常量定义 加载进度事件标识。
+        * 可注册对象 : URLLoader类型。
+        * 事件响应状态 : 加载过程中事件响应。
+        * 响应事件参数 : LoaderEvent3D类型,其中LoaderEvent3D.currentProgress的内容即为此次加载的进度。
+        * @see egret3d.URLLoader
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static PROGRESS: string = "onLoadProgress";
+
+        /**
+        * @language zh_CN
         * LOADER_ERROR 常量定义 加载出错事件标识。
+        * (3.2.5版本后请使用ERROR)
         * 可注册对象 : URLLoader类型。
         * 事件响应状态 : 加载出错时事件响应。
         * 响应事件参数 : LoaderEvent3D类型,其中LoaderEvent3D.loader的内容即为出错的加载器。
@@ -63,6 +102,18 @@
         * @platform Web,Native
         */
         public static LOADER_ERROR: string = "onLoadError";
+
+        /**
+        * @language zh_CN
+        * LOADER_ERROR 常量定义 加载出错事件标识。
+        * 可注册对象 : URLLoader类型。
+        * 事件响应状态 : 加载出错时事件响应。
+        * 响应事件参数 : LoaderEvent3D类型,其中LoaderEvent3D.loader的内容即为出错的加载器。
+        * @see egret3d.URLLoader
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static ERROR: string = "onLoadError";
 
         /**
         * @language zh_CN

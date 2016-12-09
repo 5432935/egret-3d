@@ -29,7 +29,8 @@ void main(void){
     fog.fogStartDistance = uniform_globalFog[4] ; 
     fog.fogHeightStart = uniform_globalFog[5] ;
     fog.fogAlpha = uniform_globalFog[6] ; 
-    
+    fog.fogColor *= diffuseColor.w;
+
     float yd = uniform_eyepos.y - varying_pos.y ;
     diffuseColor.xyz = applyFog( yd , varying_pos.xyz , fog );
 }

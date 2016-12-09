@@ -361,10 +361,11 @@
         * @platform Web,Native
         */
         public copyFrom(src: Vector3D): void {
-            this.x = src.x;
-            this.y = src.y;
-            this.z = src.z;
-            this.w = src.w;
+            var v = this;
+            v.x = src.x;
+            v.y = src.y;
+            v.z = src.z;
+            v.w = src.w;
         }
 
         /**

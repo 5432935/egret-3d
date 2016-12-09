@@ -2,14 +2,13 @@
 //按秒为单位，当前时间
 float currentTime = 0.0;
 float totalTime = 0.0;
-float particleScale = 1.0 / 1.414;
 bool discard_particle = true;
 
 const float PI = 3.1415926;
 const float TrueOrFalse = 0.5;
 const float Tiny = 0.0001;
 
-varying vec3 varying_particleData;
+varying vec4 varying_particleData;
 varying vec4 varying_mvPose;
 
 attribute vec3 attribute_time;//(bornTime 秒, life, index)
@@ -20,7 +19,7 @@ attribute float attribute_rotationBirth;
 uniform mat4 uniform_cameraMatrix;
 uniform mat4 uniform_billboardMatrix;
 uniform mat4 uniform_ViewMatrix;
-uniform float uniform_particleState[25];
+uniform float uniform_particleState[27];
 
 vec3 cubicPos = vec3(1.0,1.0,1.0);
 
@@ -37,7 +36,6 @@ vec3 followTargetScale = vec3(1.0,1.0,1.0);
 vec4 followTargetRotation = vec4(0.0,0.0,0.0,0.0);
 
 float scaleSize = 1.0;
-float scaleChange = 1.0;
 //render mode
 const float Billboard				= 0.0;
 const float StretchedBillboard		= 1.0;
@@ -83,6 +81,8 @@ struct ParticleStateData{
 	float lengthScale;
 	float renderMode;
 	float stayAtEnd;
+	float blendMode;
+	float shapeType;
 };
 ParticleStateData particleStateData;
 
@@ -214,7 +214,7 @@ void calcParticleTime()
 	//计算当前粒子在单次循环中的相对时间
 	currentTime = mod(currentTime, particleStateData.loopTime);
 	//当前loopTime内超过粒子自身的什么周期，死亡状态
-	if(currentTime > curParticle.life || currentTime < 0.0){
+	if(currentTime > curParticle.life || currentTime <= 0.0){
 		return;
 	}
 	discard_particle = false;
@@ -239,7 +239,15 @@ void rotateParticleUnit()
 {
 	rotResultVec3.z += attribute_rotationBirth; 
 	rotResultVec3 *= PI / 180.0; 
-	if(particleStateData.renderMode == HorizontalBillboard){ 
+	if(particleStateData.renderMode == Mesh){
+		if(particleStateData.shapeType > 0.5){ 
+			rotResultVec3 = vec3(0.0, rotResultVec3.z, 0.0); 
+			rotVertexMatrix = buildRotMat4(rotResultVec3); 
+	  }else{ 
+		  rotResultVec3 = vec3(0.0, 0.0, rotResultVec3.z); 
+		  rotVertexMatrix = buildRotMat4(rotResultVec3); 
+	  } 
+	}else if(particleStateData.renderMode == HorizontalBillboard){ 
 		rotVertexMatrix = buildRotMat4(vec3(0.5 * PI, 0.0, 0.0)); 
 		rotResultVec3 = vec3(0.0, rotResultVec3.z, 0.0); 
 		rotVertexMatrix = buildRotMat4(rotResultVec3) * rotVertexMatrix; 
@@ -279,16 +287,15 @@ void main(void)
 	particleStateData.lengthScale					= uniform_particleState[22];
 	particleStateData.renderMode					= uniform_particleState[23];
 	particleStateData.stayAtEnd						= uniform_particleState[24];
+	particleStateData.blendMode						= uniform_particleState[25];
+	particleStateData.shapeType						= uniform_particleState[26];
+	
 
-
-	if(particleStateData.renderMode == Mesh){
-		particleScale = 1.0;
-	}
 	calcParticleTime();
 	varying_particleData.x = currentTime;
 	varying_particleData.y = curParticle.life;
 	varying_particleData.z = curParticle.index;
-
+	varying_particleData.w = particleStateData.blendMode;
 	if(discard_particle){
 		varying_particleData.x = currentTime = 0.0;
 		gl_Position = varying_pos = vec4(0.0, 0.0, 0.0, 1.0);

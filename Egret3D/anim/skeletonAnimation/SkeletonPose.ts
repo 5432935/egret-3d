@@ -27,6 +27,14 @@ module egret3d {
         */
         public boneNameArray: Array<string>;
 
+       /**
+        * @language zh_CN
+        * 动画pose里的节点引用字典
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public jointsDictionary: { [boneName: string]: Joint};
+
         /**
         * @language zh_CN
         * 当前骨架的帧时间
@@ -35,121 +43,24 @@ module egret3d {
         */
         public frameTime: number;
 
-        private static _temp_v0: Vector3D = new Vector3D();
-        private static _temp_v1: Vector3D = new Vector3D();
-        private static _temp_v2: Vector3D = new Vector3D();
-        private static _temp_q0: Quaternion = new Quaternion();
-        private static _temp_q1: Quaternion = new Quaternion();
-        private static _temp_q2: Quaternion = new Quaternion();
+        /**
+        * @language zh_CN
+        * 帧数
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public frame: number;
+
+
+        //private static _temp_v0: Vector3D = new Vector3D();
+        //private static _temp_v1: Vector3D = new Vector3D();
+        //private static _temp_v2: Vector3D = new Vector3D();
+        //private static _temp_q0: Quaternion = new Quaternion();
+        //private static _temp_q1: Quaternion = new Quaternion();
+        //private static _temp_q2: Quaternion = new Quaternion();
         private static _temp_jointMatrix: Matrix4_4 = new Matrix4_4();
         private static _temp_matrixDecomposeA: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
-        private static _temp_matrixDecomposeB: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
-
-        /**
-        * @language zh_CN
-        * 克隆新骨架对象
-        * @returns Skeleton 新骨架对象
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public clone(): SkeletonPose {
-
-            var skeletonPose: SkeletonPose = new SkeletonPose();
-            skeletonPose.boneNameArray = this.boneNameArray;
-            skeletonPose.frameTime = this.frameTime;
-
-            for (var i: number = 0; i < this.joints.length; i++) {
-                skeletonPose.joints.push(this.joints[i].clone());
-            }
-
-            return skeletonPose;
-        }
-
-        /**
-        * @language zh_CN
-        * 骨架插值计算
-        * @param skeletonA 骨架A
-        * @param skeletonB 骨架B
-        * @param t 时间因子(0~1);
-        * @returns SkeletonPose 插值后的SkeletonPose对象
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public lerp(skeletonPoseA: SkeletonPose, skeletonPoseB: SkeletonPose, t: number): SkeletonPose {
-
-            if (skeletonPoseA.joints.length != skeletonPoseB.joints.length) {
-                throw Error("Bone number does not match!");
-            }
-
-            if (this.joints.length < skeletonPoseA.joints.length) {
-                for (var i: number = this.joints.length; i <= skeletonPoseA.joints.length; ++i) {
-                    this.joints.push(new Joint());
-                }
-            }
-
-            this.frameTime = (skeletonPoseB.frameTime - skeletonPoseA.frameTime) * t + skeletonPoseA.frameTime;
-
-            for (var i: number = 0; i < skeletonPoseA.joints.length; ++i) {
-
-                var jointA: Joint = skeletonPoseA.joints[i];
-
-                var jointB: Joint = skeletonPoseB.joints[i];
-
-                var joint: Joint = this.joints[i];
-
-                joint.name = jointA.name;
-
-                joint.parent = jointA.parent;
-
-                joint.index = jointA.index;
-
-                joint.parentIndex = jointA.parentIndex;
-
-                joint.scale.lerp(jointA.scale, jointB.scale, t);
-
-                joint.orientation.slerp(jointA.orientation, jointB.orientation, t);
-
-                joint.translation.slerp(jointA.translation, jointB.translation, t);
-
-                joint.buildLocalMatrix(joint.scale, joint.orientation, joint.translation);
-
-                joint.worldMatrixValid = jointA.worldMatrixValid;
-
-                if (joint.worldMatrixValid) {
-
-                    //pos rot scale
-                    var decomposeA: Vector3D[] = jointA.worldMatrix.decompose(Orientation3D.QUATERNION, SkeletonPose._temp_matrixDecomposeA);
-                    var decomposeB: Vector3D[] = jointB.worldMatrix.decompose(Orientation3D.QUATERNION, SkeletonPose._temp_matrixDecomposeB);
-
-                    //pos;
-                    SkeletonPose._temp_v0.slerp(decomposeA[0], decomposeB[0], t);
-                    //rot;
-                    SkeletonPose._temp_q1.x = decomposeA[1].x;
-                    SkeletonPose._temp_q1.y = decomposeA[1].y;
-                    SkeletonPose._temp_q1.z = decomposeA[1].z;
-                    SkeletonPose._temp_q1.w = decomposeA[1].w;
-                    SkeletonPose._temp_q2.x = decomposeB[1].x;
-                    SkeletonPose._temp_q2.y = decomposeB[1].y;
-                    SkeletonPose._temp_q2.z = decomposeB[1].z;
-                    SkeletonPose._temp_q2.w = decomposeB[1].w;
-                    SkeletonPose._temp_q0.slerp(SkeletonPose._temp_q1, SkeletonPose._temp_q2, t);
-                    //scale;
-                    SkeletonPose._temp_v1.lerp(decomposeA[2], decomposeB[2], t);
-
-                    joint.worldMatrix.makeTransform(SkeletonPose._temp_v0, SkeletonPose._temp_v1, SkeletonPose._temp_q0);
-                }
-
-                //this.joints.push(jointA.clone());
-
-                //this.joints[i].worldMatrix.copyFrom(jointA.worldMatrix);
-
-                //this.joints[i].worldMatrixValid = jointA.worldMatrixValid;
-            }
-
-            //this.calculateJointWorldMatrix();
-
-            return this;
-        }
+        //private static _temp_matrixDecomposeB: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D()];
 
         /**
         * @language zh_CN
@@ -159,28 +70,28 @@ module egret3d {
         * @platform Web,Native
         */
         public calculateJointWorldMatrix(): void {
-
-            for (var i: number = 0; i < this.joints.length; ++i) {
-                this.calculateAbsoluteMatrix(i);
+            let joints = this.joints;
+            let len = joints.length; 
+            let i:number =0;
+            for (i ; i < len ; ++i) {
+                this.calculateAbsoluteMatrix(joints[i], joints);
             }
-            
         }
 
         //递归函数，用于计算骨骼世界矩阵
-        private calculateAbsoluteMatrix(jointIndex: number): void {
-
-            var joint: Joint = this.joints[jointIndex];
-
+        private calculateAbsoluteMatrix(joint: Joint ,joints:Joint[] ): void {
             if (joint.parentIndex >= 0) {
-                this.calculateAbsoluteMatrix(joint.parentIndex);
+                this.calculateAbsoluteMatrix(joints[joint.parentIndex], joints);
             }
-
             if (!joint.worldMatrixValid) {
+                if (!joint.worldMatrix) joint.worldMatrix = new Matrix4_4();
 
+                joint.localMatrix = joint.localMatrix || new Matrix4_4();
+                joint.localMatrix.makeTransform(joint.translation, joint.scale, joint.orientation);
                 joint.worldMatrix.copyFrom(joint.localMatrix);
 
                 if (joint.parentIndex >= 0) {
-                    joint.worldMatrix.append(this.joints[joint.parentIndex].worldMatrix);
+                    joint.worldMatrix.append(joints[joint.parentIndex].worldMatrix);
                 }
 
                 joint.worldMatrixValid = true;
@@ -196,20 +107,26 @@ module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public updateGPUCacheData(skeleton: Skeleton, skeletonMatrixData: Float32Array, offset: Vector3D): Float32Array {
+        public updateGPUData(skeleton: Skeleton, skeletonMatrixData: Float32Array, offset: Vector3D): Float32Array {
 
-            for (var i: number = 0; i < skeleton.joints.length; ++i) {
+            var skeletonJoints = skeleton.joints; 
+            var skeletonTotalJoint = skeletonJoints.length;
+            var joints = this.joints; 
+            var jointLen = joints.length;
+            var boneNameArray = this.boneNameArray ;
 
-                for (var j: number = 0; j < this.joints.length; ++j) {
+            for (var i: number = 0; i < skeletonTotalJoint; ++i) {
+
+                for (var j: number = 0; j < jointLen; ++j) {
                     
-                    if (skeleton.joints[i].name != this.boneNameArray[j])
+                    if (skeletonJoints[i].name != boneNameArray[j])
                         continue;
+                    
+                    Matrix4_4.helpMatrix.copyFrom(skeletonJoints[i].inverseMatrix);
 
-                    SkeletonPose._temp_jointMatrix.copyFrom(skeleton.joints[i].inverseMatrix);
+                    Matrix4_4.helpMatrix.append(joints[j].worldMatrix);
 
-                    SkeletonPose._temp_jointMatrix.append(this.joints[j].worldMatrix);
-
-                    var test: Vector3D[] = SkeletonPose._temp_jointMatrix.decompose(Orientation3D.QUATERNION, SkeletonPose._temp_matrixDecomposeA);
+                    var test: Vector3D[] = Matrix4_4.helpMatrix.decompose(Orientation3D.QUATERNION);
 
                     skeletonMatrixData[i * 8 + 0] = test[1].x;
                     skeletonMatrixData[i * 8 + 1] = test[1].y;
@@ -277,9 +194,89 @@ module egret3d {
         * @platform Web,Native
         */
         public resetWorldMatrix(): void {
+            let joins = this.joints; 
+            let len = joins.length ;
+            for (var i: number = 0; i < len ; i++) {
+                joins[i].worldMatrixValid = false;
+            }
+        }
 
-            for (var i: number = 0; i < this.joints.length; i++) {
-                this.joints[i].worldMatrixValid = false;
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public getLerpSkeletonPose(frame: number,nextFrame:number, weight: number, clip: SkeletonAnimationClip, skeltonPose: SkeletonPose) {
+            let a: SkeletonPose;
+            let b: SkeletonPose;
+            a = clip.poseArray[frame];
+            b = clip.poseArray[nextFrame];
+            skeltonPose.mixAnim(a, b, weight, skeltonPose);
+        }
+
+
+    //function stopWorker() {
+    //    w.terminate();
+    //}
+
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public mixAnim(a: SkeletonPose, b: SkeletonPose, weight: number, targetPos: SkeletonPose) {
+            let aJoint: Joint;
+            let bJoint: Joint;
+            let tjoins = targetPos.joints; 
+            for (var i: number = 0; i < a.joints.length; i++) {
+                aJoint = a.joints[i];
+                bJoint = b.joints[i];
+                
+                tjoins[i].translation.lerp(aJoint.translation, bJoint.translation, weight);
+                tjoins[i].orientation.lerp(aJoint.orientation, bJoint.orientation, weight);
+                tjoins[i].worldMatrixValid = false ;
+            }
+            targetPos.calculateJointWorldMatrix();
+        }
+
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public copySkeletonPose(source: SkeletonPose, targetPos: SkeletonPose) {
+            let tjoints = targetPos.joints; 
+            let sourcejoints = source.joints; 
+            let len = sourcejoints.length ;
+            for (var i: number = 0; i < len; i++) {
+                tjoints[i].translation = sourcejoints[i].translation ;
+                tjoints[i].orientation = sourcejoints[i].orientation ;
+                tjoints[i].scale = sourcejoints[i].scale;
+                tjoints[i].worldMatrixValid = false;
+            } 
+            targetPos.calculateJointWorldMatrix();
+        }
+
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public initSkeletonPose(a: SkeletonPose, target: SkeletonPose) {
+            target.joints = target.joints || [];
+            target.jointsDictionary = target.jointsDictionary || {};
+            target.boneNameArray = a.boneNameArray;
+            for (var i: number = 0; i < a.joints.length; i++) {
+                let joint: Joint = new Joint();
+                target.joints.push(joint);
+                target.jointsDictionary[a.boneNameArray[i]] = joint;//初始化字典
+                joint.parentIndex = a.joints[i].parentIndex;
+                joint.index = a.joints[i].index;
+                joint.worldMatrix = joint.worldMatrix || new Matrix4_4();
             }
         }
     }

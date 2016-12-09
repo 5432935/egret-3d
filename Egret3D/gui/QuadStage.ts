@@ -13,7 +13,7 @@
         /*
         * @private
         */
-        public static moreQuad: number = 500;
+        public static moreQuad: number = 400;
 
 
         private _childList: DisplayObject[] = [];
@@ -26,10 +26,17 @@
         private _renderListInvalid: boolean = false;
         private _guiContainer: GUIRootContainer;
 
+
+        public x: number = 0;
+        public y: number = 0;
+        public width: number = 0;
+        public height: number = 0;
+
         /*
         * @private
         */
         public quadList: Quad[] = [];
+
 
         /**
         * @private
@@ -180,6 +187,12 @@
         * @platform Web,Native
         */
         public update(time: number, delay: number, context3DProxy: Context3DProxy, view3D: View3D) {
+            var self = this; 
+            self.x = view3D.x; 
+            self.y = view3D.y; 
+            self.width = view3D.width; 
+            self.height = view3D.height; 
+
             //collect render list
             if (this._renderListInvalid) {
                 this._renderListInvalid = false;
@@ -187,10 +200,10 @@
             }
 
             Context3DProxy.gl.disable(Context3DProxy.gl.DEPTH_TEST);
-
+            Egret3DCanvas.context3DProxy.disAttribPointer();
             //update data
             var i: number;
-            var len: number = this.quadList.length;
+            var len: number = self.quadList.length;
             for (i = 0; i < len; i++) {
                 this.quadList[i].update(time, delay);
             }
@@ -201,7 +214,7 @@
             var geometryIndex: number;
             for (i = 0; i < len; i++) {
                 geometryIndex = Math.floor(i / QuadStage.moreQuad);
-                this.quadList[i].updateVertices(i % QuadStage.moreQuad, this._quadMeshs[geometryIndex].geometry, i);
+                this.quadList[i].updateVertices(i % QuadStage.moreQuad, self._quadMeshs[geometryIndex].geometry, i);
             }
 
             //clear data
@@ -209,19 +222,17 @@
 
             //upload vertex data
             var quad: QuadMesh;
-            for (i = 0; i < this._quadMeshs.length; i++) {
-                quad = this._quadMeshs[i];
+            for (i = 0; i < self._quadMeshs.length; i++) {
+                quad = self._quadMeshs[i];
                 quad.geometry.upload(context3DProxy, Context3DProxy.gl.DYNAMIC_DRAW);
-                this._textureGroup.activeTexture(quad);
+                self._textureGroup.activeTexture(quad);
             }
-
             Context3DProxy.gl.enable(Context3DProxy.gl.DEPTH_TEST);
-
         }
 
-
-
         private clearInvalidVertices(count: number): void {
+            var self = this; 
+
             this._quadCurHistory.length = 0;
             var index: number = 0;
             while (count >= QuadStage.moreQuad) {
@@ -230,27 +241,27 @@
                 index++;
             }
             if (count > 0) {
-                this._quadCurHistory[index] = count;
+                self._quadCurHistory[index] = count;
             }
             
-            count = this._quadMeshs.length;
+            count = self._quadMeshs.length;
             var lastCount: number = 0;
             var currentCount: number = 0;
 
             for (index = 0; index < count; index++) {
-                lastCount = this._quadLastHistory[index] || 0;
-                currentCount = this._quadCurHistory[index] || 0;
+                lastCount = self._quadLastHistory[index] || 0;
+                currentCount = self._quadCurHistory[index] || 0;
                 if (currentCount < lastCount) {
                     //clear at index
                     for (var i: number = currentCount; i < lastCount; i++) {
-                        Quad.clear(i, this._quadMeshs[index].geometry);
+                        Quad.clear(i, self._quadMeshs[index].geometry);
                     }
                 }
             }
             //交换保存的数据
-            var temp: any = this._quadCurHistory;
-            this._quadCurHistory = this._quadLastHistory;
-            this._quadLastHistory = temp;
+            var temp: any = self._quadCurHistory;
+            self._quadCurHistory = self._quadLastHistory;
+            self._quadLastHistory = temp;
         }
 
 

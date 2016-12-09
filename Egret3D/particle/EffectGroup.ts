@@ -25,6 +25,19 @@
 
         private _noLoopAnims: IAnimation[] = [];
 
+
+        /*
+        * @private
+        * 记录当前特效处于活动状态的时间,-1表示回收的状态
+        */
+        public liveTime: number = -1;
+        /*
+        * @private
+        * 是否原始的资源，而非拷贝出来的对象
+        */
+        public isOriginal: boolean = true;
+
+
         //播放完毕事件
         private _event3D: AnimationEvent3D = new AnimationEvent3D();
         private _lastAnimTime: number = 0;
@@ -36,7 +49,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public init(isLoop:boolean = false) {
+        public init(isLoop: boolean = false) {
             this._animations = [];
             this._loop = isLoop;
 
@@ -49,7 +62,7 @@
             }
         }
 
-        private collectAnimations(object: Object3D, animations:IAnimation[]): void {
+        private collectAnimations(object: Object3D, animations: IAnimation[]): void {
             var mesh: Mesh;
             var animation: IAnimation;
             if (object instanceof Mesh) {
@@ -105,7 +118,7 @@
 
             for (var index: number = 0; index < this._proAnimations.length; index++) {
                 var animator: IAnimation = this._proAnimations[index];
-                animator.play();
+                animator.play("", speed, reset, prewarm);
             }
 
             this._isPlay = true;
@@ -130,7 +143,7 @@
                 animator.animTime = this._timeOffset[index] + offset;
             }
 
-            for (var index: number; index < this._animCount; index++) {
+            for (var index: number; index < this._proAnimations.length; index++) {
                 var animator: IAnimation = this._proAnimations[index];
                 animator.animTime = this._timeOffset[index] + offset;
             }
@@ -218,7 +231,7 @@
             if (!this._loop) {
                 var endTime: number = this._loopTime * 1000;
                 if (this._lastAnimTime <= endTime && this._animTime > endTime) {
-                    this._event3D.eventType = AnimationEvent3D.EVENT_PLAY_COMPLETE;
+                    this._event3D.eventType = AnimationEvent3D.COMPLETE;
                     this._event3D.target = this;
                     this.dispatchEvent(this._event3D);
                 }

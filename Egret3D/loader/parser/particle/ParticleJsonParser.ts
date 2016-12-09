@@ -171,10 +171,10 @@
 
                 }
             }
+
             //bezier
-            var bezier: any = node.bezier;
             if (emission.type == ParticleValueType.OneBezier) {
-                emission.bezier = this.parseBezierData(bezier);
+                emission.bezier = this.parseFoldLine(node.line) || this.parseBezierData(node.bezier);
             }
 
         }
@@ -188,8 +188,8 @@
             life.type = ParticleValueType[node.type + ""];
             life.min = Number(node.min);
             life.max = Number(node.max);
-            life.bezier1 = this.parseBezierData(node.bezier1);
-            life.bezier2 = this.parseBezierData(node.bezier2);
+            life.bezier1 = this.parseFoldLine(node.line1) || this.parseBezierData(node.bezier1);
+            life.bezier2 = this.parseFoldLine(node.line2) || this.parseBezierData(node.bezier2);
 
             life.duration = Number(node.duration);
             life.delay = Number(node.delay);
@@ -244,8 +244,8 @@
             rotationBirth.type = ParticleValueType[node.type + ""];
             rotationBirth.min = Number(node.min);
             rotationBirth.max = Number(node.max);
-            rotationBirth.bezier1 = this.parseBezierData(node.bezier1);
-            rotationBirth.bezier2 = this.parseBezierData(node.bezier2);
+            rotationBirth.bezier1 = this.parseFoldLine(node.line1) || this.parseBezierData(node.bezier1);
+            rotationBirth.bezier2 = this.parseFoldLine(node.line2) || this.parseBezierData(node.bezier2);
 
         }
 
@@ -258,8 +258,8 @@
             scaleBirth.type = ParticleValueType[node.type + ""];
             scaleBirth.min = Number(node.min);
             scaleBirth.max = Number(node.max);
-            scaleBirth.bezier1 = this.parseBezierData(node.bezier1);
-            scaleBirth.bezier2 = this.parseBezierData(node.bezier2);
+            scaleBirth.bezier1 = this.parseFoldLine(node.line1) || this.parseBezierData(node.bezier1);
+            scaleBirth.bezier2 = this.parseFoldLine(node.line2) || this.parseBezierData(node.bezier2);
         }
 
         /**
@@ -284,8 +284,8 @@
             moveSpeed.type = ParticleValueType[node.type + ""];
             moveSpeed.min = Number(node.min);
             moveSpeed.max = Number(node.max);
-            moveSpeed.bezier1 = this.parseBezierData(node.bezier1);
-            moveSpeed.bezier2 = this.parseBezierData(node.bezier2);
+            moveSpeed.bezier1 = this.parseFoldLine(node.line1) || this.parseBezierData(node.bezier1);
+            moveSpeed.bezier2 = this.parseFoldLine(node.line2) || this.parseBezierData(node.bezier2);
 
 
             var velocityOverNode: any = node.velocityOver;
@@ -296,12 +296,12 @@
                 velocityOver.max = this.parseVector3D(velocityOverNode.max, velocityOver.max);
                 velocityOver.worldSpace = velocityOverNode.worldSpace;
 
-                velocityOver.xBezier1 = this.parseBezierData(velocityOverNode.xBezier1);
-                velocityOver.yBezier1 = this.parseBezierData(velocityOverNode.yBezier1);
-                velocityOver.zBezier1 = this.parseBezierData(velocityOverNode.zBezier1);
-                velocityOver.xBezier2 = this.parseBezierData(velocityOverNode.xBezier2);
-                velocityOver.yBezier2 = this.parseBezierData(velocityOverNode.yBezier2);
-                velocityOver.zBezier2 = this.parseBezierData(velocityOverNode.zBezier2);
+                velocityOver.xBezier1 = this.parseFoldLine(node.xLine1) || this.parseBezierData(velocityOverNode.xBezier1);
+                velocityOver.yBezier1 = this.parseFoldLine(node.yLine1) || this.parseBezierData(velocityOverNode.yBezier1);
+                velocityOver.zBezier1 = this.parseFoldLine(node.zLine1) || this.parseBezierData(velocityOverNode.zBezier1);
+                velocityOver.xBezier2 = this.parseFoldLine(node.xLine2) || this.parseBezierData(velocityOverNode.xBezier2);
+                velocityOver.yBezier2 = this.parseFoldLine(node.yLine2) || this.parseBezierData(velocityOverNode.yBezier2);
+                velocityOver.zBezier2 = this.parseFoldLine(node.zLine2) || this.parseBezierData(velocityOverNode.zBezier2);
 
                 moveSpeed.velocityOver = velocityOver;
             }
@@ -315,12 +315,12 @@
                 velocityForce.max = this.parseVector3D(velocityForceNode.max, velocityForce.max);
                 velocityForce.worldSpace = velocityForceNode.worldSpace;
 
-                velocityForce.xBezier1 = this.parseBezierData(velocityForceNode.xBezier1);
-                velocityForce.yBezier1 = this.parseBezierData(velocityForceNode.yBezier1);
-                velocityForce.zBezier1 = this.parseBezierData(velocityForceNode.zBezier1);
-                velocityForce.xBezier2 = this.parseBezierData(velocityForceNode.xBezier2);
-                velocityForce.yBezier2 = this.parseBezierData(velocityForceNode.yBezier2);
-                velocityForce.zBezier2 = this.parseBezierData(velocityForceNode.zBezier2);
+                velocityForce.xBezier1 = this.parseFoldLine(node.xLine1) || this.parseBezierData(velocityForceNode.xBezier1);
+                velocityForce.yBezier1 = this.parseFoldLine(node.yLine1) || this.parseBezierData(velocityForceNode.yBezier1);
+                velocityForce.zBezier1 = this.parseFoldLine(node.zLine1) || this.parseBezierData(velocityForceNode.zBezier1);
+                velocityForce.xBezier2 = this.parseFoldLine(node.xLine2) || this.parseBezierData(velocityForceNode.xBezier2);
+                velocityForce.yBezier2 = this.parseFoldLine(node.yLine2) || this.parseBezierData(velocityForceNode.yBezier2);
+                velocityForce.zBezier2 = this.parseFoldLine(node.zLine2) || this.parseBezierData(velocityForceNode.zBezier2);
 
                 moveSpeed.velocityForce = velocityForce;
             }
@@ -333,8 +333,8 @@
                 velocityLimit.max = Number(velocityLimitNode.max);
                 velocityLimit.dampen = Number(velocityLimitNode.dampen);
 
-                velocityLimit.bezier1 = this.parseBezierData(velocityLimitNode.bezier1);
-                velocityLimit.bezier2 = this.parseBezierData(velocityLimitNode.bezier2);
+                velocityLimit.bezier1 = this.parseFoldLine(node.line1) || this.parseBezierData(velocityLimitNode.bezier1);
+                velocityLimit.bezier2 = this.parseFoldLine(node.line2) || this.parseBezierData(velocityLimitNode.bezier2);
 
                 moveSpeed.velocityLimit = velocityLimit;
             }
@@ -361,7 +361,7 @@
                 return;
             var scaleBezier: ParticleDataScaleSize = this._particleData.scaleSize = new ParticleDataScaleSize();
             scaleBezier.type = ParticleValueType.OneBezier;
-            scaleBezier.bezier1 = this.parseBezierData(node.bezier);
+            scaleBezier.bezier1 = this.parseFoldLine(node.line) || this.parseBezierData(node.bezier);
         }
 
         /**
@@ -376,8 +376,8 @@
             scaleSize.type = ParticleValueType[node.type + ""];
             scaleSize.min = Number(node.min);
             scaleSize.max = Number(node.max);
-            scaleSize.bezier1 = this.parseBezierData(node.bezier1);
-            scaleSize.bezier2 = this.parseBezierData(node.bezier2);
+            scaleSize.bezier1 = this.parseFoldLine(node.line1) || this.parseBezierData(node.bezier1);
+            scaleSize.bezier2 = this.parseFoldLine(node.line2) || this.parseBezierData(node.bezier2);
         }
         
 
@@ -393,8 +393,8 @@
             rotationSpeed.min = this.parseVector3D(node.min, rotationSpeed.min);
             rotationSpeed.max = this.parseVector3D(node.max, rotationSpeed.max);
 
-            rotationSpeed.bezier1 = this.parseBezierData(node.bezier1);
-            rotationSpeed.bezier2 = this.parseBezierData(node.bezier2);
+            rotationSpeed.bezier1 = this.parseFoldLine(node.line1) || this.parseBezierData(node.bezier1);
+            rotationSpeed.bezier2 = this.parseFoldLine(node.line2) || this.parseBezierData(node.bezier2);
 
         }
 
@@ -426,8 +426,8 @@
             textureSheet.min = Number(node.min);
             textureSheet.max = Number(node.max);
             textureSheet.circles = Number(node.circles);
-            textureSheet.bezier1 = this.parseBezierData(node.bezier1);
-            textureSheet.bezier2 = this.parseBezierData(node.bezier2);
+            textureSheet.bezier1 = this.parseFoldLine(node.line1) || this.parseBezierData(node.bezier1);
+            textureSheet.bezier2 = this.parseFoldLine(node.line2) || this.parseBezierData(node.bezier2);
 
             return textureSheet;
         }
@@ -477,6 +477,7 @@
         */
         private parseBezierData(node: any): BezierData {
             var bzData: BezierData = new BezierData();
+            bzData.lineMode = false;
             if (node == null)
                 return bzData;
 
@@ -495,6 +496,33 @@
                 } else {
                     bzData.ctrlPoints.push(pt);
                 }
+            }
+            return bzData;
+        }
+
+
+        /**
+        * @private
+        * 解析一条折线数据
+        */
+        private parseFoldLine(node: any): BezierData {
+            if (node == null)
+                return null;
+
+            var bzData: BezierData = new BezierData();
+            bzData.lineMode = true;
+
+            var item: any;
+            var i: number = 0;
+            var count: number = 0;
+            var pt: Point;
+
+            for (i = 0, count = node ? node.length : 0; i < count; i++) {
+                item = node[i];
+                pt = new Point();
+                pt.x = Number(item[0]);
+                pt.y = Number(item[1]);
+                bzData.linePoints.push(pt);
             }
             return bzData;
         }

@@ -9,12 +9,8 @@ float updateStretchedBillBoard(vec4 startPos, vec4 newPos){
 	float speed = dot(dirVector, dirVector); 
 	speed = sqrt(speed) / currentTime; 
 	speed /= 100.0; 
-	localPosition.x *= speed * particleStateData.speedScale + particleStateData.lengthScale; 
-	if(particleStateData.speedScale != 0.0){ 
-		localPosition.x /= scaleSize; 
-		localPosition.x *= scaleChange; 
-		localPosition.x /= particleScale; 
-	} 
+	localPosition.x = localPosition.x * particleStateData.lengthScale + speed * particleStateData.speedScale * localPosition.x/scaleSize;
+
 
 	mat4 temp = uniform_ViewMatrix;
 	startPos = temp * startPos; 

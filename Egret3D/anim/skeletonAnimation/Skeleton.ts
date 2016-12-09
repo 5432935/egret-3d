@@ -30,23 +30,23 @@ module egret3d {
         constructor() {
         }
 
-        /**
-        * @language zh_CN
-        * 克隆新骨架对象
-        * @returns Skeleton 新骨架对象
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public clone(): Skeleton {
+        ///**
+        //* @language zh_CN
+        //* 克隆新骨架对象
+        //* @returns Skeleton 新骨架对象
+        //* @version Egret 3.0
+        //* @platform Web,Native
+        //*/
+        //public clone(): Skeleton {
 
-            var skeleton: Skeleton = new Skeleton();
+        //    var skeleton: Skeleton = new Skeleton();
 
-            for (var i: number = 0; i < this.joints.length; i++) {
-                skeleton.joints.push(this.joints[i].clone());
-            }
+        //    for (var i: number = 0; i < this.joints.length; i++) {
+        //        skeleton.joints.push(this.joints[i].clone());
+        //    }
 
-            return skeleton;
-        }
+        //    return skeleton;
+        //}
 
         /**
         * @language zh_CN

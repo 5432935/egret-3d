@@ -43,9 +43,8 @@
             this._floatCompressData = this._node.bezier1.sampler();
             this._floatCompressData2 = this._node.bezier2.sampler();
 
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_rotationTwoBezier");
 
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_rotationTwoBezier");
             //##FilterEnd##
         }
         /**

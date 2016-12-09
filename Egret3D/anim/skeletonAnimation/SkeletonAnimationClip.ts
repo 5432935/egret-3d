@@ -42,7 +42,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public isLoop: boolean = true;
+        public isLoop: boolean = false ;
 
 
         /**
@@ -70,6 +70,31 @@
         */
         public frameDataOffset: number = 0;
 
+        /*
+        * @private
+        */
+        public totalFrame: number = 0;
+
+        /*
+        * @private
+        */
+        public totalTime: number = 0;
+
+        /*
+        * @private
+        */
+        public frameRate: number = 33; // 30 fps
+
+        /*
+        * @private
+        */
+        public loopPose: boolean = false;
+
+        /*
+        * @private
+        */
+        public cycleOffset: number = 0;
+
         /**
         * @language zh_CN
         * @private
@@ -78,8 +103,6 @@
         */
         public sourceData: ByteArray = null;
 
-        private _frameCount: number = 0;
-        private _timeLength: number = 0;
         private _skeletonPose: SkeletonPose = null;
         private _temp_scale: Vector3D = new Vector3D();
         private _temp_translation: Vector3D = new Vector3D();
@@ -98,77 +121,63 @@
             return this._skeletonPose;
         }
 
-        /**
-        * @language zh_CN
-        * 获取当前动画的总帧数
-        * @returns number 当前动画的总帧数
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get frameCount(): number {
-            if (this.poseArray.length > 0) {
-                return this.poseArray.length;
-            }
-            return this._frameCount;
-        }
+        ///**
+        //* @language zh_CN
+        //* 获取缓存的骨骼动画Clip
+        //* @returns SkeletonAnimationClip对象;
+        //* @version Egret 3.0
+        //* @platform Web,Native
+        //*/
+        //public get cacheAnimationClip(): SkeletonAnimationClip {
 
-        /**
-        * @language zh_CN
-        * 获取缓存的骨骼动画Clip
-        * @returns SkeletonAnimationClip对象;
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get cacheAnimationClip(): SkeletonAnimationClip {
+        //    if (!this._cacheAnimationClip) {
 
-            if (!this._cacheAnimationClip) {
+        //        if (this.sourceData) {
+        //            this._cacheAnimationClip = this;
+        //        }
+        //        else {
 
-                if (this.sourceData) {
-                    this._cacheAnimationClip = this;
-                }
-                else {
+        //            this._cacheAnimationClip = new SkeletonAnimationClip();
 
-                    this._cacheAnimationClip = new SkeletonAnimationClip();
+        //            if (this.poseArray.length < 2) {
+        //                this._cacheAnimationClip.poseArray = this.poseArray;
+        //            }
+        //            else {
 
-                    if (this.poseArray.length < 2) {
-                        this._cacheAnimationClip.poseArray = this.poseArray;
-                    }
-                    else {
+        //                var skeletonPoseA: SkeletonPose = this.poseArray[0];
 
-                        var skeletonPoseA: SkeletonPose = this.poseArray[0];
+        //                var skeletonPoseB: SkeletonPose = this.poseArray[1];
 
-                        var skeletonPoseB: SkeletonPose = this.poseArray[1];
+        //                var nCount: number = Math.round((skeletonPoseB.frameTime - skeletonPoseA.frameTime) / SkeletonAnimation.fps);
 
-                        var nCount: number = Math.round((skeletonPoseB.frameTime - skeletonPoseA.frameTime) / SkeletonAnimation.fps);
+        //                if (nCount <= 1) {
+        //                    this._cacheAnimationClip.poseArray = this.poseArray;
+        //                }
+        //                else for (var i: number = 1; i < this.poseArray.length; ++i) {
 
-                        if (nCount <= 1) {
-                            this._cacheAnimationClip.poseArray = this.poseArray;
-                        }
-                        else for (var i: number = 1; i < this.poseArray.length; ++i) {
+        //                    skeletonPoseA = this.poseArray[i - 1];
 
-                            skeletonPoseA = this.poseArray[i - 1];
+        //                    skeletonPoseB = this.poseArray[i];
 
-                            skeletonPoseB = this.poseArray[i];
+        //                    for (var j: number = 0; j < nCount; j++) {
 
-                            for (var j: number = 0; j < nCount; j++) {
+        //                        var skeletonPose: SkeletonPose = new SkeletonPose();
 
-                                var skeletonPose: SkeletonPose = new SkeletonPose();
+        //                        skeletonPose.boneNameArray = this.boneNameArray;
 
-                                skeletonPose.boneNameArray = this.boneNameArray;
+        //                        skeletonPose.lerp(skeletonPoseA, skeletonPoseB, j / nCount);
 
-                                skeletonPose.lerp(skeletonPoseA, skeletonPoseB, j / nCount);
+        //                        this._cacheAnimationClip.poseArray.push(skeletonPose);
+        //                    }
+        //                }
 
-                                this._cacheAnimationClip.poseArray.push(skeletonPose);
-                            }
-                        }
+        //                this._cacheAnimationClip.poseArray.push(this.poseArray[this.poseArray.length - 1].clone());
+        //            }
+        //        }
+        //    }
 
-                        this._cacheAnimationClip.poseArray.push(this.poseArray[this.poseArray.length - 1].clone());
-                    }
-                }
-            }
-
-            return this._cacheAnimationClip;
-        }
+        //    return this._cacheAnimationClip;
+        //}
 
         /**
         * @language zh_CN
@@ -180,14 +189,11 @@
         */
         public findJointIndex(name: string): number {
             if (!this._skeletonPose) {
-
                 if (this.poseArray.length <= 0) {
                     return -1;
                 }
-
                 return this.poseArray[0].findJointIndex(name);
             }
-
             return this._skeletonPose.findJointIndex(name);
         }
 
@@ -215,8 +221,6 @@
                 return;
             }
 
-            this._frameCount = frameCount;
-
             this._skeletonPose = new SkeletonPose();
             this._skeletonPose.boneNameArray = boneNameArray;
 
@@ -233,9 +237,8 @@
                 this._skeletonPose.joints.push(jointPose);
             }
 
-            this.sourceData.position = this.frameDataOffset + (40 * this.boneCount + 4) * (this.frameCount - 1);
-
-            this._timeLength = this.sourceData.readInt() / 60 / 80 * 1000;
+            //this.sourceData.position = this.frameDataOffset + (40 * this.boneCount + 4) * (this.frameCount - 1);
+            //this._timeLength = this.sourceData.readInt() / 60 / 80 * 1000;
         }
 
         /**
@@ -248,19 +251,10 @@
         * @platform Web,Native
         */
         public getSkeletonPose(index: number): SkeletonPose {
-
-            if (this.poseArray.length > 0) {
-                return this.poseArray[index];
+            if (this.poseArray.length > 0 && this.poseArray.length > index) {
+               return this.poseArray[index] ; 
             }
-                                                    //Test;
-            if (index < 0 || index >= this.frameCount * 2) {
-                return null;
-            }
-
-            //Test;
-            index = Math.floor(index / 2);
-
-            return this.readSkeletonPose(index, this._skeletonPose);
+            return null;
         }
 
         private readSkeletonPose(index: number, skeletonPose: SkeletonPose): SkeletonPose {
@@ -299,20 +293,6 @@
 
         /**
         * @language zh_CN
-        * 时间长度 毫秒
-        * @returns number 长度
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public get timeLength(): number {
-            if (this.poseArray.length > 0) {
-                return this.poseArray[this.poseArray.length - 1].frameTime;
-            }
-            return this._timeLength;
-        }
-
-        /**
-        * @language zh_CN
         * 骨骼数量
         * @returns number 骨骼数量
         * @version Egret 3.0
@@ -323,37 +303,6 @@
                 return this.poseArray[0].joints.length;
             }
             return this.boneCount;
-        }
-
-        /**
-        * @language zh_CN
-        * 克隆SkeletonAnimationClip对象
-        * @returns SkeletonAnimationClip 克隆SkeletonAnimationClip对象
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public clone(): SkeletonAnimationClip {
-
-            var skeletonAnimationClip: SkeletonAnimationClip = new SkeletonAnimationClip();
-            skeletonAnimationClip.boneNameArray = this.boneNameArray;
-            skeletonAnimationClip.animationName = this.animationName;
-
-            skeletonAnimationClip.poseArray = this.poseArray;
-            skeletonAnimationClip._cacheAnimationClip = this.cacheAnimationClip;
-
-            skeletonAnimationClip.sampling = this.sampling;
-            skeletonAnimationClip.boneCount = this.boneCount;
-            skeletonAnimationClip._frameCount = this._frameCount;
-            skeletonAnimationClip.frameDataOffset = this.frameDataOffset;
-            skeletonAnimationClip.sourceData = this.sourceData;
-            skeletonAnimationClip._timeLength = this._timeLength;
-            skeletonAnimationClip._skeletonPose = this._skeletonPose;
-
-            if (this._skeletonPose) {
-                skeletonAnimationClip._skeletonPose = this._skeletonPose.clone();
-            }
-
-            return skeletonAnimationClip;
         }
     }
 }

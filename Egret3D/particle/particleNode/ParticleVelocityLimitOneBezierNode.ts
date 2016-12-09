@@ -19,9 +19,7 @@
             super();
             //##FilterBegin## ##Particle##
             this.name = "ParticleVelocityLimitOneBezierNode";
-
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex] = this.vertex_ShaderName[ShaderPhaseType.global_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.global_vertex].push("particle_velocityLimitOneBezier");
+            this.importShader(true, ShaderPhaseType.global_vertex, "particle_velocityLimitOneBezier");
 
             //##FilterEnd##
         }

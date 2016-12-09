@@ -35,7 +35,8 @@
             if (!uv2Dict || !uv2Dict[id]) {
                 return;
             }
-            var array:ByteArray = uv2Dict[id];
+            var array: ByteArray = uv2Dict[id];
+            array.position = 0;
             var uv2Array: number[] = [];
             var uvCount: number = array.readUnsignedInt();
             for (var i: number = 0; i < uvCount; i++) {

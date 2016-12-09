@@ -12,8 +12,8 @@
         private _renderQuen: RenderQuen;
 
 
-        public width: number = 2048 ;
-        public height: number = 2048;;
+        public width: number = 1024 ;
+        public height: number = 512;;
 
         constructor(renderQuen: RenderQuen) {
             this._renderQuen = renderQuen;

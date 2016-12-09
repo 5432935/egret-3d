@@ -89,7 +89,6 @@ void main(void){
     varying_mask = vec4(maskk.xy/sceneWH.xy,(maskk.x+maskk.z)/sceneWH.x, (maskk.y+maskk.w)/(sceneWH.y)) ; 
     varying_uv = attribute_uvRec; 
 
-	int texIndex = int(attribute_shapePosition.z);
 	gl_Position = outPosition; 
     
 }

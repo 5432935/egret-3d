@@ -34,8 +34,7 @@
             this.attribute_textureSheetData.size = 3;
             this.attributes.push(this.attribute_textureSheetData);
 
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex] = this.vertex_ShaderName[ShaderPhaseType.local_vertex] || [];
-            this.vertex_ShaderName[ShaderPhaseType.local_vertex].push("particle_textureSheet_vs");
+            this.importShader(true, ShaderPhaseType.local_vertex, "particle_textureSheet_vs");
 
             //##FilterEnd##
 
@@ -64,21 +63,14 @@
             }
 
             if (this._sheetData.frameType == ParticleValueType.Const || this._sheetData.frameType == ParticleValueType.RandomConst) {
-                this.fragment_ShaderName[ShaderPhaseType.start_fragment] = this.fragment_ShaderName[ShaderPhaseType.start_fragment] || [];
-                this.fragment_ShaderName[ShaderPhaseType.start_fragment].push("particle_textureSheetConst");
-
+                this.importShader(false, ShaderPhaseType.start_fragment, "particle_textureSheetConst");
 
             } else if (this._sheetData.frameType == ParticleValueType.OneBezier) {
-                this.fragment_ShaderName[ShaderPhaseType.start_fragment] = this.fragment_ShaderName[ShaderPhaseType.start_fragment] || [];
-                this.fragment_ShaderName[ShaderPhaseType.start_fragment].push("particle_bezier");
-                this.fragment_ShaderName[ShaderPhaseType.start_fragment].push("particle_textureSheetOneBezier");
+                this.importShader(false, ShaderPhaseType.start_fragment, "particle_textureSheetOneBezier");
                 this._floatCompressData1 = this._sheetData.bezier1.sampler();
 
             } else if (this._sheetData.frameType == ParticleValueType.TwoBezier) {
-                this.fragment_ShaderName[ShaderPhaseType.start_fragment] = this.fragment_ShaderName[ShaderPhaseType.start_fragment] || [];
-                this.fragment_ShaderName[ShaderPhaseType.start_fragment].push("particle_bezier");
-                this.fragment_ShaderName[ShaderPhaseType.start_fragment].push("particle_textureSheetTwoBezier");
-
+                this.importShader(false, ShaderPhaseType.start_fragment, "particle_textureSheetTwoBezier");
                 this._floatCompressData1 = this._sheetData.bezier1.sampler();
                 this._floatCompressData2 = this._sheetData.bezier2.sampler();
             }

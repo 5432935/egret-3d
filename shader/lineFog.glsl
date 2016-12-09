@@ -17,6 +17,7 @@ void main(void){
     fog.fogFarDistance = uniform_globalFog[5] ;
     fog.fogAlpha = uniform_globalFog[6] ;
     
+	fog.fogColor *= outColor.w;
 	float d = varying_mvPose.z ; 
 	float distFog = max( 0.0 , d -  fog.fogStartDistance ) ; 
 	outColor.xyz = mix( outColor.xyz,fog.fogColor, clamp(distFog/fog.fogFarDistance,0.0,1.0) * fog.fogAlpha ) ; 

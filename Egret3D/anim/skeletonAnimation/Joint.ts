@@ -112,32 +112,31 @@ module egret3d {
             this.scale = new Vector3D(1, 1, 1);
             this.orientation = new Quaternion();
             this.translation = new Vector3D();
-            this.localMatrix = new Matrix4_4();
-            this.worldMatrix = new Matrix4_4();
+            this.localMatrix;// = new Matrix4_4();
+            this.worldMatrix;//= new Matrix4_4();
             this.worldMatrixValid = false;
         }
 
-        /**
-        * @language zh_CN
-        * 克隆新骨骼对象
-        * @returns Joint 新骨骼对象
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public clone(): Joint {
-            var joint: Joint = new Joint();
-            joint.name = this.name;
-            joint.parent = this.parent;
-            joint.index = this.index;
-            joint.parentIndex = this.parentIndex;
-            joint.scale.copyFrom(this.scale);
-            joint.orientation.copyFrom(this.orientation);
-            joint.translation.copyFrom(this.translation);
-            joint.localMatrix.copyFrom(this.localMatrix);
-            joint.worldMatrix.copyFrom(this.worldMatrix);
-            joint.worldMatrixValid = this.worldMatrixValid;
-            return joint;
-        }
+        ///**
+        //* @language zh_CN
+        //* 克隆新骨骼对象
+        //* @returns Joint 新骨骼对象
+        //* @version Egret 3.0
+        //* @platform Web,Native
+        //*/
+        //public clone(): Joint {
+        //    var joint: Joint = new Joint();
+        //    joint.name = this.name;
+        //    joint.parent = this.parent;
+        //    joint.index = this.index;
+        //    joint.parentIndex = this.parentIndex;
+        //    joint.scale.copyFrom(this.scale);
+        //    joint.orientation.copyFrom(this.orientation);
+        //    joint.translation.copyFrom(this.translation);
+        //    joint.localMatrix.copyFrom(this.localMatrix);
+        //    joint.worldMatrixValid = this.worldMatrixValid;
+        //    return joint;
+        //}
 
         /**
         * @language zh_CN
@@ -157,7 +156,7 @@ module egret3d {
             else {
                 this.orientation.copyFrom(rotation);
             }
-            this.localMatrix.makeTransform(this.translation, this.scale, this.orientation);
+            //this.localMatrix.makeTransform(this.translation, this.scale, this.orientation);
             this.worldMatrixValid = false;
         }
 
@@ -179,6 +178,23 @@ module egret3d {
             }
             else {
                 this.inverseMatrix.makeTransform(translation, scale, rotation);
+            }
+        }
+
+       /**
+        * @language zh_CN
+        * 将此骨骼的信息 赋值给目标
+        * @param scale Vector3D 缩放值
+        * @param rotation Vector3D或者Quaternion，旋转数据
+        * @param translation Vector3D 位移对象
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public copyTo(node: Object3D, type: BindAnimType = BindAnimType.all) {
+            switch (type) {
+                case BindAnimType.all:
+                    node.localMatrix = this.worldMatrix;
+                    break;
             }
         }
     }

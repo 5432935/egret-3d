@@ -42,6 +42,7 @@
         private _parent: DisplayObject;
         private _stage: QuadStage;
         private _childs: DisplayObject[] = [];
+        private _child3Ds: Object3D[] = [];
 
 
 
@@ -413,7 +414,14 @@
         * @platform Web,Native
         */
         public addChild(object: DisplayObject): DisplayObject {
-            return this.doAddChildAt(object, MathUtil.MAX_VALUE);
+            if (object instanceof DisplayObject )
+                return this.doAddChildAt(object, MathUtil.MAX_VALUE);
+        }
+
+        private addObject3D(obj: Object3D): Object3D {
+            if(obj)
+                this._child3Ds.push(obj);
+            return obj;
         }
 
         /**

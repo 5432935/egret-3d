@@ -79,6 +79,7 @@ void main(void) {
 		velocityWorldVec3 += velocityForceVec3;
 	}
 
+	position_emitter *= vec3(particleStateData.scaleX, particleStateData.scaleY, particleStateData.scaleZ);
 	if(particleStateData.worldSpace > TrueOrFalse){
 		//followTargetPosition
 		//followTargetScale
@@ -88,10 +89,6 @@ void main(void) {
 		followTargetPosition.x = particleStateData.positionX;
 		followTargetPosition.y = particleStateData.positionY;
 		followTargetPosition.z = particleStateData.positionZ;
-
-		//followTargetScale.x = particleStateData.scaleX;
-		//followTargetScale.y = particleStateData.scaleY;
-		//followTargetScale.z = particleStateData.scaleZ;
 
 		followTargetRotation.x = particleStateData.rotationX;
 		followTargetRotation.y = particleStateData.rotationY;
@@ -105,7 +102,6 @@ void main(void) {
 	if(particleStateData.renderMode == Mesh){ 
 		rotVertexMatrix = followRotQuat * rotVertexMatrix; 
 	}
-	scaleSize *= particleScale;
 	localPosition.xyz *= scaleSize;
 	localPosition = rotVertexMatrix * localPosition; 
 	trackPosition();
@@ -121,7 +117,7 @@ void main(void) {
 		
 	//是否需要修改local position指向运动方向，直接修改localPosition
 	vec3 origPosition = position_emitter;
-	position_emitter += velocityMultiVec3 * particleScale; 
+	position_emitter += velocityMultiVec3; 
 
 	float dirEnable = updateStretchedBillBoard(vec4(origPosition, 1.0), vec4(position_emitter, 1.0));
 	if(dirEnable > TrueOrFalse){
