@@ -27,6 +27,8 @@
         constructor( pass:number = PassType.diffusePass ) {
             super();
             this.pass = pass; 
+
+            //this.setRenderToTexture(1024, 1024, FrameBufferFormat.UNSIGNED_BYTE_RGB);
         }
 
 
@@ -41,12 +43,11 @@
         */
         public draw(time: number, delay: number, context3D: Context3DProxy, collect: CollectBase, backViewPort: Rectangle, renderQuen: RenderQuen, posList: any = null) {
             this.numEntity = collect.renderList.length;
-
             this.viewPort = backViewPort;
-
 
             if (this.renderTexture) {
                 this.renderTexture.upload(context3D);
+                this.renderTexture.useMipmap = false;
                 context3D.setRenderToTexture(this.renderTexture.texture2D, true, true, 0);
                 this.currentViewPort.x = 0;
                 this.currentViewPort.y = 0;
@@ -82,7 +83,6 @@
                             material.passes[this._pass][this._j].draw(time, delay, context3D, this._renderItem.modelMatrix, this.camera, subGeometry, this._renderItem, renderQuen);
                         }
                     }
-
                     material = null;
                 }
             }
@@ -93,14 +93,13 @@
 
             if (this.renderTexture) {
                 this.viewPort = backViewPort;
-
+            
                 context3D.setRenderToBackBuffer();
                 if (this.viewPort) {
                     context3D.viewPort(this.viewPort.x, this.viewPort.y, this.viewPort.width, this.viewPort.height);
                     context3D.setScissorRectangle(this.viewPort.x, this.viewPort.y, this.viewPort.width, this.viewPort.height);
                 }
             }
-
             this._renderItem = null;
         }
     }

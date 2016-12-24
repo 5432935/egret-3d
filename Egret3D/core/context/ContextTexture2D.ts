@@ -59,6 +59,7 @@
         * context.creatTexture()接口生成的GPU纹理
         */
         public textureBuffer: WebGLTexture;
+        public depthBuffer: WebGLTexture;
 
         /**
          * @language zh_CN

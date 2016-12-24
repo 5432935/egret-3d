@@ -11,10 +11,22 @@
         constructor(data: any, mapConfigParser: UnitConfigParser) {
             super(data, mapConfigParser);
             this._mapConfigParser.version = Number(data.version);
+            this._mapConfigParser.engineVersion = String(data.egret3DVersion);
         }
 
         public parser() {
+
+            if (this._mapConfigParser.engineVersion == undefined) {
+                console.log("the resource engine Version is old , but the current engine Version is " + Egret3DPolicy.engineVersion);
+            }
+
+            if (this._mapConfigParser.engineVersion != Egret3DPolicy.engineVersion) {
+                console.log("the resource engine Version is " + this._mapConfigParser.engineVersion + ", but the current engine Version is " + Egret3DPolicy.engineVersion);
+            }
+
             this._versionParser = UnitParserUtils.jsonVersion(this._mapConfigParser.version, this._data, this._mapConfigParser);
+
+
 
             this._versionParser.parseEnvironment(this._data.env);
 
@@ -90,6 +102,6 @@
                     }
                 }
             }
-        }    
+        }
     }
 }

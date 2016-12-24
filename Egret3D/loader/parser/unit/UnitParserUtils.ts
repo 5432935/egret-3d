@@ -69,6 +69,7 @@
 
         public static jsonVersion(version: number, data: any, mapConfigParser: UnitConfigParser): UnitJsonParser {
             var parser: UnitJsonParser;
+           
             switch (version) {
                 case 1:
                     parser = new UnitJsonParser_1(data, mapConfigParser);

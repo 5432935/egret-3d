@@ -601,10 +601,10 @@
             var str: string = "";
             var oldPos: number = byte.position;
             var length: number = block;
-            while (byte.position < byte.buffer.byteLength) {
+            while (byte.position < byte.length) {
                 length = block;
-                if (byte.buffer.byteLength - byte.position < length) {
-                    length = byte.buffer.byteLength - byte.position;
+                if (byte.length - byte.position < length) {
+                    length = byte.length - byte.position;
                 }
                 str += byte.readUTFBytes(length);
             }

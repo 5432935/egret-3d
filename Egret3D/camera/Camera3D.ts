@@ -135,6 +135,9 @@
 
         protected _mat: Matrix4_4 = new Matrix4_4();
 
+        protected _maxBest: boolean = false;
+        protected _maxBestPoint: Point = new Point() ;
+
 
         private _angleVector: Vector3D = new Vector3D();
         /*
@@ -208,6 +211,15 @@
         */
         public get cameraType(): CameraType {
             return this._cameraType;
+        }
+
+        public get maxWidthAndHeight(): Point  {
+            if (!this._maxBest) {
+                this._maxBest = true;
+                this._maxBestPoint.x = sizeUtil.getBestPowerOf2(this.viewPort.width);
+                this._maxBestPoint.y = sizeUtil.getBestPowerOf2(this.viewPort.height);
+            }
+            return this._maxBestPoint; 
         }
 
         /**

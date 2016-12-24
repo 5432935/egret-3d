@@ -61,6 +61,21 @@
 
         protected static _canvas2D: HTMLCanvasElement;
         protected static _ctx2D: CanvasRenderingContext2D;
+
+        /**
+        * @private
+        */
+        public static Performance_GPU: number = 0;//优：5.0 中：15
+        /**
+        * @private
+        */
+        public static Performance_CPU: number = 0;//优：0.5 中：3
+       /**
+       * @private
+       */
+        public static Performance_Enable: boolean = false;
+        
+
         /**
         * @language zh_CN
         * Egret3DCanvas X 偏移
@@ -106,11 +121,18 @@
             this.canvas.style.position = "absolute";
             this.canvas.style.zIndex = "-1";
 
+            //this.canvas.style.transform = "rotate(90deg)";
+            //this.canvas.style["-ms-transform"] = "rotate(90deg)";
+            //this.canvas.style["-moz-transform"] = "rotate(90deg)";
+            //this.canvas.style["-webkit-transform"] = "rotate(90deg)";
+            //this.canvas.style["-o-transform"] = "rotate(90deg)" ;
+
             if (document.getElementsByClassName("egret-player").length > 0) {
                 document.getElementsByClassName("egret-player")[0].appendChild(this.canvas);
             }
             else {
                 document.body.appendChild(this.canvas);
+               
             }
 
             this.canvas.id = "egret3D";
@@ -125,23 +147,36 @@
             if (!Context3DProxy.gl)
                 Context3DProxy.gl = <WebGLRenderingContext>this.canvas.getContext("webgl");
 
-            var ext = Context3DProxy.gl.getExtension('WEBGL_draw_buffers');
-            if (!ext) {
-                // ...
-                //alert("you drivers not suport WEBGL_draw_buffers");
-            }
-            ext = Context3DProxy.gl.getExtension('OES_element_index_uint');
-            
-            this.create2dContext();
 
             if (!Context3DProxy.gl)
                 alert("you drivers not suport webgl");
+
+            //getExtension
+            //this.getExtension("WEBGL_draw_buffers"); 
+            //this.getExtension("OES_element_index_uint"); 
+            //this.getExtension("OES_texture_float"); 
+            //this.getExtension("OES_texture_half_float"); 
+            //this.getExtension("OES_texture_half_float_linear"); 
+            //this.getExtension("WEBGL_depth_texture");
+            //this.getExtension("WEBKIT_WEBGL_depth_texture");
+            //this.getExtension("MOZ_WEBGL_depth_texture");
+
+            //this.create2dContext();
+
 
             Egret3DCanvas.context3DProxy.register();
             console.log("this.context3D ==>", Context3DProxy.gl);
 
             Input.canvas = this;
             this.initEvent();
+        }
+
+        private getExtension(name: string):any {
+            var ext = Context3DProxy.gl.getExtension(name);
+            if (!ext) {
+                alert("you drivers not suport " + name );
+            }
+            return ext;
         }
 
         private initEvent() {

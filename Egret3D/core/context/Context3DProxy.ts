@@ -427,64 +427,45 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public createFramebuffer(width: number, height: number, format: FrameBufferFormat): ContextTexture2D {
-            var rttframeBuffer = Context3DProxy.gl.createFramebuffer();
+        public createFramebuffer(width: number, height: number, format: FrameBufferFormat , needDepth? :boolean ): ContextTexture2D {
+            let gl = Context3DProxy.gl;
+            let renderbuffer = gl.createRenderbuffer();
+            let colorTexture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, colorTexture);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+
+            //var depthTexture = gl.createTexture();
+            //gl.bindTexture(gl.TEXTURE_2D, depthTexture);
+            //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            //gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, width, height, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_BYTE, null);
+
+            var framebuffer = gl.createFramebuffer();
+            gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, colorTexture, 0);
+            //gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, depthTexture, 0);
+
+            gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
+            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+            gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, renderbuffer);
+
             var texture2D: ContextTexture2D = new ContextTexture2D();
-            var depthRenderbuffer = Context3DProxy.gl.createRenderbuffer();
-            texture2D.textureBuffer = texture2D.textureBuffer || Context3DProxy.gl.createTexture();
-
-            Context3DProxy.gl.bindTexture(Context3DProxy.gl.TEXTURE_2D, texture2D.textureBuffer);
-
-            switch (format) {
-                case FrameBufferFormat.UNSIGNED_BYTE_RGB:
-                    Context3DProxy.gl.texImage2D(Context3DProxy.gl.TEXTURE_2D, 0, Context3DProxy.gl.RGB, width, height, 0, Context3DProxy.gl.RGB, Context3DProxy.gl.UNSIGNED_BYTE, null);
-                    break;
-                case FrameBufferFormat.UNSIGNED_BYTE_RGBA:
-                    Context3DProxy.gl.texImage2D(Context3DProxy.gl.TEXTURE_2D, 0, Context3DProxy.gl.RGBA, width, height, 0, Context3DProxy.gl.RGBA, Context3DProxy.gl.UNSIGNED_BYTE, null);
-                    break;
-                case FrameBufferFormat.FLOAT_RGB:
-                    var float: Float32Array = new Float32Array(width * height * 4);
-                    for (var i: number = 0; i < width * height; i++) {
-                        float[i] = Math.random();
-                        float[i + 1] = Math.random();
-                        float[i + 2] = Math.random();
-                    }
-                    Context3DProxy.gl.texImage2D(Context3DProxy.gl.TEXTURE_2D, 0, Context3DProxy.gl.RGB, width, height, 0, Context3DProxy.gl.RGB, Context3DProxy.gl.FLOAT, float);
-                    break;
-                case FrameBufferFormat.FLOAT_RGBA:
-                    var float: Float32Array = new Float32Array(width * height * 4);
-                    for (var i: number = 0; i < width * height; i++) {
-                        float[i] = Math.random();
-                        float[i + 1] = Math.random();
-                        float[i + 2] = Math.random();
-                        float[i + 3] = Math.random();
-                    }
-                    Context3DProxy.gl.texImage2D(Context3DProxy.gl.TEXTURE_2D, 0, Context3DProxy.gl.RGBA, width, height, 0, Context3DProxy.gl.RGBA, Context3DProxy.gl.FLOAT, float);
-
-                    break;
-            }
-
-            Context3DProxy.gl.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_MAG_FILTER, Context3DProxy.gl.NEAREST);
-            Context3DProxy.gl.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_MIN_FILTER, Context3DProxy.gl.NEAREST);
-            Context3DProxy.gl.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_WRAP_S, Context3DProxy.gl.CLAMP_TO_EDGE);
-            Context3DProxy.gl.texParameteri(Context3DProxy.gl.TEXTURE_2D, Context3DProxy.gl.TEXTURE_WRAP_T, Context3DProxy.gl.CLAMP_TO_EDGE);
-            //Context3DProxy.gl.generateMipmap(Context3DProxy.gl.TEXTURE_2D);  
-
-            Context3DProxy.gl.bindFramebuffer(Context3DProxy.gl.FRAMEBUFFER, rttframeBuffer);
-            Context3DProxy.gl.framebufferTexture2D(Context3DProxy.gl.FRAMEBUFFER, Context3DProxy.gl.COLOR_ATTACHMENT0, Context3DProxy.gl.TEXTURE_2D, texture2D.textureBuffer, 0);
-
-            ///配置渲染缓冲 
-            Context3DProxy.gl.bindRenderbuffer(Context3DProxy.gl.RENDERBUFFER, depthRenderbuffer);
-            Context3DProxy.gl.renderbufferStorage(Context3DProxy.gl.RENDERBUFFER, Context3DProxy.gl.DEPTH_COMPONENT16, width, height);
-
             texture2D.width = width;
             texture2D.height = height;
-            texture2D.frameBuffer = rttframeBuffer;
-            texture2D.renderbuffer = depthRenderbuffer;
-
-            Context3DProxy.gl.bindFramebuffer(Context3DProxy.gl.FRAMEBUFFER, null);
-            Context3DProxy.gl.bindTexture(Context3DProxy.gl.TEXTURE_2D, null);
-            Context3DProxy.gl.bindRenderbuffer(Context3DProxy.gl.RENDERBUFFER, null);
+            texture2D.textureBuffer = colorTexture;
+            //texture2D.depthBuffer = depthTexture ;
+            texture2D.frameBuffer = framebuffer;
+            texture2D.renderbuffer = renderbuffer;
+             
+            gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+            gl.bindTexture(gl.TEXTURE_2D, null);
+            gl.bindRenderbuffer(gl.RENDERBUFFER, null);
             return texture2D;
         }
 
@@ -498,23 +479,15 @@
         * @platform Web,Native
         */
         public setRenderToTexture(texture: ContextTexture2D, clean: boolean = false, enableDepthAndStencil: Boolean = false, surfaceSelector: number = 0) {
-            if (enableDepthAndStencil) {
-                //Context3DProxy.gl.bindRenderbuffer(Context3DProxy.gl.RENDERBUFFER, texture.renderbuffer);
-                //Context3DProxy.gl.renderbufferStorage(Context3DProxy.gl.RENDERBUFFER, Context3DProxy.gl.DEPTH_COMPONENT16, texture.width, texture.height);
-            }
-
+            let gl = Context3DProxy.gl;
             Context3DProxy.gl.viewport(0, 0, texture.width, texture.height);
             Context3DProxy.gl.scissor(0, 0, texture.width, texture.height);
-
-            Context3DProxy.gl.bindFramebuffer(Context3DProxy.gl.FRAMEBUFFER, texture.frameBuffer);
-
+            gl.bindFramebuffer(Context3DProxy.gl.FRAMEBUFFER, texture.frameBuffer);
+            gl.framebufferTexture2D(Context3DProxy.gl.FRAMEBUFFER, Context3DProxy.gl.COLOR_ATTACHMENT0, Context3DProxy.gl.TEXTURE_2D, texture.textureBuffer, 0);
             if (clean) {
-                Context3DProxy.gl.clearColor(0, 0, 0, 0);
-                Context3DProxy.gl.clear(Context3DProxy.gl.COLOR_BUFFER_BIT | Context3DProxy.gl.DEPTH_BUFFER_BIT);
+                gl.clearColor(0, 0, 0, 0);
+                gl.clear(Context3DProxy.gl.COLOR_BUFFER_BIT | Context3DProxy.gl.DEPTH_BUFFER_BIT);
             }
-            Context3DProxy.gl.framebufferTexture2D(Context3DProxy.gl.FRAMEBUFFER, Context3DProxy.gl.COLOR_ATTACHMENT0, Context3DProxy.gl.TEXTURE_2D, texture.textureBuffer, 0);
-            Context3DProxy.gl.framebufferRenderbuffer(Context3DProxy.gl.FRAMEBUFFER, Context3DProxy.gl.DEPTH_ATTACHMENT, Context3DProxy.gl.RENDERBUFFER, texture.renderbuffer);
-
         }
 
         /**
@@ -526,8 +499,7 @@
         public setRenderToBackBuffer() {
             Context3DProxy.gl.bindTexture(Context3DProxy.gl.TEXTURE_2D, null);
             Context3DProxy.gl.bindFramebuffer(Context3DProxy.gl.FRAMEBUFFER, null);
-            Context3DProxy.gl.bindRenderbuffer(Context3DProxy.gl.RENDERBUFFER, null);
-
+           // Context3DProxy.gl.bindRenderbuffer(Context3DProxy.gl.RENDERBUFFER, null);
         }
 
         /**

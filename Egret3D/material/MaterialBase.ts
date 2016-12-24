@@ -14,7 +14,7 @@
     * @platform Web,Native
     */
     export class MaterialBase {
-                
+
         /**
          * @language zh_CN
          * @private
@@ -36,24 +36,24 @@
 
         private _lightGroup: LightGroup;
 
-         /**
-         * @language zh_CN
-         * @class egret3d.MaterialBase
-         * @classdesc
-         * TerrainMaterial,TextureMaterial 的基类。</p>
-         * 材质球共有的基础类型，封装了材质球共有的基础数据设置方法。</p>
-         * 不同的渲染通道pass。</p>
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
-        constructor(materialData: MaterialData=null) {
+        /**
+        * @language zh_CN
+        * @class egret3d.MaterialBase
+        * @classdesc
+        * TerrainMaterial,TextureMaterial 的基类。</p>
+        * 材质球共有的基础类型，封装了材质球共有的基础数据设置方法。</p>
+        * 不同的渲染通道pass。</p>
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        constructor(materialData: MaterialData = null) {
             if (materialData == null) {
                 this.setData(new MaterialData());
             }
             else
                 this.setData(materialData);
         }
-                        
+
         /**
          * @language zh_CN
          * @private
@@ -61,11 +61,11 @@
          * @platform Web,Native
          */
         public setData(data: MaterialData) {
-            this.materialData = data; 
+            this.materialData = data;
             this.initPass();
             this.blendMode = BlendMode.NORMAL;
         }
-                        
+
         /**
          * @language zh_CN
          * @private
@@ -73,7 +73,7 @@
          * @platform Web,Native
          */
         public getData(): MaterialData {
-            return this.materialData; 
+            return this.materialData;
         }
 
         protected initPass() {
@@ -82,7 +82,7 @@
             //this.addPass(PassType.normalPass);
             //this.addPass(PassType.depthPass_8);
         }
-        
+
         /**
          * @language zh_CN
          * 设置材质 lightGroup 。
@@ -92,14 +92,14 @@
          * @platform Web,Native
          */
         public set lightGroup(group: LightGroup) {
-            this._lightGroup = group; 
+            this._lightGroup = group;
 
             if (this.passes[PassType.diffusePass] && this.passes[PassType.diffusePass].length > 0) {
-                for (var i: number = 0; i < this.passes[PassType.diffusePass].length; i++ ){
+                for (var i: number = 0; i < this.passes[PassType.diffusePass].length; i++) {
                     this.passes[PassType.diffusePass][i].lightGroup = group;
                 }
             }
-              
+
         }
 
         /**
@@ -157,12 +157,12 @@
             this.materialData.depthTest = bool;
         }
 
-         /**
-         * @language zh_CN
-         * 返回深度测试
-         * @version Egret 3.0
-         * @platform Web,Native
-         */
+        /**
+        * @language zh_CN
+        * 返回深度测试
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
         public get depth(): boolean {
             return this.materialData.depthTest;
         }
@@ -203,7 +203,7 @@
                 this.materialData.diffuseTexture = texture;
                 this.materialData.textureChange = true;
 
-                if (this.materialData.shaderPhaseTypes[PassType.diffusePass]&&this.materialData.shaderPhaseTypes[PassType.diffusePass].indexOf(ShaderPhaseType.diffuse_fragment) == -1) {
+                if (this.materialData.shaderPhaseTypes[PassType.diffusePass] && this.materialData.shaderPhaseTypes[PassType.diffusePass].indexOf(ShaderPhaseType.diffuse_fragment) == -1) {
                     this.materialData.shaderPhaseTypes[PassType.diffusePass].push(ShaderPhaseType.diffuse_fragment);
                 }
 
@@ -272,12 +272,12 @@
                 this.materialData.normalTexture = texture;
                 this.materialData.textureChange = true;
 
-                if (this.materialData.shaderPhaseTypes[PassType.diffusePass] &&this.materialData.shaderPhaseTypes[PassType.diffusePass].indexOf(ShaderPhaseType.normal_fragment) == -1) {
+                if (this.materialData.shaderPhaseTypes[PassType.diffusePass] && this.materialData.shaderPhaseTypes[PassType.diffusePass].indexOf(ShaderPhaseType.normal_fragment) == -1) {
                     this.materialData.shaderPhaseTypes[PassType.diffusePass].push(ShaderPhaseType.normal_fragment);
                     this.passInvalid(PassType.diffusePass);
                 }
 
-                if (this.materialData.shaderPhaseTypes[PassType.matCapPass] &&this.materialData.shaderPhaseTypes[PassType.matCapPass].indexOf(ShaderPhaseType.normal_fragment) == -1) {
+                if (this.materialData.shaderPhaseTypes[PassType.matCapPass] && this.materialData.shaderPhaseTypes[PassType.matCapPass].indexOf(ShaderPhaseType.normal_fragment) == -1) {
                     this.materialData.shaderPhaseTypes[PassType.matCapPass].push(ShaderPhaseType.normal_fragment);
                     //this.passes[PassType.matCapPass].passInvalid();
                 }
@@ -291,7 +291,7 @@
                 }
             }
         }
-        
+
 
         /**
           * @language zh_CN
@@ -326,10 +326,10 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public get matcapTexture(): ITexture { 
+        public get matcapTexture(): ITexture {
             return this.materialData.normalTexture;
         }
-        
+
         /**
          * @language zh_CN
          * 得到材质球的凹凸法线贴图。
@@ -353,7 +353,7 @@
             if (texture) {
                 this.materialData.specularTexture = texture;
                 this.materialData.textureChange = true;
-                if (this.materialData.shaderPhaseTypes[PassType.diffusePass]&&this.materialData.shaderPhaseTypes[PassType.diffusePass].indexOf(ShaderPhaseType.specular_fragment) == -1) {
+                if (this.materialData.shaderPhaseTypes[PassType.diffusePass] && this.materialData.shaderPhaseTypes[PassType.diffusePass].indexOf(ShaderPhaseType.specular_fragment) == -1) {
                     this.materialData.shaderPhaseTypes[PassType.diffusePass].push(ShaderPhaseType.specular_fragment);
                     //this.passes[PassType.diffusePass].passInvalid();
                 }
@@ -382,7 +382,7 @@
         * @platform Web,Native
         */
         public set drawMode(mode: number) {
-            this.materialData.drawMode = mode; 
+            this.materialData.drawMode = mode;
         }
 
         /**
@@ -408,7 +408,7 @@
         * @platform Web,Native
         */
         public set cutAlpha(v: number) {
-            this.materialData.cutAlpha = v; 
+            this.materialData.cutAlpha = v;
         }
 
         /**
@@ -419,7 +419,7 @@
         * @platform Web,Native
         */
         public get cutAlpha(): number {
-            return this.materialData.cutAlpha; 
+            return this.materialData.cutAlpha;
         }
 
         /**
@@ -613,6 +613,32 @@
             }
         }
 
+         /**
+         * @language zh_CN
+         * 设置材质法线贴图的Y轴朝向
+         * 美术的规范各不统一，轴向不一样，需要调整
+         * @param value {Number}
+         * @version Egret 3.0
+         * @platform Web,Native
+         */
+        public set normalDir(value: number) {
+            if (this.materialData.normalDir != value) {
+                this.materialData.normalDir = value;
+                this.materialData.materialDataNeedChange = true;
+            }
+        }
+
+                 /**
+         * @language zh_CN
+         * 设置材质法线贴图的Y轴朝向
+         * 美术的规范各不统一，轴向不一样，需要调整
+         * @param value {Number}
+         * @version Egret 3.0
+         * @platform Web,Native
+         */
+        public get normalDir(): number { return this.materialData.normalDir }
+   
+
         /**
          * @language zh_CN
          * 返回材质球的镜面平滑程度值。
@@ -623,6 +649,60 @@
         public get gloss(): number {
             return this.materialData.gloss;
         }
+
+        /**
+       * @language zh_CN
+       * 矫正材质的gamma值。
+       * 调整颜色的饱和对比度。
+       * @param value {Number}
+       * @version Egret 3.0
+       * @platform Web,Native
+       */
+        public set gamma(value: number) {
+            if (this.materialData.gamma != value) {
+                this.materialData.gamma = value;
+                this.materialData.materialDataNeedChange = true;
+            }
+        }
+
+        /**
+         * @language zh_CN
+         * 返回材质的gamma值。
+         * @returns {Number}
+         * @version Egret 3.0
+         * @platform Web,Native
+         */
+        public get gamma(): number {
+            return this.materialData.gamma;
+        }
+
+
+        public set refraction(value: number) {
+            if (this.materialData.refraction != value) {
+                this.materialData.refraction = value;
+                this.materialData.materialDataNeedChange = true;
+            }
+        }
+
+        public get refraction(): number {
+            return this.materialData.refraction;
+        }
+
+        public set refractionintensity(value: number) {
+            if (this.materialData.refractionintensity != value) {
+                this.materialData.refractionintensity = value;
+                this.materialData.materialDataNeedChange = true;
+            }
+        }
+
+        public get refractionintensity(): number {
+            return this.materialData.refractionintensity;
+        }
+
+
+
+
+
 
          /**
          * @language zh_CN

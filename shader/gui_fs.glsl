@@ -21,7 +21,12 @@ bool booleanArray[5];
 
 void decodeBooleanArray(float data){
 	float headData;
-
+	//for(int i = 0; i < 5; i ++){
+	//	data *= 0.5;
+	//	headData = data;
+	//	data = floor(data);
+	//	booleanArray[i] = (headData - data) > 0.2;
+	//}
 	data *= 0.5;
 	headData = data;
 	data = floor(data);

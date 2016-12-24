@@ -18,7 +18,7 @@
         * @platform Web,Native
         */
         public initUseMethod(animation: IAnimation, geom: Geometry) {
-
+            //super.initUseMethod(animation, geom);
             var i: number = 0;
             this._passChange = false;
             this._passUsage = new PassUsage();

@@ -1,3 +1,5 @@
+
+
 void LightingBlinnPhong(vec3 lightDir, vec3 lightColor , vec3 lightAmbient , vec3 normal , vec3 viewDir, float atten){ 
     vec3 H = normalize(lightDir + normalize(viewDir)); 
     float NdotL = max(dot(normal, lightDir),0.0); 

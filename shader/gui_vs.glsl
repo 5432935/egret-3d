@@ -46,12 +46,36 @@ bool booleanArray[5];
 
 void decodeBooleanArray(float data){
 	float headData;
-	for(int i = 0; i < 5; i ++){
-		data *= 0.5;
-		headData = data;
-		data = floor(data);
-		booleanArray[i] = (headData - data) > 0.2;
-	}
+	//for(int i = 0; i < 5; i ++){
+	//	data *= 0.5;
+	//	headData = data;
+	//	data = floor(data);
+	//	booleanArray[i] = (headData - data) > 0.2;
+	//}
+	data *= 0.5;
+	headData = data;
+	data = floor(data);
+	booleanArray[0] = (headData - data) > 0.2;
+
+	data *= 0.5;
+	headData = data;
+	data = floor(data);
+	booleanArray[1] = (headData - data) > 0.2;
+
+	data *= 0.5;
+	headData = data;
+	data = floor(data);
+	booleanArray[2] = (headData - data) > 0.2;
+
+	data *= 0.5;
+	headData = data;
+	data = floor(data);
+	booleanArray[3] = (headData - data) > 0.2;
+
+	data *= 0.5;
+	headData = data;
+	data = floor(data);
+	booleanArray[4] = (headData - data) > 0.2;
 }
 
 void main(void){

@@ -391,6 +391,7 @@
         "post/IPost.ts",
         "post/GaussPost.ts",
         "post/BloomPost.ts",
+        "post/Gbuffer.ts",
         "post/PostProcessing.ts",
         "post/ColorCorrectionPost.ts"
 

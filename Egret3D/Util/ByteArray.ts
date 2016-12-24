@@ -412,16 +412,23 @@ module egret3d {
             else if (!this.validate(length)) {
                 return null;
             }
+
             if (bytes) {
                 bytes.validateBuffer(offset + length);
             }
             else {
                 bytes = new ByteArray(new ArrayBuffer(offset + length));
             }
+
             //This method is expensive
-            for (var i = 0; i < length; i++) {
-                bytes.data.setUint8(i + offset, this.data.getUint8(this.position++));
-            }
+            //for (var i = 0; i < length; i++) {
+            //    bytes.data.setUint8(i + offset, this.data.getUint8(this.position++));
+            //}
+
+            var dst: Uint8Array = new Uint8Array(bytes.buffer);
+            var src: Uint8Array = new Uint8Array(this.data.buffer, this.position, length);
+            dst.set(src, bytes.position);
+            this.position += length;
         }
 
         /**
@@ -711,6 +718,19 @@ module egret3d {
         }
 
         /**
+         * @language zh_CN
+         * 在字节流中写入一个字节
+         * 使用参数的低 8 位。忽略高 24 位
+         * @param value {number} 一个 32 位整数。低 8 位将被写入字节流
+         * @version Egret 2.4
+         * @platform Web,Native
+         */
+        public writeUnsignedByte(value: number): void {
+            this.validateBuffer(ByteArray.SIZE_OF_UINT8);
+            this.data.setUint8(this.position++, value);
+        }
+
+        /**
          * @language en_US
          * Write the byte sequence that includes length bytes in the specified byte array, bytes, (starting at the byte specified by offset, using a zero-based index), into the byte stream
          * If the length parameter is omitted, the default length value 0 is used and the entire buffer starting at offset is written. If the offset parameter is also omitted, the entire buffer is written
@@ -749,17 +769,10 @@ module egret3d {
             if (writeLength > 0) {
                 this.validateBuffer(writeLength);
 
-                var tmp_data = new DataView(bytes.buffer);
-                var length = writeLength;
-                var BYTES_OF_UINT32 = 4;
-                for (; length > BYTES_OF_UINT32; length -= BYTES_OF_UINT32) {
-                    this.data.setUint32(this._position, tmp_data.getUint32(offset));
-                    this.position += BYTES_OF_UINT32;
-                    offset += BYTES_OF_UINT32;
-                }
-                for (; length > 0; length--) {
-                    this.data.setUint8(this.position++, tmp_data.getUint8(offset++));
-                }
+                var dst: Uint8Array = new Uint8Array(this.buffer);
+                var src: Uint8Array = new Uint8Array(bytes.buffer, offset, writeLength);
+                dst.set(src, this.position);
+                this.position += writeLength;
             }
         }
 
@@ -954,9 +967,9 @@ module egret3d {
                 this.validateBuffer(this.position + bytes.length);
             }
 
-            for (var i = 0; i < bytes.length; i++) {
-                this.data.setUint8(this.position++, bytes[i]);
-            }
+            var dst: Uint8Array = new Uint8Array(this.buffer);
+            dst.set(bytes, this.position);
+            this.position += bytes.length;
         }
 
         /**
@@ -987,11 +1000,13 @@ module egret3d {
         private validateBuffer(len:number, needReplace:boolean = false):void {
             this.write_position = len > this.write_position ? len : this.write_position;
             len += this._position;
+            // 如果当前缓冲数据不足 需要扩大缓冲区
             if (this.data.byteLength < len || needReplace) {
-                var tmp:Uint8Array = new Uint8Array(new ArrayBuffer(len + this.BUFFER_EXT_SIZE));
+                var dst: Uint8Array = new Uint8Array(new ArrayBuffer(len + this.BUFFER_EXT_SIZE));
                 var length = Math.min(this.data.buffer.byteLength, len + this.BUFFER_EXT_SIZE);
-                tmp.set(new Uint8Array(this.data.buffer, 0, length));
-                this.buffer = tmp.buffer;
+                var src: Uint8Array = new Uint8Array(this.data.buffer, 0, length);
+                dst.set(src);
+                this.buffer = dst.buffer;
             }
         }
 

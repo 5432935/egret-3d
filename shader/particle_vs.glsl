@@ -251,7 +251,10 @@ void rotateParticleUnit()
 		rotVertexMatrix = buildRotMat4(vec3(0.5 * PI, 0.0, 0.0)); 
 		rotResultVec3 = vec3(0.0, rotResultVec3.z, 0.0); 
 		rotVertexMatrix = buildRotMat4(rotResultVec3) * rotVertexMatrix; 
-	}else{ 
+	}else if(particleStateData.renderMode == StretchedBillboard){
+		rotResultVec3 = vec3(0.0, 0.0, -0.5 * PI); 
+		rotVertexMatrix = buildRotMat4(rotResultVec3);
+	}else{
 		rotVertexMatrix = buildRotMat4(rotResultVec3); 
 	} 
 	

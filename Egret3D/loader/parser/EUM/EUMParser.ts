@@ -28,6 +28,7 @@
                 return null;
             }
 
+            EUMVersion.versionValue = version;
             return EUMVersion.versionDictionary[version](bytes);
         }
     }

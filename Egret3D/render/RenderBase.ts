@@ -48,6 +48,8 @@
         */
         public renderTexture: RenderTexture;
 
+        public depthTexture: RenderTexture;
+
         /**
         * @public
         * @language zh_CN
@@ -100,9 +102,9 @@
         public setRenderToTexture(width: number, height: number, format: FrameBufferFormat = FrameBufferFormat.UNSIGNED_BYTE_RGB) {
             if (this.renderTexture) this.renderTexture.dispose();
             this.renderTexture = new RenderTexture(width, height, format);
-            //this.renderTexture.
-
         }
+
+
 
         //camera: Camera3D, backViewPort: Rectangle = null, shadow:boolean = false
         /**

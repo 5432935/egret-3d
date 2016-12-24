@@ -5,11 +5,12 @@ struct MaterialSource{
     float alpha;
     float cutAlpha;
     float shininess;
-    float roughness;
-    float albedo;
+    float normalDir;
     vec4 uvRectangle;
+    float gamma;
     float specularScale;
-    float normalScale;
+    float refraction;
+    float refractionintensity;
 }; 
 uniform float uniform_materialSource[20] ;
 MaterialSource materialSource ;
@@ -31,14 +32,15 @@ void main(){
 	materialSource.cutAlpha = uniform_materialSource[10];
 	materialSource.shininess = uniform_materialSource[11];
 	materialSource.specularScale = uniform_materialSource[12];
-	materialSource.albedo = uniform_materialSource[13];
+	materialSource.normalDir = 1.0 ;//uniform_materialSource[13];
     
-	materialSource.uvRectangle.x = uniform_materialSource[14];
-	materialSource.uvRectangle.y = uniform_materialSource[15];
-	materialSource.uvRectangle.z = uniform_materialSource[16];
-	materialSource.uvRectangle.w = uniform_materialSource[17];
-	//materialSource.specularScale = uniform_materialSource[18];
-	materialSource.normalScale = uniform_materialSource[19];
+	materialSource.uvRectangle.x = uniform_materialSource[13];
+	materialSource.uvRectangle.y = uniform_materialSource[14];
+	materialSource.uvRectangle.z = uniform_materialSource[15];
+	materialSource.uvRectangle.w = uniform_materialSource[16];
+	materialSource.gamma = uniform_materialSource[17];
+	materialSource.refraction = uniform_materialSource[18];
+	materialSource.refractionintensity = uniform_materialSource[19];
 
 	uv_0 = varying_uv0.xy * materialSource.uvRectangle.zw + materialSource.uvRectangle.xy ;
 }
