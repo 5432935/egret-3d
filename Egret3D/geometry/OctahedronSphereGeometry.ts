@@ -1,13 +1,13 @@
 ﻿module egret3d {
-   /**
-    * @private
-    * @class egret3d.OctahedronSphereGeometry
-    * @classdesc
-    * 六面体球形Geometry
-    * @version Egret 3.0
-    * @platform Web,Native
-    * @includeExample geometry/CubeGeometry.ts
-    */
+    /**
+     * @private
+     * @class egret3d.OctahedronSphereGeometry
+     * @classdesc
+     * 六面体球形Geometry
+     * @version Egret 3.0
+     * @platform Web,Native
+     * @includeExample geometry/CubeGeometry.ts
+     */
     export class OctahedronSphereGeometry extends Geometry {
 
         private _subdivisions: number;
@@ -33,7 +33,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        constructor(subdivisions: number, radius: number, isHemisphere: boolean = false ) {
+        constructor(subdivisions: number, radius: number, isHemisphere: boolean = false) {
             super();
             if (subdivisions < 0) {
                 subdivisions = 0;
@@ -222,12 +222,13 @@
                     uv[i - 1].u = 1.0;
                 }
                 previousX = v.x;
-                var textureCoordinates: UV = new UV();
-                textureCoordinates.u = Math.atan2(v.x, v.z) / (-2.0 * Math.PI);
+                var textureCoordinates: UV = {
+                    u: Math.atan2(v.x, v.z) / (-2.0 * Math.PI),
+                    v: Math.asin(v.y) / Math.PI + 0.5
+                }
                 if (textureCoordinates.u < 0) {
                     textureCoordinates.u += 1.0;
                 }
-                textureCoordinates.v = Math.asin(v.y) / Math.PI + 0.5;
                 uv[i] = textureCoordinates;
             }
             uv[vertices.length - 4].u = uv[0].u = 0.125;

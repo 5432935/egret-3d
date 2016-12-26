@@ -41,19 +41,19 @@
         * 索引数据
         */
         public source_indexData: Array<number> = new Array<number>();
-        
+
         /**
         * @language zh_CN
         * 顶点数据
         */
         public source_vertexData: Array<number> = new Array<number>();
-        
+
         /**
         * @language zh_CN
         * 顶点色数据
         */
         public source_vertexColorData: Array<number> = new Array<number>();
-        
+
         /**
         * @language zh_CN
         * 顶点法线
@@ -209,8 +209,8 @@
             var vertex: Vector3D = new Vector3D();
             var normal: Vector3D = new Vector3D(1.0, 1.0, 1.0);
             var color: Vector3D = new Vector3D(1.0, 1.0, 1.0, 1.0);
-            var uv_0: UV = new UV(1, 0);
-            var uv_1: UV = new UV(1, 0);
+            var uv_0: UV = { u: 1, v: 0 };
+            var uv_1: UV = { u: 1, v: 0 };
 
             var index: number = 0;
             var vertexIndex: number = 0;
@@ -333,16 +333,16 @@
                     }
                 }
             }
-       
 
-           // GeometryData.updateFaceTangents(target);
+
+            // GeometryData.updateFaceTangents(target);
 
             for (var i: number = 0; i < source.matCount; ++i) {
                 var subGeometry: SubGeometry = new SubGeometry();
                 subGeometry.matID = i;
                 subGeometry.geometry = target;
-                 //subGeometry.start = source.material[i].start * 3 * Uint16Array.BYTES_PER_ELEMENT;
-                subGeometry.start = source.material[i].start * 3 ;
+                //subGeometry.start = source.material[i].start * 3 * Uint16Array.BYTES_PER_ELEMENT;
+                subGeometry.start = source.material[i].start * 3;
                 subGeometry.count = source.material[i].count * 3;
                 subGeometry.textureDiffuse = source.material[i].textureDiffuse;
                 subGeometry.textureNormal = source.material[i].textureNormal;
@@ -466,7 +466,7 @@
         * 2 uv2s
         * length 15
         */
-        private static combinGeomtryData(geomtrtData: GeometryData, needTangent:boolean = true ) {
+        private static combinGeomtryData(geomtrtData: GeometryData, needTangent: boolean = true) {
             var index: number = 0;
             var v: number = 0;
             var n: number = 0;
@@ -475,7 +475,7 @@
             var u2: number = 0;
             var c: number = 0;
             var skin: number = 0;
-            var data: Array<number> = geomtrtData.vertexDatas ;
+            var data: Array<number> = geomtrtData.vertexDatas;
 
             while (index < geomtrtData.vertLen) {
                 data[index++] = geomtrtData.vertices[v++];
@@ -496,9 +496,9 @@
                     index++
                     index++
                     index++
-                   //data[index++] = geomtrtData.tangts[t++];
-                   //data[index++] = geomtrtData.tangts[t++];
-                   //data[index++] = geomtrtData.tangts[t++];
+                    //data[index++] = geomtrtData.tangts[t++];
+                    //data[index++] = geomtrtData.tangts[t++];
+                    //data[index++] = geomtrtData.tangts[t++];
                 } else {
                     data[index++] = 0;
                     data[index++] = 0;
@@ -556,8 +556,7 @@
          * @private
 		 * Updates the normals for each face.
 		 */
-        public static updateFaceNormals(geomtrtData: GeometryData)
-		{
+        public static updateFaceNormals(geomtrtData: GeometryData) {
             var i: number = 0, j: number = 0, k: number = 0;
             var index: number;
             var len: number = geomtrtData.indices.length;
@@ -568,16 +567,16 @@
             var dx2: number, dy2: number, dz2: number;
             var cx: number, cy: number, cz: number;
             var d: number;
-            var vertices: Array<number> = geomtrtData.vertexDatas ;
+            var vertices: Array<number> = geomtrtData.vertexDatas;
             var posStride: number = 17;
             var posOffset: number = 3;
 
-      
-        //if (_useFaceWeights)
-        //    _faceWeights ||= new Vector.<number>(len / 3, true);
+
+            //if (_useFaceWeights)
+            //    _faceWeights ||= new Vector.<number>(len / 3, true);
 
             while (i < len) {
-            
+
                 index = posOffset + geomtrtData.indices[i++] * posStride;
                 x1 = vertices[index];
                 y1 = vertices[index + 1];
@@ -617,50 +616,49 @@
 		/**
 		 * Updates the vertex normals based on the geometry.
 		 */
-        private static updateVertexNormals(geomtrtData: GeometryData)
-        {
+        private static updateVertexNormals(geomtrtData: GeometryData) {
             this.updateFaceNormals(geomtrtData);
-			
-			var v1:number;
+
+            var v1: number;
             var f1: number = 0, f2: number = 1, f3: number = 2;
             var lenV: number = geomtrtData.vertexDatas.length;
             var normalStride: number = 17;
             var normalOffset: number = 3;
-			
-                //target ||= new Vector.<Number>(lenV, true);
-                //v1 = normalOffset;
-                //while(v1 < lenV) {
-                //    target[v1] = 0.0;
-                //    target[v1 + 1] = 0.0;
-                //    target[v1 + 2] = 0.0;
-                //    v1 += normalStride;
-                //}
-			
-            var i: number = 0, k: number = 0  ;
+
+            //target ||= new Vector.<Number>(lenV, true);
+            //v1 = normalOffset;
+            //while(v1 < lenV) {
+            //    target[v1] = 0.0;
+            //    target[v1 + 1] = 0.0;
+            //    target[v1 + 2] = 0.0;
+            //    v1 += normalStride;
+            //}
+
+            var i: number = 0, k: number = 0;
             var lenI: number = geomtrtData.indices.length;
             var index: number;
             var weight: number;
-			
-                while(i < lenI) {
-                    weight = geomtrtData.faceWeights[k++];
-                    index = normalOffset + geomtrtData.indices[i++] * normalStride;
-                    geomtrtData.vertexDatas[index] += geomtrtData.faceNormals[f1] * weight;
-                    geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f2] * weight;
-                    geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f3] * weight;
-                    index = normalOffset + geomtrtData.indices[i++] * normalStride;
-                    geomtrtData.vertexDatas[index] += geomtrtData.faceNormals[f1] * weight;
-                    geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f2] * weight;
-                    geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f3] * weight;
-                    index = normalOffset + geomtrtData.indices[i++] * normalStride;
-                    geomtrtData.vertexDatas[index] += geomtrtData.faceNormals[f1] * weight;
-                    geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f2] * weight;
-                    geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f3] * weight;
-                    f1 += 3;
-                    f2 += 3;
-                    f3 += 3;
-                }
-			
-			//v1 = normalOffset;
+
+            while (i < lenI) {
+                weight = geomtrtData.faceWeights[k++];
+                index = normalOffset + geomtrtData.indices[i++] * normalStride;
+                geomtrtData.vertexDatas[index] += geomtrtData.faceNormals[f1] * weight;
+                geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f2] * weight;
+                geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f3] * weight;
+                index = normalOffset + geomtrtData.indices[i++] * normalStride;
+                geomtrtData.vertexDatas[index] += geomtrtData.faceNormals[f1] * weight;
+                geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f2] * weight;
+                geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f3] * weight;
+                index = normalOffset + geomtrtData.indices[i++] * normalStride;
+                geomtrtData.vertexDatas[index] += geomtrtData.faceNormals[f1] * weight;
+                geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f2] * weight;
+                geomtrtData.vertexDatas[index++] += geomtrtData.faceNormals[f3] * weight;
+                f1 += 3;
+                f2 += 3;
+                f3 += 3;
+            }
+
+            //v1 = normalOffset;
             //    while(v1 < lenV) {
             //        var vx: Number = target[v1];
             //        var vy: Number = target[v1 + 1];
@@ -671,8 +669,8 @@
             //        target[v1 + 2] = vz * d;
             //        v1 += normalStride;
             //    }
-			
-			//_vertexNormalsDirty = false;
+
+            //_vertexNormalsDirty = false;
         }
 
         /*
