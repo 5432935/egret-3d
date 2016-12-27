@@ -109,13 +109,13 @@
             super.onRender();
 
             if (this._textHeight > 0) {
-                this.textField.textHeight = this._textHeight;
+                // this.textField.textHeight = this._textHeight;
             } else {
                 this._textField.height = this._skin.height;
             }
 
             if (this._textWidth > 0) {
-                this.textField.textWidth = this._textWidth;
+                // this.textField.textWidth = this._textWidth;
             } else {
                 this._textField.width = this._skin.width;
             }

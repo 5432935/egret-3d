@@ -40,8 +40,8 @@
             this.video.msZoom = true;
             this.video.width = width;
             this.video.height = height;
-            this.video.videoWidth = width;
-            this.video.videoHeight = height;
+            // this.video.videoWidth = width;
+            // this.video.videoHeight = height;
             this.video.controls = false;
             this.video.autoplay = true;
 

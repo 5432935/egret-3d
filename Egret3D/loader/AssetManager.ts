@@ -76,7 +76,7 @@
             var loader: URLLoader = asset.loader;
             loader.param = param;
             if (param instanceof UnitNodeData) {
-                loader.unitNodeData = param;
+                loader.unitNodeData = param as any;//todo
             }
             if (loader.data) {
                 setTimeout(() => {

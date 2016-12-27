@@ -387,6 +387,8 @@
         * @platform Web,Native
         */
         public update(delay: number) {
+            console.log (globalGetter)
+            globalGetter = {};
             if (!this._start) {
                 return;
             }

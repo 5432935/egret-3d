@@ -584,7 +584,7 @@
         * @platform Web,Native
         */
         public update(time: number, delay: number) {
-            this._camera.viewPort = this._viewPort;
+            // this._camera.viewPort = this._viewPort;
             //------------------
             if (Egret3DEngine.instance.debug)
                 this.a = new Date().getTime();

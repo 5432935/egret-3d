@@ -27,6 +27,44 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////
 
+
+
+
+var globalGetter = {
+
+}
+
+window.__debug = false;
+
+window.defineProperty = function (proto, propertyName, obj) {
+    let getFunc = obj.get;
+    let setFunc = obj.set;
+    obj.get = function () {
+        if (window.__debug) {
+            if (!globalGetter[propertyName]){
+                globalGetter[propertyName] = 0;
+            }
+            globalGetter[propertyName]++;
+        }
+        return getFunc.call(this);
+    }
+    obj.set = function (value) {
+        if (window.__debug) {
+        }
+        if (setFunc) {
+            return setFunc.call(this, value);
+        }
+
+    }
+    Object.defineProperty(proto, propertyName, obj);
+}
+
+
+interface Window {
+    __debug: boolean;
+    defineProperty: Function;
+}
+
 module egret3d {
 
     /**
@@ -58,7 +96,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public static LITTLE_ENDIAN:string = "littleEndian";
+        public static LITTLE_ENDIAN: string = "littleEndian";
 
         /**
          * @language en_US
@@ -74,7 +112,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public static BIG_ENDIAN:string = "bigEndian";
+        public static BIG_ENDIAN: string = "bigEndian";
 
     }
 
@@ -98,54 +136,54 @@ module egret3d {
         /**
          * @private
          */
-        private static SIZE_OF_BOOLEAN:number = 1;
+        private static SIZE_OF_BOOLEAN: number = 1;
         /**
          * @private
          */
-        private static SIZE_OF_INT8:number = 1;
+        private static SIZE_OF_INT8: number = 1;
         /**
          * @private
          */
-        private static SIZE_OF_INT16:number = 2;
+        private static SIZE_OF_INT16: number = 2;
         /**
          * @private
          */
-        private static SIZE_OF_INT32:number = 4;
+        private static SIZE_OF_INT32: number = 4;
         /**
          * @private
          */
-        private static SIZE_OF_UINT8:number = 1;
+        private static SIZE_OF_UINT8: number = 1;
         /**
          * @private
          */
-        private static SIZE_OF_UINT16:number = 2;
+        private static SIZE_OF_UINT16: number = 2;
         /**
          * @private
          */
-        private static SIZE_OF_UINT32:number = 4;
+        private static SIZE_OF_UINT32: number = 4;
         /**
          * @private
          */
-        private static SIZE_OF_FLOAT32:number = 4;
+        private static SIZE_OF_FLOAT32: number = 4;
         /**
          * @private
          */
-        private static SIZE_OF_FLOAT64:number = 8;
+        private static SIZE_OF_FLOAT64: number = 8;
 
         /**
          * @private
          */
-        private BUFFER_EXT_SIZE:number = 0;//Buffer expansion size
+        private BUFFER_EXT_SIZE: number = 0;//Buffer expansion size
 
-        private data:DataView;
+        private data: DataView;
         /**
          * @private
          */
-        private _position:number;
+        private _position: number;
         /**
          * @private
          */
-        private write_position:number;
+        private write_position: number;
 
         /**
          * @language en_US
@@ -161,7 +199,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public endian:string;
+        public endian: string;
 
         /**
          * 构造函数
@@ -169,7 +207,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        constructor(buffer?:ArrayBuffer) {
+        constructor(buffer?: ArrayBuffer) {
             this._setArrayBuffer(buffer || new ArrayBuffer(this.BUFFER_EXT_SIZE));
             this.endian = Endian.BIG_ENDIAN;
         }
@@ -178,7 +216,7 @@ module egret3d {
          * @private
          * @param buffer
          */
-        private _setArrayBuffer(buffer:ArrayBuffer):void {
+        private _setArrayBuffer(buffer: ArrayBuffer): void {
             this.write_position = buffer.byteLength;
             this.data = new DataView(buffer);
             this._position = 0;
@@ -190,7 +228,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public setArrayBuffer(buffer:ArrayBuffer):void {
+        public setArrayBuffer(buffer: ArrayBuffer): void {
 
         }
         /**
@@ -199,17 +237,17 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public get buffer():ArrayBuffer {
+        public get buffer(): ArrayBuffer {
             return this.data.buffer;
         }
 
-       /**
-         * 设置buffer
-         * @param value {ArrayBuffer} 二进制数据
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        public set buffer(value:ArrayBuffer) {
+        /**
+          * 设置buffer
+          * @param value {ArrayBuffer} 二进制数据
+          * @version Egret 2.4
+          * @platform Web,Native
+          */
+        public set buffer(value: ArrayBuffer) {
             this.data = new DataView(value);
         }
 
@@ -218,14 +256,14 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public get dataView():DataView {
+        public get dataView(): DataView {
             return this.data;
         }
 
         /**
          * @private
          */
-        public set dataView(value:DataView) {
+        public set dataView(value: DataView) {
             this.data = value;
             this.write_position = value.byteLength;
         }
@@ -233,7 +271,7 @@ module egret3d {
         /**
          * @private
          */
-        public get bufferOffset():number {
+        public get bufferOffset(): number {
             return this.data.byteOffset;
         }
 
@@ -250,7 +288,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public get position():number {
+        public get position(): number {
             return this._position;
         }
         /**
@@ -260,7 +298,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public set position(value:number) {
+        public set position(value: number) {
             //if (this._position < value) {
             //    if (!this.validate(value - this._position)) {
             //        return;
@@ -281,33 +319,33 @@ module egret3d {
 
 
 
-         /**
-         * @language zh_CN
-         * 获取 ByteArray 对象的长度。
-         * @returns {number} 以字节为单位的长度信息
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        public get length():number {
+        /**
+        * @language zh_CN
+        * 获取 ByteArray 对象的长度。
+        * @returns {number} 以字节为单位的长度信息
+        * @version Egret 2.4
+        * @platform Web,Native
+        */
+        public get length(): number {
             return this.write_position;
         }
-          /**
-         * @language zh_CN
-         * 设置 ByteArray 对象的长度。
-         * 如果将长度设置为大于当前长度的值，则用零填充字节数组的右侧。
-         * 如果将长度设置为小于当前长度的值，将会截断该字节数组。
-         * @param value {number} 以字节为单位的长度信息
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
-        public set length(value:number) {
+        /**
+       * @language zh_CN
+       * 设置 ByteArray 对象的长度。
+       * 如果将长度设置为大于当前长度的值，则用零填充字节数组的右侧。
+       * 如果将长度设置为小于当前长度的值，将会截断该字节数组。
+       * @param value {number} 以字节为单位的长度信息
+       * @version Egret 2.4
+       * @platform Web,Native
+       */
+        public set length(value: number) {
             this.write_position = value;
-            var tmp:Uint8Array = new Uint8Array(new ArrayBuffer(value));
-            var byteLength:number = this.data.buffer.byteLength;
+            var tmp: Uint8Array = new Uint8Array(new ArrayBuffer(value));
+            var byteLength: number = this.data.buffer.byteLength;
             if (byteLength > value) {
                 this._position = value;
             }
-            var length:number = Math.min(byteLength, value);
+            var length: number = Math.min(byteLength, value);
             tmp.set(new Uint8Array(this.data.buffer, 0, length));
             this.buffer = tmp.buffer;
         }
@@ -327,7 +365,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public get bytesAvailable():number {
+        public get bytesAvailable(): number {
             return this.data.byteLength - this._position;
         }
 
@@ -343,7 +381,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public clear():void {
+        public clear(): void {
             this._setArrayBuffer(new ArrayBuffer(this.BUFFER_EXT_SIZE));
         }
 
@@ -361,7 +399,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readBoolean():boolean {
+        public readBoolean(): boolean {
             if (!this.validate(ByteArray.SIZE_OF_BOOLEAN)) return null;
 
             return this.data.getUint8(this.position++) != 0;
@@ -381,7 +419,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readByte():number {
+        public readByte(): number {
             if (!this.validate(ByteArray.SIZE_OF_INT8)) return null;
 
             return this.data.getInt8(this.position++);
@@ -405,7 +443,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readBytes(bytes:ByteArray, offset:number = 0, length:number = 0):void {
+        public readBytes(bytes: ByteArray, offset: number = 0, length: number = 0): void {
             if (length == 0) {
                 length = this.bytesAvailable;
             }
@@ -445,35 +483,35 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readDouble():number {
+        public readDouble(): number {
             if (!this.validate(ByteArray.SIZE_OF_FLOAT64)) return null;
 
-            var value:number = this.data.getFloat64(this.position, this.endian == Endian.LITTLE_ENDIAN);
+            var value: number = this.data.getFloat64(this.position, this.endian == Endian.LITTLE_ENDIAN);
             this.position += ByteArray.SIZE_OF_FLOAT64;
             return value;
         }
 
-         /**
-         * @language zh_CN
-         * 解压 压缩字节流 按类型划分
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
+        /**
+        * @language zh_CN
+        * 解压 压缩字节流 按类型划分
+        * @version Egret 2.4
+        * @platform Web,Native
+        */
         public uncompress(type: string = "7z") {
             var lzma: nid.LZMA = new nid.LZMA();
             var tmp: ArrayBuffer = lzma.decode(new Uint8Array(this.data.buffer)).buffer;
             this.buffer = tmp;
         }
 
-         /**
-         * @language zh_CN
-         * 按7z的方式压缩字节
-         * @version Egret 2.4
-         * @platform Web,Native
-         */
+        /**
+        * @language zh_CN
+        * 按7z的方式压缩字节
+        * @version Egret 2.4
+        * @platform Web,Native
+        */
         public compress(type: string = "7z") {
             var decoder: nid.LZMA = new nid.LZMA();
-            var tmp: ArrayBuffer =  nid.LZMAHelper.encode(this.data.buffer);
+            var tmp: ArrayBuffer = nid.LZMAHelper.encode(this.data.buffer);
             this.buffer = tmp;
         }
 
@@ -491,10 +529,10 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readFloat():number {
+        public readFloat(): number {
             if (!this.validate(ByteArray.SIZE_OF_FLOAT32)) return null;
 
-            var value:number = this.data.getFloat32(this.position, this.endian == Endian.LITTLE_ENDIAN);
+            var value: number = this.data.getFloat32(this.position, this.endian == Endian.LITTLE_ENDIAN);
             this.position += ByteArray.SIZE_OF_FLOAT32;
             return value;
         }
@@ -513,7 +551,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readInt():number {
+        public readInt(): number {
             if (!this.validate(ByteArray.SIZE_OF_INT32)) return null;
 
             var value = this.data.getInt32(this.position, this.endian == Endian.LITTLE_ENDIAN);
@@ -548,7 +586,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readShort():number {
+        public readShort(): number {
             if (!this.validate(ByteArray.SIZE_OF_INT16)) return null;
 
             var value = this.data.getInt16(this.position, this.endian == Endian.LITTLE_ENDIAN);
@@ -570,7 +608,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readUnsignedByte():number {
+        public readUnsignedByte(): number {
             if (!this.validate(ByteArray.SIZE_OF_UINT8)) return null;
 
             return this.data.getUint8(this.position++);
@@ -590,7 +628,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readUnsignedInt():number {
+        public readUnsignedInt(): number {
             if (!this.validate(ByteArray.SIZE_OF_UINT32)) return null;
 
             var value = this.data.getUint32(this.position, this.endian == Endian.LITTLE_ENDIAN);
@@ -612,7 +650,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readUnsignedShort():number {
+        public readUnsignedShort(): number {
             if (!this.validate(ByteArray.SIZE_OF_UINT16)) return null;
 
             var value = this.data.getUint16(this.position, this.endian == Endian.LITTLE_ENDIAN);
@@ -634,10 +672,10 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readUTF():string {
+        public readUTF(): string {
             if (!this.validate(ByteArray.SIZE_OF_UINT16)) return null;
 
-            var length:number = this.data.getUint16(this.position, this.endian == Endian.LITTLE_ENDIAN);
+            var length: number = this.data.getUint16(this.position, this.endian == Endian.LITTLE_ENDIAN);
             this.position += ByteArray.SIZE_OF_UINT16;
 
             if (length > 0) {
@@ -663,10 +701,10 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public readUTFBytes(length:number):string {
+        public readUTFBytes(length: number): string {
             if (!this.validate(length)) return null;
 
-            var bytes:Uint8Array = new Uint8Array(this.buffer, this.bufferOffset + this.position, length);
+            var bytes: Uint8Array = new Uint8Array(this.buffer, this.bufferOffset + this.position, length);
             this.position += length;
             /*var bytes: Uint8Array = new Uint8Array(new ArrayBuffer(length));
              for (var i = 0; i < length; i++) {
@@ -689,7 +727,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public writeBoolean(value:boolean):void {
+        public writeBoolean(value: boolean): void {
             this.validateBuffer(ByteArray.SIZE_OF_BOOLEAN);
 
             this.data.setUint8(this.position++, value ? 1 : 0);
@@ -711,7 +749,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public writeByte(value:number):void {
+        public writeByte(value: number): void {
             this.validateBuffer(ByteArray.SIZE_OF_INT8);
 
             this.data.setInt8(this.position++, value);
@@ -752,8 +790,8 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public writeBytes(bytes:ByteArray, offset:number = 0, length:number = 0):void {
-            var writeLength:number;
+        public writeBytes(bytes: ByteArray, offset: number = 0, length: number = 0): void {
+            var writeLength: number;
             if (offset < 0) {
                 return;
             }
@@ -790,7 +828,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public writeDouble(value:number):void {
+        public writeDouble(value: number): void {
             this.validateBuffer(ByteArray.SIZE_OF_FLOAT64);
 
             this.data.setFloat64(this.position, value, this.endian == Endian.LITTLE_ENDIAN);
@@ -811,7 +849,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public writeFloat(value:number):void {
+        public writeFloat(value: number): void {
             this.validateBuffer(ByteArray.SIZE_OF_FLOAT32);
 
             this.data.setFloat32(this.position, value, this.endian == Endian.LITTLE_ENDIAN);
@@ -832,7 +870,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public writeInt(value:number):void {
+        public writeInt(value: number): void {
             this.validateBuffer(ByteArray.SIZE_OF_INT32);
 
             this.data.setInt32(this.position, value, this.endian == Endian.LITTLE_ENDIAN);
@@ -853,7 +891,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public writeShort(value:number):void {
+        public writeShort(value: number): void {
             this.validateBuffer(ByteArray.SIZE_OF_INT16);
 
             this.data.setInt16(this.position, value, this.endian == Endian.LITTLE_ENDIAN);
@@ -874,7 +912,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public writeUnsignedInt(value:number):void {
+        public writeUnsignedInt(value: number): void {
             this.validateBuffer(ByteArray.SIZE_OF_UINT32);
 
             this.data.setUint32(this.position, value, this.endian == Endian.LITTLE_ENDIAN);
@@ -895,7 +933,7 @@ module egret3d {
          * @version Egret 2.5
          * @platform Web,Native
          */
-        public writeUnsignedShort(value:number):void {
+        public writeUnsignedShort(value: number): void {
             this.validateBuffer(ByteArray.SIZE_OF_UINT16);
 
             this.data.setUint16(this.position, value, this.endian == Endian.LITTLE_ENDIAN);
@@ -916,9 +954,9 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public writeUTF(value:string):void {
-            var utf8bytes:Uint8Array = this.encodeUTF8(value);
-            var length:number = utf8bytes.length;
+        public writeUTF(value: string): void {
+            var utf8bytes: Uint8Array = this.encodeUTF8(value);
+            var length: number = utf8bytes.length;
 
             this.validateBuffer(ByteArray.SIZE_OF_UINT16 + length);
 
@@ -941,7 +979,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public writeUTFBytes(value:string):void {
+        public writeUTFBytes(value: string): void {
             this._writeUint8Array(this.encodeUTF8(value));
         }
 
@@ -952,7 +990,7 @@ module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        public toString():string {
+        public toString(): string {
             return "[ByteArray] length:" + this.length + ", bytesAvailable:" + this.bytesAvailable;
         }
 
@@ -962,7 +1000,7 @@ module egret3d {
          * @param bytes {Uint8Array} 要写入的Uint8Array
          * @param validateBuffer
          */
-        public _writeUint8Array(bytes:Uint8Array, validateBuffer:boolean = true):void {
+        public _writeUint8Array(bytes: Uint8Array, validateBuffer: boolean = true): void {
             if (validateBuffer) {
                 this.validateBuffer(this.position + bytes.length);
             }
@@ -980,7 +1018,7 @@ module egret3d {
          * @platform Web,Native
          * @private
          */
-        public validate(len:number):boolean {
+        public validate(len: number): boolean {
             //len += this.data.byteOffset;
             if (this.data.byteLength > 0 && this._position + len <= this.data.byteLength) {
                 return true;
@@ -997,7 +1035,7 @@ module egret3d {
          * @param len
          * @param needReplace
          */
-        private validateBuffer(len:number, needReplace:boolean = false):void {
+        private validateBuffer(len: number, needReplace: boolean = false): void {
             this.write_position = len > this.write_position ? len : this.write_position;
             len += this._position;
             // 如果当前缓冲数据不足 需要扩大缓冲区
@@ -1014,13 +1052,13 @@ module egret3d {
          * @private
          * UTF-8 Encoding/Decoding
          */
-        private encodeUTF8(str:string):Uint8Array {
-            var pos:number = 0;
+        private encodeUTF8(str: string): Uint8Array {
+            var pos: number = 0;
             var codePoints = this.stringToCodePoints(str);
             var outputBytes = [];
 
             while (codePoints.length > pos) {
-                var code_point:number = codePoints[pos++];
+                var code_point: number = codePoints[pos++];
 
                 if (this.inRange(code_point, 0xD800, 0xDFFF)) {
                     this.encoderError(code_point);
@@ -1058,11 +1096,11 @@ module egret3d {
          * @param data
          * @returns
          */
-        private decodeUTF8(data:Uint8Array):string {
-            var fatal:boolean = false;
-            var pos:number = 0;
-            var result:string = "";
-            var code_point:number;
+        private decodeUTF8(data: Uint8Array): string {
+            var fatal: boolean = false;
+            var pos: number = 0;
+            var result: string = "";
+            var code_point: number;
             var utf8_code_point = 0;
             var utf8_bytes_needed = 0;
             var utf8_bytes_seen = 0;
@@ -1136,7 +1174,7 @@ module egret3d {
                 //Decode string
                 if (code_point !== null && code_point !== this.EOF_code_point) {
                     if (code_point <= 0xFFFF) {
-                        if (code_point > 0)result += String.fromCharCode(code_point);
+                        if (code_point > 0) result += String.fromCharCode(code_point);
                     } else {
                         code_point -= 0x10000;
                         result += String.fromCharCode(0xD800 + ((code_point >> 10) & 0x3ff));
@@ -1163,7 +1201,7 @@ module egret3d {
          * @param opt_code_point
          * @returns
          */
-        private decoderError(fatal, opt_code_point?):number {
+        private decoderError(fatal, opt_code_point?): number {
             if (fatal) {
                 //egret.$error(1027);
             }
@@ -1173,11 +1211,11 @@ module egret3d {
         /**
          * @private
          */
-        private EOF_byte:number = -1;
+        private EOF_byte: number = -1;
         /**
          * @private
          */
-        private EOF_code_point:number = -1;
+        private EOF_code_point: number = -1;
 
         /**
          * @private
@@ -1237,3 +1275,4 @@ module egret3d {
         }
     }
 }
+
