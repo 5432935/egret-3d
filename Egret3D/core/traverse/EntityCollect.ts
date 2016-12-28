@@ -6,7 +6,7 @@
     * @platform Web,Native
     */
     export enum SpecialCast {
-        Shadow,Pick,
+        Shadow, Pick,
     }
 
     /**
@@ -46,8 +46,8 @@
         constructor() {
             super();
 
-            this.specialCastItem[SpecialCast.Shadow] = []; 
-            this.specialCastItem[SpecialCast.Pick] = []; 
+            this.specialCastItem[SpecialCast.Shadow] = [];
+            this.specialCastItem[SpecialCast.Pick] = [];
         }
 
         private applyRender(child: any, camera: Camera3D) {
@@ -56,9 +56,9 @@
                 this.numberPick++;
             }
             if (!child.visible) {
-                return;  
+                return;
             }
-            
+
             this.addRenderList(child, camera);
 
             for (var i: number = 0; i < child.childs.length; i++) {
@@ -74,7 +74,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        private addRenderList(renderItem: IRender, camera: Camera3D, cameraCulling:boolean = true) {
+        private addRenderList(renderItem: IRender, camera: Camera3D, cameraCulling: boolean = true) {
 
             if (cameraCulling) {
                 if (!camera.isVisibleToCamera(renderItem)) {
@@ -82,7 +82,7 @@
                 }
             }
 
-            if (!renderItem.material)
+            if (!renderItem._material)
                 return;
 
             //检查鼠标能pick
@@ -92,19 +92,19 @@
             }
 
             //检查阴影产生者
-            if (renderItem.material.castShadow) {
+            if (renderItem._material.castShadow) {
                 this.specialCastItem[SpecialCast.Shadow].push(renderItem);
                 this.numberCastShadow++;
             }
 
             //检查阴影接受者
-            if (renderItem.material.acceptShadow) {
+            if (renderItem._material.acceptShadow) {
                 this.numberAcceptShadow++;
             }
 
             //按 layer 进行渲染排序分类
             for (var i: number = 0; i < Layer.layerType.length; i++) {
-                if (renderItem.material.materialData.alphaBlending && renderItem.tag.name == "normalObject" ) {
+                if (renderItem._material.materialData.alphaBlending && renderItem.tag.name == "normalObject") {
                     var scenePos: Vector3D = camera.object3DToScreenRay(renderItem.position, Vector3D.HELP_0);
                     renderItem.zIndex = Vector3D.HELP_0.z;
                     this.softLayerRenderItems["alphaObject"].push(renderItem);
@@ -115,13 +115,13 @@
             }
 
             if (Egret3DEngine.instance.debug) {
-                this.numberFace += renderItem.geometry.faceCount;
-                this.numberVertex += renderItem.geometry.vertexCount;
+                this.numberFace += renderItem._geometry.faceCount;
+                this.numberVertex += renderItem._geometry.vertexCount;
                 this.numberDraw += 1;
 
                 if (renderItem.animation)
                     this.numberSkin += 1;
-                if (renderItem.proAnimation)
+                if (renderItem._proAnimation)
                     this.numberAnimation += 1;
                 if (renderItem.type == IRender.TYPE_PARTICLE_EMIT)
                     this.numberParticle += 1;
@@ -129,7 +129,7 @@
 
 
         }
-                
+
         /**
         * @language zh_CN
         * 数据更新 处理需要渲染的对象
@@ -140,16 +140,16 @@
         public update(camera: Camera3D) {
             super.update(camera);
 
-            this.numberFace = 0 ;
+            this.numberFace = 0;
             this.numberVertex = 0;
             this.numberDraw = 0;
             this.numberSkin = 0;
             this.numberAnimation = 0;
             this.numberParticle = 0;
-            this.numberCastShadow = 0; 
-            this.numberPick = 0; 
-            this.numberAcceptShadow = 0; 
-            
+            this.numberCastShadow = 0;
+            this.numberPick = 0;
+            this.numberAcceptShadow = 0;
+
             this.clearList();
 
             if (this.rootScene.quad) {
@@ -163,7 +163,7 @@
                 Egret3DState.countEnd("entityCollect applyRender");
             }
 
-            var renders:IRender[] ;
+            var renders: IRender[];
             var layerName: string;
             var listLen: number;
 
@@ -181,7 +181,7 @@
             //*******************
             //---进行重要度软排序-
             for (var j: number = 0; j < Layer.layerType.length; j++) {
-                layerName = Layer.layerType[j]; 
+                layerName = Layer.layerType[j];
                 renders = this.softLayerRenderItems[layerName];
                 if (renders) {
                     listLen = renders.length;
@@ -243,7 +243,7 @@
                     this.softLayerRenderItems[Layer.layerType[i]].length = 0;
             }
 
-            for (var j in this.specialCastItem ) {
+            for (var j in this.specialCastItem) {
                 this.specialCastItem[j].length = 0;
             }
         }

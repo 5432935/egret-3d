@@ -67,12 +67,13 @@
 
         /**
         * @language zh_CN
+        * @internal
         * 网格信息。</p>
         * geometry 为渲染对象的网格信息 ，渲染对象需要 vertexBuffer  和 indexBuffer 信息 及顶点着色器shade。</p>
         * @version Egret 3.0
         * @platform Web,Native
         */
-        protected _geometry: Geometry;
+        public _geometry: Geometry;
 
 
         /**
@@ -130,12 +131,13 @@
 
         /**
         * @language zh_CN
+        * @internal
         * 材质信息。</p>
         * 赋予对象节点可供渲染的材质球属性，让对象加入可渲染实体列表，及渲染对象与对象之间的混合，排序。</p>
         * @version Egret 3.0
         * @platform Web,Native
         */
-        protected _material: MaterialBase;
+        public _material: MaterialBase;
 
         /**
         * @private
@@ -331,15 +333,15 @@
         */
         public update(time: number, delay: number, camera: Camera3D) {
             super.update(time, delay, camera);
-
+            let geometry = this._geometry;
             if (this.inFrustum) {
                 if (this.animation) {
-                    this.animation.update(time, delay, this.geometry);
+                    this.animation.update(time, delay, geometry);
                 }
             }
 
-            if (this.geometry.subGeometrys.length <= 0) {
-                this.geometry.buildDefaultSubGeometry();
+            if (geometry.subGeometrys.length <= 0) {
+                geometry.buildDefaultSubGeometry();
             }
         }
 

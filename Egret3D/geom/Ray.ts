@@ -216,7 +216,8 @@
         * @platform Web,Native
         */
         public IntersectMeshEx(renderItem: IRender, uv_offset: number, result:PickResult): boolean {
-            return this.IntersectMesh(renderItem.geometry.vertexArray, renderItem.geometry.indexArray, renderItem.geometry.vertexAttLength, renderItem.geometry.faceCount, uv_offset, renderItem.modelMatrix, result);
+            let geometry = renderItem._geometry;
+            return this.IntersectMesh(geometry.vertexArray, geometry.indexArray, geometry.vertexAttLength, geometry.faceCount, uv_offset, renderItem.modelMatrix, result);
         }
                         
         

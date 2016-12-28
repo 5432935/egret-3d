@@ -59,10 +59,10 @@
             var material: MaterialBase;
             for (this._renderIndex = 0; this._renderIndex < this.numEntity; this._renderIndex++) {
                 this._renderItem = collect.renderList[this._renderIndex];
-
-                this._renderItem.geometry.activeState(time, delay, Egret3DCanvas.context3DProxy, this.camera);
-                for (this._i = 0; this._i < this._renderItem.geometry.subGeometrys.length; this._i++) {
-                    var subGeometry = this._renderItem.geometry.subGeometrys[this._i];
+                let geometry = this._renderItem._geometry;
+                geometry.activeState(time, delay, Egret3DCanvas.context3DProxy, this.camera);
+                for (this._i = 0; this._i < geometry.subGeometrys.length; this._i++) {
+                    var subGeometry = geometry.subGeometrys[this._i];
                     var matID = subGeometry.matID;
                     material = this._renderItem.multiMaterial[matID] ;
                     if (material == null)

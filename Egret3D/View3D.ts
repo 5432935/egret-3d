@@ -50,7 +50,7 @@
 
         protected _shadowCast: ShadowCast;
 
-        public sunLight: DirectLight = new DirectLight(new Vector3D(0, -1, 1)) ;
+        public sunLight: DirectLight = new DirectLight(new Vector3D(0, -1, 1));
 
         /**
         * @language zh_CN
@@ -396,65 +396,65 @@
             return this._entityCollect;
         }
 
-//        /**
-//        * @language zh_CN
-//        * 开启Gui功能.
-//        * 需要以下两个资源
-//        * resource/ui/fonts.json 
-//        * resource/ui/GUI.json 
-//        * @param initedFun Gui初始化完成后要执行的函数
-//        * @param thisObj initedFun回调函数的this指向
-//        * @param loadDefaultGuiSkin 是否加载默认的组件皮肤
-//        * @version Egret 3.0
-//        * @platform Web,Native
-//        */
-//        public openGui(initedFun: Function, thisObj: any = null, loadDefaultGuiSkin: boolean = true) {
-//            this._guiInitFun = initedFun;
-//            this._guiCallbackThisObj = thisObj;
-//            textureResMgr.guiStage = this.getGUIStage();
-//            let queueLoader: QueueLoader = new QueueLoader("resource/ui/fonts.json");
-//            queueLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onGuiAssetLoaded, this);
-//            if (loadDefaultGuiSkin) {
-//                queueLoader.load("resource/ui/GUI.json");
-//            }
-//        }
+        //        /**
+        //        * @language zh_CN
+        //        * 开启Gui功能.
+        //        * 需要以下两个资源
+        //        * resource/ui/fonts.json 
+        //        * resource/ui/GUI.json 
+        //        * @param initedFun Gui初始化完成后要执行的函数
+        //        * @param thisObj initedFun回调函数的this指向
+        //        * @param loadDefaultGuiSkin 是否加载默认的组件皮肤
+        //        * @version Egret 3.0
+        //        * @platform Web,Native
+        //        */
+        //        public openGui(initedFun: Function, thisObj: any = null, loadDefaultGuiSkin: boolean = true) {
+        //            this._guiInitFun = initedFun;
+        //            this._guiCallbackThisObj = thisObj;
+        //            textureResMgr.guiStage = this.getGUIStage();
+        //            let queueLoader: QueueLoader = new QueueLoader("resource/ui/fonts.json");
+        //            queueLoader.addEventListener(LoaderEvent3D.LOADER_COMPLETE, this.onGuiAssetLoaded, this);
+        //            if (loadDefaultGuiSkin) {
+        //                queueLoader.load("resource/ui/GUI.json");
+        //            }
+        //        }
 
-//        private runGuiInitFun() {
-//            if (this._guiInitFun) {
-//                if (this._guiCallbackThisObj) {
-//                    this._guiInitFun.call(this._guiCallbackThisObj);
-//                } else {
-//                    this._guiInitFun();
-//                }
-//            }
-//        }
+        //        private runGuiInitFun() {
+        //            if (this._guiInitFun) {
+        //                if (this._guiCallbackThisObj) {
+        //                    this._guiInitFun.call(this._guiCallbackThisObj);
+        //                } else {
+        //                    this._guiInitFun();
+        //                }
+        //            }
+        //        }
 
-//        /**
-//        * @private
-//        * @language zh_CN
-//        * Gui所需资源加载完成后的事件处理
-//        * @version Egret 3.0
-//        * @platform Web,Native
-//        */
-//        private onGuiAssetLoaded(event: LoaderEvent3D) {
-//            gui.BitmapFont.load(textureResMgr.getTextureDic());
-//            this.initDefaultSkin();
-//            this.runGuiInitFun();
+        //        /**
+        //        * @private
+        //        * @language zh_CN
+        //        * Gui所需资源加载完成后的事件处理
+        //        * @version Egret 3.0
+        //        * @platform Web,Native
+        //        */
+        //        private onGuiAssetLoaded(event: LoaderEvent3D) {
+        //            gui.BitmapFont.load(textureResMgr.getTextureDic());
+        //            this.initDefaultSkin();
+        //            this.runGuiInitFun();
 
-//        }
+        //        }
 
-//        /**
-//        * @private
-//        * @language zh_CN
-//        * 初始化Gui默认皮肤
-//         * todo 改成json配置表进行处理
-//        * @version Egret 3.0
-//        * @platform Web,Native
-//        */
-//        private initDefaultSkin() {
-////            gui.BitmapFont.load(textureResMgr.getTextureDic());
-//           gui.SkinManager.instance.initDefaultSkin();
-//        }
+        //        /**
+        //        * @private
+        //        * @language zh_CN
+        //        * 初始化Gui默认皮肤
+        //         * todo 改成json配置表进行处理
+        //        * @version Egret 3.0
+        //        * @platform Web,Native
+        //        */
+        //        private initDefaultSkin() {
+        ////            gui.BitmapFont.load(textureResMgr.getTextureDic());
+        //           gui.SkinManager.instance.initDefaultSkin();
+        //        }
 
         /**
         * @private
@@ -608,7 +608,7 @@
             this._shadowCast.shadowRender.enabled = false;
             if (this._entityCollect.numberAcceptShadow > 0) {
                 this._shadowCast.shadowRender.enabled = true;
-                this._shadowCast.update(this._entityCollect,time,delay);
+                this._shadowCast.update(this._entityCollect, time, delay);
             }
 
             if (Egret3DEngine.instance.debug)
@@ -650,7 +650,7 @@
             if (Egret3DEngine.instance.debug)
                 this.a = new Date().getTime();
 
-            this._renderQuen.mainRender.camera = this.camera3D ;
+            this._renderQuen.mainRender.camera = this._camera;
             this._renderQuen.draw(time, delay, Egret3DCanvas.context3DProxy, this._entityCollect, this._viewPort);
 
             if (Egret3DEngine.instance.debug)
@@ -680,8 +680,10 @@
 
         private updateObject3D(object3d: Object3D, time: number, delay: number) {
             if (object3d && object3d.visible) {
-                object3d.update(time, delay, this.camera3D);
-                for (var i: number = 0; i < object3d.childs.length; ++i) {
+                object3d.update(time, delay, this._camera);
+                let length = object3d.childs.length;
+
+                for (var i = 0; i < length; ++i) {
                     this.updateObject3D(object3d.childs[i], time, delay);
                 }
             }

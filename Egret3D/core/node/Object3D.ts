@@ -14,7 +14,7 @@
     * @platform Web,Native
     */
     export enum PickType {
-        
+
         /**
         * @language zh_CN
         * 包围盒拣选
@@ -22,7 +22,7 @@
         * @platform Web,Native
         */
         BoundPick,
-                
+
         /**
         * @language zh_CN
         * 模型拣选返回模型拣选到的位置
@@ -30,7 +30,7 @@
         * @platform Web,Native
         */
         PositionPick,
-                        
+
         /**
         * @language zh_CN
         * 模型拣选返回模型拣选到的UV坐标
@@ -157,8 +157,10 @@
 
 
         protected _displayList: DisplayObject[];
-
-        protected _proAnimation: IAnimation;
+        /**
+         * @internal
+         */
+        public _proAnimation: IAnimation;
 
         /**
         * @language zh_CN
@@ -211,7 +213,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public renderLayer: number = 0 ;
+        public renderLayer: number = 0;
 
         /**
         * @language zh_CN
@@ -244,7 +246,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public tag: Tag = new Tag(); 
+        public tag: Tag = new Tag();
 
         /**
         * @language zh_CN
@@ -253,7 +255,7 @@
         * @platform Web,Native
         */
         public parent: Object3D = null;
-        
+
         /**
         * @language zh_CN
         * 子对象列表。</p>
@@ -413,7 +415,7 @@
 
 
 
-        
+
         /**
         * @language zh_CN
         * 返回旋转。</p> （本地）
@@ -601,7 +603,7 @@
             this.updateTransformChange(true);
 
         }
-        
+
         /**
         * @language zh_CN
         * 设置y坐标。</p> （本地）
@@ -618,7 +620,7 @@
             this.updateTransformChange(true);
 
         }
-        
+
         /**
         * @language zh_CN
         * 设置z坐标。</p> （本地）
@@ -635,7 +637,7 @@
             this.updateTransformChange(true);
 
         }
-                
+
         /**
         * @language zh_CN
         * 设置x轴旋转。</p> （本地）
@@ -653,7 +655,7 @@
             this._angle = this._orientation.toAxisAngle(this._axis);
             this.updateTransformChange(true);
         }
-                        
+
         /**
         * @language zh_CN
         * 设置y轴旋转。</p> （本地）
@@ -671,7 +673,7 @@
             this._angle = this._orientation.toAxisAngle(this._axis);
             this.updateTransformChange(true);
         }
-                        
+
         /**
         * @language zh_CN
         * 设置z轴旋转。</p> （本地）
@@ -688,7 +690,7 @@
             this._angle = this._orientation.toAxisAngle(this._axis);
             this.updateTransformChange(true);
         }
-                                
+
         /**
         * @language zh_CN
         * 设置x轴缩放。</p> （本地）
@@ -705,7 +707,7 @@
             this.updateTransformChange(true);
 
         }
-                                        
+
         /**
         * @language zh_CN
         * 设置y轴缩放 （本地）
@@ -723,7 +725,7 @@
             this.updateTransformChange(true);
 
         }
-                                        
+
         /**
         * @language zh_CN
         * 设置z轴缩放 （本地）
@@ -741,7 +743,7 @@
             this.updateTransformChange(true);
 
         }
-                                                
+
         /**
         * @language zh_CN
         * 以axis轴为中心进行旋转
@@ -771,7 +773,7 @@
         public get x(): number {
             return this._pos.x;
         }
-        
+
         /**
         * @language zh_CN
         * 返回y坐标 （本地）
@@ -784,7 +786,7 @@
         public get y(): number {
             return this._pos.y;
         }
-        
+
         /**
         * @language zh_CN
         * 返回z坐标 （本地）
@@ -797,7 +799,7 @@
         public get z(): number {
             return this._pos.z
         }
-        
+
         /**
         * @language zh_CN
         * 返回x旋转 （本地）
@@ -810,7 +812,7 @@
         public get rotationX(): number {
             return this._rot.x;
         }
-        
+
         /**
         * @language zh_CN
         * 返回y旋转 （本地）
@@ -823,7 +825,7 @@
         public get rotationY(): number {
             return this._rot.y;
         }
-                
+
         /**
         * @language zh_CN
         * 返回z旋转 （本地）
@@ -836,7 +838,7 @@
         public get rotationZ(): number {
             return this._rot.z;
         }
-                        
+
         /**
         * @language zh_CN
         * 返回x缩放 （本地）
@@ -848,7 +850,7 @@
         public get scaleX(): number {
             return this._sca.x;
         }
-                                
+
         /**
         * @language zh_CN
         * 返回y缩放 （本地）
@@ -860,7 +862,7 @@
         public get scaleY(): number {
             return this._sca.y;
         }
-                                
+
         /**
         * @language zh_CN
         * 返回z缩放 （本地）
@@ -872,7 +874,7 @@
         public get scaleZ(): number {
             return this._sca.z;
         }
-                                        
+
         /**
         * @language zh_CN
         * 返回 object在世界中的渲染矩阵 （全局）
@@ -895,7 +897,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public set modelMatrix(matrix: Matrix4_4)  {
+        public set modelMatrix(matrix: Matrix4_4) {
             var tas: Vector3D[] = matrix.decompose(Orientation3D.QUATERNION);
             this.globalPosition = tas[0];
             MathUtil.CALCULATION_QUATERNION.x = tas[1].x;
@@ -939,7 +941,7 @@
         * @platform Web,Native
         */
         protected updateModelMatrix() {
-            
+
             if (this.parent != null) {
                 var parentOrientation: Quaternion = this.parent.globalOrientation;
 
@@ -1016,7 +1018,7 @@
         public set globalX(value: number) {
             this._vec.copyFrom(this.globalPosition);
             this._vec.x = value;
-            this.globalPosition = this._vec; 
+            this.globalPosition = this._vec;
         }
 
         /**
@@ -1028,7 +1030,7 @@
         public set globalY(value: number) {
             this._vec.copyFrom(this.globalPosition);
             this._vec.y = value;
-            this.globalPosition = this._vec; 
+            this.globalPosition = this._vec;
         }
 
 
@@ -1042,9 +1044,9 @@
         public set globalZ(value: number) {
             this._vec.copyFrom(this.globalPosition);
             this._vec.z = value;
-            this.globalPosition = this._vec; 
+            this.globalPosition = this._vec;
         }
-                                               
+
         /**
         * @language zh_CN
         * 返回 object 世界位置 （全局）
@@ -1150,8 +1152,8 @@
             this._vec.copyFrom(this.globalRotation);
             this._vec.z = value;
             this.globalRotation = this._vec;
-        }    
-                                            
+        }
+
         /**
         * @language zh_CN
         * 返回 object 世界旋转 (全局)
@@ -1175,12 +1177,12 @@
         * @platform Web,Native
         */
         public set globalRotation(rot: Vector3D) {
-            
+
             MathUtil.CALCULATION_QUATERNION.fromEulerAngles(rot.x, rot.y, rot.z);
 
             this.globalOrientation = MathUtil.CALCULATION_QUATERNION;
         }
-                                                        
+
         /**
         * @language zh_CN
         * 返回 object 世界缩放 (全局)
@@ -1247,7 +1249,7 @@
             this._vec.z = value;
             this.globalScale = this._vec;
         }
-             
+
         /**
         * @language zh_CN
         * 获取 object 世界缩放 x (全局)
@@ -1278,7 +1280,7 @@
         public get globalScaleZ(): number {
             return this.globalScale.z;
         }
-                                       
+
         /**
         * @language zh_CN 
         * 返回 object 世界旋转 四元数 (全局)
@@ -1303,7 +1305,7 @@
         public set globalOrientation(ori: Quaternion) {
             if (this.parent) {
                 this.parent.globalOrientation.inverse(this._qut);
-                this._qut.multiply(this._qut, ori); 
+                this._qut.multiply(this._qut, ori);
                 this.orientation = this._qut;
             }
             else {
@@ -1339,7 +1341,7 @@
             child.updateTransformChange(true);
             return child;
         }
-        
+
         /**
         * @language zh_CN
         * 增加一个子对象,并返回当前子对象
@@ -1365,7 +1367,7 @@
             child.updateTransformChange(true);
             return child;
         }
-                
+
         /**
         * @language zh_CN
         * 返回下标为index的子对象
@@ -1389,12 +1391,12 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public addFollowUI( ui:DisplayObject ) {
+        public addFollowUI(ui: DisplayObject) {
             this._displayList = this._displayList || [];
 
             var index: number = this._displayList.indexOf(ui);
-            if (index == -1 )
-                this._displayList.push( ui );
+            if (index == -1)
+                this._displayList.push(ui);
         }
 
         /**
@@ -1410,9 +1412,9 @@
             }
             var index: number = this._displayList.indexOf(ui);
             if (index >= 0)
-                this._displayList.splice(index,1);
+                this._displayList.splice(index, 1);
         }
-                        
+
         /**
         * @language zh_CN
         * 返回子对象child的下标
@@ -1450,7 +1452,7 @@
             }
             return null;
         }
-                                
+
         /**
         * @language zh_CN
         * 移除child子对象 并返回
@@ -1472,7 +1474,7 @@
             child.updateTransformChange(true);
             return child;
         }
-                                        
+
         /**
         * @language zh_CN
         * 移除下标为index的子对象 并返回
@@ -1506,7 +1508,7 @@
             while (this.childs.length > 0) {
                 this.removeChild(this.childs[0]);
             }
-        }                                   
+        }
         /**
         * @language zh_CN
         * 设置子对象的下标
@@ -1629,7 +1631,7 @@
             this.updateTransformChange(true);
             other.updateTransformChange(true);
         }
-                                                        
+
         /**
         * @language zh_CN
         * @private
@@ -1667,7 +1669,7 @@
                 return;
             }
         }
-                                                                
+
         /**
         * @language zh_CN
         * @private
@@ -1691,7 +1693,7 @@
 
             this.childs[index2] = tmp;
         }
-                                                                        
+
         /**
         * @language zh_CN
         * 当前对象对视位置 （全局） (修改的是自身的全局变换)
@@ -1842,15 +1844,17 @@
         */
         public update(time: number, delay: number, camera: Camera3D) {
             if (this.inFrustum) {
-                if (this.proAnimation) {
-                    this.proAnimation.update(time, delay, null);
+                if (this._proAnimation) {
+                    this._proAnimation.update(time, delay, null);
                 }
             }
             if (this._displayList) {
-                for (var i: number = 0; i < this._displayList.length; i++) {
-                    camera.object3DToScreenRay(this.globalPosition, Vector3D.HELP_0);
-                    this._displayList[i].x = Vector3D.HELP_0.x;
-                    this._displayList[i].y = Vector3D.HELP_0.y;
+                for (var i = 0; i < this._displayList.length; i++) {
+                    let help0 = Vector3D.HELP_0
+                    camera.object3DToScreenRay(this.globalPosition, help0);
+                    let displayObject = this._displayList[i];
+                    displayObject.x = help0.x;
+                    displayObject.y = help0.y;
                 }
             }
         }

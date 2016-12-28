@@ -335,7 +335,7 @@
                 return;
 
             if (this._parent != null) {
-                var parentOrientation: Quaternion = this._parent.globalOrientation;
+                var parentOrientation: Quaternion = this._parent._globalOrientation;
                 this._globalOrientation.multiply(parentOrientation, this._orientation);
                 this._globalOrientation.toEulerAngles(this._globalRot);
                 var parentScale: Vector3D = this._parent.globalScale;

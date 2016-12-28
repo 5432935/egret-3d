@@ -34,23 +34,17 @@ var globalGetter = {
 
 }
 
-window.__debug = false;
-
 window.defineProperty = function (proto, propertyName, obj) {
     let getFunc = obj.get;
     let setFunc = obj.set;
     obj.get = function () {
-        if (window.__debug) {
-            if (!globalGetter[propertyName]){
-                globalGetter[propertyName] = 0;
-            }
-            globalGetter[propertyName]++;
+        if (!globalGetter[propertyName]) {
+            globalGetter[propertyName] = 0;
         }
+        globalGetter[propertyName]++;
         return getFunc.call(this);
     }
     obj.set = function (value) {
-        if (window.__debug) {
-        }
         if (setFunc) {
             return setFunc.call(this, value);
         }

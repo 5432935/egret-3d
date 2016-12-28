@@ -117,20 +117,20 @@
                         renderItem = <IRender>object;
 
                         var uvoffset: number = 0;
-
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_POSITION) {
+                        let geometry = renderItem._geometry;
+                        if (geometry.vertexFormat & VertexFormat.VF_POSITION) {
                             uvoffset += Geometry.positionSize;
                         }
 
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_NORMAL) {
+                        if (geometry.vertexFormat & VertexFormat.VF_NORMAL) {
                             uvoffset += Geometry.normalSize;
                         }
 
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_TANGENT) {
+                        if (geometry.vertexFormat & VertexFormat.VF_TANGENT) {
                             uvoffset += Geometry.tangentSize;
                         }
 
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_COLOR) {
+                        if (geometry.vertexFormat & VertexFormat.VF_COLOR) {
                             uvoffset += Geometry.colorSize;
                         }
                         var boundBox: BoundBox = <BoundBox>renderItem.bound;
@@ -147,22 +147,22 @@
                     if (object instanceof IRender) {
 
                         renderItem = <IRender>object;
-
+                        let geometry = renderItem._geometry;
                         var uvoffset: number = 0;
 
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_POSITION) {
+                        if (geometry.vertexFormat & VertexFormat.VF_POSITION) {
                             uvoffset += Geometry.positionSize;
                         }
 
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_NORMAL) {
+                        if (geometry.vertexFormat & VertexFormat.VF_NORMAL) {
                             uvoffset += Geometry.normalSize;
                         }
 
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_TANGENT) {
+                        if (geometry.vertexFormat & VertexFormat.VF_TANGENT) {
                             uvoffset += Geometry.tangentSize;
                         }
 
-                        if (renderItem.geometry.vertexFormat & VertexFormat.VF_COLOR) {
+                        if (geometry.vertexFormat & VertexFormat.VF_COLOR) {
                             uvoffset += Geometry.colorSize;
                         }
                         var boundBox: BoundBox = <BoundBox>renderItem.bound;
