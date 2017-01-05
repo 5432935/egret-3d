@@ -10,9 +10,18 @@
         public static TYPE_PARTICLE: string = "ParticleConfig";
         public static TYPE_TEXTUREPACKER: string = "TexturePacker";
 
+
         /**
         * @language zh_CN
-        * 粒子的版本号
+        * 引擎的版本号
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public engineVersion: string;
+
+        /**
+        * @language zh_CN
+        * 文件的版本号
         * @version Egret 3.0
         * @platform Web,Native
         */

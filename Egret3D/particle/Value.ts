@@ -382,6 +382,35 @@
             return values;
         }
 
+        private static randomPosTop: Vector3D = new Vector3D();
+        //在圆锥体的顶部随机一个位置
+        private randomPosAtTop(): void{
+            var pos: Vector3D = ConeValueShape.randomPosTop;
+            var values: Vector3D[] = [];
+            var tempAngle: number;
+            var targetRadius: number;
+            tempAngle = Math.random() * Math.PI * 2;
+            pos.z = this.length;
+            
+            if (this.origPoint) {
+                targetRadius = this.radius * Math.random();
+                targetRadius *= (pos.z - this.origPoint.z) / (-this.origPoint.z);
+                pos.x = Math.sin(tempAngle) * targetRadius;
+                pos.y = Math.cos(tempAngle) * targetRadius;
+                pos.decrementBy(this.origPoint);
+            } else {
+                pos.x = pos.y = 0;
+            }
+        }
+
+        /*
+        * @private 获取一个随机方向
+        */
+        public randomDirectionToTop(result:Vector3D): void {
+            this.randomPosAtTop();
+            result.copyFrom(ConeValueShape.randomPosTop);
+            result.normalize();
+        }
 
 
     }

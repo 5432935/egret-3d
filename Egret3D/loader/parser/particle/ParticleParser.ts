@@ -40,7 +40,7 @@
             var parser: ParticleJsonParser = new ParticleJsonParser();
             parser.parse(text, this.data);
             this.version = Number(parser.version);
-
+            this.engineVersion = String(parser.engineVersion);
             this.data.validate();
             return this.data;
         }
@@ -51,7 +51,6 @@
             var parser: ParticleXmlParser = new ParticleXmlParser();
             parser.parse(text, this.data);
             this.version = Number(parser.version);
-
             this.data.validate();
             return this.data;
         }

@@ -6,6 +6,9 @@
      * @classdesc
      */
     export class Egret3DPolicy {
+
+        public static engineVersion: string = "3.2.6";
+
         public static useParticle: boolean = true;
         public static useAnimEffect: boolean = true;
         public static useEffect: boolean = true;
@@ -34,6 +37,7 @@
     export class Egret3DEngine {
         public static instance: Egret3DEngine = new Egret3DEngine();
 
+        public version: string = "3.2.6";
         public jsPath: string = "js/";
         public onTsconfig: Function;
         public debug: boolean = false;

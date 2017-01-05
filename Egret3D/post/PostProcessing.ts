@@ -3,6 +3,35 @@
     /*
     * @private
     */
+    export class SizeUtil {
+        private static  MAX_SIZE: number = 2048;
+
+        public isDimensionValid(d: number): boolean {
+            return d >= 1 && d <= SizeUtil.MAX_SIZE && this.isPowerOfTwo(d);
+        }
+
+        public isPowerOfTwo(value: number): boolean {
+            return value ? ((value & -value) == value) : false;
+        }
+
+        public getBestPowerOf2(value: number): number {
+            var p: number = 1;
+            while (p < value)
+                p <<= 1;
+            if (p > SizeUtil.MAX_SIZE)
+                p = SizeUtil.MAX_SIZE;
+            return p;
+        }
+    }
+
+    /*
+    * @private
+    */
+    export var sizeUtil = new SizeUtil();
+
+    /*
+    * @private
+    */
     export class PostProcessing {
         public postArray: IPost[] ;
         public posTex: any = {} ;
@@ -10,38 +39,39 @@
         public hud: HUD = new HUD();
 
         private _renderQuen: RenderQuen;
-
-
-        public width: number = 1024 ;
-        public height: number = 512;;
+        private _sizeChange: boolean = false;
 
         constructor(renderQuen: RenderQuen) {
             this._renderQuen = renderQuen;
             this.postArray = []; 
-
-            this._renderQuen.mainRender.setRenderToTexture(this.width, this.height, FrameBufferFormat.UNSIGNED_BYTE_RGB);
         }
 
         public draw(time: number, delay: number, contextProxy: Context3DProxy, collect: CollectBase, camera: Camera3D, backViewPort: Rectangle) {
-            this.finalTexture = this.posTex["final"] = this.posTex["source"] = this._renderQuen.mainRender.renderTexture ;
-            for (var i: number = 0; i < this.postArray.length; i++){
-                this.postArray[i].renderQuen = this._renderQuen;
-                this.postArray[i].draw(time, delay, contextProxy, collect, camera, backViewPort, this.posTex);
-                this.finalTexture = this.posTex["final"];
+            let self = this;
+            var post: IPost;
+            var po;
+
+            if (!self._renderQuen.mainRender.renderTexture) {
+                po = camera.maxWidthAndHeight;
+                this._renderQuen.mainRender.setRenderToTexture(po.x , po.y , FrameBufferFormat.UNSIGNED_BYTE_RGB);
             }
 
-            contextProxy.viewPort(camera.viewPort.x, camera.viewPort.y, camera.viewPort.width, camera.viewPort.height);
-            contextProxy.setScissorRectangle(camera.viewPort.x, camera.viewPort.y, camera.viewPort.width, camera.viewPort.height);
+            self.finalTexture = self.posTex["final"] = self.posTex["source"] = self._renderQuen.mainRender.renderTexture;
 
-            if (this.finalTexture){
-                this.hud.viewPort = camera.viewPort;
-                this.hud.x = camera.viewPort.x;
-                this.hud.y = camera.viewPort.y;
-                this.hud.width = camera.viewPort.width;
-                this.hud.height = camera.viewPort.height;
-                this.hud.diffuseTexture = this.finalTexture;
-                this.hud.draw(contextProxy, camera);
+            if (self.postArray.length > 2) {
+                for (var i: number = 0; i < self.postArray.length - 1; i++) {
+                    post = self.postArray[i];
+                    post.renderQuen = self._renderQuen;
+
+                    post.setRenderTexture(po.x, po.y);
+                    post.draw(time, delay, contextProxy, collect, camera, backViewPort, self.posTex);
+                    self.finalTexture = self.posTex["final"];
+                }
             }
+
+            post = self.postArray[self.postArray.length - 1];
+            post.renderQuen = self._renderQuen;
+            post.draw(time, delay, contextProxy, collect, camera, backViewPort, self.posTex);
         }
     }
 }

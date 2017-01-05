@@ -87,10 +87,10 @@ class E3dGame {
         this.queueLoader.addEventListener(egret3d.LoaderEvent3D.PROGRESS,this.onProgress,this);
         
         // 加载完GUI 加载其它的资源
-        this.queueLoader.load("resource/0_Model/Esm/Zhouyu.esm");
-        this.queueLoader.load("resource/0_Model/Eam/attack.eam");
-        this.queueLoader.load("resource/0_Model/Eam/idle.eam");
-        this.queueLoader.load("resource/0_Model/Texture/hero_01.png");
+        this.queueLoader.load("resource/doc/0_Model/Esm/Zhouyu.esm");
+        this.queueLoader.load("resource/doc/0_Model/Eam/attack.eam");
+        this.queueLoader.load("resource/doc/0_Model/Eam/idle.eam");
+        this.queueLoader.load("resource/doc/0_Model/Texture/hero_01.png");
 
         egret3d.Input.addEventListener(egret3d.KeyEvent3D.KEY_DOWN, this.onKeyDown, this);
     }
@@ -106,10 +106,10 @@ class E3dGame {
 	
     protected onComplete(e:egret3d.LoaderEvent3D){
         this.view.removeGUI(this.loadProgress);
-        var geo: egret3d.Geometry = this.queueLoader.getAsset("resource/0_Model/Esm/Zhouyu.esm");
-        var clip: egret3d.SkeletonAnimationClip = this.queueLoader.getAsset("resource/0_Model/Eam/attack.eam");
-        var idleClip: egret3d.SkeletonAnimationClip = this.queueLoader.getAsset("resource/0_Model/Eam/idle.eam");
-        var tex: egret3d.ITexture = this.queueLoader.getAsset("resource/0_Model/Texture/hero_01.png");
+        var geo: egret3d.Geometry = this.queueLoader.getAsset("resource/doc/0_Model/Esm/Zhouyu.esm");
+        var clip: egret3d.SkeletonAnimationClip = this.queueLoader.getAsset("resource/doc/0_Model/Eam/attack.eam");
+        var idleClip: egret3d.SkeletonAnimationClip = this.queueLoader.getAsset("resource/doc/0_Model/Eam/idle.eam");
+        var tex: egret3d.ITexture = this.queueLoader.getAsset("resource/doc/0_Model/Texture/hero_01.png");
        
         clip.animationName = "attack"; 
         idleClip.animationName = "idle"; 

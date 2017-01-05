@@ -101,9 +101,11 @@
         //合并一个材质列表的物体
         private static batching(matID: any, nodes: UnitNodeData[][]): Mesh[] {
             var modelMatrix: Matrix4_4 = Matrix4_4.helpMatrix;
+            var normalMatrix: Matrix4_4 = Matrix4_4.helpMatrix2;
             var mesh: Mesh;
             var vertexLenth: number;
             var pos: Vector3D = Vector3D.HELP_0;
+            var normal: Vector3D = new Vector3D();
             var i: number, count: number, vertexOffset: number = 0, indexOffset: number = 0;
             var totalVertexLength: number = 0;
             var totalIndexLength: number = 0;
@@ -115,6 +117,7 @@
             var indexValue: number = 0;
             var currentVertexOffset: number = 0;
             var currentIndexOffset: number = 0;
+            var quaternion: Quaternion = Quaternion.HELP_0 ;
 
             //当前材质 如果超过最大值就需要分pack
             for (var packIndex: number = 0; packIndex < nodes.length; packIndex++) {
@@ -152,7 +155,15 @@
                 for (count = 0; count < meshs.length; count++) {
                     mesh = <Mesh>meshs[count].object3d;
 
+                    let vq = modelMatrix.decompose()[1];
+                    quaternion.x = vq.x;
+                    quaternion.y = vq.y;
+                    quaternion.z = vq.z;
+                    quaternion.w = vq.w; 
+
                     modelMatrix.makeTransform(mesh.globalPosition, mesh.globalScale, mesh.globalOrientation);
+                    normalMatrix.makeTransform(new Vector3D(), mesh.globalScale, mesh.globalOrientation);
+
                     vertexLenth = mesh.geometry.vertexAttLength;
 
                     //var subVertexArray: Float32Array;
@@ -174,13 +185,24 @@
                                 pos.x = vertexBuffer[indexValue * vertexLenth];
                                 pos.y = vertexBuffer[indexValue * vertexLenth + 1];
                                 pos.z = vertexBuffer[indexValue * vertexLenth + 2];
+
+                                normal.x = vertexBuffer[indexValue * vertexLenth + 3];
+                                normal.y = vertexBuffer[indexValue * vertexLenth + 4];
+                                normal.z = vertexBuffer[indexValue * vertexLenth + 5];
+
                                 modelMatrix.transformVector(pos, Vector3D.HELP_1);
+                                normalMatrix.transformVector(normal, Vector3D.HELP_2);
+                                //quaternion.transformVector(normal, Vector3D.HELP_2);
 
                                 vertexs[currentVertexOffset * vertexLenth + 0] = Vector3D.HELP_1.x;
                                 vertexs[currentVertexOffset * vertexLenth + 1] = Vector3D.HELP_1.y;
                                 vertexs[currentVertexOffset * vertexLenth + 2] = Vector3D.HELP_1.z;
 
-                                for (var j: number = 3; j < vertexLenth; ++j) {
+                                vertexs[currentVertexOffset * vertexLenth + 3] = Vector3D.HELP_2.x;
+                                vertexs[currentVertexOffset * vertexLenth + 4] = Vector3D.HELP_2.y;
+                                vertexs[currentVertexOffset * vertexLenth + 5] = Vector3D.HELP_2.z;
+
+                                for (var j: number = 6 ;j < vertexLenth; ++j) {
                                     vertexs[currentVertexOffset * vertexLenth + j] = vertexBuffer[indexValue * vertexLenth + j];
                                 }
                             }

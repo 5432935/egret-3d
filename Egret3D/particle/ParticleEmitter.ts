@@ -143,9 +143,9 @@
                 this._geometryShape = this._externalGeometry;
             }
             var mode: number = this._data.property.renderMode;
-            if (mode == ParticleRenderModeType.Billboard || mode == ParticleRenderModeType.StretchedBillboard) {
+            if (mode == ParticleRenderModeType.Billboard) {
                 this.billboard = BillboardType.STANDARD;
-            } else if (mode == ParticleRenderModeType.VerticalBillboard) {
+            } else if (mode == ParticleRenderModeType.VerticalBillboard || mode == ParticleRenderModeType.StretchedBillboard) {
                 this.billboard = BillboardType.Y_AXIS;
             } else {
                 //ParticleRenderModeType.HorizontalBillboard

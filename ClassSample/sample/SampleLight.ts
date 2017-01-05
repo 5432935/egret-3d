@@ -44,7 +44,7 @@
         this.queueLoader.load("resource/doc/materail/FLOOR_1.png");
         this.queueLoader.load("resource/doc/materail/land_ocean_ice_2048_match.jpg");
 
-        this.queueLoader.load("resource/doc/materail/cut.png");
+        //this.queueLoader.load("resource/doc/materail/cut.png");
 
         //land_ocean_ice_2048_match.jpg
 
@@ -88,13 +88,13 @@
 
     // 把一张透明贴图 cut alpha
     protected useCutAlpha() {
-        var plane: egret3d.Mesh = new egret3d.Mesh(new egret3d.PlaneGeometry(300, 300));
-        this.view.addChild3D(plane);
-        plane.material.diffuseTexture = this.queueLoader.getAsset("resource/doc/materail/cut.png");
-        plane.material.cutAlpha = 0.5;
+        //var plane: egret3d.Mesh = new egret3d.Mesh(new egret3d.PlaneGeometry(300, 300));
+        //this.view.addChild3D(plane);
+        //plane.material.diffuseTexture = this.queueLoader.getAsset("resource/doc/materail/cut.png");
+        //plane.material.cutAlpha = 0.5;
 
-        // 设置双面渲染
-        plane.material.bothside = true;
+        //// 设置双面渲染
+        //plane.material.bothside = true;
     }
     
     protected createPointLight() {

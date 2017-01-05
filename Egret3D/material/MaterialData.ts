@@ -350,7 +350,19 @@
         */
         public specularLevel: number = 1.0;
 
+        /**
+        * @language zh_CN
+        * gama 矫正。
+        * @default 8.0
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public gamma: number = 1.0;
 
+        public refraction: number = 1.9;
+
+        public refractionintensity: number = 2.0;
+        
         /**
         * @language zh_CN
         * 材质球的光滑度。
@@ -420,12 +432,12 @@
 
         /**
         * @language zh_CN
-        * 高光亮度的强度值,设置较大的值会让高光部分极亮。
+        * 法线贴图的Y轴朝向
         * @default 1.0
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public normalScale: number = 1.0;
+        public normalDir: number = -1.0;
 
         /**
         * @language zh_CN
@@ -505,7 +517,7 @@
          * @language zh_CN
          */
         public materialSourceData: Float32Array = new Float32Array(20);//20
-        public materialSourceData2: Float32Array = new Float32Array(20);//20
+        //public materialSourceData2: Float32Array = new Float32Array(21);//20
         /**
          * @language zh_CN
          */
@@ -584,6 +596,11 @@
             data.specularLevel = this.specularLevel;
             data.gloss = this.gloss;
             data.albedo = this.albedo;
+
+            data.gamma = this.gamma;
+            data.refraction = this.refraction;
+            data.refractionintensity = this.refractionintensity;
+            
 
             data.materialDataNeedChange = this.materialDataNeedChange;
             data.textureChange = true;
