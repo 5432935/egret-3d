@@ -72,6 +72,10 @@
             }
         }
 
+        public play(anim: string, speed: number, reset: boolean) {
+            this.skeletonAnimation.play(anim,speed,reset);
+        }
+
         /**
         * @language zh_CN
         * @param child 

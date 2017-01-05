@@ -6,6 +6,8 @@ uniform sampler2D splat_3Tex ;
 
 uniform float uvs[8];
 void main() {
+	materialSource.refraction = 3.0 ;
+
 	vec4 splat_control = texture2D ( blendMaskTexture , varying_uv0 );
 	vec4 cc = vec4(0.0,0.0,0.0,1.0);
 	vec2 uv = varying_uv0 ;

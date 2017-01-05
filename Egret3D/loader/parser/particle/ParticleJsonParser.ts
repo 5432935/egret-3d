@@ -9,6 +9,13 @@
     export class ParticleJsonParser {
 
         /**
+        * @language zh_CN
+        * 引擎的版本号
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public engineVersion: string;
+        /**
          * @language zh_CN
          * 粒子的版本号
          * @version Egret 3.0
@@ -26,7 +33,7 @@
         public parse(json: any, data: ParticleData): void {
 
             this._particleData = data;
-
+            this.engineVersion = json.engineVersion + "";
             this.version = json.version + "";
             //property
             var propertyNode: Object = json.property;
@@ -379,7 +386,7 @@
             scaleSize.bezier1 = this.parseFoldLine(node.line1) || this.parseBezierData(node.bezier1);
             scaleSize.bezier2 = this.parseFoldLine(node.line2) || this.parseBezierData(node.bezier2);
         }
-        
+
 
         /**
         * @private

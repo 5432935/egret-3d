@@ -1,55 +1,40 @@
 //##FilterBegin## ##Particle##
 
-float updateStretchedBillBoard(vec4 startPos, vec4 newPos){
+bool updateStretchedBillBoard(vec3 moveVector){
 	//第一帧无法计算方向
 	if(currentTime < 0.016){
-		return 0.0;
+		return false;
 	}
-	vec3 dirVector = newPos.xyz - startPos.xyz; 
-	float speed = dot(dirVector, dirVector); 
+	float speed = dot(moveVector, moveVector); 
 	speed = sqrt(speed) / currentTime; 
-	speed /= 100.0; 
-	localPosition.x = localPosition.x * particleStateData.lengthScale + speed * particleStateData.speedScale * localPosition.x/scaleSize;
-
-
-	mat4 temp = uniform_ViewMatrix;
-	startPos = temp * startPos; 
-	newPos = temp * newPos; 
-
-
-	
-	float scaleBefore = dot(dirVector, dirVector);
-	scaleBefore = sqrt(scaleBefore);
-	//too small cannot calc direction;
-	if(scaleBefore < Tiny){
-		return 0.0;
+	speed /= 100.0;
+	if(speed < Tiny){
+		return false;
 	}
-	dirVector = newPos.xyz - startPos.xyz; 
-	float scaleAfter = dot(dirVector.xy, dirVector.xy);
-	scaleAfter = sqrt(scaleAfter); 
-	scaleAfter = sqrt(scaleAfter / scaleBefore); 
-	localPosition.x *= scaleAfter; 
-  
-	startPos.xyz /= startPos.z; 
-	newPos.xyz /= newPos.z; 
-	dirVector = newPos.xyz - startPos.xyz;
-	dirVector = normalize(dirVector); 
+	localPosition.y = localPosition.y * particleStateData.lengthScale + speed * particleStateData.speedScale * localPosition.y / scaleSize;
 
-	vec3 dirStartVector = vec3(0.0, 1.0, 0.0); 
+	vec3 dir1 = vec3(0.0, 1.0, 0.0);
+	vec3 dir2 = normalize(moveVector);
 
-	float added = -0.5 * PI;//让图片放倒
-	if(dirVector.x > 0.0){ 
-		dirVector.xy *= -1.0; 
-		added += PI; 
-	} 
-	float acosValue = dot(dirStartVector, dirVector); 
-	float angle = acos(acosValue) + added;
+	vec3 axis = normalize(cross(dir1, dir2));
+    float angle = acos(dot(dir1, dir2));
+
+	vec4 quat = vec4(0.0, 0.0, 0.0, 1.0);
+    float halfAngle = angle * 0.5;
+    float sin_a = sin(halfAngle);
+
+    quat.w = cos(halfAngle);
+    quat.x = axis.x * sin_a;
+    quat.y = axis.y * sin_a;
+    quat.z = axis.z * sin_a;
+
+    quat = normalize(quat);
 	
-	temp = buildRotMat4(vec3(0.0, 0.0, angle)); 
-	rotVertexMatrix = temp * rotVertexMatrix;
-	localPosition = temp * localPosition;
+	localPosition = uniform_billboardMatrix * localPosition;
+	rotVertexMatrix = buildMat4Quat(quat); 
+	localPosition = rotVertexMatrix * localPosition;
 
-	return 1.0;
+	return true;
 
 }
 

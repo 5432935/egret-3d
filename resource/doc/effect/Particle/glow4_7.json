@@ -1,0 +1,123 @@
+{
+  "egret3DVersion": "3.2.6",
+  "version": "1.1",
+  "type": "ParticleConfig",
+  "id": 0,
+  "property": {
+    "particleCount": 10.0,
+    "bounds": [
+      100000.0,
+      100000.0,
+      100000.0
+    ],
+    "colorType": "Const",
+    "colorConst1": "0xff000000",
+    "gravity": 0.0,
+    "prewarm": true,
+    "playOnAwake": true,
+    "transform": {
+      "rotation": [
+        90.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "position": [
+        0.0,
+        0.0,
+        178.0
+      ]
+    },
+    "render": {
+      "renderMode": "Mesh",
+      "meshFile": "Model/particleMesh_Plane_01_8.esm",
+      "cameraScale": 0.0,
+      "lengthScale": 0.0,
+      "speedScale": 0.0
+    },
+    "sortingFudge": "3"
+  },
+  "emission": {
+    "rate": 15.0,
+    "bursts": [],
+    "type": "Const",
+    "max": 15.0,
+    "min": 15.0
+  },
+  "life": {
+    "duration": 5.0,
+    "delay": 0.0,
+    "loop": true,
+    "type": "Const",
+    "max": 0.5,
+    "min": 0.5
+  },
+  "rotationBirth": {
+    "type": "Const",
+    "max": 0.0,
+    "min": 0.0
+  },
+  "scaleBirth": {
+    "type": "Const",
+    "max": 4.0,
+    "min": 4.0
+  },
+  "geometry": {
+    "plane": [
+      100.0,
+      100.0
+    ]
+  },
+  "moveSpeed": {
+    "type": "Const",
+    "max": 0.0,
+    "min": 0.0
+  },
+  "scaleSize": {
+    "type": "OneBezier",
+    "max": 0.0,
+    "min": 0.0,
+    "bezier1": [
+      [
+        "pos",
+        "0",
+        "0.6274509"
+      ],
+      [
+        "ctrl",
+        "0",
+        "0.6274509"
+      ],
+      [
+        "pos",
+        "1",
+        "1"
+      ],
+      [
+        "ctrl",
+        "1",
+        "1"
+      ]
+    ]
+  },
+  "colorOffset": {
+    "item": [
+      [
+        "0",
+        "0xffffffff"
+      ],
+      [
+        "0.797055",
+        "0xffffffff"
+      ],
+      [
+        "1",
+        "0x00ffffff"
+      ]
+    ]
+  }
+}

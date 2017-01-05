@@ -104,6 +104,10 @@
          */
         public gloss: number = 0;
 
+        public gamma: number = 1.0;
+        public refraction: number = 1.9;
+        public refractionintensity: number = 2.0;
+
         /**
          * @language zh_CN
          * ambient的强度

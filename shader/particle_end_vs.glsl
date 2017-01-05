@@ -54,8 +54,8 @@ vec3 calcParticleMove(vec3 distanceXYZ){
 
 
 //rewrite by stretched
-float updateStretchedBillBoard(vec4 startPos, vec4 newPos){
-	return 1.0;	
+bool updateStretchedBillBoard(vec3 moveVector){
+	return true;	
 }
 
 void main(void) {
@@ -116,16 +116,22 @@ void main(void) {
 	velocityMultiVec3.y -= 4.9 * currentTime * currentTime * particleStateData.gravity;// 0.5 * g * t * t;
 		
 	//是否需要修改local position指向运动方向，直接修改localPosition
-	vec3 origPosition = position_emitter;
 	position_emitter += velocityMultiVec3; 
-
-	float dirEnable = updateStretchedBillBoard(vec4(origPosition, 1.0), vec4(position_emitter, 1.0));
-	if(dirEnable > TrueOrFalse){
+	if(particleStateData.renderMode == StretchedBillboard){
+		discard_particle = discard_particle || updateStretchedBillBoard(velocityMultiVec3) == false; 
+		outPosition = localPosition;
+		rotVertexMatrix = rotVertexMatrix * uniform_billboardMatrix; 
+	}else{
 		outPosition = uniform_billboardMatrix * localPosition;
+	}
+
+	if(discard_particle){
+		outPosition = vec4(0.0,0.0,0.0,0.0); 
+	}else{
+		
 		outPosition.xyz += position_emitter.xyz;
 		outPosition = uniform_ViewMatrix * outPosition;
 
-		rotVertexMatrix = uniform_billboardMatrix * rotVertexMatrix;
 		e_normal.xyz = (rotVertexMatrix * vec4(e_normal, 1.0)).xyz;
 		e_normal = normalize(e_normal);
 
@@ -136,9 +142,6 @@ void main(void) {
 		normalMatrix = transpose(normalMatrix); 
 		
 		varying_eyeNormal = mat3(normalMatrix) * - e_normal; 
-
-	}else{
-		outPosition = vec4(0.0,0.0,0.0,0.0); 
 	}
 
 	varying_pos = outPosition = uniform_ProjectionMatrix * outPosition;

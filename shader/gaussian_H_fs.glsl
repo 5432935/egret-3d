@@ -1,31 +1,28 @@
-//uniform float AveLum;
-//uniform int imgH,imgW;
 varying vec2 varying_uv0;
 uniform sampler2D diffuseTexture;
-void main()
-{
-    vec2 uv = vec2(varying_uv0.x,1.0-varying_uv0.y); 
-	float d = 1.0/float(1024.0); 
-	vec4 color = vec4(0.0,0.0,0.0,0.0); 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(-8.0*d,0.0))* 0.001; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(-7.0*d,0.0))* 0.105; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(-6.0*d,0.0))* 0.217; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(-5.0*d,0.0))* 0.344; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(-4.0*d,0.0))* 0.492; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(-3.0*d,0.0))* 0.55; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(-2.0*d,0.0))* 0.69; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(-1.0*d,0.0))* 0.70; 
-	color +=     texture2D(diffuseTexture,uv.xy) * 1.0; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(1.0*d,0.0)) * 0.70; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(2.0*d,0.0)) * 0.69; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(3.0*d,0.0)) * 0.55; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(4.0*d,0.0)) * 0.492; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(5.0*d,0.0)) * 0.344; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(6.0*d,0.0)) * 0.217; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(7.0*d,0.0)) * 0.105; 
-	color +=     texture2D(diffuseTexture,uv.xy+vec2(8.0*d,0.0)) * 0.001; 
 
-	color /= 8.0; 
-	//color *= 2.0 ;
-    gl_FragColor = color ;
+vec4 blur9_1_0(sampler2D image, vec2 uv, float radius , float resolution, vec2 dir) {
+    vec4 color = vec4(0.0);
+    vec2 tc = uv;
+    float blur = radius/resolution ; 
+    //(0.0, 1.0) -> y-axis blur
+    float hstep = dir.x;
+    float vstep = dir.y;
+    //apply blurring, using a 9-tap filter with predefined gaussian weights
+    color += texture2D(image, vec2(tc.x - 4.0*blur*hstep, tc.y - 4.0*blur*vstep)) * 0.0162162162;
+    color += texture2D(image, vec2(tc.x - 3.0*blur*hstep, tc.y - 3.0*blur*vstep)) * 0.0540540541;
+    color += texture2D(image, vec2(tc.x - 2.0*blur*hstep, tc.y - 2.0*blur*vstep)) * 0.1216216216;
+    color += texture2D(image, vec2(tc.x - 1.0*blur*hstep, tc.y - 1.0*blur*vstep)) * 0.1945945946;
+    color += texture2D(image, vec2(tc.x, tc.y)) * 0.2270270270;
+    color += texture2D(image, vec2(tc.x + 1.0*blur*hstep, tc.y + 1.0*blur*vstep)) * 0.1945945946;
+    color += texture2D(image, vec2(tc.x + 2.0*blur*hstep, tc.y + 2.0*blur*vstep)) * 0.1216216216;
+    color += texture2D(image, vec2(tc.x + 3.0*blur*hstep, tc.y + 3.0*blur*vstep)) * 0.0540540541;
+    color += texture2D(image, vec2(tc.x + 4.0*blur*hstep, tc.y + 4.0*blur*vstep)) * 0.0162162162;
+  return color;
+}
+
+void main(void) { 
+	vec4 color = vec4(0.0,0.0,0.0,0.0); 
+	color =blur9_1_0(diffuseTexture,varying_uv0,3.0,2048.0,vec2(0.0,1.0));
+	gl_FragColor  = color; 
 }

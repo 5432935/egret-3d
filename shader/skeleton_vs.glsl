@@ -91,7 +91,7 @@ void main(void){
 	e_position = outPosition.xyz;
 
 	vec4 temp_n ;
-	temp_n = m0 * temp_normal * e_boneWeight.x;
+	temp_n  = m0 * temp_normal * e_boneWeight.x;
 	temp_n += m1 * temp_normal * e_boneWeight.y;
 	temp_n += m2 * temp_normal * e_boneWeight.z;
 	temp_n += m3 * temp_normal * e_boneWeight.w;
@@ -102,7 +102,7 @@ void main(void){
     mat4 normalMatrix = inverse(mvMatrix) ;
     normalMatrix = transpose(normalMatrix); 
     
-    varying_eyeNormal = mat3(normalMatrix) * -attribute_normal ; 
+    varying_eyeNormal = mat3(normalMatrix) * -temp_n.xyz ; 
     
     outPosition.xyzw = varying_mvPose.xyzw ; 
     varying_color = attribute_color; 

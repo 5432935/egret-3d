@@ -50,9 +50,24 @@
                     this.renderArray[i].draw(time, delay, context3D, collect, backViewPort, this, posList);
             }
             if (this.mainRender) {
-                if (this.mainRender.enabled)
-                    this.mainRender.draw(time, delay, context3D, collect, backViewPort, this, posList);
+                if (this.mainRender.enabled) {
+                    if (Egret3DCanvas.Performance_Enable) {
+                        var time: number = this.curDate;
+                        this.mainRender.draw(time, delay, context3D, collect, backViewPort, this, posList);
+                        Egret3DCanvas.Performance_GPU += this.curDate - time;
+                    } else {
+                        this.mainRender.draw(time, delay, context3D, collect, backViewPort, this, posList);
+                    }
+                }
             }
         }
+
+
+
+        private get curDate(): number {
+            return new Date().getTime();
+        }
+
+
     }
 }

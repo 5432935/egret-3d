@@ -568,14 +568,16 @@
                 this._materialData.materialSourceData[10] = this._materialData.cutAlpha;
                 this._materialData.materialSourceData[11] = this._materialData.gloss;
                 this._materialData.materialSourceData[12] = this._materialData.specularLevel;
-                this._materialData.materialSourceData[13] = this._materialData.albedo;
+                //this._materialData.materialSourceData[13] = this._materialData.normalDir;
 
-                this._materialData.materialSourceData[14] = this._materialData.uvRectangle.x;
-                this._materialData.materialSourceData[15] = this._materialData.uvRectangle.y; //保留
-                this._materialData.materialSourceData[16] = this._materialData.uvRectangle.width; //保留
-                this._materialData.materialSourceData[17] = this._materialData.uvRectangle.height; //保留
-                this._materialData.materialSourceData[18] = this._materialData.specularLevel; //保留
-                this._materialData.materialSourceData[19] = window.devicePixelRatio; //保留
+                this._materialData.materialSourceData[13] = this._materialData.uvRectangle.x;
+                this._materialData.materialSourceData[14] = this._materialData.uvRectangle.y; //保留
+                this._materialData.materialSourceData[15] = this._materialData.uvRectangle.width; //保留
+                this._materialData.materialSourceData[16] = this._materialData.uvRectangle.height; //保留
+                this._materialData.materialSourceData[17] = this._materialData.gamma; //保留refraction
+                this._materialData.materialSourceData[18] = this._materialData.refraction; //保留
+                this._materialData.materialSourceData[19] = this._materialData.refractionintensity; //保留
+                
             }
 
             if (this._passChange) {

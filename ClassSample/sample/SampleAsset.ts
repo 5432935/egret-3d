@@ -95,29 +95,25 @@
         var loadList: egret3d.UnitLoader[] = [];
 
 
-        // 这个资源是unity3d插件导出的场景资源
-        var sponazLoader: egret3d.UnitLoader = this.queueLoader.load("resource/doc/sponza_Demo/MapConfig.json");
-        loadList.push(this.queueLoader.load("resource/scene/Compress_Resource/Scene1.e3dPack"));
+        //// 这个资源是unity3d插件导出的场景资源
+        //var sponazLoader: egret3d.UnitLoader = this.queueLoader.load("resource/doc/sponza_Demo/MapConfig.json");
+        //loadList.push(this.queueLoader.load("resource/scene/Compress_Resource/Scene1.e3dPack"));
 
         //var sponazLoader: egret3d.UnitLoader = this.queueLoader.load("resource/scene/s/MapConfig.json");
 
 
-        loadList.push(sponazLoader);
+        //loadList.push(sponazLoader);
 
-        // 监听某个文件的加载进度事件
-        sponazLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onSceneProgress, this);
+        //// 监听某个文件的加载进度事件
+        //sponazLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_PROGRESS, this.onSceneProgress, this);
 
-        // 监听某个文件的加载完成事件
-        sponazLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_ONCE_COMPLETE, this.onSceneOnceProgress, this);
+        //// 监听某个文件的加载完成事件
+        //sponazLoader.addEventListener(egret3d.LoaderEvent3D.LOADER_ONCE_COMPLETE, this.onSceneOnceProgress, this);
 
-        loadList.push(this.queueLoader.load("resource/doc/ganning/Ganning.esm"));
-        loadList.push(this.queueLoader.load("resource/doc/ganning/Idle.eam"));
-        loadList.push(this.queueLoader.load("resource/doc/ganning/Run.eam"));
-        loadList.push(this.queueLoader.load("resource/doc/ganning/Attack1.eam"));
-        loadList.push(this.queueLoader.load("resource/doc/ganning/Death.eam"));
-        loadList.push(this.queueLoader.load("resource/doc/ganning/Ganning.png"));
-        loadList.push(this.queueLoader.load("resource/doc/ganning/Ganning_f.png"));
-        loadList.push(this.queueLoader.load("resource/doc/ganning/Ganning_Weapon.png"));
+        loadList.push(this.queueLoader.load("resource/doc/0_Model/Esm/Zhouyu.esm"));
+        loadList.push(this.queueLoader.load("resource/doc/0_Model/Eam/attack.eam"));
+        loadList.push(this.queueLoader.load("resource/doc/0_Model/Eam/idle.eam"));
+        loadList.push(this.queueLoader.load("resource/doc/0_Model/Texture/hero_01.png"));
 
         //loadList.push(this.queueLoader.load("resource/skill/MapConfig.json"));
 
@@ -165,24 +161,18 @@
     protected onQueueLoader(e: egret3d.LoaderEvent3D) {
         var queueLoader: egret3d.QueueLoader = e.target;
 
-
+      
         
         // 加载完成后用url查找资源 
-        var geo: egret3d.Geometry = queueLoader.getAsset("resource/doc/ganning/Ganning.esm");
-        var clip0: egret3d.SkeletonAnimationClip = queueLoader.getAsset("resource/doc/ganning/Idle.eam");
-        var clip1: egret3d.SkeletonAnimationClip = queueLoader.getAsset("resource/doc/ganning/Run.eam");
-        var clip2: egret3d.SkeletonAnimationClip = queueLoader.getAsset("resource/doc/ganning/Attack1.eam");
-        var clip3: egret3d.SkeletonAnimationClip = queueLoader.getAsset("resource/doc/ganning/Death.eam");
+        var geo: egret3d.Geometry = queueLoader.getAsset("resource/doc/0_Model/Esm/Zhouyu.esm");
+        var clip0: egret3d.SkeletonAnimationClip = queueLoader.getAsset("resource/doc/0_Model/Eam/attack.eam");
+        var clip1: egret3d.SkeletonAnimationClip = queueLoader.getAsset("resource/doc/0_Model/Eam/idle.eam");
         var textures: egret3d.ITexture[] = [];
 
-        textures[0] = queueLoader.getAsset("resource/doc/ganning/Ganning.png");
-        textures[1] = queueLoader.getAsset("resource/doc/ganning/Ganning_f.png");
-        textures[2] = queueLoader.getAsset("resource/doc/ganning/Ganning_Weapon.png");
+        textures[0] = queueLoader.getAsset("resource/doc/0_Model/Texture/hero_01.png");
 
-        clip0.animationName = "Idle";
-        clip1.animationName = "Run";
-        clip2.animationName = "Attack1";
-        clip3.animationName = "Death";
+        clip0.animationName = "Attack1";
+        clip1.animationName = "Idle";
 
         // 创建Mesh
         var mesh: egret3d.Mesh = new egret3d.Mesh(geo, new egret3d.TextureMaterial());
@@ -200,8 +190,6 @@
 
         mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip0);
         mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip1);
-        mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip2);
-        mesh.animation.skeletonAnimationController.addSkeletonAnimationClip(clip3);
         mesh.animation.play("Idle");
 
 
@@ -209,13 +197,13 @@
 
         // 加载完场景资源可以直接替换View3D中的Scene对象
         //var scene3d: egret3d.Scene3D = queueLoader.getAsset("resource/doc/sponza_Demo/MapConfig.json");
-        var scene3d: egret3d.Scene3D = queueLoader.getAsset("resource/scene/Compress_Resource/Scene1.e3dPack");
+        //var scene3d: egret3d.Scene3D = queueLoader.getAsset("resource/scene/Compress_Resource/Scene1.e3dPack");
 
         
-        if (!scene3d)
-            return;
-        this.view.scene = scene3d;
-        this.view.scene.addChild(this.view.camera3D);
+        //if (!scene3d)
+        //    return;
+        //this.view.scene = scene3d;
+        //this.view.scene.addChild(this.view.camera3D);
 
 
         this.view.addChild3D(mesh);

@@ -19,6 +19,7 @@
         * @private
         */
         public static helpMatrix: Matrix4_4 = new Matrix4_4();
+        public static helpMatrix2: Matrix4_4 = new Matrix4_4();
 
         /**
         * @language zh_CN

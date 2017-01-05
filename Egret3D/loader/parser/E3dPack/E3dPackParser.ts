@@ -29,7 +29,6 @@
                 context.uncompress();
                 bytes = context;
 
-                iscompress = bytes.readByte();
             }
 
 

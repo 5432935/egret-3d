@@ -79,6 +79,7 @@
         protected _passUsage: PassUsage = new PassUsage();
         protected _attList: Array<GLSL.Attribute> = new Array<GLSL.Attribute>();
 
+        public uniformData: { [key: string]: { uniformIndex: any, type: number, data:number[] } } = {};
 
         /**
         * @language zh_CN
@@ -386,127 +387,139 @@
         * @private
         */
         public upload(context: Context3DProxy) {
-            if (!this._vertexBuffer3D) {
-                this._vertexBuffer3D = context.creatVertexBuffer(HUD.singleQuadData);
+            let self = this;
+            if (!self._vertexBuffer3D) {
+                self._vertexBuffer3D = context.creatVertexBuffer(HUD.singleQuadData);
             }
 
-            if (!this._indexBuffer3D) {
-                this._indexBuffer3D = context.creatIndexBuffer(HUD.singleQuadIndex);
+            if (!self._indexBuffer3D) {
+                self._indexBuffer3D = context.creatIndexBuffer(HUD.singleQuadIndex);
             }
 
 
-            this._passUsage.vertexShader.shaderType = Shader.vertex;
-            this._passUsage.fragmentShader.shaderType = Shader.fragment;
+            self._passUsage.vertexShader.shaderType = Shader.vertex;
+            self._passUsage.fragmentShader.shaderType = Shader.fragment;
 
-            this._passUsage.vertexShader.addUseShaderName(this.vsShader);
-            this._passUsage.fragmentShader.addUseShaderName(this.fsShader);
+            self._passUsage.vertexShader.addUseShaderName(self.vsShader);
+            self._passUsage.fragmentShader.addUseShaderName(self.fsShader);
 
-            //this._passUsage.vertexShader.addUseShaderName("hud_vs");
-            //this._passUsage.fragmentShader.addUseShaderName("hud_fs");
+            self._passUsage.vertexShader.shader = self._passUsage.vertexShader.getShader(self._passUsage);
+            self._passUsage.fragmentShader.shader = self._passUsage.fragmentShader.getShader(self._passUsage);
 
-            this._passUsage.vertexShader.shader = this._passUsage.vertexShader.getShader(this._passUsage);
-            this._passUsage.fragmentShader.shader = this._passUsage.fragmentShader.getShader(this._passUsage);
+            self._passUsage.program3D = ShaderPool.getProgram(self._passUsage.vertexShader.shader.id, self._passUsage.fragmentShader.shader.id);
 
-            this._passUsage.program3D = ShaderPool.getProgram(this._passUsage.vertexShader.shader.id, this._passUsage.fragmentShader.shader.id);
-
-            for (var property in this._passUsage) {
+            for (var property in self._passUsage) {
                 if ((<string>property).indexOf("uniform") != -1) {
-                    if (this._passUsage[property]) {
-                        (<GLSL.Uniform>this._passUsage[property]).uniformIndex = context.getUniformLocation(this._passUsage.program3D, property);
+                    if (self._passUsage[property]) {
+                        (<GLSL.Uniform>self._passUsage[property]).uniformIndex = context.getUniformLocation(self._passUsage.program3D, property);
                     }
                 }
             }
 
-            this._attList.length = 0;
+            for (var uniformName in self.uniformData) {
+                let uniform = self.uniformData[uniformName];
+                uniform.uniformIndex = context.getUniformLocation(self._passUsage.program3D, uniformName);
+            }
+
+            self._attList.length = 0;
             var offset: number = 0;
-            if (this._passUsage.attribute_position) {
-                if (!this._passUsage.attribute_position.uniformIndex) {
-                    this._passUsage.attribute_position.uniformIndex = context.getShaderAttribLocation(this._passUsage.program3D, this._passUsage.attribute_position.varName);
+            if (self._passUsage.attribute_position) {
+                if (!self._passUsage.attribute_position.uniformIndex) {
+                    self._passUsage.attribute_position.uniformIndex = context.getShaderAttribLocation(self._passUsage.program3D, self._passUsage.attribute_position.varName);
                 }
 
-                this._attList.push(this._passUsage.attribute_position);
-                this._passUsage.attribute_position.size = Geometry.positionSize;
-                this._passUsage.attribute_position.dataType = ContextConfig.FLOAT;
-                this._passUsage.attribute_position.normalized = false;
-                this._passUsage.attribute_position.stride = HUD.vertexBytes;
-                this._passUsage.attribute_position.offset = offset;
+                self._attList.push(self._passUsage.attribute_position);
+                self._passUsage.attribute_position.size = Geometry.positionSize;
+                self._passUsage.attribute_position.dataType = ContextConfig.FLOAT;
+                self._passUsage.attribute_position.normalized = false;
+                self._passUsage.attribute_position.stride = HUD.vertexBytes;
+                self._passUsage.attribute_position.offset = offset;
 
                 offset += Geometry.positionSize * Float32Array.BYTES_PER_ELEMENT;
             }
 
-            if (this._passUsage.attribute_uv0) {
-                if (!this._passUsage.attribute_uv0.uniformIndex) {
-                    this._passUsage.attribute_uv0.uniformIndex = context.getShaderAttribLocation(this._passUsage.program3D, this._passUsage.attribute_uv0.varName);
+            if (self._passUsage.attribute_uv0) {
+                if (!self._passUsage.attribute_uv0.uniformIndex) {
+                    self._passUsage.attribute_uv0.uniformIndex = context.getShaderAttribLocation(self._passUsage.program3D, self._passUsage.attribute_uv0.varName);
                 }
 
-                this._attList.push(this._passUsage.attribute_uv0);
+                self._attList.push(self._passUsage.attribute_uv0);
 
-                this._passUsage.attribute_uv0.size = Geometry.uvSize;
-                this._passUsage.attribute_uv0.dataType = ContextConfig.FLOAT;
-                this._passUsage.attribute_uv0.normalized = false;
-                this._passUsage.attribute_uv0.stride = HUD.vertexBytes;
-                this._passUsage.attribute_uv0.offset = offset;
+                self._passUsage.attribute_uv0.size = Geometry.uvSize;
+                self._passUsage.attribute_uv0.dataType = ContextConfig.FLOAT;
+                self._passUsage.attribute_uv0.normalized = false;
+                self._passUsage.attribute_uv0.stride = HUD.vertexBytes;
+                self._passUsage.attribute_uv0.offset = offset;
 
                 offset += Geometry.uvSize * Float32Array.BYTES_PER_ELEMENT;
             }
 
-            this._passUsage["uv_scale"] = context.getUniformLocation(this._passUsage.program3D, "uv_scale");
+            self._passUsage["uv_scale"] = context.getUniformLocation(self._passUsage.program3D, "uv_scale");
         }
 
         /**
         * @private
         */
-        public draw(contextProxy: Context3DProxy,camera:Camera3D = null ) {
-            if (!this.visible) {
+        public draw(contextProxy: Context3DProxy, camera: Camera3D = null) {
+            let self = this;
+
+            if (!self.visible) {
                 return;
             }
-            if (!this._passUsage.program3D) {
-                this.upload(contextProxy); 
+
+            if (!self._passUsage.program3D) {
+                self.upload(contextProxy); 
             }
 
-            contextProxy.setProgram(this._passUsage.program3D);
-            contextProxy.bindVertexBuffer(this._vertexBuffer3D);
-            contextProxy.bindIndexBuffer(this._indexBuffer3D);
+            contextProxy.setProgram(self._passUsage.program3D);
+            contextProxy.bindVertexBuffer(self._vertexBuffer3D);
+            contextProxy.bindIndexBuffer(self._indexBuffer3D);
 
-            //if (this._viewPort) {
-            //    contextProxy.viewPort(this._viewPort.x, this._viewPort.y, this._viewPort.width, this._viewPort.height);
-            //    contextProxy.setScissorRectangle(this._viewPort.x, this._viewPort.y, this._viewPort.width, this._viewPort.height);
-            //}
-
-            //for (var i: number = 0; i < 8; i++) {
-            //    Context3DProxy.gl.disableVertexAttribArray(i);
-            //}
-
-            for (var i: number = 0; i < this._attList.length; ++i) {
-                var attribute: GLSL.Attribute = this._attList[i];
+            for (var i: number = 0; i < self._attList.length; ++i) {
+                var attribute: GLSL.Attribute = self._attList[i];
                 if (attribute.uniformIndex >= 0) {
                     contextProxy.vertexAttribPointer(attribute.uniformIndex, attribute.size, attribute.dataType, attribute.normalized, attribute.stride, attribute.offset);
                 }
             }
 
-            if (this._changeTexture) {
-                this.updateTexture(contextProxy);
+            if (self._changeTexture) {
+                self.updateTexture(contextProxy);
+            }
+
+            for (var uniformName in self.uniformData) {
+                let uniform = self.uniformData[uniformName];
+                switch (uniform.type) {
+                    case UniformType.uniform1f:
+                        contextProxy.uniform1f(uniform.uniformIndex, uniform.data[0]);
+                        break;
+                    case UniformType.uniform1fv:
+                        contextProxy.uniform1fv(uniform.uniformIndex, uniform.data);
+                        break;
+                    case UniformType.uniform2f:
+                        contextProxy.uniform2f(uniform.uniformIndex, uniform.data[0], uniform.data[1] );
+                        break;
+                    case UniformType.uniform2fv:
+                        contextProxy.uniform2fv(uniform.uniformIndex,  uniform.data);
+                        break;
+                    case UniformType.uniform3f:
+                        contextProxy.uniform3f(uniform.uniformIndex, uniform.data[0], uniform.data[1], uniform.data[2]);
+                        break;
+                    case UniformType.uniform3fv:
+                        contextProxy.uniform3fv(uniform.uniformIndex, uniform.data);
+                        break;
+                    case UniformType.uniform4f:
+                        contextProxy.uniform4f(uniform.uniformIndex, uniform.data[0], uniform.data[1], uniform.data[2], uniform.data[3]);
+                        break;              
+                    case UniformType.uniform4fv:
+                        contextProxy.uniform4fv(uniform.uniformIndex, uniform.data);
+                        break;
+                }
             }
 
             //texture 2D
-            //var sampler2D: GLSL.Sampler2D;
-            //for (var index in this._passUsage.sampler2DList) {
-            //    sampler2D = this._passUsage.sampler2DList[index];
-            //    if (!sampler2D.texture) {
-            //        continue;
-            //    }
-            //    sampler2D.texture.upload(contextProxy);
-            //    contextProxy.setTexture2DAt(sampler2D.activeTextureIndex, sampler2D.uniformIndex, sampler2D.index, sampler2D.texture.texture2D);
-            //    if (this._textureStage) {
-            //        sampler2D.texture.activeState(contextProxy);
-            //        this._textureStage = false;
-            //    }
-            //}
-
-            //texture 2D
             var sampler2D: GLSL.Sampler2D;
-            for (var index in this._passUsage.sampler2DList) {
-                sampler2D = this._passUsage.sampler2DList[index];
+            for (var index in self._passUsage.sampler2DList) {
+                sampler2D = self._passUsage.sampler2DList[index];
                 if (!sampler2D.texture) {
                     continue;
                 }
@@ -514,28 +527,28 @@
                 contextProxy.setTexture2DAt(sampler2D.activeTextureIndex, sampler2D.uniformIndex, sampler2D.index, sampler2D.texture.texture2D);
 
                 sampler2D.texture.activeState(contextProxy);
-                this._textureStage = false;
+                self._textureStage = false;
             }
 
-            if (this._passUsage.uniform_ViewProjectionMatrix) {
-                contextProxy.uniformMatrix4fv(this._passUsage.uniform_ViewProjectionMatrix.uniformIndex, false, this.transformMatrix.rawData);
+            if (self._passUsage.uniform_ViewProjectionMatrix) {
+                contextProxy.uniformMatrix4fv(self._passUsage.uniform_ViewProjectionMatrix.uniformIndex, false, self.transformMatrix.rawData);
             }
 
-            if (this._passUsage.uniform_ViewMatrix && camera) {
-                contextProxy.uniformMatrix4fv(this._passUsage.uniform_ViewMatrix.uniformIndex, false, camera.viewMatrix.rawData);
+            if (self._passUsage.uniform_ViewMatrix && camera) {
+                contextProxy.uniformMatrix4fv(self._passUsage.uniform_ViewMatrix.uniformIndex, false, camera.viewMatrix.rawData);
             }
 
-            if (this._passUsage.uniform_ProjectionMatrix && camera) {
-                contextProxy.uniformMatrix4fv(this._passUsage.uniform_ProjectionMatrix.uniformIndex, false, camera.projectMatrix.rawData);
+            if (self._passUsage.uniform_ProjectionMatrix && camera) {
+                contextProxy.uniformMatrix4fv(self._passUsage.uniform_ProjectionMatrix.uniformIndex, false, camera.projectMatrix.rawData);
             }
 
-            if (this._passUsage["uv_scale"] && this._passUsage["uv_scale"] != -1) {
-                contextProxy.uniform2f(this._passUsage["uv_scale"], this._uv_scale[0], this._uv_scale[1]);
+            if (self._passUsage["uv_scale"] && this._passUsage["uv_scale"] != -1) {
+                contextProxy.uniform2f(self._passUsage["uv_scale"], self._uv_scale[0], self._uv_scale[1]);
             }
 
-            contextProxy.setCulling(this.cullMode);
+            contextProxy.setCulling(self.cullMode);
 
-            if (this.bothside) {
+            if (self.bothside) {
                 contextProxy.disableCullFace();
             } else
                 contextProxy.enableCullFace();

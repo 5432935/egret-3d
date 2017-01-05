@@ -162,6 +162,20 @@
             if (!environment) {
                 return;
             }
+
+            
+
+            if (environment) {
+                this._mapConfigParser.isFogOpen = Boolean(environment.isFogOpen);
+                if (this._mapConfigParser.isFogOpen) {
+                    this._mapConfigParser.fogColor = Number(environment.fogColor);
+                    this._mapConfigParser.fogMode = String(environment.fogMode);
+                    this._mapConfigParser.fogDensity = Number(environment.fogDensity);
+                    this._mapConfigParser.linearFogStart = Number(environment.linearFogStart);
+                    this._mapConfigParser.linearFogEnd = Number(environment.linearFogEnd);
+                }
+            }
+
             if (environment.directLight) {
                 this._mapConfigParser.directLight = (environment.directLight == "open")
             }
@@ -178,6 +192,8 @@
                 var lightData: UnitLightData = this.parseLight(environment.lightList[i]);
                 this._mapConfigParser.lightDict[lightData.id] = lightData;
             }
+
+
         }
 
         public parseHud(node: any): UnitHUDData {

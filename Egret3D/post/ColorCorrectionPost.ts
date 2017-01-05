@@ -13,7 +13,11 @@
         private _lutTexture: Texture;
         constructor( ) {
             this.postRender = new PostRender("hud_vs", "colorCorrection_fs");
-            this.postRender.setRenderToTexture(2048, 2048, FrameBufferFormat.UNSIGNED_BYTE_RGB);
+            //this.postRender.setRenderToTexture(2048, 2048, FrameBufferFormat.UNSIGNED_BYTE_RGB);
+        }
+
+        public setRenderTexture(width: number, height: number) {
+            this.postRender.setRenderToTexture(width, height);
         }
 
         public set lutTexture(tex: Texture) {

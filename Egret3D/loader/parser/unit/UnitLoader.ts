@@ -1455,6 +1455,9 @@
                 material.alpha = matData.alpha;
                 material.specularLevel = matData.specularLevel;
                 material.gloss = matData.gloss;
+                material.gamma = matData.gamma;
+                material.refraction = matData.refraction;
+                material.refractionintensity = matData.refractionintensity;
 
 
                 material.castShadow = matData.castShadow;

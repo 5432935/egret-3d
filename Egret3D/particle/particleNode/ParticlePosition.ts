@@ -145,7 +145,12 @@
                 //粒子发射方向
                 var dir: Vector3D = new Vector3D();
                 if (data.shape.randomDirection) {
-                    dir.setTo(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+                    if (this._node.type == ParticleDataShapeType.Cone &&
+                        (this._node.coneType == ParticleConeShapeType.Base || this._node.coneType == ParticleConeShapeType.BaseShell)) {
+                        (<ConeValueShape>this._positions).randomDirectionToTop(dir);
+                    } else {
+                        dir.setTo(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+                    }
                 } else {
                     if (this._node.type == ParticleDataShapeType.Point) {
                         dir.setTo(0, 0, 1, 1);

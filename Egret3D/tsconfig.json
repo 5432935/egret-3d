@@ -4,7 +4,8 @@
         "noImplicitAny": false,
         "sourceMap": false,
         "declaration": true,
-        "out": "../module/egret3d/egret3d.js"
+        "out": "../module/egret3d/egret3d.js",
+        "allowUnreachableCode": true
     },
     "files": [
         "Util/ByteArray.ts",
@@ -391,6 +392,7 @@
         "post/IPost.ts",
         "post/GaussPost.ts",
         "post/BloomPost.ts",
+        "post/Gbuffer.ts",
         "post/PostProcessing.ts",
         "post/ColorCorrectionPost.ts"
 

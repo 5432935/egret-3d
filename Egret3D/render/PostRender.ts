@@ -18,7 +18,7 @@
         }
 
         public setRenderToTexture(width: number, height: number, format: FrameBufferFormat = FrameBufferFormat.UNSIGNED_BYTE_RGB) {
-            this.renderTexture = new RenderTexture(width, height, FrameBufferFormat.UNSIGNED_BYTE_RGB);
+            this.renderTexture = new RenderTexture(width, height, format );
         }
 
         public draw(time: number, delay: number, context3D: Context3DProxy, collect: CollectBase, backViewPort:Rectangle, posList: any) {

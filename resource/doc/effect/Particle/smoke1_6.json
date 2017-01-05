@@ -1,0 +1,154 @@
+{
+  "egret3DVersion": "3.2.6",
+  "version": "1.1",
+  "type": "ParticleConfig",
+  "id": 0,
+  "property": {
+    "particleCount": 50.0,
+    "bounds": [
+      100000.0,
+      100000.0,
+      100000.0
+    ],
+    "colorType": "RandomConst",
+    "colorConst1": "0xff1c00ff",
+    "colorConst2": "0xff7000bc",
+    "gravity": 0.0,
+    "prewarm": true,
+    "playOnAwake": true,
+    "transform": {
+      "rotation": [
+        90.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "position": [
+        0.0,
+        3.0,
+        183.0
+      ]
+    },
+    "render": {
+      "renderMode": "VerticalBillboard",
+      "cameraScale": 0.0,
+      "lengthScale": 0.0,
+      "speedScale": 0.0
+    },
+    "sortingFudge": "2"
+  },
+  "emission": {
+    "rate": 100.0,
+    "bursts": [],
+    "type": "Const",
+    "max": 100.0,
+    "min": 100.0
+  },
+  "life": {
+    "duration": 5.0,
+    "delay": 0.0,
+    "loop": true,
+    "type": "RandomConst",
+    "max": 0.6,
+    "min": 0.4
+  },
+  "shape": {
+    "type": "Cone",
+    "randomDirection": false,
+    "cone": {
+      "type": "BaseShell",
+      "radius": 110.0,
+      "length": 500.0,
+      "angle": 90.0
+    }
+  },
+  "rotationBirth": {
+    "type": "RandomConst",
+    "max": 360.0,
+    "min": 0.0
+  },
+  "scaleBirth": {
+    "type": "Const",
+    "max": 1.0,
+    "min": 1.0
+  },
+  "geometry": {
+    "plane": [
+      71.0,
+      71.0
+    ]
+  },
+  "moveSpeed": {
+    "type": "RandomConst",
+    "max": 100.0,
+    "min": 80.0
+  },
+  "scaleSize": {
+    "type": "OneBezier",
+    "max": 0.0,
+    "min": 0.0,
+    "bezier1": [
+      [
+        "pos",
+        "0",
+        "1"
+      ],
+      [
+        "ctrl",
+        "0.3333333",
+        "1"
+      ],
+      [
+        "pos",
+        "1",
+        "0"
+      ],
+      [
+        "ctrl",
+        "0.6666666",
+        "0.6666667"
+      ]
+    ]
+  },
+  "rotationSpeed": {
+    "type": "RandomConst",
+    "max": [
+      0.0,
+      0.0,
+      10.0
+    ],
+    "min": [
+      0.0,
+      0.0,
+      -10.0
+    ]
+  },
+  "colorOffset": {
+    "item": [
+      [
+        "0",
+        "0x00ffffff"
+      ],
+      [
+        "0.20589",
+        "0xffbcbcbc"
+      ],
+      [
+        "0.3088273",
+        "0xff9b9b9b"
+      ],
+      [
+        "0.7588311",
+        "0xff363636"
+      ],
+      [
+        "1",
+        "0x00000000"
+      ]
+    ]
+  }
+}
