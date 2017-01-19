@@ -20,8 +20,8 @@
         * @platform Web,Native
         */
         constructor(touch: Touch) {
-            this.canvasX = touch.clientX - Input.canvas.x + Input.canvas.offsetX;
-            this.canvasY = touch.clientY - Input.canvas.y + Input.canvas.offsetY;
+            this.canvasX = Input.getX(touch.clientX)// - Input.canvas.x + Input.canvas.offsetX;
+            this.canvasY = Input.getY(touch.clientY)// - Input.canvas.y + Input.canvas.offsetY;
             this.identifier = touch.identifier;
             this.clientX = touch.clientX;
             this.clientY = touch.clientY;
@@ -124,6 +124,18 @@
         * @platform Web,Native
         */
         public static canvas: Egret3DCanvas;
+
+        public static scaleX:number = 1;
+
+        public static scaleY:number = 1;
+
+        public static getX(value:number):number {
+            return (value - Input.canvas.x + Input.canvas.offsetX) / Input.scaleX;
+        }
+
+        public static getY(value:number):number {
+            return (value - Input.canvas.y + Input.canvas.offsetY) / Input.scaleY;
+        }
 
         /**
         * @language zh_CN
@@ -237,23 +249,23 @@
         constructor() {
             super();
 
-            window.addEventListener("click", (e: MouseEvent) => this.mouseClick(e), true);
+            window.addEventListener("click", (e: MouseEvent) => {!this.disableWindowTouch && this.mouseClick(e)}, true);
 
-            window.addEventListener("mousedown", (e: MouseEvent) => this.mouseStart(e), true);
+            window.addEventListener("mousedown", (e: MouseEvent) => {!this.disableWindowTouch && this.mouseStart(e)}, true);
 
-            window.addEventListener("mouseup", (e: MouseEvent) => this.mouseEnd(e), true);
+            window.addEventListener("mouseup", (e: MouseEvent) => {!this.disableWindowTouch && this.mouseEnd(e)}, true);
 
-            window.addEventListener("mousewheel", (e: MouseWheelEvent) => this.mouseWheel(e), true);
+            window.addEventListener("mousewheel", (e: MouseWheelEvent) => {!this.disableWindowTouch && this.mouseWheel(e)}, true);
 
 
 
-            window.addEventListener("mousemove", (e: MouseEvent) => this.mouseMove(e), true);
+            window.addEventListener("mousemove", (e: MouseEvent) => {!this.disableWindowTouch && this.mouseMove(e)}, true);
 
-            window.addEventListener("mouseover", (e: MouseEvent) => this.mouseOver(e), true);
+            window.addEventListener("mouseover", (e: MouseEvent) => {!this.disableWindowTouch && this.mouseOver(e)}, true);
 
-            window.addEventListener("keydown", (e: KeyboardEvent) => this.keyDown(e), true);
+            window.addEventListener("keydown", (e: KeyboardEvent) => {!this.disableWindowTouch && this.keyDown(e)}, true);
 
-            window.addEventListener("keyup", (e: KeyboardEvent) => this.keyUp(e), true);
+            window.addEventListener("keyup", (e: KeyboardEvent) => {!this.disableWindowTouch && this.keyUp(e)}, true);
 
             if (this.canGame()) {
                 window.addEventListener("gamepadconnected", (e: GamepadEvent) => this.ongamepadconnected(e), true);
@@ -261,13 +273,13 @@
                 window.addEventListener("gamepaddisconnected", (e: GamepadEvent) => this.ongamepaddisconnected(e), true);
             }
 
-            window.addEventListener("touchstart", (e: TouchEvent) => this.touchStart(e), true);
+            window.addEventListener("touchstart", (e: TouchEvent) => {!this.disableWindowTouch && this.touchStart(e)}, true);
 
-            window.addEventListener("touchend", (e: TouchEvent) => this.touchEnd(e), true);
+            window.addEventListener("touchend", (e: TouchEvent) => {!this.disableWindowTouch && this.touchEnd(e)}, true);
 
-            window.addEventListener("touchmove", (e: TouchEvent) => this.touchMove(e), true);
+            window.addEventListener("touchmove", (e: TouchEvent) => {!this.disableWindowTouch && this.touchMove(e)}, true);
 
-            window.addEventListener("touchcancel", (e: TouchEvent) => this.touchEnd(e), true);
+            window.addEventListener("touchcancel", (e: TouchEvent) => {!this.disableWindowTouch && this.touchEnd(e)}, true);
 
             //window.addEventListener("deviceorientation", (e: DeviceOrientationEvent) => this.ondeviceorientation(e), true);
             //window.addEventListener("deviceorientation", (e: DeviceOrientationEvent) => this.ondeviceorientation(e), true);
@@ -285,6 +297,36 @@
             //window.addEventListener("deviceorientation", (e: DeviceOrientationEvent) => this.onDeviceOrientation(e), true);
 
 
+        }
+
+        private disableWindowTouch:boolean = false;
+        public init(canvas:HTMLCanvasElement) {
+            this.disableWindowTouch = true;
+            // window.removeEventListener("click", (e: MouseEvent) => this.mouseClick(e), true);
+            // window.removeEventListener("mousedown", (e: MouseEvent) => this.mouseStart(e), true);
+            // window.removeEventListener("mouseup", (e: MouseEvent) => this.mouseEnd(e), true);
+            // window.removeEventListener("mousewheel", (e: MouseWheelEvent) => this.mouseWheel(e), true);
+            // window.removeEventListener("mousemove", (e: MouseEvent) => this.mouseMove(e), true);
+            // window.removeEventListener("mouseover", (e: MouseEvent) => this.mouseOver(e), true);
+            // window.removeEventListener("keydown", (e: KeyboardEvent) => this.keyDown(e), true);
+            // window.removeEventListener("keyup", (e: KeyboardEvent) => this.keyUp(e), true);
+            // window.removeEventListener("touchstart", (e: TouchEvent) => this.touchStart(e), true);
+            // window.removeEventListener("touchend", (e: TouchEvent) => this.touchEnd(e), true);
+            // window.removeEventListener("touchmove", (e: TouchEvent) => this.touchMove(e), true);
+            // window.removeEventListener("touchcancel", (e: TouchEvent) => this.touchEnd(e), true);
+
+            canvas.addEventListener("click", (e: MouseEvent) => this.mouseClick(e), false);
+            canvas.addEventListener("mousedown", (e: MouseEvent) => this.mouseStart(e), false);
+            canvas.addEventListener("mouseup", (e: MouseEvent) => this.mouseEnd(e), false);
+            canvas.addEventListener("mousewheel", (e: MouseWheelEvent) => this.mouseWheel(e), false);
+            canvas.addEventListener("mousemove", (e: MouseEvent) => this.mouseMove(e), false);
+            canvas.addEventListener("mouseover", (e: MouseEvent) => this.mouseOver(e), false);
+            canvas.addEventListener("keydown", (e: KeyboardEvent) => this.keyDown(e), false);
+            canvas.addEventListener("keyup", (e: KeyboardEvent) => this.keyUp(e), false);
+            canvas.addEventListener("touchstart", (e: TouchEvent) => this.touchStart(e), false);
+            canvas.addEventListener("touchend", (e: TouchEvent) => this.touchEnd(e), false);
+            canvas.addEventListener("touchmove", (e: TouchEvent) => this.touchMove(e), false);
+            canvas.addEventListener("touchcancel", (e: TouchEvent) => this.touchEnd(e), false);
         }
 
 
@@ -565,13 +607,13 @@
 
             //e.preventDefault();
 
-            var x1: number = e.targetTouches[0].clientX - Input.canvas.x + Input.canvas.offsetX;
-            var y1: number = e.targetTouches[0].clientY - Input.canvas.y + Input.canvas.offsetY;
+            var x1: number = Input.getX(e.targetTouches[0].clientX)// - Input.canvas.x + Input.canvas.offsetX;
+            var y1: number = Input.getY(e.targetTouches[0].clientY)// - Input.canvas.y + Input.canvas.offsetY;
 
             if (e.targetTouches.length == 2) {
 
-                var x2: number = e.targetTouches[1].clientX - Input.canvas.x + Input.canvas.offsetX;
-                var y2: number = e.targetTouches[1].clientY - Input.canvas.y + Input.canvas.offsetY;
+                var x2: number = Input.getX(e.targetTouches[1].clientX)// - Input.canvas.x + Input.canvas.offsetX;
+                var y2: number = Input.getY(e.targetTouches[1].clientY)// - Input.canvas.y + Input.canvas.offsetY;
 
                 this.onPinch(x1, y1, x2, y2);
             }
@@ -597,15 +639,15 @@
 
             if (e.targetTouches.length > 1) {
 
-                var x: number = e.targetTouches[0].clientX - Input.canvas.x + Input.canvas.offsetX;
-                var y: number = e.targetTouches[0].clientY - Input.canvas.y + Input.canvas.offsetY;
-                var x1: number = e.targetTouches[1].clientX - Input.canvas.x + Input.canvas.offsetX;
-                var y1: number = e.targetTouches[1].clientY - Input.canvas.y + Input.canvas.offsetY;
+                var x: number = Input.getX(e.targetTouches[0].clientX)// - Input.canvas.x + Input.canvas.offsetX;
+                var y: number = Input.getY(e.targetTouches[0].clientY)// - Input.canvas.y + Input.canvas.offsetY;
+                var x1: number = Input.getX(e.targetTouches[1].clientX)// - Input.canvas.x + Input.canvas.offsetX;
+                var y1: number = Input.getY(e.targetTouches[1].clientY)// - Input.canvas.y + Input.canvas.offsetY;
 
                 this.onPinch(x, y, x1, y1);
             }
             else if (e.targetTouches.length == 1) {
-                this.onSwipe(e.targetTouches[0].clientX - Input.canvas.x + Input.canvas.offsetX, e.targetTouches[0].clientY - Input.canvas.y + Input.canvas.offsetY);
+                this.onSwipe(Input.getX(e.targetTouches[0].clientX), Input.getY(e.targetTouches[0].clientY));
                 this._mouseStatus[MouseCode.Mouse_Left] = false;
             }
             else {
@@ -629,8 +671,8 @@
             Input.mouseLastX = Input.mouseX;
             Input.mouseLastY = Input.mouseY;
 
-            Input.mouseX = e.targetTouches[0].clientX - Input.canvas.x + Input.canvas.offsetX;
-            Input.mouseY = e.targetTouches[0].clientY - Input.canvas.y + Input.canvas.offsetY;
+            Input.mouseX = Input.getX(e.targetTouches[0].clientX)// - Input.canvas.x + Input.canvas.offsetX;
+            Input.mouseY = Input.getY(e.targetTouches[0].clientY)// - Input.canvas.y + Input.canvas.offsetY;
 
             Input.mouseOffsetX = Input.mouseX - Input.mouseLastX;
             Input.mouseOffsetY = Input.mouseY - Input.mouseLastY;
@@ -641,7 +683,7 @@
             if (e.targetTouches.length > 1) {
 
                 var newPosition1: Point = new Point(Input.mouseX, Input.mouseY);
-                var newPosition2: Point = new Point(e.targetTouches[1].clientX - Input.canvas.x + Input.canvas.offsetX, e.targetTouches[1].clientY - Input.canvas.y + Input.canvas.offsetY);
+                var newPosition2: Point = new Point(Input.getX(e.targetTouches[1].clientX), Input.getY(e.targetTouches[1].clientY));
 
                 if (this._oldPosition1 == null)
                     this._oldPosition1 = newPosition1;
@@ -728,8 +770,8 @@
             Input.mouseLastX = Input.mouseX;
             Input.mouseLastY = Input.mouseY;
 
-            Input.mouseX = e.clientX - Input.canvas.x + Input.canvas.offsetX;
-            Input.mouseY = e.clientY - Input.canvas.y + Input.canvas.offsetY;
+            Input.mouseX = Input.getX(e.clientX)// - Input.canvas.x + Input.canvas.offsetX;
+            Input.mouseY = Input.getY(e.clientY)// - Input.canvas.y + Input.canvas.offsetY;
 
             Input.mouseOffsetX = Input.mouseX - Input.mouseLastX;
             Input.mouseOffsetY = Input.mouseY - Input.mouseLastY;

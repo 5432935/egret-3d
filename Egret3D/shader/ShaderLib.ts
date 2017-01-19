@@ -1495,60 +1495,96 @@ module egret3d {
 			"gl_Position = outPosition ; \n" +
 			"} \n",
 
-			"particle_bezier":
-			"float calcBezierArea(float bzData[35], float tCurrent, float tTotal){ \n" +
-			"float res = 0.0; \n" +
-			"float v0; \n" +
-			"float v1; \n" +
-			"float t0; \n" +
-			"float t1; \n" +
-			"float deltaTime = 0.0; \n" +
-			"float a_deltaTime; \n" +
-			"for(int i = 0; i < 16; i ++) \n" +
-			"{ \n" +
-			"t0 = bzData[i * 2 + 0] * tTotal; \n" +
-			"v0 = bzData[i * 2 + 1]; \n" +
-			"t1 = bzData[i * 2 + 2] * tTotal; \n" +
-			"v1 = bzData[i * 2 + 3]; \n" +
-			"deltaTime = t1 - t0; \n" +
-			"a_deltaTime = 0.5 * (v1 - v0); \n" +
-			"if(tCurrent >= t1) \n" +
-			"{ \n" +
-			"res += deltaTime * (v0 + a_deltaTime); \n" +
-			"}else \n" +
-			"{ \n" +
-			"deltaTime = tCurrent - t0; \n" +
-			"res += deltaTime * (v0 + a_deltaTime); \n" +
-			"break; \n" +
-			"} \n" +
-			"} \n" +
-			"return res; \n" +
-			"} \n" +
-			"float calcBezierSize(float bzData[35], float tCurrent, float tTotal){ \n" +
-			"float res = 0.0; \n" +
-			"float y0; \n" +
-			"float y1; \n" +
-			"float t0; \n" +
-			"float t1; \n" +
-			"float deltaTime = 0.0; \n" +
-			"float v; \n" +
-			"for(int i = 0; i < 16; i ++) \n" +
-			"{ \n" +
-			"t0 = bzData[i * 2 + 0] * tTotal; \n" +
-			"y0 = bzData[i * 2 + 1]; \n" +
-			"t1 = bzData[i * 2 + 2] * tTotal; \n" +
-			"y1 = bzData[i * 2 + 3]; \n" +
-			"deltaTime = t1 - t0; \n" +
-			"if(tCurrent <= t1) \n" +
-			"{ \n" +
-			"v = (y1 - y0) / deltaTime; \n" +
-			"deltaTime = tCurrent - t0; \n" +
-			"res = y0 + v * deltaTime; \n" +
-			"break; \n" +
-			"} \n" +
-			"} \n" +
-			"return res; \n" +
-			"} \n",
+			"particle_bezier": "float calcBezierArea(float bzData[35], float tCurrent, float tTotal){ \n" +
+                "float res = 0.0; \n" +
+                "float v0; \n" +
+                "float v1; \n" +
+                "float t0; \n" +
+                "float t1; \n" +
+
+                // xs start
+                // 这里减少了采样次数，效果可能不一致
+                // 用float标示是否break，boolean值编译时容易出错
+                "float breakFlag = 1.0; \n" + 
+                "for(int i = 0; i < 3; i++){ \n" +
+                    "t1 = bzData[i * 4]; \n" +
+                    "v1 = bzData[i * 4 + 1]; \n" +
+                    "t0 = bzData[(i - 1) * 4]; \n" +
+                    "v0 = bzData[(i - 1) * 4 + 1]; \n" +
+                    "res += (min(tCurrent, t1) - t0) * (0.5 * (v1 + v0)) * breakFlag; \n" +
+                    "if(t1 >= tCurrent) { \n" +
+                        "breakFlag = 0.0;" +
+                    "} \n" +
+                "} \n" +
+                // xs end
+
+                // "float deltaTime = 0.0; \n" +
+                // "float a_deltaTime; \n" +
+                // "for(int i = 0; i < 3; i ++) \n" +
+                // "{ \n" +
+                // "t0 = bzData[i * 2 + 0] * tTotal; \n" +
+                // "v0 = bzData[i * 2 + 1]; \n" +
+                // "t1 = bzData[i * 2 + 2] * tTotal; \n" +
+                // "v1 = bzData[i * 2 + 3]; \n" +
+                // "deltaTime = t1 - t0; \n" +
+                // "a_deltaTime = 0.5 * (v1 - v0); \n" +
+                // "if(tCurrent >= t1) \n" +
+                // "{ \n" +
+                //     "res += deltaTime * (v0 + a_deltaTime); \n" +
+                // "}else \n" +
+                // "{ \n" +
+                //     "deltaTime = tCurrent - t0; \n" +
+                //     "res += deltaTime * (v0 + a_deltaTime); \n" +
+                //     // "break; \n" +
+                // "} \n" +
+                // "} \n" +
+
+                "return res; \n" +
+                "} \n" +
+                "float calcBezierSize(float bzData[35], float tCurrent, float tTotal){ \n" +
+                "float res = 0.0; \n" +
+                "float y0; \n" +
+                "float y1; \n" +
+                "float t0; \n" +
+                "float t1; \n" +
+                
+                // xs start
+                // 这里减少了采样次数，效果可能不一致
+                "for(int i = 1; i < 4; i ++){ \n" +
+                    "t1 = bzData[i * 4]; \n" +
+                    "y1 = bzData[i * 4 + 1]; \n" +
+                    "if(t1 >= tCurrent) { \n" +
+                        "t0 = bzData[(i - 1) * 4]; \n" +
+                        "y0 = bzData[(i - 1) * 4 + 1]; \n" +
+                        "float age = (tCurrent - t0) / (t1 - t0); \n" +
+                        "res = y0 + (y1 - y0) * age; \n" +
+                        // break 语句导致某些机型编译失败或结果不正确
+                        // "break; \n" +
+                    "} \n" +
+                "} \n" +
+                // xs end
+
+                // "float deltaTime = 0.0; \n" +
+                // "float v; \n" +
+                // "for(int i = 0; i < 3; i +=4) \n" +
+                // "{ \n" +
+                // "t0 = bzData[i * 2 + 0] * tTotal; \n" +
+                // "y0 = bzData[i * 2 + 1]; \n" +
+                // "t1 = bzData[i * 2 + 2] * tTotal; \n" +
+                // "y1 = bzData[i * 2 + 3]; \n" +
+                // "deltaTime = t1 - t0; \n" +
+                // "if(tCurrent <= t1) \n" +
+                // "{ \n" +
+                // "v = (y1 - y0) / deltaTime; \n" +
+                // "deltaTime = tCurrent - t0; \n" +
+                // "res = y0 + v * deltaTime; \n" +
+                // // "break; \n" +
+                // "} \n" +
+                // "} \n" +
+
+                "return res; \n" +
+                "} \n",
+
 
 			"particle_color_fs":
 			"uniform float uniform_colorTransform[40]; \n" +

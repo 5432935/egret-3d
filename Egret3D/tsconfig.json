@@ -4,7 +4,7 @@
         "noImplicitAny": false,
         "sourceMap": false,
         "declaration": true,
-        "out": "../module/egret3d/egret3d.js",
+        "out": "../../egret-core/build/egret3d/egret3d.js",
         "allowUnreachableCode": true
     },
     "files": [

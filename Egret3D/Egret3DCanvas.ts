@@ -15,6 +15,30 @@
         }
     }
 
+    export let contextForEgret = {
+        onStart: function (egret2dContext) {
+            egret2dContext.setAutoClear(false);
+        },
+
+        onRender: function (egret2dContext) {
+            egret2dContext.save();
+            Egret3DCanvas._instance.render();
+            egret2dContext.restore();
+        },
+
+        onStop: function () {
+
+        },
+
+        onResize: function() {
+            Egret3DCanvas._instance.resizeBlend2D();
+        }
+    }
+
+    // 切换prgram脏标记
+    // 用于完成2D渲染后强制标脏
+    export let proDirty:boolean = true;
+
     /**
     * @class egret3d.Egret3DCanvas
     * @classdesc
@@ -101,14 +125,18 @@
         public afterRender: Function;
 
         protected _start: boolean = false;
+
+        protected blend2D:boolean = false;
+
+        protected stage2D;
         /**
         * @language zh_CN
         * 构造一个Egret3DCanvas对象
-        * @param blend2D 暂时未使用，默认参数为false
+        * @param stage2D 从外部注入stage2D，可选
         * @version Egret 3.0
         * @platform Web,Native
         */
-        constructor(blend2D: boolean = false) {
+        constructor(stage2D?) {
             super();
 
             if (Egret3DCanvas._instance)
@@ -117,35 +145,43 @@
 
             ShaderUtil.instance.load();
             this._envetManager = new EventManager(this);
-            this.canvas = document.createElement("canvas");
-            this.canvas.style.position = "absolute";
-            this.canvas.style.zIndex = "-1";
 
-            //this.canvas.style.transform = "rotate(90deg)";
-            //this.canvas.style["-ms-transform"] = "rotate(90deg)";
-            //this.canvas.style["-moz-transform"] = "rotate(90deg)";
-            //this.canvas.style["-webkit-transform"] = "rotate(90deg)";
-            //this.canvas.style["-o-transform"] = "rotate(90deg)" ;
+            this.stage2D = stage2D;
+            this.blend2D = !!stage2D;
+            if(this.blend2D) {
+                this.canvas = stage2D.$screen.canvas;
+            } else {
+                this.canvas = document.createElement("canvas");
+                this.canvas.style.position = "absolute";
+                this.canvas.style.zIndex = "-1";
 
-            if (document.getElementsByClassName("egret-player").length > 0) {
-                document.getElementsByClassName("egret-player")[0].appendChild(this.canvas);
+                // this.canvas.style.transform = "rotate(90deg)";
+                // this.canvas.style["-ms-transform"] = "rotate(90deg)";
+                // this.canvas.style["-moz-transform"] = "rotate(90deg)";
+                // this.canvas.style["-webkit-transform"] = "rotate(90deg)";
+                // this.canvas.style["-o-transform"] = "rotate(90deg)" ;
+
+                if (document.getElementsByClassName("egret-player").length > 0) {
+                    document.getElementsByClassName("egret-player")[0].appendChild(this.canvas);
+                }
+                else {
+                    document.body.appendChild(this.canvas);
+                
+                }
+
+                this.canvas.id = "egret3D";
             }
-            else {
-                document.body.appendChild(this.canvas);
-               
-            }
-
-            this.canvas.id = "egret3D";
+            
             this.canvas.oncontextmenu = function () {
                 return false;
             };
 
             Egret3DCanvas.context3DProxy = new egret3d.Context3DProxy();
 
-            Context3DProxy.gl = <WebGLRenderingContext>this.canvas.getContext("experimental-webgl");
+            Context3DProxy.gl = <WebGLRenderingContext>this.canvas.getContext("webgl");
 
             if (!Context3DProxy.gl)
-                Context3DProxy.gl = <WebGLRenderingContext>this.canvas.getContext("webgl");
+                Context3DProxy.gl = <WebGLRenderingContext>this.canvas.getContext("experimental-webgl");
 
 
             if (!Context3DProxy.gl)
@@ -168,6 +204,11 @@
             console.log("this.context3D ==>", Context3DProxy.gl);
 
             Input.canvas = this;
+            if(this.blend2D) {
+                Input["instance"].init(this.canvas);
+                
+                this.resizeBlend2D();
+            }
             this.initEvent();
         }
 
@@ -343,6 +384,98 @@
         }
 
         /**
+         * @language zh_CN
+         * Egret3DCanvas 调用一次渲染
+         * @version Egret 4.0
+         * @platform Web,Native
+         */
+        public render() {
+            if(!this.blend2D) {
+                return;
+            }
+            // 设置3D上下文
+            // Egret3DCanvas.context3DProxy.enableBlend();
+            // Egret3DCanvas.context3DProxy.enableCullFace();
+            
+            // Context3DProxy.gl.enable(Context3DProxy.gl.CULL_FACE);
+            // Context3DProxy.gl.enable(Context3DProxy.gl.SCISSOR_TEST);
+            var gl = Context3DProxy.gl;
+            // Context3DProxy.gl.bindFramebuffer(Context3DProxy.gl.FRAMEBUFFER, null);
+            gl.enable(gl.DEPTH_TEST);
+            // Egret3DCanvas.context3DProxy.setRenderToBackBuffer();
+
+            // 为3d的buffer以及着色器标脏
+            proDirty = true;
+
+            // 渲染
+            this._timeDate = new Date();
+            this._delay = this._timeDate.getTime() - this._time;
+            this._time = this._timeDate.getTime();
+
+            this._enterFrameEvent3D.time = this._time;
+            this._enterFrameEvent3D.delay = this._delay;
+            this.dispatchEvent(this._enterFrameEvent3D);
+
+            //Context3DProxy.gl.enable(ContextConfig.BLEND);
+            //Context3DProxy.gl.enable(ContextConfig.CULL_FACE);
+            //Context3DProxy.gl.enable(Context3DProxy.gl.SCISSOR_TEST);
+
+            Egret3DCanvas.context3DProxy.viewPort(this.canvas3DRectangle.x, this.canvas3DRectangle.y, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
+            Egret3DCanvas.context3DProxy.setScissorRectangle(this.canvas3DRectangle.x, this.canvas3DRectangle.y, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
+
+            CameraManager.instance.update(this._time, this._delay);
+            for (var i: number = 0; i < this._view3DS.length; i++) {
+                if (Egret3DEngine.instance.debug)
+                    Egret3DState.help = new Date().getTime();
+                this._view3DS[i].update(this._time, this._delay);
+                if (Egret3DEngine.instance.debug)
+                    Egret3DState.showDataInfo("view3D-" + i.toString() + ":" + (new Date().getTime() - Egret3DState.help) + " ms");
+            }
+
+            if (Egret3DEngine.instance.debug) {
+                //this._renderer = Math.floor((new Date().getTime() - this._time) );
+                Egret3DState.showTime(this._time, this._delay);
+                egret3d.Egret3DState.showDataInfo("renderer: " + (new Date().getTime() - this._time).toString() + " ms");
+                egret3d.Egret3DState.show();
+            }
+
+            if (this.afterRender) {
+                this.afterRender();
+            }    
+            // 渲染end 
+
+            // 恢复2D上下文
+            // Egret3DCanvas.context3DProxy.disableCullFace();
+            gl.disable(gl.CULL_FACE);
+            gl.disable(gl.SCISSOR_TEST);
+            gl.disable(gl.DEPTH_TEST);
+            // Context3DProxy.gl.viewport(this.canvas3DRectangle.x, this.canvas3DRectangle.y, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
+
+            for (var j: number = 0; j < 8; j++) {
+                if(j < 3) {
+                    Context3DProxy.gl.enableVertexAttribArray(j);
+                } else {
+                    Context3DProxy.gl.disableVertexAttribArray(j);   
+                }
+               
+            }
+
+        }
+
+        public resizeBlend2D():void {
+            if(this.blend2D) {
+                Input.scaleX = this.stage2D.$screen["webTouchHandler"].scaleX;
+                Input.scaleY = this.stage2D.$screen["webTouchHandler"].scaleY;
+
+                this.resize(0, 0, this.canvas.width, this.canvas.height);
+
+                var bouding = this.canvas.getBoundingClientRect();
+                this.offsetX = -bouding.left;
+                this.offsetY = -bouding.top;
+            }
+        }
+
+        /**
         * @language zh_CN
         * Egret3DCanvas 开始启动
         * @version Egret 3.0
@@ -448,10 +581,15 @@
             this.canvas3DRectangle.height = height;
             ContextConfig.canvasRectangle = this.canvas3DRectangle;
 
-            this.canvas.style.left = this.canvas3DRectangle.x.toString() + "px";
-            this.canvas.style.top = this.canvas3DRectangle.y.toString() + "px";
-            this.canvas.width = this.canvas3DRectangle.width;
-            this.canvas.height = this.canvas3DRectangle.height;
+            if(!this.blend2D) {
+                this.canvas.style.left = this.canvas3DRectangle.x.toString() + "px";
+                this.canvas.style.top = this.canvas3DRectangle.y.toString() + "px";
+                this.canvas.width = this.canvas3DRectangle.width;
+                this.canvas.height = this.canvas3DRectangle.height;
+            } else {
+                Input.scaleX = this.stage2D.$screen["webTouchHandler"].scaleX;
+                Input.scaleY = this.stage2D.$screen["webTouchHandler"].scaleY;
+            }
         }
     }
 
