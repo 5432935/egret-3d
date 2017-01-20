@@ -1659,6 +1659,47 @@ module egret3d {
 			"} \n" +
 			"//##FilterEnd## \n",
 
+			"particle_color_fs_low":
+			"uniform float uniform_colorTransform[40]; \n" +
+			"vec3 unpack_color(float rgb_data) \n" +
+			"{ \n" +
+			"vec3 res; \n" +
+			"res.z = fract( rgb_data ); \n" +
+			"rgb_data -= res.z; \n" +
+			"rgb_data = rgb_data/256.0; \n" +
+			"res.y = fract( rgb_data ); \n" +
+			"rgb_data -= res.y; \n" +
+			"res.x = rgb_data/256.0; \n" +
+			"return res; \n" +
+			"} \n" +
+			"void main() { \n" +
+			"float startColor ; \n" +
+			"float startSegment ; \n" +
+			"float nextColor ; \n" +
+			"float nextSegment ; \n" +
+			"float startAlpha; \n" +
+			"float nextAlpha; \n" +
+			"float progress = varying_particleData.x/varying_particleData.y; \n" +
+			"const int maxColorCount = 4; \n" +
+			"for( int i = 1 ; i < maxColorCount ; i++ ){ \n" +
+			"if( progress >= fract(uniform_colorTransform[i+maxColorCount-1]) ){ \n" +
+			"startColor = uniform_colorTransform[i-1] ; \n" +
+			"startSegment = fract(uniform_colorTransform[i+maxColorCount-1]) ; \n" +
+			"nextColor = uniform_colorTransform[i]; \n" +
+			"nextSegment = fract(uniform_colorTransform[i+maxColorCount]) ; \n" +
+			"startAlpha = uniform_colorTransform[i+maxColorCount-1] - startSegment; \n" +
+			"nextAlpha = uniform_colorTransform[i+maxColorCount] - nextSegment; \n" +
+			"}else{ \n" +
+			"break; \n" +
+			"} \n" +
+			"} \n" +
+			"float len = nextSegment - startSegment ; \n" +
+			"float ws = ( progress - startSegment ) / len ; \n" +
+			"globalColor = mix(vec4(unpack_color(startColor).xyz,startAlpha / 256.0),vec4(unpack_color(nextColor).xyz, nextAlpha / 256.0),ws) ; \n" +
+			"globalColor.w = clamp(globalColor.w,0.0,1.0); \n" +
+			"} \n" +
+			"//##FilterEnd## \n",
+
 			"particle_color_vs":
 			"void getNodeData(){ \n" +
 			"} \n" +
