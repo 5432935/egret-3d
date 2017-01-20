@@ -594,7 +594,10 @@
         */
         public setProgram(program: Program3D) {
             this.programChange = false;
-            if (this.program == program) return;
+            if (this.program == program && !egret3d.proDirty) {
+                return;
+            };
+            egret3d.proDirty = false;
             this.programChange = true;
             this.program = program;
             Context3DProxy.gl.useProgram(program.program);
