@@ -262,7 +262,7 @@
         * @platform Web,Native
         */
         public set x(value: number) {
-            if (this.canvas3DRectangle.x != value)
+            if (this.canvas3DRectangle.x != value && !this.blend2D)
                 this.resize(value, this.canvas3DRectangle.y, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
         }
                                             
@@ -285,7 +285,7 @@
         * @platform Web,Native
         */
         public set y(value: number) {
-            if (this.canvas3DRectangle.y != value)
+            if (this.canvas3DRectangle.y != value && !this.blend2D)
                 this.resize(this.canvas3DRectangle.x, value, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
         }
                                                     
@@ -308,7 +308,7 @@
         * @platform Web,Native
         */
         public set width(value: number) {
-            if (this.canvas3DRectangle.width != value)
+            if (this.canvas3DRectangle.width != value && !this.blend2D)
                 this.resize(this.canvas3DRectangle.x, this.canvas3DRectangle.y, value, this.canvas3DRectangle.height);
         }
                                                             
@@ -331,7 +331,7 @@
         * @platform Web,Native
         */
         public set height(value: number) {
-            if (this.canvas3DRectangle.height != value)
+            if (this.canvas3DRectangle.height != value && !this.blend2D)
                 this.resize(this.canvas3DRectangle.x, this.canvas3DRectangle.y, this.canvas3DRectangle.width, value);
         }
                                                                     
@@ -482,6 +482,9 @@
         * @platform Web,Native
         */
         public start() {
+            if(this.blend2D) {
+                return;
+            }
             this._start = true;
             this.update(0);
 
