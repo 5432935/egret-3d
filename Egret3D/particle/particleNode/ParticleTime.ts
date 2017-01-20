@@ -16,8 +16,11 @@
             //##FilterBegin## ##Particle##
 
             this.name = "ParticleSpeedNode";
-            this.importShader(true, ShaderPhaseType.utils_vertex, "particle_bezier");
-            this.importShader(false, ShaderPhaseType.utils_fragment, "particle_bezier");
+
+            var bezierShader: string = Egret3DPolicy.useLowLoop ? "particle_bezier_low" : "particle_bezier";
+            this.importShader(true, ShaderPhaseType.utils_vertex, bezierShader);
+            this.importShader(false, ShaderPhaseType.utils_fragment, bezierShader);
+
             this.importShader(false, ShaderPhaseType.diffuse_fragment, "particle_diffuse_fragment");
 
             this.attribute_time = new GLSL.VarRegister();

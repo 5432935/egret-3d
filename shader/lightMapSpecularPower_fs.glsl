@@ -11,9 +11,7 @@ vec4 decode_hdr( vec4 data ){
 void main(void){
 	vec4 lightmap = texture2D( lightTexture , varying_uv1 );
     lightmap.xyz = decode_hdr(lightmap).xyz ;
-
-    diffuseColor.xyz *= lightmap.xyz ;
-	specularColor.xyz *= lightmap.xyz ;
+	outColor.xyz *= lightmap.xyz ;
 }
 
 

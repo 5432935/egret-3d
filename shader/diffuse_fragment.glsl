@@ -1,11 +1,26 @@
 ﻿uniform sampler2D diffuseTexture;
-vec4 diffuseColor ;
+varying vec4 varying_mvPose;
 void main() {
-	diffuseColor = texture2D(diffuseTexture , uv_0 ); 
-	//diffuseColor.xyz = pow(diffuseColor.xyz,vec3(2.0));
-    if( diffuseColor.w < materialSource.cutAlpha ){
+  	vec3 fc = vec3(0.0, 0.0, 0.0);
+	vec4 c = texture2D( diffuseTexture , uv_0 );
+    c.xyz *= materialSource.diffuse ; 
+
+	if (c.a < materialSource.cutAlpha)
 		discard;
-	}
+
+	if(materialSource.refraction<2.41){ 
+       float vl = dot(normal,-normalize(varying_mvPose.xyz)); 
+       fc = Fresnel_Schlick(vl,vec3(materialSource.refraction)) * materialSource.refractionintensity ; 
+       fc.xyz = max(fc,vec3(0.0)) ; 
+    } 
+
+	s.Normal = normal;
+	s.Specular = vec4(1.0) ;
+	s.Albedo = c.rgb + fc.xyz * c.rgb + materialSource.ambient * c.rgb;
+	s.Albedo = pow(s.Albedo, vec3(materialSource.gamma));
+	s.Alpha = c.a;
+	outColor.xyz = s.Albedo * 0.5 ;
+	outColor.w = s.Alpha;
 }
 
 

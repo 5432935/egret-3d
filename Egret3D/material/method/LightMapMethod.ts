@@ -36,11 +36,11 @@
             this.fsShaderList[ShaderPhaseType.lighting_fragment].push("lightingBase_fs");
             
             if (useSpecularPower){
-                this.fsShaderList[ShaderPhaseType.shadow_fragment] = this.fsShaderList[ShaderPhaseType.shadow_fragment] || [];
-                this.fsShaderList[ShaderPhaseType.shadow_fragment].push("lightMapSpecularPower_fs");
+                this.fsShaderList[ShaderPhaseType.multi_end_fragment] = this.fsShaderList[ShaderPhaseType.multi_end_fragment] || [];
+                this.fsShaderList[ShaderPhaseType.multi_end_fragment].push("lightMapSpecularPower_fs");
             } else {
-                this.fsShaderList[ShaderPhaseType.shadow_fragment] = this.fsShaderList[ShaderPhaseType.shadow_fragment] || [];
-                this.fsShaderList[ShaderPhaseType.shadow_fragment].push("lightMap_fs");
+                this.fsShaderList[ShaderPhaseType.multi_end_fragment] = this.fsShaderList[ShaderPhaseType.multi_end_fragment] || [];
+                this.fsShaderList[ShaderPhaseType.multi_end_fragment].push("lightMap_fs");
             }
 
         }

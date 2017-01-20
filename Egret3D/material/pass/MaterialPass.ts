@@ -456,12 +456,12 @@
                 shaderList = this._fs_shader_methods[ShaderPhaseType.shadow_fragment];
                 if (shaderList && shaderList.length > 0)
                     this.addMethodShaders(this._passUsage.fragmentShader, shaderList);
-                //lighting
-                shaderList = this._fs_shader_methods[ShaderPhaseType.lighting_fragment];
-                if (shaderList && shaderList.length > 0)
-                    this.addMethodShaders(this._passUsage.fragmentShader, shaderList);
                 //specular
                 shaderList = this._fs_shader_methods[ShaderPhaseType.specular_fragment];
+                if (shaderList && shaderList.length > 0)
+                    this.addMethodShaders(this._passUsage.fragmentShader, shaderList);
+                //lighting
+                shaderList = this._fs_shader_methods[ShaderPhaseType.lighting_fragment];
                 if (shaderList && shaderList.length > 0)
                     this.addMethodShaders(this._passUsage.fragmentShader, shaderList);
                 //matCap

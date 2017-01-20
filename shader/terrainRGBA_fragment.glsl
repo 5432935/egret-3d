@@ -17,8 +17,9 @@ void main() {
 	cc.xyz += splat_control.z * vec4(texture2D (splat_2Tex, uv* vec2(uvs[4],uvs[5]))).xyz;
 	//cc.xyz += (1.0-length(splat_control.xyz)) * vec4(texture2D (splat_3Tex, uv* vec2(uvs[6],uvs[7]))).xyz;
 	cc.xyz += (1.0-splat_control.w) * vec4(texture2D (splat_3Tex, uv* vec2(uvs[6],uvs[7]))).xyz; 
-	
-	diffuseColor.xyz = cc.xyz ;
+	s.Albedo.xyz = cc.xyz ; 
+	outColor.xyz = s.Albedo.xyz;
+	outColor.w = 1.0;
 }
 
 

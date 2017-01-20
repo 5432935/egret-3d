@@ -150,7 +150,6 @@
 
             if (!Context3DProxy.gl)
                 alert("you drivers not suport webgl");
-
             //getExtension
             //this.getExtension("WEBGL_draw_buffers"); 
             //this.getExtension("OES_element_index_uint"); 
@@ -161,8 +160,7 @@
             //this.getExtension("WEBKIT_WEBGL_depth_texture");
             //this.getExtension("MOZ_WEBGL_depth_texture");
 
-            //this.create2dContext();
-
+            this.create2dContext();
 
             Egret3DCanvas.context3DProxy.register();
             console.log("this.context3D ==>", Context3DProxy.gl);

@@ -24,7 +24,9 @@
             this.name = "ParticleColorGlobalNode";
 
             this.importShader(true, ShaderPhaseType.global_vertex, "particle_color_vs");
-            this.importShader(false, ShaderPhaseType.end_fragment, "particle_color_fs");
+
+            var fsShader: string = Egret3DPolicy.useLowLoop ? "particle_color_fs_low" : "particle_color_fs";
+            this.importShader(false, ShaderPhaseType.end_fragment, fsShader);
            
             //##FilterEnd##
 

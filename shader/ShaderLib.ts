@@ -61,10 +61,15 @@ module egret3d {
 			"varying vec2 varying_uv0; \n" +
 			"varying vec4 varying_color; \n" +
 			"uniform mat4 uniform_ViewMatrix ; \n" +
+			"struct SurfaceOutput{ \n" +
+			"vec3 Albedo; \n" +
+			"vec3 Normal; \n" +
+			"vec4 Specular; \n" +
+			"float Alpha ; \n" +
+			"}; \n" +
+			"SurfaceOutput s ; \n" +
 			"vec4 outColor ; \n" +
 			"vec4 diffuseColor ; \n" +
-			"vec4 specularColor ; \n" +
-			"vec4 ambientColor; \n" +
 			"vec4 light ; \n" +
 			"vec3 normal; \n" +
 			"vec2 uv_0; \n" +
@@ -73,11 +78,13 @@ module egret3d {
 			"vec3 fdy = dFdy(pos); \n" +
 			"return normalize(cross(fdx, fdy)); \n" +
 			"} \n" +
+			"vec3 Fresnel_Schlick(float cosT, vec3 F0) \n" +
+			"{ \n" +
+			"return F0 + (1.0-F0) * pow( 1.0 - cosT, 5.0); \n" +
+			"} \n" +
 			"void main() { \n" +
-			"diffuseColor  = vec4(1.0,1.0,1.0,1.0); \n" +
-			"specularColor = vec4(0.0,0.0,0.0,0.0); \n" +
-			"ambientColor  = vec4(0.0,0.0,0.0,0.0); \n" +
-			"light         = vec4(1.0,1.0,1.0,1.0); \n" +
+			"diffuseColor  = vec4(1.0); \n" +
+			"light         = vec4(0.0,0.0,0.0,-1.0); \n" +
 			"normal = normalize(varying_eyeNormal) ; \n" +
 			"uv_0 = varying_uv0; \n" +
 			"} \n",
@@ -307,12 +314,25 @@ module egret3d {
 
 			"diffuse_fragment":
 			"uniform sampler2D diffuseTexture; \n" +
-			"vec4 diffuseColor ; \n" +
+			"varying vec4 varying_mvPose; \n" +
 			"void main() { \n" +
-			"diffuseColor = texture2D(diffuseTexture , uv_0 ); \n" +
-			"if( diffuseColor.w < materialSource.cutAlpha ){ \n" +
+			"vec3 fc = vec3(0.0, 0.0, 0.0); \n" +
+			"vec4 c = texture2D( diffuseTexture , uv_0 ); \n" +
+			"c.xyz *= materialSource.diffuse ; \n" +
+			"if (c.a < materialSource.cutAlpha) \n" +
 			"discard; \n" +
+			"if(materialSource.refraction<2.41){ \n" +
+			"float vl = dot(normal,-normalize(varying_mvPose.xyz)); \n" +
+			"fc = Fresnel_Schlick(vl,vec3(materialSource.refraction)) * materialSource.refractionintensity ; \n" +
+			"fc.xyz = max(fc,vec3(0.0)) ; \n" +
 			"} \n" +
+			"s.Normal = normal; \n" +
+			"s.Specular = vec4(1.0) ; \n" +
+			"s.Albedo = c.rgb + fc.xyz * c.rgb + materialSource.ambient * c.rgb; \n" +
+			"s.Albedo = pow(s.Albedo, vec3(materialSource.gamma)); \n" +
+			"s.Alpha = c.a; \n" +
+			"outColor.xyz = s.Albedo * 0.5 ; \n" +
+			"outColor.w = s.Alpha; \n" +
 			"} \n",
 
 			"diffuse_vertex":
@@ -331,7 +351,7 @@ module egret3d {
 
 			"directLight_fragment":
 			"const int max_directLight = 0 ; \n" +
-			"uniform float uniform_directLightSource[9*max_directLight] ; \n" +
+			"uniform float uniform_directLightSource[10*max_directLight] ; \n" +
 			"varying vec4 varying_mvPose; \n" +
 			"uniform mat4 uniform_ViewMatrix; \n" +
 			"mat4 normalMatrix ; \n" +
@@ -339,6 +359,7 @@ module egret3d {
 			"vec3 direction; \n" +
 			"vec3 diffuse; \n" +
 			"vec3 ambient; \n" +
+			"float intensity; \n" +
 			"}; \n" +
 			"mat4 transpose(mat4 inMatrix) { \n" +
 			"vec4 i0 = inMatrix[0]; \n" +
@@ -390,22 +411,25 @@ module egret3d {
 			"a31 * b01 - a30 * b03 - a32 * b00, \n" +
 			"a20 * b03 - a21 * b01 + a22 * b00) / det; \n" +
 			"} \n" +
-			"void calculateDirectLight( MaterialSource materialSource ){ \n" +
+			"vec4 calculateDirectLight( MaterialSource materialSource ){ \n" +
 			"float lambertTerm , specular ; \n" +
 			"vec3 dir ,viewDir = normalize(varying_mvPose.xyz/varying_mvPose.w); \n" +
+			"diffuseColor = vec4(0.0,0.0,0.0,1.0); \n" +
 			"for(int i = 0 ; i < max_directLight ; i++){ \n" +
 			"DirectLight directLight ; \n" +
 			"directLight.direction = (normalMatrix * vec4(uniform_directLightSource[i*9],uniform_directLightSource[i*9+1],uniform_directLightSource[i*9+2],1.0)).xyz; \n" +
 			"directLight.diffuse = vec3(uniform_directLightSource[i*9+3],uniform_directLightSource[i*9+4],uniform_directLightSource[i*9+5]); \n" +
 			"directLight.ambient = vec3(uniform_directLightSource[i*9+6],uniform_directLightSource[i*9+7],uniform_directLightSource[i*9+8]); \n" +
+			"directLight.intensity = uniform_directLightSource[i*9+9] ; \n" +
 			"dir = normalize(directLight.direction) ; \n" +
-			"LightingBlinnPhong(dir,directLight.diffuse,directLight.ambient,normal,viewDir,0.5); \n" +
+			"diffuseColor += LightingBlinnPhong(dir,directLight.diffuse,directLight.ambient,s.Normal,viewDir,directLight.intensity); \n" +
 			"} \n" +
+			"return diffuseColor ; \n" +
 			"} \n" +
 			"void main() { \n" +
 			"normalMatrix = inverse(uniform_ViewMatrix); \n" +
 			"normalMatrix = transpose(normalMatrix); \n" +
-			"calculateDirectLight( materialSource ); \n" +
+			"light += calculateDirectLight( materialSource ).xyzw ; \n" +
 			"} \n",
 
 			"endShadowPass_fs":
@@ -431,20 +455,13 @@ module egret3d {
 			"vec4 specularColor ; \n" +
 			"vec4 ambientColor; \n" +
 			"vec4 light ; \n" +
-			"vec3 Fresnel_Schlick(float cosT, vec3 F0) \n" +
-			"{ \n" +
-			"return F0 + (1.0-F0) * pow( 1.0 - cosT, 5.0); \n" +
-			"} \n" +
 			"void main() { \n" +
-			"if(materialSource.refraction<2.41){ \n" +
-			"float vl = dot(normal,-normalize(varying_mvPose.xyz)); \n" +
-			"vec3 f = Fresnel_Schlick(vl,vec3(1.2)) * materialSource.refractionintensity ; \n" +
-			"light.xyz += max(f,vec3(0.0)) ; \n" +
+			"if(light.w < 0.0 ){ \n" +
+			"outColor.xyz = s.Albedo.xyz ; \n" +
+			"}else{ \n" +
+			"outColor.xyzw = light ; \n" +
 			"} \n" +
-			"outColor.xyz = (light.xyz+materialSource.ambient) * (diffuseColor.xyz * materialSource.diffuse * varying_color.xyz) + specularColor.xyz ; \n" +
-			"outColor.w = materialSource.alpha * diffuseColor.w * varying_color.w; \n" +
-			"outColor.xyz *= outColor.w; \n" +
-			"outColor.xyz = pow(outColor.xyz,vec3(materialSource.gamma)); \n" +
+			"outColor.xyzw *= varying_color.xyzw; \n" +
 			"} \n",
 
 			"end_vs":
@@ -1261,19 +1278,17 @@ module egret3d {
 			"} \n",
 
 			"lightingBase_fs":
-			"void LightingBlinnPhong(vec3 lightDir, vec3 lightColor , vec3 lightAmbient , vec3 normal , vec3 viewDir, float atten){ \n" +
-			"vec3 H = normalize(lightDir + normalize(viewDir)); \n" +
-			"float NdotL = max(dot(normal, lightDir),0.0); \n" +
-			"float NdotH = max(dot(normal,H),0.0); \n" +
-			"vec3 diffuse = lightColor.xyz * NdotL ; \n" +
-			"float specPower = pow (NdotH, materialSource.shininess ) * materialSource.specularScale ; \n" +
-			"vec3 specular = lightColor.xyz * specPower * materialSource.specular ; \n" +
-			"specularColor.xyz += specular; \n" +
-			"light.xyz += (diffuse+lightAmbient) * (atten * 2.0 ); \n" +
-			"light.w = materialSource.alpha + (specPower * atten); \n" +
+			"vec4 LightingBlinnPhong(vec3 lightDir, vec3 lightColor , vec3 lightAmbient , vec3 normal , vec3 viewDir, float atten){ \n" +
+			"vec3 h = normalize(lightDir + normalize(viewDir)); \n" +
+			"float diff = max(dot(normal, lightDir),0.0); \n" +
+			"float nh = max(dot(normal,h),0.0); \n" +
+			"float spec = pow(nh, materialSource.shininess ) * materialSource.specularScale ; \n" +
+			"vec4 c ; \n" +
+			"c.rgb = (s.Albedo * lightColor * diff + lightColor * materialSource.specular.rgb * s.Specular.rgb * spec) * (atten * 2.0); \n" +
+			"c.a = s.Alpha + spec * atten; \n" +
+			"return c; \n" +
 			"} \n" +
 			"void main(void) { \n" +
-			"light.xyzw = vec4(0.0,0.0,0.0,1.0) ; \n" +
 			"} \n",
 
 			"lightMapSpecularPower_fs":
@@ -1288,8 +1303,7 @@ module egret3d {
 			"void main(void){ \n" +
 			"vec4 lightmap = texture2D( lightTexture , varying_uv1 ); \n" +
 			"lightmap.xyz = decode_hdr(lightmap).xyz ; \n" +
-			"diffuseColor.xyz *= lightmap.xyz ; \n" +
-			"specularColor.xyz *= lightmap.xyz ; \n" +
+			"outColor.xyz *= lightmap.xyz ; \n" +
 			"} \n" +
 			"  \n",
 
@@ -1305,7 +1319,7 @@ module egret3d {
 			"void main(void){ \n" +
 			"vec4 lightmap = texture2D( lightTexture , varying_uv1 ); \n" +
 			"lightmap.xyz = decode_hdr(lightmap).xyz  ; \n" +
-			"diffuseColor.xyz *= lightmap.xyz ; \n" +
+			"outColor.xyz *= lightmap.xyz ; \n" +
 			"} \n",
 
 			"lineFog":
@@ -1456,9 +1470,8 @@ module egret3d {
 			"return normalize(TBN * map); \n" +
 			"} \n" +
 			"void main(){ \n" +
-			"vec3 normalTex = texture2D(normalTexture,uv_0).xyz *2.0 - 1.0; \n" +
-			"normalTex.y *= materialSource.normalDir; \n" +
-			"normal.xyz = tbn( normalTex.xyz , normal.xyz , varying_mvPose.xyz , uv_0 ) ; \n" +
+			"s.Normal = texture2D(normalTexture,uv_0).xyz *2.0 - 1.0; \n" +
+			"s.Normal = tbn( s.Normal.xyz , normal.xyz , varying_mvPose.xyz , uv_0 ) ; \n" +
 			"} \n",
 
 			"normalPassEnd_fs":
@@ -1550,6 +1563,61 @@ module egret3d {
 			"return res; \n" +
 			"} \n",
 
+			"particle_bezier_low":
+			"float calcBezierArea(float bzData[35], float tCurrent, float tTotal){ \n" +
+			"float res = 0.0; \n" +
+			"float v0; \n" +
+			"float v1; \n" +
+			"float t0; \n" +
+			"float t1; \n" +
+			"float deltaTime = 0.0; \n" +
+			"float a_deltaTime; \n" +
+			"for(int i = 0; i < 4; i ++) \n" +
+			"{ \n" +
+			"t0 = bzData[i * 8] * tTotal; \n" +
+			"v0 = bzData[i * 8 + 1]; \n" +
+			"t1 = bzData[(i + 1) * 8] * tTotal; \n" +
+			"v1 = bzData[(i + 1) * 8 + 1]; \n" +
+			"deltaTime = t1 - t0; \n" +
+			"a_deltaTime = 0.5 * (v1 - v0); \n" +
+			"if(tCurrent >= t1) \n" +
+			"{ \n" +
+			"res += deltaTime * (v0 + a_deltaTime); \n" +
+			"}else \n" +
+			"{ \n" +
+			"deltaTime = tCurrent - t0; \n" +
+			"res += deltaTime * (v0 + a_deltaTime); \n" +
+			"break; \n" +
+			"} \n" +
+			"} \n" +
+			"return res; \n" +
+			"} \n" +
+			"float calcBezierSize(float bzData[35], float tCurrent, float tTotal){ \n" +
+			"float res = 0.0; \n" +
+			"float y0; \n" +
+			"float y1; \n" +
+			"float t0; \n" +
+			"float t1; \n" +
+			"float deltaTime = 0.0; \n" +
+			"float v; \n" +
+			"for(int i = 0; i < 4; i ++) \n" +
+			"{ \n" +
+			"t0 = bzData[i * 8] * tTotal; \n" +
+			"y0 = bzData[i * 8 + 1]; \n" +
+			"t1 = bzData[(i + 1) * 8] * tTotal; \n" +
+			"y1 = bzData[(i + 1) * 8 + 1]; \n" +
+			"deltaTime = t1 - t0; \n" +
+			"if(tCurrent <= t1) \n" +
+			"{ \n" +
+			"v = (y1 - y0) / deltaTime; \n" +
+			"deltaTime = tCurrent - t0; \n" +
+			"res = y0 + v * deltaTime; \n" +
+			"break; \n" +
+			"} \n" +
+			"} \n" +
+			"return res; \n" +
+			"} \n",
+
 			"particle_color_fs":
 			"uniform float uniform_colorTransform[40]; \n" +
 			"vec3 unpack_color(float rgb_data) \n" +
@@ -1615,15 +1683,23 @@ module egret3d {
 
 			"particle_end_fs":
 			"varying vec4 varying_particleData; \n" +
+			"varying vec4 varying_mvPose; \n" +
 			"void main() { \n" +
-			"materialSource.diffuse *= globalColor.xyz; \n" +
-			"outColor.xyz = (light.xyz+materialSource.ambient) * (diffuseColor.xyz * materialSource.diffuse * varying_color.xyz) + specularColor.xyz ; \n" +
-			"outColor.w = materialSource.alpha * diffuseColor.w * varying_color.w; \n" +
-			"outColor.w *= globalColor.w; \n" +
+			"vec3 fc ; \n" +
+			"if(materialSource.refraction<2.41){ \n" +
+			"float vl = dot(normal,-normalize(varying_mvPose.xyz)); \n" +
+			"fc = Fresnel_Schlick(vl,vec3(materialSource.refraction)) * materialSource.refractionintensity ; \n" +
+			"fc.xyz = max(fc,vec3(0.0)) ; \n" +
+			"} \n" +
+			"s.Albedo = diffuseColor.rgb * globalColor.xyz ; \n" +
+			"s.Albedo = pow(s.Albedo, vec3(materialSource.gamma)) * varying_color.xyz ; \n" +
+			"s.Alpha = diffuseColor.a * globalColor.w * materialSource.alpha * varying_color.w ; \n" +
+			"outColor.xyz = s.Albedo ; \n" +
+			"outColor.w = s.Alpha; \n" +
 			"if(varying_particleData.w > 0.5){ \n" +
 			"outColor.xyz *= outColor.w; \n" +
 			"} \n" +
-			"outColor = clamp(outColor, 0.0, 1.0); \n" +
+			"outColor = clamp(outColor, 0.0, 1.0) ; \n" +
 			"} \n",
 
 			"particle_end_vs":
@@ -2750,7 +2826,7 @@ module egret3d {
 			"specularMap_fragment":
 			"uniform sampler2D specularTexture; \n" +
 			"void main(void){ \n" +
-			"specularColor.xyz *= texture2D( specularTexture , uv_0 ).xyz ; \n" +
+			"s.Specular = texture2D(specularTexture, uv_0).xyzx ; \n" +
 			"} \n",
 
 			"SSAO":
@@ -2867,7 +2943,9 @@ module egret3d {
 			"cc.xyz += splat_control.y * texture2D (splat_1Tex, uv * vec2(uvs[2],uvs[3]) ).xyz; \n" +
 			"cc.xyz += splat_control.z * vec4(texture2D (splat_2Tex, uv* vec2(uvs[4],uvs[5]))).xyz; \n" +
 			"cc.xyz += (1.0-splat_control.w) * vec4(texture2D (splat_3Tex, uv* vec2(uvs[6],uvs[7]))).xyz; \n" +
-			"diffuseColor.xyz = cc.xyz ; \n" +
+			"s.Albedo.xyz = cc.xyz ; \n" +
+			"outColor.xyz = s.Albedo.xyz; \n" +
+			"outColor.w = 1.0; \n" +
 			"} \n",
 
 			"uvRoll_fs":

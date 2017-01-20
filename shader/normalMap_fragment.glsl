@@ -24,9 +24,8 @@ vec3 tbn(vec3 map, vec3 N, vec3 V, vec2 texcoord) {
 }
 
 void main(){
-    vec3 normalTex = texture2D(normalTexture,uv_0).xyz *2.0 - 1.0;
-	normalTex.y *= materialSource.normalDir;
-    normal.xyz = tbn( normalTex.xyz , normal.xyz , varying_mvPose.xyz , uv_0 ) ; 
+   s.Normal = texture2D(normalTexture,uv_0).xyz *2.0 - 1.0; 
+   s.Normal = tbn( s.Normal.xyz , normal.xyz , varying_mvPose.xyz , uv_0 ) ; 
 }
 
 

@@ -229,6 +229,7 @@
                 if (textureCoordinates.u < 0) {
                     textureCoordinates.u += 1.0;
                 }
+                textureCoordinates.v = Math.asin(v.y) / Math.PI + 0.5;
                 uv[i] = textureCoordinates;
             }
             uv[vertices.length - 4].u = uv[0].u = 0.125;

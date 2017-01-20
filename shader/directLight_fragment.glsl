@@ -1,13 +1,13 @@
 const int max_directLight = 0 ;
-uniform float uniform_directLightSource[9*max_directLight] ;
+uniform float uniform_directLightSource[10*max_directLight] ;
 varying vec4 varying_mvPose; 
 uniform mat4 uniform_ViewMatrix;
 mat4 normalMatrix ;
 struct DirectLight{
     vec3 direction;
 	vec3 diffuse;
-	 vec3 ambient;
-    // float intensity;
+	vec3 ambient;
+    float intensity;
     // float halfIntensity;
 };
 
@@ -68,21 +68,24 @@ mat4 inverse(mat4 m) {
       a20 * b03 - a21 * b01 + a22 * b00) / det;
 }
 
-void calculateDirectLight( MaterialSource materialSource ){
-	float lambertTerm , specular ; 
-	vec3 dir ,viewDir = normalize(varying_mvPose.xyz/varying_mvPose.w); 
+vec4 calculateDirectLight( MaterialSource materialSource ){ 
+    float lambertTerm , specular ; 
+    vec3 dir ,viewDir = normalize(varying_mvPose.xyz/varying_mvPose.w); 
+    diffuseColor = vec4(0.0,0.0,0.0,1.0);
     for(int i = 0 ; i < max_directLight ; i++){ 
-		DirectLight directLight ; 
-	    directLight.direction = (normalMatrix * vec4(uniform_directLightSource[i*9],uniform_directLightSource[i*9+1],uniform_directLightSource[i*9+2],1.0)).xyz; 
+        DirectLight directLight ; 
+        directLight.direction = (normalMatrix * vec4(uniform_directLightSource[i*9],uniform_directLightSource[i*9+1],uniform_directLightSource[i*9+2],1.0)).xyz; 
 		directLight.diffuse = vec3(uniform_directLightSource[i*9+3],uniform_directLightSource[i*9+4],uniform_directLightSource[i*9+5]); 
 		directLight.ambient = vec3(uniform_directLightSource[i*9+6],uniform_directLightSource[i*9+7],uniform_directLightSource[i*9+8]); 
+		directLight.intensity = uniform_directLightSource[i*9+9] ; 
 		dir = normalize(directLight.direction) ; 
-		LightingBlinnPhong(dir,directLight.diffuse,directLight.ambient,normal,viewDir,0.5); 
-    }
+		diffuseColor += LightingBlinnPhong(dir,directLight.diffuse,directLight.ambient,s.Normal,viewDir,directLight.intensity); 
+    } 
+    return diffuseColor ;
 }
 
 void main() {
 	normalMatrix = inverse(uniform_ViewMatrix);
 	normalMatrix = transpose(normalMatrix);
-	calculateDirectLight( materialSource );
+	light += calculateDirectLight( materialSource ).xyzw ; 
 }
