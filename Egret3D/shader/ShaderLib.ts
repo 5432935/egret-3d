@@ -1508,7 +1508,7 @@ module egret3d {
 			"gl_Position = outPosition ; \n" +
 			"} \n",
 
-			"particle_bezier":
+			"particle_bezier": 
 			"float calcBezierArea(float bzData[35], float tCurrent, float tTotal){ \n" +
 			"float res = 0.0; \n" +
 			"float v0; \n" +
@@ -1562,7 +1562,7 @@ module egret3d {
 			"} \n" +
 			"return res; \n" +
 			"} \n",
-
+			
 			"particle_bezier_low":
 			"float calcBezierArea(float bzData[35], float tCurrent, float tTotal){ \n" +
 			"float res = 0.0; \n" +

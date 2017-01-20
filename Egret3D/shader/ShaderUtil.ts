@@ -283,7 +283,23 @@
                 source += ShaderUtil.connectExtension(content.extensionList[i]);
             }
 
-            source += "precision highp float;            \t\n";
+            // 
+            var gl = egret3d.Context3DProxy.gl;
+            var precision = "lowp";
+            if(gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT).precision > 0 &&
+                gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT).precision > 0) 
+            {
+                precision = "mediump";
+            }
+            if(gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT).precision > 0 &&
+                gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT).precision > 0) 
+            {
+                precision = "highp";
+            }
+
+            source += "precision " + precision + " float;            \t\n";
+            //
+            
             for (i = 0; i < content.defineList.length; i++) {
                 source += ShaderUtil.connectDefine(content.defineList[i]);
             }
