@@ -27,7 +27,8 @@ void main() {
 
     float progress = varying_particleData.x/varying_particleData.y;
 	const int maxColorCount = 20;
-    for( int i = 1 ; i < maxColorCount ; i++ ){
+	const int loopCount = 20;
+    for( int i = 1 ; i < loopCount ; i++ ){
        if( progress >= fract(uniform_colorTransform[i+maxColorCount-1]) ){
           startColor = uniform_colorTransform[i-1] ;
           startSegment = fract(uniform_colorTransform[i+maxColorCount-1]) ;
@@ -43,7 +44,8 @@ void main() {
     
     float len = nextSegment - startSegment ;
     float ws = ( progress - startSegment ) / len ;
+	ws = clamp(ws,0.0,1.0);
     globalColor = mix(vec4(unpack_color(startColor).xyz,startAlpha / 256.0),vec4(unpack_color(nextColor).xyz, nextAlpha / 256.0),ws) ;
-	globalColor.w = clamp(globalColor.w,0.0,1.0);
+	globalColor = clamp(globalColor,0.0,1.0);
 }
 //##FilterEnd##

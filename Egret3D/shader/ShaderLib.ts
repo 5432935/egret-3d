@@ -1640,7 +1640,8 @@ module egret3d {
 			"float nextAlpha; \n" +
 			"float progress = varying_particleData.x/varying_particleData.y; \n" +
 			"const int maxColorCount = 20; \n" +
-			"for( int i = 1 ; i < maxColorCount ; i++ ){ \n" +
+			"const int loopCount = 20; \n" +
+			"for( int i = 1 ; i < loopCount ; i++ ){ \n" +
 			"if( progress >= fract(uniform_colorTransform[i+maxColorCount-1]) ){ \n" +
 			"startColor = uniform_colorTransform[i-1] ; \n" +
 			"startSegment = fract(uniform_colorTransform[i+maxColorCount-1]) ; \n" +
@@ -1654,8 +1655,9 @@ module egret3d {
 			"} \n" +
 			"float len = nextSegment - startSegment ; \n" +
 			"float ws = ( progress - startSegment ) / len ; \n" +
+			"ws = clamp(ws,0.0,1.0); \n" +
 			"globalColor = mix(vec4(unpack_color(startColor).xyz,startAlpha / 256.0),vec4(unpack_color(nextColor).xyz, nextAlpha / 256.0),ws) ; \n" +
-			"globalColor.w = clamp(globalColor.w,0.0,1.0); \n" +
+			"globalColor = clamp(globalColor,0.0,1.0); \n" +
 			"} \n" +
 			"//##FilterEnd## \n",
 
@@ -1680,8 +1682,9 @@ module egret3d {
 			"float startAlpha; \n" +
 			"float nextAlpha; \n" +
 			"float progress = varying_particleData.x/varying_particleData.y; \n" +
-			"const int maxColorCount = 4; \n" +
-			"for( int i = 1 ; i < maxColorCount ; i++ ){ \n" +
+			"const int maxColorCount = 20; \n" +
+			"const int loopCount = 4; \n" +
+			"for( int i = 1 ; i < loopCount ; i++ ){ \n" +
 			"if( progress >= fract(uniform_colorTransform[i+maxColorCount-1]) ){ \n" +
 			"startColor = uniform_colorTransform[i-1] ; \n" +
 			"startSegment = fract(uniform_colorTransform[i+maxColorCount-1]) ; \n" +
@@ -1695,8 +1698,9 @@ module egret3d {
 			"} \n" +
 			"float len = nextSegment - startSegment ; \n" +
 			"float ws = ( progress - startSegment ) / len ; \n" +
+			"ws = clamp(ws,0.0,1.0); \n" +
 			"globalColor = mix(vec4(unpack_color(startColor).xyz,startAlpha / 256.0),vec4(unpack_color(nextColor).xyz, nextAlpha / 256.0),ws) ; \n" +
-			"globalColor.w = clamp(globalColor.w,0.0,1.0); \n" +
+			"globalColor = clamp(globalColor,0.0,1.0); \n" +
 			"} \n" +
 			"//##FilterEnd## \n",
 
