@@ -318,7 +318,7 @@ module egret3d {
 			"void main() { \n" +
 			"vec3 fc = vec3(0.0, 0.0, 0.0); \n" +
 			"vec4 c = texture2D( diffuseTexture , uv_0 ); \n" +
-			"c.xyz *= materialSource.diffuse ; \n" +
+			"c.xyz = c.xyz * materialSource.diffuse * c.a ; \n" +
 			"if (c.a < materialSource.cutAlpha) \n" +
 			"discard; \n" +
 			"if(materialSource.refraction<2.41){ \n" +

@@ -3,7 +3,7 @@ varying vec4 varying_mvPose;
 void main() {
   	vec3 fc = vec3(0.0, 0.0, 0.0);
 	vec4 c = texture2D( diffuseTexture , uv_0 );
-    c.xyz *= materialSource.diffuse ; 
+    c.xyz = c.xyz * materialSource.diffuse * c.a ; 
 
 	if (c.a < materialSource.cutAlpha)
 		discard;
