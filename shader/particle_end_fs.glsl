@@ -12,7 +12,10 @@ void main() {
 	} 
   
 	s.Albedo = diffuseColor.rgb * globalColor.xyz ;//+ materialSource.ambient * diffuseColor.rgb; 
-	s.Albedo = pow(s.Albedo, vec3(materialSource.gamma)) * varying_color.xyz ; 
+	s.Albedo.x = pow(s.Albedo.x, materialSource.gamma);
+    s.Albedo.y = pow(s.Albedo.y, materialSource.gamma);
+    s.Albedo.z = pow(s.Albedo.z, materialSource.gamma);
+	s.Albedo = s.Albedo * varying_color.xyz;
 	s.Alpha = diffuseColor.a * globalColor.w * materialSource.alpha * varying_color.w ; 
 	outColor.xyz = s.Albedo ; 
 	outColor.w = s.Alpha; 

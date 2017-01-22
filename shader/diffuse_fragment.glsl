@@ -17,7 +17,9 @@ void main() {
 	s.Normal = normal;
 	s.Specular = vec4(1.0) ;
 	s.Albedo = c.rgb + fc.xyz * c.rgb + materialSource.ambient * c.rgb;
-	s.Albedo = pow(s.Albedo, vec3(materialSource.gamma));
+    s.Albedo.x = pow(s.Albedo.x, materialSource.gamma);
+    s.Albedo.y = pow(s.Albedo.y, materialSource.gamma);
+    s.Albedo.z = pow(s.Albedo.z, materialSource.gamma);
 	s.Alpha = c.a;
 	outColor.xyz = s.Albedo * 0.5 ;
 	outColor.w = s.Alpha;

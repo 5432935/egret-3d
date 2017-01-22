@@ -325,7 +325,9 @@ module egret3d {
 			"s.Normal = normal; \n" +
 			"s.Specular = vec4(1.0) ; \n" +
 			"s.Albedo = c.rgb + fc.xyz * c.rgb + materialSource.ambient * c.rgb; \n" +
-			"s.Albedo = pow(s.Albedo, vec3(materialSource.gamma)); \n" +
+			"s.Albedo.x = pow(s.Albedo.x, materialSource.gamma); \n" +
+			"s.Albedo.y = pow(s.Albedo.y, materialSource.gamma); \n" +
+			"s.Albedo.z = pow(s.Albedo.z, materialSource.gamma); \n" +
 			"s.Alpha = c.a; \n" +
 			"outColor.xyz = s.Albedo * 0.5 ; \n" +
 			"outColor.w = s.Alpha; \n" +
@@ -1717,7 +1719,10 @@ module egret3d {
 			"fc.xyz = max(fc,vec3(0.0)) ; \n" +
 			"} \n" +
 			"s.Albedo = diffuseColor.rgb * globalColor.xyz ; \n" +
-			"s.Albedo = pow(s.Albedo, vec3(materialSource.gamma)) * varying_color.xyz ; \n" +
+			"s.Albedo.x = pow(s.Albedo.x, materialSource.gamma); \n" +
+			"s.Albedo.y = pow(s.Albedo.y, materialSource.gamma); \n" +
+			"s.Albedo.z = pow(s.Albedo.z, materialSource.gamma); \n" +
+			"s.Albedo = s.Albedo * varying_color.xyz; \n" +
 			"s.Alpha = diffuseColor.a * globalColor.w * materialSource.alpha * varying_color.w ; \n" +
 			"outColor.xyz = s.Albedo ; \n" +
 			"outColor.w = s.Alpha; \n" +
