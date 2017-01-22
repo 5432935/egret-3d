@@ -15,26 +15,6 @@
         }
     }
 
-    export let contextForEgret = {
-        onStart: function (egret2dContext) {
-            egret2dContext.setAutoClear(false);
-        },
-
-        onRender: function (egret2dContext) {
-            egret2dContext.save();
-            Egret3DCanvas._instance.render();
-            egret2dContext.restore();
-        },
-
-        onStop: function () {
-
-        },
-
-        onResize: function() {
-            Egret3DCanvas._instance.resizeBlend2D();
-        }
-    }
-
     // 切换prgram脏标记
     // 用于完成2D渲染后强制标脏
     export let proDirty:boolean = true;
@@ -591,6 +571,26 @@
                 Input.scaleX = this.stage2D.$screen["webTouchHandler"].scaleX;
                 Input.scaleY = this.stage2D.$screen["webTouchHandler"].scaleY;
             }
+        }
+
+        // custom context implement
+
+        public onStart(egret2dContext) {
+            egret2dContext.setAutoClear(false);
+        }
+
+        public onRender(egret2dContext) {
+            egret2dContext.save();
+            this.render();
+            egret2dContext.restore();
+        }
+
+        public onStop() {
+
+        }
+
+        public onResize() {
+            this.resizeBlend2D();
         }
     }
 
