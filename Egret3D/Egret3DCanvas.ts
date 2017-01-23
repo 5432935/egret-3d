@@ -594,6 +594,10 @@
         }
     }
 
+    export interface Stage3D extends Egret3DCanvas {
+        
+    }
+
     export let Stage3D = Egret3DCanvas;
 
 }
