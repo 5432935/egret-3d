@@ -20,7 +20,8 @@
                 console.log("the resource engine Version is old , but the current engine Version is " + Egret3DPolicy.engineVersion);
             }
 
-            if (this._mapConfigParser.engineVersion != Egret3DPolicy.engineVersion) {
+            var index = Egret3DPolicy.exportToolsVersion.indexOf(this._mapConfigParser.engineVersion);
+            if (index == -1) {
                 console.log("the resource engine Version is " + this._mapConfigParser.engineVersion + ", but the current engine Version is " + Egret3DPolicy.engineVersion);
             }
 

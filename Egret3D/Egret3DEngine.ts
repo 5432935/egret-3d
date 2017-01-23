@@ -8,6 +8,7 @@
     export class Egret3DPolicy {
 
         public static engineVersion: string = "4.0.0";
+        public static exportToolsVersion: string[] = ["4.0.0", "3.2.6"];
 
         public static useParticle: boolean = true;
         public static useAnimEffect: boolean = true;
