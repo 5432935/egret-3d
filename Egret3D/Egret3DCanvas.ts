@@ -594,6 +594,6 @@
         }
     }
 
-
+    export let Stage3D = Egret3DCanvas;
 
 }
