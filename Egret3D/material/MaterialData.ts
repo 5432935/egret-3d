@@ -361,7 +361,7 @@
 
         public refraction: number = 1.9;
 
-        public refractionintensity: number = 2.0;
+        public refractionintensity: number = 0.0;
         
         /**
         * @language zh_CN
