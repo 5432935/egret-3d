@@ -4,7 +4,7 @@
         "noImplicitAny": false,
         "sourceMap": false,
         "declaration": true,
-        "out": "../module/egret3d/egret3d.js",
+        "out": "../../egret-core/build/egret3d/egret3d.js",
         "allowUnreachableCode": true
     },
     "files": [
@@ -24,7 +24,6 @@
         "Util/lzma/LZMAHelper.ts",
 
         "Egret3DLog.ts",
-        "Egret3DState.ts",
         "config/TextureMethodType.ts",
         "config/ContextConfig.ts",
 
@@ -383,6 +382,9 @@
         "Util/StaticMergeUtil.ts",
 
         "hud/HUD.ts",
+
+        "Egret3DPerformance.ts",
+        "Egret3DInspector.ts",
 
         "View3D.ts",
         "VRView3D.ts",

@@ -158,9 +158,11 @@
                 this.appendQuadList(quadList, camera);
             }
             else {
-                Egret3DState.countStart();
+                // Egret3DState.countStart();
+                Egret3DEngine.instance.performance.startCounter("entityCollect applyRender", 60);
                 this.applyRender(this.rootScene, camera);
-                Egret3DState.countEnd("entityCollect applyRender");
+                // Egret3DState.countEnd("entityCollect applyRender");
+                Egret3DEngine.instance.performance.endCounter("entityCollect applyRender");
             }
 
             var renders:IRender[] ;
