@@ -1,4 +1,4 @@
-﻿uniform sampler2D normalTexture;
+uniform sampler2D normalTexture;
 
 varying vec2 varying_uv0        ;
 varying vec4 varying_mvPose        ;

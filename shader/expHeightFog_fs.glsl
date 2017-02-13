@@ -1,4 +1,4 @@
-﻿struct Fog{
+struct Fog{
    vec3 fogColor  ;
    float globalDensity ;
    float fogStartDistance ;

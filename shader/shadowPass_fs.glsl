@@ -1,4 +1,4 @@
-﻿uniform sampler2D diffuseTexture;
+uniform sampler2D diffuseTexture;
 vec4 diffuseColor ;
 varying vec2 varying_uv0;
 varying vec4 varying_color;

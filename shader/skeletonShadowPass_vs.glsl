@@ -1,4 +1,4 @@
-﻿attribute vec4 attribute_boneIndex;
+attribute vec4 attribute_boneIndex;
 attribute vec4 attribute_boneWeight;
 attribute vec4 attribute_color;
 

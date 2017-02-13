@@ -1,4 +1,4 @@
-﻿uniform sampler2D matcapTexture;
+uniform sampler2D matcapTexture;
 void main() {
   	vec4 capCoord ; 
 	capCoord.x = -normal.x; 

@@ -1,4 +1,4 @@
-﻿// attribute vec3 attribute_normal;
+// attribute vec3 attribute_normal;
 // attribute vec4 attribute_color;
 
 // uniform mat4 uniform_NormalMatrix;

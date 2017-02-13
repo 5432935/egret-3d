@@ -1,4 +1,4 @@
-﻿attribute vec3 attribute_position;
+attribute vec3 attribute_position;
 attribute vec4 attribute_color;
 attribute vec2 attribute_uv0;
 

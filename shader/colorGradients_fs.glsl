@@ -1,4 +1,4 @@
-﻿varying vec4 varying_mvPose;
+varying vec4 varying_mvPose;
 uniform float uniform_colorGradientsSource[6] ;
 void main(void){
 

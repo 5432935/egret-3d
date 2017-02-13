@@ -1,4 +1,4 @@
-﻿attribute vec3 attribute_normal;
+attribute vec3 attribute_normal;
 attribute vec4 attribute_color;
 
 varying vec4 varying_mvPose; 

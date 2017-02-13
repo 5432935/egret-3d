@@ -1,4 +1,4 @@
-﻿uniform sampler2D lightTexture ;
+uniform sampler2D lightTexture ;
 varying vec2 varying_uv1 ;
 
 vec4 decode_hdr( vec4 data ){ 

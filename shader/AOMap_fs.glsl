@@ -1,4 +1,4 @@
-﻿uniform sampler2D aoTexture ;
+uniform sampler2D aoTexture ;
 uniform float aoPower ;
 void main(void){
     float ao = texture2D( aoTexture , varying_uv1 ).x ;

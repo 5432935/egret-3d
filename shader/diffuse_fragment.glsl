@@ -1,4 +1,4 @@
-﻿uniform sampler2D diffuseTexture;
+uniform sampler2D diffuseTexture;
 varying vec4 varying_mvPose;
 void main() {
   	vec3 fc = vec3(0.0, 0.0, 0.0);
