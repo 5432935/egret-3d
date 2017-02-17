@@ -263,9 +263,9 @@
 
             window.addEventListener("mouseover", (e: MouseEvent) => {!this.disableWindowTouch && this.mouseOver(e)}, true);
 
-            window.addEventListener("keydown", (e: KeyboardEvent) => {!this.disableWindowTouch && this.keyDown(e)}, true);
+            window.addEventListener("keydown", (e: KeyboardEvent) => this.keyDown(e), true);
 
-            window.addEventListener("keyup", (e: KeyboardEvent) => {!this.disableWindowTouch && this.keyUp(e)}, true);
+            window.addEventListener("keyup", (e: KeyboardEvent) => this.keyUp(e), true);
 
             if (this.canGame()) {
                 window.addEventListener("gamepadconnected", (e: GamepadEvent) => this.ongamepadconnected(e), true);
@@ -321,8 +321,8 @@
             canvas.addEventListener("mousewheel", (e: MouseWheelEvent) => this.mouseWheel(e), false);
             canvas.addEventListener("mousemove", (e: MouseEvent) => this.mouseMove(e), false);
             canvas.addEventListener("mouseover", (e: MouseEvent) => this.mouseOver(e), false);
-            canvas.addEventListener("keydown", (e: KeyboardEvent) => this.keyDown(e), false);
-            canvas.addEventListener("keyup", (e: KeyboardEvent) => this.keyUp(e), false);
+            // canvas.addEventListener("keydown", (e: KeyboardEvent) => this.keyDown(e), false);
+            // canvas.addEventListener("keyup", (e: KeyboardEvent) => this.keyUp(e), false);
             canvas.addEventListener("touchstart", (e: TouchEvent) => this.touchStart(e), false);
             canvas.addEventListener("touchend", (e: TouchEvent) => this.touchEnd(e), false);
             canvas.addEventListener("touchmove", (e: TouchEvent) => this.touchMove(e), false);
