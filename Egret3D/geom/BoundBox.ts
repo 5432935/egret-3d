@@ -354,8 +354,8 @@
         * @platform Web,Native
         */
         public inBound(frustum: Frustum): boolean {
-            
             this.transform.transformVector(this.center, MathUtil.CALCULATION_VECTOR3D);
+            this.radius = this.transform.getMaxScaleOnAxis() * this.radius;
             return frustum.inSphere(MathUtil.CALCULATION_VECTOR3D, this.radius);
         }
 
