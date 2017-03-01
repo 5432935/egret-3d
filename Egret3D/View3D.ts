@@ -576,7 +576,7 @@
         * @private
         */
         private _renderItem: IRender;
-        private a: number;
+        // private a: number;
         /**
         * @private
         * @language zh_CN
@@ -585,20 +585,27 @@
         */
         public update(time: number, delay: number) {
 
-            if (Egret3DEngine.instance.debug)
-                this.a = new Date().getTime();
+            if (Egret3DEngine.instance.debug) {
+                Egret3DEngine.instance.performance.startCounter("updateObject3D", 60);
+            }
+                // this.a = new Date().getTime();
 
             this.updateObject3D(this._scene, time, delay);
 
-            if (Egret3DEngine.instance.debug)
-                egret3d.Egret3DState.showDataInfo("updateObject3D: " + (new Date().getTime() - this.a) + " ms");
+            if (Egret3DEngine.instance.debug) {
+                Egret3DEngine.instance.performance.endCounter("updateObject3D");
+            }
+                // Egret3DEngine.instance.performance.startCounter("updateObject3D", 60);
+                // egret3d.Egret3DState.showDataInfo("updateObject3D: " + (new Date().getTime() - this.a) + " ms");
 
 
             Egret3DCanvas.context3DProxy.viewPort(this._viewPort.x, this._viewPort.y, this._viewPort.width, this._viewPort.height);
             Egret3DCanvas.context3DProxy.setScissorRectangle(this._viewPort.x, this._viewPort.y, this._viewPort.width, this._viewPort.height);
 
-            if (Egret3DEngine.instance.debug)
-                Egret3DState.help = new Date().getTime();
+            if (Egret3DEngine.instance.debug) {
+                Egret3DEngine.instance.performance.startCounter("entityCollect", 60);
+            }
+                // Egret3DState.help = new Date().getTime();
 
             //收集器做物体检测,分类
             this._entityCollect.update(this._camera);
@@ -610,23 +617,25 @@
                 this._shadowCast.update(this._entityCollect,time,delay);
             }
 
-            if (Egret3DEngine.instance.debug)
-                Egret3DState.showDataInfo("entityCollect" + (new Date().getTime() - Egret3DState.help) + " ms");
-
             if (Egret3DEngine.instance.debug) {
-                egret3d.Egret3DState.showDataInfo("drawCall : " + this._entityCollect.numberDraw.toString());
-                egret3d.Egret3DState.showDataInfo("vertex : " + this._entityCollect.numberVertex.toString());
-                egret3d.Egret3DState.showDataInfo("tris : " + this._entityCollect.numberFace.toString());
-                egret3d.Egret3DState.showDataInfo("skin : " + this._entityCollect.numberSkin.toString());
-                egret3d.Egret3DState.showDataInfo("proAnim : " + this._entityCollect.numberAnimation.toString());
-                egret3d.Egret3DState.showDataInfo("particleEmiter : " + this._entityCollect.numberParticle.toString());
-
-                var len: string;
-                for (var i: number = 0; i < Layer.layerType.length; i++) {
-                    len = Layer.layerType[i] + " layer: " + this._entityCollect.softLayerRenderItems[Layer.layerType[i]].length.toString();
-                    egret3d.Egret3DState.showDataInfo(len);
-                }
+                Egret3DEngine.instance.performance.endCounter("entityCollect");
             }
+                // Egret3DState.showDataInfo("entityCollect" + (new Date().getTime() - Egret3DState.help) + " ms");
+
+            // if (Egret3DEngine.instance.debug) {
+            //     egret3d.Egret3DState.showDataInfo("drawCall : " + this._entityCollect.numberDraw.toString());
+            //     egret3d.Egret3DState.showDataInfo("vertex : " + this._entityCollect.numberVertex.toString());
+            //     egret3d.Egret3DState.showDataInfo("tris : " + this._entityCollect.numberFace.toString());
+            //     egret3d.Egret3DState.showDataInfo("skin : " + this._entityCollect.numberSkin.toString());
+            //     egret3d.Egret3DState.showDataInfo("proAnim : " + this._entityCollect.numberAnimation.toString());
+            //     egret3d.Egret3DState.showDataInfo("particleEmiter : " + this._entityCollect.numberParticle.toString());
+
+            //     var len: string;
+            //     for (var i: number = 0; i < Layer.layerType.length; i++) {
+            //         len = Layer.layerType[i] + " layer: " + this._entityCollect.softLayerRenderItems[Layer.layerType[i]].length.toString();
+            //         egret3d.Egret3DState.showDataInfo(len);
+            //     }
+            // }
 
             //if (PickSystem.instance.enablePick) {
             //    PickSystem.instance.update(this._entityCollect, this._camera, time, delay, this._viewPort);
@@ -646,22 +655,30 @@
                 this._backImg.draw(Egret3DCanvas.context3DProxy);
             }
 
-            if (Egret3DEngine.instance.debug)
-                this.a = new Date().getTime();
+            if (Egret3DEngine.instance.debug) {
+                Egret3DEngine.instance.performance.startCounter("draw", 60);
+            }
+                // this.a = new Date().getTime();
 
             this._renderQuen.mainRender.camera = this.camera3D ;
             this._renderQuen.draw(time, delay, Egret3DCanvas.context3DProxy, this._entityCollect, this._viewPort);
 
-            if (Egret3DEngine.instance.debug)
-                egret3d.Egret3DState.showDataInfo("draw: " + (new Date().getTime() - this.a) + " ms");
+            if (Egret3DEngine.instance.debug) {
+                Egret3DEngine.instance.performance.endCounter("draw");
+            }
+                // egret3d.Egret3DState.showDataInfo("draw: " + (new Date().getTime() - this.a) + " ms");
 
             if (this._postList.length > 0) {
-                if (Egret3DEngine.instance.debug)
-                    this.a = new Date().getTime();
+                if (Egret3DEngine.instance.debug) {
+                    Egret3DEngine.instance.performance.startCounter("post", 60);
+                }
+                    // this.a = new Date().getTime();
                 this._postProcessing.postArray = this._postList;
                 this._postProcessing.draw(time, delay, Egret3DCanvas.context3DProxy, this._entityCollect, this.camera3D, this._viewPort);
-                if (Egret3DEngine.instance.debug)
-                    egret3d.Egret3DState.showDataInfo("post: " + (new Date().getTime() - this.a) + " ms");
+                if (Egret3DEngine.instance.debug) {
+                    Egret3DEngine.instance.performance.endCounter("post");
+                }
+                    // egret3d.Egret3DState.showDataInfo("post: " + (new Date().getTime() - this.a) + " ms");
             }
 
             for (var i: number = 0; i < this._huds.length; ++i) {
@@ -669,11 +686,15 @@
             }
 
             if (this._quadStage) {
-                if (Egret3DEngine.instance.debug)
-                    this.a = new Date().getTime();
+                if (Egret3DEngine.instance.debug) {
+                    Egret3DEngine.instance.performance.startCounter("GUI", 60);
+                }
+                    // this.a = new Date().getTime();
                 this._quadStage.update(time, delay, Egret3DCanvas.context3DProxy, this);
-                if (Egret3DEngine.instance.debug)
-                    egret3d.Egret3DState.showDataInfo("GUI: " + (new Date().getTime() - this.a) + " ms");
+                if (Egret3DEngine.instance.debug) {
+                    Egret3DEngine.instance.performance.endCounter("GUI");
+                }
+                    // egret3d.Egret3DState.showDataInfo("GUI: " + (new Date().getTime() - this.a) + " ms");
             }
         }
 

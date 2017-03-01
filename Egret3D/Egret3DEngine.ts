@@ -39,6 +39,16 @@
     export class Egret3DEngine {
         public static instance: Egret3DEngine = new Egret3DEngine();
 
+        /**
+         * @private
+         **/
+        public performance:Egret3DPerformance = new Egret3DPerformance();
+
+        /**
+         * @private
+         **/
+        public inspector:Egret3DInspector = new Egret3DInspector();
+
         public version: string = "4.0.0";
         public jsPath: string = "js/";
         public onTsconfig: Function;
