@@ -30,7 +30,7 @@
             this.uiMaterial.repeat = true ;
             this.uiMaterial.diffusePass.addMethod(this.guiMethod);
 
-            this.canPick = false;
+            this.enablePick = false;
             this.tag.name = "gui";
         }
 

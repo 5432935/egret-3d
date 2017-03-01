@@ -361,6 +361,52 @@
                 this._view3DS.splice(index, 1);
         }
 
+        private $render() {
+            let now:number = Egret3DEngine.instance.performance.getNow();
+            // TODO 第一帧可能会有异常
+            this._delay = now - this._time;
+            this._time = now;
+
+            if (Egret3DEngine.instance.debug) {
+                Egret3DEngine.instance.performance.startCounter("renderer", 60);
+            }
+
+            // 处理 enter frame
+            this._enterFrameEvent3D.time = this._time;
+            this._enterFrameEvent3D.delay = this._delay;
+            this.dispatchEvent(this._enterFrameEvent3D);
+
+            // 更新相机
+            CameraManager.instance.update(this._time, this._delay);
+
+            // 更新views
+            for (var i: number = 0; i < this._view3DS.length; i++) {
+                if (Egret3DEngine.instance.debug) {
+                    Egret3DEngine.instance.performance.startCounter("view3D-" + i.toString(), 60);
+                    Egret3DEngine.instance.performance.prefix = "view3D-" + i.toString() + "-";
+                }   
+
+                this._view3DS[i].update(this._time, this._delay);
+
+                if (Egret3DEngine.instance.debug) {
+                    Egret3DEngine.instance.performance.prefix = "";
+                    Egret3DEngine.instance.performance.endCounter("view3D-" + i.toString());
+                }
+            }
+
+            if (Egret3DEngine.instance.debug) {
+                Egret3DEngine.instance.performance.updateFps();
+                Egret3DEngine.instance.performance.endCounter("renderer");
+
+                // 这里显示更新inspector
+                Egret3DEngine.instance.inspector.show(this._delay, Egret3DEngine.instance.performance, this); 
+            }
+
+            if (this.afterRender) {
+                this.afterRender();
+            }
+        }
+
         /**
          * @language zh_CN
          * Egret3DCanvas 调用一次渲染
@@ -371,102 +417,18 @@
             if(!this.blend2D) {
                 return;
             }
-            // 设置3D上下文
-            // Egret3DCanvas.context3DProxy.enableBlend();
-            // Egret3DCanvas.context3DProxy.enableCullFace();
-            
-            // Context3DProxy.gl.enable(Context3DProxy.gl.CULL_FACE);
-            // Context3DProxy.gl.enable(Context3DProxy.gl.SCISSOR_TEST);
-            var gl = Context3DProxy.gl;
-            // Context3DProxy.gl.bindFramebuffer(Context3DProxy.gl.FRAMEBUFFER, null);
-            gl.enable(gl.DEPTH_TEST);
-            // Egret3DCanvas.context3DProxy.setRenderToBackBuffer();
 
+            var gl = Context3DProxy.gl;
+            gl.enable(gl.DEPTH_TEST);
             // 为3d的buffer以及着色器标脏
             proDirty = true;
 
-            // 渲染
-            // this._timeDate = new Date();
-            let now:number = Egret3DEngine.instance.performance.getNow();
-            this._delay = now - this._time;
-            this._time = now;
-            Egret3DEngine.instance.performance.startCounter("renderer", 60);
-
-            this._enterFrameEvent3D.time = this._time;
-            this._enterFrameEvent3D.delay = this._delay;
-            this.dispatchEvent(this._enterFrameEvent3D);
-
-            //Context3DProxy.gl.enable(ContextConfig.BLEND);
-            //Context3DProxy.gl.enable(ContextConfig.CULL_FACE);
-            //Context3DProxy.gl.enable(Context3DProxy.gl.SCISSOR_TEST);
-
-            Egret3DCanvas.context3DProxy.viewPort(this.canvas3DRectangle.x, this.canvas3DRectangle.y, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
-            Egret3DCanvas.context3DProxy.setScissorRectangle(this.canvas3DRectangle.x, this.canvas3DRectangle.y, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
-
-            CameraManager.instance.update(this._time, this._delay);
-            for (var i: number = 0; i < this._view3DS.length; i++) {
-                if (Egret3DEngine.instance.debug) {
-                    Egret3DEngine.instance.performance.startCounter("view3D-" + i.toString(), 60);
-                    Egret3DEngine.instance.performance.prefix = "view3D-" + i.toString() + "-";
-                    // Egret3DState.help = new Date().getTime();
-                }   
-                this._view3DS[i].update(this._time, this._delay);
-                if (Egret3DEngine.instance.debug) {
-
-                    // collection debug
-                    // let collection = this._view3DS[i].entityCollect;
-                    // egret3d.Egret3DState.showDataInfo("drawCall : " + collection.numberDraw.toString());
-                    // egret3d.Egret3DState.showDataInfo("vertex : " + collection.numberVertex.toString());
-                    // egret3d.Egret3DState.showDataInfo("tris : " + collection.numberFace.toString());
-                    // egret3d.Egret3DState.showDataInfo("skin : " + collection.numberSkin.toString());
-                    // egret3d.Egret3DState.showDataInfo("proAnim : " + collection.numberAnimation.toString());
-                    // egret3d.Egret3DState.showDataInfo("particleEmiter : " + collection.numberParticle.toString());
-
-                    // var len: string;
-                    // for (var i: number = 0; i < Layer.layerType.length; i++) {
-                    //     len = Layer.layerType[i] + " layer: " + collection.softLayerRenderItems[Layer.layerType[i]].length.toString();
-                    //     egret3d.Egret3DState.showDataInfo(len);
-                    // }
-
-                    Egret3DEngine.instance.performance.prefix = "";
-                    Egret3DEngine.instance.performance.endCounter("view3D-" + i.toString());
-                    // Egret3DState.showDataInfo("view3D-" + i.toString() + ":" + (new Date().getTime() - Egret3DState.help) + " ms");
-                }
-            }
-
-            if (Egret3DEngine.instance.debug) {
-                //this._renderer = Math.floor((new Date().getTime() - this._time) );
-                // Egret3DState.showTime(this._time, this._delay);
-                Egret3DEngine.instance.performance.updateFps();
-                Egret3DEngine.instance.performance.endCounter("renderer");
-                // egret3d.Egret3DState.showDataInfo("renderer: " + (new Date().getTime() - this._time).toString() + " ms");
-                // egret3d.Egret3DState.show();
-                // 这里显示更新inspector
-                Egret3DEngine.instance.inspector.show(this._delay, Egret3DEngine.instance.performance, this);
-                
-            }
-
-            if (this.afterRender) {
-                this.afterRender();
-            }    
-            // 渲染end 
+            this.$render(); 
 
             // 恢复2D上下文
-            // Egret3DCanvas.context3DProxy.disableCullFace();
             gl.disable(gl.CULL_FACE);
             gl.disable(gl.SCISSOR_TEST);
             gl.disable(gl.DEPTH_TEST);
-            // Context3DProxy.gl.viewport(this.canvas3DRectangle.x, this.canvas3DRectangle.y, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
-
-            for (var j: number = 0; j < 8; j++) {
-                if(j < 3) {
-                    Context3DProxy.gl.enableVertexAttribArray(j);
-                } else {
-                    Context3DProxy.gl.disableVertexAttribArray(j);   
-                }
-               
-            }
-
         }
 
         public resizeBlend2D():void {
@@ -533,52 +495,8 @@
             if (!this._start) {
                 return;
             }
-            // this._timeDate = new Date();
-            // this._delay = this._timeDate.getTime() - this._time;
-            // this._time = this._timeDate.getTime();
-            let now:number = Egret3DEngine.instance.performance.getNow();
-            this._delay = now - this._time;
-            this._time = now;
-            Egret3DEngine.instance.performance.startCounter("renderer", 60);
-
-            this._enterFrameEvent3D.time = this._time;
-            this._enterFrameEvent3D.delay = this._delay;
-            this.dispatchEvent(this._enterFrameEvent3D);
-
-            //Context3DProxy.gl.enable(ContextConfig.BLEND);
-            //Context3DProxy.gl.enable(ContextConfig.CULL_FACE);
-            //Context3DProxy.gl.enable(Context3DProxy.gl.SCISSOR_TEST);
-
-            Egret3DCanvas.context3DProxy.viewPort(this.canvas3DRectangle.x, this.canvas3DRectangle.y, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
-            Egret3DCanvas.context3DProxy.setScissorRectangle(this.canvas3DRectangle.x, this.canvas3DRectangle.y, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
-
-            CameraManager.instance.update(this._time, this._delay);
-            for (var i: number = 0; i < this._view3DS.length; i++) {
-                if (Egret3DEngine.instance.debug) {
-                    // Egret3DState.help = new Date().getTime();
-                    Egret3DEngine.instance.performance.startCounter("view3D-" + i.toString(), 60);
-                }
-                this._view3DS[i].update(this._time, this._delay);
-                if (Egret3DEngine.instance.debug) {
-                    // Egret3DState.showDataInfo("view3D-" + i.toString() + ":" + (new Date().getTime() - Egret3DState.help) + " ms");
-                    Egret3DEngine.instance.performance.startCounter("view3D-" + i.toString(), 60);
-                }
-            }
-
-            if (Egret3DEngine.instance.debug) {
-                //this._renderer = Math.floor((new Date().getTime() - this._time) );
-                // Egret3DState.showTime(this._time, this._delay);
-                Egret3DEngine.instance.performance.updateFps();
-                Egret3DEngine.instance.performance.endCounter("renderer");
-                // egret3d.Egret3DState.showDataInfo("renderer: " + (new Date().getTime() - this._time).toString() + " ms");
-                // egret3d.Egret3DState.show();
-                // 这里显示更新inspector
-                Egret3DEngine.instance.inspector.show(this._delay, Egret3DEngine.instance.performance, this);
-            }
-
-            if (this.afterRender) {
-                this.afterRender();
-            }
+            
+            this.$render();
 
             Context3DProxy.gl.flush();
 

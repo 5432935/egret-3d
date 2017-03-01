@@ -43,7 +43,7 @@
             }
         }
 
-        public draw(time: number, delay: number, context3D: Context3DProxy, collect: CollectBase, backViewPort: Rectangle, posList: any = null) {
+        public draw(time: number, delay: number, context3D: Context3DProxy, collect: EntityCollect, backViewPort: Rectangle, posList: any = null) {
             var i: number;
             for (i = 0; i < this.renderArray.length; i++) { 
                 if (this.renderArray[i].enabled)

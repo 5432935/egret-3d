@@ -4,7 +4,7 @@
         "noImplicitAny": false,
         "sourceMap": false,
         "declaration": true,
-        "out": "../../egret-core/build/egret3d/egret3d.js",
+        "out": "../node_modules/egret3d/egret3d.js",
         "allowUnreachableCode": true
     },
     "files": [
@@ -168,7 +168,7 @@
         "lights/DirectLight.ts",
         "lights/LightGroup.ts",
 
-        "core/traverse/CollectBase.ts",
+        "core/traverse/EntityCollect.ts",
         "core/traverse/EntityCollect.ts",
         "core/traverse/Frustum.ts",
         "core/traverse/Layer.ts",

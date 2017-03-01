@@ -29,7 +29,7 @@
             return this._lutTexture;
         }
 
-        public draw(time: number, delay: number, context3D: Context3DProxy, collect: CollectBase, camera: Camera3D, backViewPort: Rectangle, posList: any) {
+        public draw(time: number, delay: number, context3D: Context3DProxy, collect: EntityCollect, camera: Camera3D, backViewPort: Rectangle, posList: any) {
             this.postRender.camera = camera;
             this.postRender.needClean = true;
             this.postRender.draw(time, delay, context3D, collect,  backViewPort, posList);

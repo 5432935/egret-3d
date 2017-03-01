@@ -67,7 +67,6 @@
         * @platform Web,Native
         */
         public static layerType: string[] = ["normalObject", "normalAlphaObject", "alphaObject", "decal", "effect", "gui"];
-        //  public static layerType: string[] = ["gui", "effect", "alphaObject", "normalObject"];
 
         /**
         * @private

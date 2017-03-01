@@ -21,7 +21,7 @@
             this.renderTexture = new RenderTexture(width, height, format );
         }
 
-        public draw(time: number, delay: number, context3D: Context3DProxy, collect: CollectBase, backViewPort:Rectangle, posList: any) {
+        public draw(time: number, delay: number, context3D: Context3DProxy, collect: EntityCollect, backViewPort:Rectangle, posList: any) {
             this.numEntity = collect.renderList.length;
 
             if (this.renderTexture) {

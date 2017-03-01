@@ -203,14 +203,6 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public canPick: boolean = false;
-
-        /**
-        * @language zh_CN
-        * @private
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
         public renderLayer: number = 0 ;
 
         /**

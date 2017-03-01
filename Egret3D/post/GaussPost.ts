@@ -25,7 +25,7 @@
             this._v_postRender.setRenderToTexture(width, height, FrameBufferFormat.UNSIGNED_BYTE_RGB);
         }
 
-        public draw(time: number, delay: number, context3D: Context3DProxy, collect: CollectBase, camera: Camera3D, backViewPort: Rectangle, posList: any) {
+        public draw(time: number, delay: number, context3D: Context3DProxy, collect: EntityCollect, camera: Camera3D, backViewPort: Rectangle, posList: any) {
             this._h_postRender.camera = camera;
             this._h_postRender.needClean = true;
             this._h_postRender.draw(time, delay, context3D, collect, backViewPort, posList);

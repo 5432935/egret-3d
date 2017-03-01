@@ -28,7 +28,7 @@
         //    }
         //}
 
-        public drawRenderBuffer(time: number, delay: number, context3D: Context3DProxy, collect: CollectBase, camera: Camera3D, backViewPort: Rectangle = null) {
+        public drawRenderBuffer(time: number, delay: number, context3D: Context3DProxy, collect: EntityCollect, camera: Camera3D, backViewPort: Rectangle = null) {
             //if (this.useDepthPass)
             //    this.depthBuffer.draw(time, delay, context3D, collect, camera, backViewPort);
 

@@ -1,12 +1,20 @@
 ﻿module egret3d {
 
+    function sortByOrder(a: IRender, b: IRender): number {
+        return b.drawOrder - a.drawOrder;
+    }
+
+    function alphaZSort(a: IRender, b: IRender): number {
+        return b.zIndex - a.zIndex;
+    }
+
     /**
     * @private
     * @version Egret 3.0
     * @platform Web,Native
     */
     export enum SpecialCast {
-        Shadow,Pick,
+        Shadow, Pick,
     }
 
     /**
@@ -21,7 +29,7 @@
     * @version Egret 3.0
     * @platform Web,Native
     */
-    export class EntityCollect extends CollectBase {
+    export class EntityCollect {
 
         public numberVertex: number = 0;
         public numberFace: number = 0;
@@ -36,6 +44,15 @@
         public softLayerRenderItems: { [key: string]: IRender[] } = {};
         public specialCastItem: { [key: string]: IRender[] } = {};
 
+        public rootScene: Scene3D;
+
+        /**
+        * @private
+        * @language zh_CN
+        * 可渲染对象列表
+        */
+        public renderList: Array<IRender>;
+
         /**
         * @language zh_CN
         * constructor
@@ -44,25 +61,58 @@
         * @platform Web,Native
         */
         constructor() {
-            super();
 
-            this.specialCastItem[SpecialCast.Shadow] = []; 
-            this.specialCastItem[SpecialCast.Pick] = []; 
+            for (var i: number = 0; i < Layer.layerType.length; i++) {
+                this.softLayerRenderItems[Layer.layerType[i]] = [];
+            }
+
+            this.specialCastItem[SpecialCast.Shadow] = [];
+            this.specialCastItem[SpecialCast.Pick] = [];
+
+            this.renderList = new Array<IRender>();
         }
 
+        public set root(rootScene: Scene3D) {
+            this.rootScene = rootScene;
+        }
+
+        public get root(): Scene3D {
+            return this.rootScene;
+        }
+
+        /**
+        * @language zh_CN
+        * 尝试添加节点
+        * @version Egret 3.0
+        * @param child   尝试添加的节点
+        * @param camera     相机
+        * @platform Web,Native
+        */
         private applyRender(child: any, camera: Camera3D) {
-            if (child.canPick) {
-                this.specialCastItem[SpecialCast.Pick].push(child);
-                this.numberPick++;
-            }
-            if (!child.visible) {
-                return;  
-            }
-            
-            this.addRenderList(child, camera);
+            this.addRenderItem(child, camera);
 
             for (var i: number = 0; i < child.childs.length; i++) {
                 this.applyRender(child.childs[i], camera);
+            }
+        }
+
+        /**
+        * @language zh_CN
+        * 尝试添加四叉树列表
+        * @version Egret 3.0
+        * @param quadList   需要被判定是否在视锥体里的节点列表
+        * @param camera     相机
+        * @platform Web,Native
+        */
+        private appendQuadList(quadList: Array<IQuadNode>, camera: Camera3D) {
+            var mesh: Mesh;
+            var node: IQuadNode;
+            for (node of quadList) {
+                if (!(node instanceof Mesh))
+                    continue;
+                mesh = <Mesh>node;
+                if (mesh && mesh.visible && mesh["material"])
+                    this.addRenderItem(mesh, camera, false);
             }
         }
 
@@ -74,21 +124,21 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        private addRenderList(renderItem: IRender, camera: Camera3D, cameraCulling:boolean = true) {
-
+        private addRenderItem(renderItem: IRender, camera: Camera3D, cameraCulling: boolean = true): void {
             if (cameraCulling) {
                 if (!camera.isVisibleToCamera(renderItem)) {
                     return;
                 }
             }
 
-            if (!renderItem.material)
-                return;
-
             //检查鼠标能pick
             if (renderItem.enablePick) {
                 this.specialCastItem[SpecialCast.Pick].push(renderItem);
                 this.numberPick++;
+            }
+
+            if (!renderItem.visible || !renderItem.material) {
+                return;
             }
 
             //检查阴影产生者
@@ -104,10 +154,10 @@
 
             //按 layer 进行渲染排序分类
             for (var i: number = 0; i < Layer.layerType.length; i++) {
-                if (renderItem.material.materialData.alphaBlending && renderItem.tag.name == "normalObject" ) {
+                if (renderItem.material.materialData.alphaBlending && renderItem.tag.name == Layer.TAG_NAME_NORMAL_OBJECT) {
                     var scenePos: Vector3D = camera.object3DToScreenRay(renderItem.position, Vector3D.HELP_0);
                     renderItem.zIndex = Vector3D.HELP_0.z;
-                    this.softLayerRenderItems["alphaObject"].push(renderItem);
+                    this.softLayerRenderItems[Layer.TAG_NAME_ALPHA_OBJECT].push(renderItem);
                 }
                 else if (renderItem.tag.name == Layer.layerType[i]) {
                     this.softLayerRenderItems[Layer.layerType[i]].push(renderItem);
@@ -126,10 +176,8 @@
                 if (renderItem.type == IRender.TYPE_PARTICLE_EMIT)
                     this.numberParticle += 1;
             }
-
-
         }
-                
+
         /**
         * @language zh_CN
         * 数据更新 处理需要渲染的对象
@@ -138,138 +186,82 @@
         * @platform Web,Native
         */
         public update(camera: Camera3D) {
-            super.update(camera);
+            this.clear();
 
-            this.numberFace = 0 ;
-            this.numberVertex = 0;
-            this.numberDraw = 0;
-            this.numberSkin = 0;
-            this.numberAnimation = 0;
-            this.numberParticle = 0;
-            this.numberCastShadow = 0; 
-            this.numberPick = 0; 
-            this.numberAcceptShadow = 0; 
-            
-            this.clearList();
+            if (Egret3DEngine.instance.debug) {
+                Egret3DEngine.instance.performance.startCounter("entityCollect applyRender", 60);
+            }
 
             if (this.rootScene.quad) {
                 var box: BoundBox = camera.frustum.box;
                 var quadList: Array<IQuadNode> = this.rootScene.quad.getNodesByAABB(box.min.x, box.min.y, box.max.x, box.max.y);
                 this.appendQuadList(quadList, camera);
-            }
-            else {
-                // Egret3DState.countStart();
-                Egret3DEngine.instance.performance.startCounter("entityCollect applyRender", 60);
+            } else {
                 this.applyRender(this.rootScene, camera);
-                // Egret3DState.countEnd("entityCollect applyRender");
+            }
+
+            if (Egret3DEngine.instance.debug) {
                 Egret3DEngine.instance.performance.endCounter("entityCollect applyRender");
             }
 
-            var renders:IRender[] ;
-            var layerName: string;
-            var listLen: number;
-
-            //*******************
-            //---进行alpha软排序-------
-            layerName = Layer.layerType[2];
+            // 排序
+            var renders: IRender[], layerName: string, listLen: number;
+            // 进行alpha排序
+            layerName = Layer.TAG_NAME_ALPHA_OBJECT;
             renders = this.softLayerRenderItems[layerName];
             if (renders && renders.length) {
                 listLen = renders.length;
-                renders.sort(this.alphaZSort);
+                renders.sort(alphaZSort);
             }
-            //------end---------
-            //*******************
-
-            //*******************
-            //---进行重要度软排序-
+            // 进行重要度排序
             for (var j: number = 0; j < Layer.layerType.length; j++) {
-                layerName = Layer.layerType[j]; 
+                layerName = Layer.layerType[j];
                 renders = this.softLayerRenderItems[layerName];
                 if (renders) {
                     listLen = renders.length;
-                    renders.sort(this.sortByOrder);
+                    renders.sort(sortByOrder);
                     for (var i: number = 0; i < listLen; i++) {
                         this.renderList.push(renders[i]);
                     }
                 }
             }
-            //------end---------
-            //*******************
+        }
+
+        protected clear() {
+            this.numberFace = 0;
+            this.numberVertex = 0;
+            this.numberDraw = 0;
+            this.numberSkin = 0;
+            this.numberAnimation = 0;
+            this.numberParticle = 0;
+            this.numberCastShadow = 0;
+            this.numberPick = 0;
+            this.numberAcceptShadow = 0;
+
+            for (var i: number = 0; i < Layer.layerType.length; i++) {
+                this.softLayerRenderItems[Layer.layerType[i]].length = 0;
+            }
+
+            for (var j in this.specialCastItem) {
+                this.specialCastItem[j].length = 0;
+            }
+
+            this.renderList.length = 0;
         }
 
         /**
         * @language zh_CN
-        * 根据当前场景的节点分布情况，生成四叉树
-        * @version Egret 3.0
-        * @param quadList   需要被判定是否在视锥体里的节点列表
-        * @param camera     相机
-        * @platform Web,Native
+        * 查找一个对象在渲染列表的下标
+        * @param obj 要查找的对象
+        * @returns 返回对象在渲染列表的下标
         */
-        private appendQuadList(quadList: Array<IQuadNode>, camera: Camera3D) {
-            var mesh: Mesh;
-            var node: IQuadNode;
-            for (node of quadList) {
-                if (!(node instanceof Mesh))
-                    continue;
-                mesh = <Mesh>node;
-                if (mesh && mesh.visible && mesh["material"])
-                    this.addRenderList(mesh, camera, false);
-            }
-        }
-
-        //protected findLayer(object3d: Object3D): Layer {
-        //    var typeIndex: number = object3d.layer >> 24;
-        //    var layerIndex: number = object3d.layer & 0x00FFFFFF;
-        //    if (typeIndex < this._tags.length && typeIndex >= 0) {
-        //        if (layerIndex < this._tags[typeIndex].layers.length && layerIndex >= 0) {
-        //            return this._tags[typeIndex].layers[layerIndex];
-        //        }
-        //    }
-        //    return this._tags[0].layers[0];
-        //}
-
-        //protected findTag(object3d: Object3D): Tag {
-        //    var typeIndex: number = object3d.layer >> 24;
-        //    if (typeIndex < this._tags.length && typeIndex >= 0) {
-        //        return this._tags[typeIndex];
-        //    }
-        //    return this._tags[0];
-        //}
-
-        protected clearList() {
-            for (var i: number = 0; i < Layer.layerType.length; i++) {
-                if (!this.softLayerRenderItems[Layer.layerType[i]]) {
-                    this.softLayerRenderItems[Layer.layerType[i]] = [];
+        public findRenderObject(obj: IRender): number {
+            for (var i: number = 0; i < this.renderList.length; ++i) {
+                if (this.renderList[i] === obj) {
+                    return i;
                 }
-                else
-                    this.softLayerRenderItems[Layer.layerType[i]].length = 0;
             }
-
-            for (var j in this.specialCastItem ) {
-                this.specialCastItem[j].length = 0;
-            }
-        }
-
-        protected sort(a: Object3D, b: Object3D, camera: Camera3D) {
-            var dis_0: number = Vector3D.distance(a.globalPosition, camera.position);
-            var dis_1: number = Vector3D.distance(b.globalPosition, camera.position);
-            if (dis_0 > dis_1) {
-                return -1;
-            }
-            else if (dis_0 < dis_1) {
-                return 1;
-            }
-
-            return 0;
-        }
-
-
-        protected sortByOrder(a: IRender, b: IRender) {
-            return b.drawOrder - a.drawOrder;
-        }
-
-        protected alphaZSort(a: IRender, b: IRender) {
-            return b.zIndex - a.zIndex;
+            return -1;
         }
 
     }

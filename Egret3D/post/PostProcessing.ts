@@ -46,7 +46,7 @@
             this.postArray = []; 
         }
 
-        public draw(time: number, delay: number, contextProxy: Context3DProxy, collect: CollectBase, camera: Camera3D, backViewPort: Rectangle) {
+        public draw(time: number, delay: number, contextProxy: Context3DProxy, collect: EntityCollect, camera: Camera3D, backViewPort: Rectangle) {
             let self = this;
             var post: IPost;
             var po;

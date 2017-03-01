@@ -30,6 +30,45 @@
     }
 
     /**
+    * @private
+    * @language zh_CN
+    * 请求全屏
+    */
+    export function requestFullScreen():void {
+        var dom: HTMLElement = document.documentElement;
+        if (dom.requestFullscreen) {
+            dom.requestFullscreen();
+        } else if (dom.webkitRequestFullScreen) {
+            dom.webkitRequestFullScreen();
+        }
+    }
+
+    /**
+    * @private
+    * @language zh_CN
+    * 退出全屏
+    */
+    export function exitFullscreen():void {
+        var de: Document = document;
+        if (de.exitFullscreen) {
+            de.exitFullscreen();
+        } else if (de.webkitCancelFullScreen) {
+            de.webkitCancelFullScreen();
+        }
+    }
+
+    /**
+    * @private
+    * @language zh_CN
+    */
+    export function setObjectSrceenPos(x: number, y: number, target: Object3D, camera: Camera3D):void {
+        camera.object3DToScreenRay(new Vector3D(), Vector3D.HELP_0);
+        Vector3D.HELP_0.setTo(x, y, Vector3D.HELP_0.z);
+        camera.ScreenRayToObject3D(Vector3D.HELP_0, Vector3D.HELP_1);
+        target.globalPosition = Vector3D.HELP_1;
+    }
+
+    /**
      * @private
      * @class egret3D.Egret3DEngine
      * @classdesc
