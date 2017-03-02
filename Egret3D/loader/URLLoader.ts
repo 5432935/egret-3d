@@ -160,7 +160,7 @@
                     this.data = new ByteArray(this._xhr.response);
                     break;
                 case ILoader.DATAFORMAT_SOUND:
-                    this.data = this._xhr.responseBody;
+                    this.data = this._xhr.responseText;
                     break;
                 case ILoader.DATAFORMAT_TEXT:
                     this.data = this._xhr.responseText;
