@@ -236,7 +236,7 @@
                         lightData[key] = Number(node[key]);
                         break;
                     case "type":
-                        lightData[key] = LightType[node.type];
+                        lightData.type = Number(LightType[node.type]);
                         break;
                     case "direction":
                         lightData.direction.x = Number(node[key].x);
