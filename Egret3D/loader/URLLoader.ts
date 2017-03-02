@@ -121,7 +121,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public unitNodeData: UnitLoader;
+        public unitNodeData: UnitNodeData; 
         /**
         * @language zh_CN
         * 已经获取到的字节数
