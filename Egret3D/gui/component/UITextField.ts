@@ -39,14 +39,14 @@
         */
         CENTER,
     }
-     /**
-    * @class egret3d.gui.UITextFieldType
-    * @classdesc
-    * 设置 UITextField 类的 type 属性时使用的常量值的枚举
-    * @see egret3d.gui.UITextField
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
+    /**
+   * @class egret3d.gui.UITextFieldType
+   * @classdesc
+   * 设置 UITextField 类的 type 属性时使用的常量值的枚举
+   * @see egret3d.gui.UITextField
+   * @version Egret 3.0
+   * @platform Web,Native
+   */
     export enum UITextFieldType {
         /**
         * @language zh_CN
@@ -113,24 +113,24 @@
         RIGHT
     }
 
-         /**
-    * @private
-    * @class egret3d.gui.UITextFormat
-    * @classdesc
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
+    /**
+* @private
+* @class egret3d.gui.UITextFormat
+* @classdesc
+* @version Egret 3.0
+* @platform Web,Native
+*/
     export class UITextFormat {
 
     }
 
-         /**
-    * @private
-    * @class egret3d.gui.UITextField
-    * @classdesc
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
+    /**
+* @private
+* @class egret3d.gui.UITextField
+* @classdesc
+* @version Egret 3.0
+* @platform Web,Native
+*/
     export class UITextField extends DisplayObject {
 
         private static sharedHTMLInputElement: HTMLInputElement;
@@ -252,7 +252,7 @@
             this._fontQuadPanel.visible = false;
         }
 
-        
+
         /**
         * @private
         */
@@ -322,13 +322,13 @@
         public set displayAsPassword(displayAsPassword: boolean) {
             this._displayAsPassword = displayAsPassword;
         }
-         /**
-        * @language zh_CN
-        * 指定文本字段是否是密码文本字段。
-        * @param displayAsPassword  是否为密码文本字段
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
+        /**
+       * @language zh_CN
+       * 指定文本字段是否是密码文本字段。
+       * @param displayAsPassword  是否为密码文本字段
+       * @version Egret 3.0
+       * @platform Web,Native
+       */
         public get displayAsPassword(): boolean {
             return this._displayAsPassword;
         }
@@ -499,6 +499,10 @@
             return this._textWidth;
         }
 
+        public set textWidth(value: number) {
+            this._textWidth = value;
+        }
+
         /**
         * @language zh_CN
         * （只读）文本的高度，以像素为单位。
@@ -507,6 +511,13 @@
         */
         public get textHeight(): number {
             return this._textHeight;
+        }
+
+        /**
+         * @private
+         */
+        public set textHeight(value: number) {
+            this._textHeight = value;
         }
 
         /**
@@ -759,7 +770,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public replaceSelectedText(value:string): void {
+        public replaceSelectedText(value: string): void {
         }
 
         /**
@@ -771,7 +782,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public replaceText(beginIndex: number, endIndex: number, newText:string): void {
+        public replaceText(beginIndex: number, endIndex: number, newText: string): void {
         }
 
         /**
@@ -787,7 +798,7 @@
         /**
         * @private
         */
-        private createFontQuad(unicode: number, isAddChild:boolean = true): Quad {
+        private createFontQuad(unicode: number, isAddChild: boolean = true): Quad {
 
             var fontQuad: Quad;
 
@@ -822,7 +833,7 @@
         */
         private deleteFontQuad(fontQuad: Quad): void {
 
-            if (this._blankQuad == fontQuad) 
+            if (this._blankQuad == fontQuad)
                 return;
 
             this._fontQuadPanel.removeChild(fontQuad);

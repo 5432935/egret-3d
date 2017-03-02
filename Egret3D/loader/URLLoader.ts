@@ -121,7 +121,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public unitNodeData: UnitLoader;
+        public unitNodeData: UnitNodeData; 
         /**
         * @language zh_CN
         * 已经获取到的字节数
@@ -160,7 +160,7 @@
                     this.data = new ByteArray(this._xhr.response);
                     break;
                 case ILoader.DATAFORMAT_SOUND:
-                    this.data = this._xhr.responseBody;
+                    this.data = this._xhr.responseText;
                     break;
                 case ILoader.DATAFORMAT_TEXT:
                     this.data = this._xhr.responseText;
