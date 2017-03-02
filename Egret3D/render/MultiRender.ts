@@ -1,5 +1,5 @@
 ﻿module egret3d {
-                            
+
     /**
     * @private
     * @class egret3d.MultiRender
@@ -10,23 +10,14 @@
     * @platform Web,Native
     */
     export class MultiRender extends RenderBase {
-              
-        private _renderItem: IRender; 
-
-        private _i: number = 0;
-        private _j: number = 0;
-
-
-        public drawOver: Function;
-
-        protected currentViewPort: Rectangle = new Rectangle();
+        
         /**
         * @language zh_CN
         * constructor
         */
-        constructor( pass:number = PassType.diffusePass ) {
+        constructor(pass: number = PassType.diffusePass) {
             super();
-            this.pass = pass; 
+            this.pass = pass;
 
             //this.setRenderToTexture(1024, 1024, FrameBufferFormat.UNSIGNED_BYTE_RGB);
         }
@@ -42,66 +33,50 @@
         * @param camera 渲染时的相机
         */
         public draw(time: number, delay: number, context3D: Context3DProxy, collect: EntityCollect, backViewPort: Rectangle, renderQuen: RenderQuen, posList: any = null) {
-            this.numEntity = collect.renderList.length;
-            this.viewPort = backViewPort;
-
             if (this.renderTexture) {
                 this.renderTexture.upload(context3D);
                 this.renderTexture.useMipmap = false;
                 context3D.setRenderToTexture(this.renderTexture.texture2D, true, true, 0);
-                this.currentViewPort.x = 0;
-                this.currentViewPort.y = 0;
-                this.currentViewPort.width = this.renderTexture.texture2D.width;
-                this.currentViewPort.height = this.renderTexture.texture2D.height;
-                this.viewPort = this.currentViewPort;
+                this.viewPort.setTo(0, 0, this.renderTexture.texture2D.width, this.renderTexture.texture2D.height);
+            } else {
+                this.viewPort.copyFrom(backViewPort);
             }
 
-            var material: MaterialBase;
-            for (this._renderIndex = 0; this._renderIndex < this.numEntity; this._renderIndex++) {
-                this._renderItem = collect.renderList[this._renderIndex];
+            for (let index = 0, len = collect.renderList.length; index < len; index++) {
+                let renderItem: IRender = collect.renderList[index];
 
-                this._renderItem.geometry.activeState(time, delay, Egret3DCanvas.context3DProxy, this.camera);
-                for (this._i = 0; this._i < this._renderItem.geometry.subGeometrys.length; this._i++) {
-                    var subGeometry = this._renderItem.geometry.subGeometrys[this._i];
+                renderItem.geometry.activeState(time, delay, Egret3DCanvas.context3DProxy, this.camera);
+
+                for (let i = 0; i < renderItem.geometry.subGeometrys.length; i++) {
+                    var subGeometry = renderItem.geometry.subGeometrys[i];
                     var matID = subGeometry.matID;
-                    material = this._renderItem.multiMaterial[matID] ;
-                    if (material == null)
-                        continue;
+                    let material: MaterialBase = renderItem.multiMaterial[matID];
 
-                    if (material.passes[this._pass]) {
-                        for (this._j = material.passes[this._pass].length - 1; this._j >=0 ; this._j--){
-                            material.passes[this._pass][this._j].draw(time, delay, context3D, this._renderItem.modelMatrix, this.camera, subGeometry, this._renderItem, renderQuen);
-                        }
-                    } else if (PassUtil.PassAuto[this._pass]) {
-                        //// 补充新的需要的渲染pass
-                        if (!material.passes[this._pass]) {
+                    if (material == null) {
+                        continue;
+                    }
+
+                    if(material.passes[this._pass] || PassUtil.PassAuto[this._pass]) {
+                        if(!material.passes[this._pass]) {
                             material.creatPass(this._pass);
                         }
 
-                        for (this._j = material.passes[this._pass].length - 1; this._j >= 0; this._j--) {
-                            material.passes[this._pass] = PassUtil.CreatPass(this._pass, material.materialData);
-                            material.passes[this._pass][this._j].draw(time, delay, context3D, this._renderItem.modelMatrix, this.camera, subGeometry, this._renderItem, renderQuen);
+                        for (let j = material.passes[this._pass].length - 1; j >= 0; j--) {
+                            material.passes[this._pass][j].draw(time, delay, context3D, renderItem.modelMatrix, this.camera, subGeometry, renderItem, renderQuen);
                         }
                     }
-                    material = null;
                 }
-            }
-
-            if (this.drawOver) {
-                this.drawOver(collect, this.camera, time, delay, this.viewPort );
             }
 
             if (this.renderTexture) {
-                this.viewPort = backViewPort;
-            
+                this.viewPort.copyFrom(backViewPort);
+
                 context3D.setRenderToBackBuffer();
-                if (this.viewPort) {
-                    context3D.viewPort(this.viewPort.x, this.viewPort.y, this.viewPort.width, this.viewPort.height);
-                    context3D.setScissorRectangle(this.viewPort.x, this.viewPort.y, this.viewPort.width, this.viewPort.height);
-                }
+
+                context3D.viewPort(this.viewPort.x, this.viewPort.y, this.viewPort.width, this.viewPort.height);
+                context3D.setScissorRectangle(this.viewPort.x, this.viewPort.y, this.viewPort.width, this.viewPort.height);
             }
-            this._renderItem = null;
         }
     }
-} 
+}
 

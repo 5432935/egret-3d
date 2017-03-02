@@ -38,7 +38,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public viewPort: Rectangle;
+        public viewPort: Rectangle = new Rectangle();
 
         /**
         * @language zh_CN
@@ -51,21 +51,6 @@
         public depthTexture: RenderTexture;
 
         /**
-        * @public
-        * @language zh_CN
-        * 前渲染的视图，渲染物体的总数目
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        public numEntity: number = 0; 
-
-        /**
-        * @private
-        * @language zh_CN
-        */
-        protected _renderIndex: number = 0;
-
-        /**
         * @private
         * @language zh_CN
         */
@@ -76,7 +61,7 @@
         * constructor
         */
         constructor() {
-            ///this.camera3D = camera3D;
+            
         }
 
         /**
@@ -103,10 +88,7 @@
             if (this.renderTexture) this.renderTexture.dispose();
             this.renderTexture = new RenderTexture(width, height, format);
         }
-
-
-
-        //camera: Camera3D, backViewPort: Rectangle = null, shadow:boolean = false
+        
         /**
         * @language zh_CN
         * 每帧渲染

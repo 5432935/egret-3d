@@ -13,16 +13,12 @@
             this.hud.fsShader = fs;
         }
 
-        public setTexture( name:string , texture:Texture ) {
-            this.hud[name] = texture ;
-        }
-
         public setRenderToTexture(width: number, height: number, format: FrameBufferFormat = FrameBufferFormat.UNSIGNED_BYTE_RGB) {
             this.renderTexture = new RenderTexture(width, height, format );
         }
 
         public draw(time: number, delay: number, context3D: Context3DProxy, collect: EntityCollect, backViewPort:Rectangle, posList: any) {
-            this.numEntity = collect.renderList.length;
+            let len = collect.renderList.length;
 
             if (this.renderTexture) {
                 this.renderTexture.upload(context3D);

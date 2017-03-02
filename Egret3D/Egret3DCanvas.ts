@@ -66,18 +66,18 @@
         protected static _canvas2D: HTMLCanvasElement;
         protected static _ctx2D: CanvasRenderingContext2D;
 
-        /**
-        * @private
-        */
-        public static Performance_GPU: number = 0;//优：5.0 中：15
-        /**
-        * @private
-        */
-        public static Performance_CPU: number = 0;//优：0.5 中：3
-       /**
-       * @private
-       */
-        public static Performance_Enable: boolean = false;
+    //     /**
+    //     * @private
+    //     */
+    //     public static Performance_GPU: number = 0;//优：5.0 中：15
+    //     /**
+    //     * @private
+    //     */
+    //     public static Performance_CPU: number = 0;//优：0.5 中：3
+    //    /**
+    //    * @private
+    //    */
+    //     public static Performance_Enable: boolean = false;
         
 
         /**
