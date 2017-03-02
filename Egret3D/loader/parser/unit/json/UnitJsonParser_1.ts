@@ -64,7 +64,7 @@
                         data.methods = this.parseMethod(node.methods);
                         break;
                     case "blendMode":
-                        data[key] = BlendMode[node[key]];
+                        data.blendMode = Number(BlendMode[node[key]]);
                         break;
                     case "lightIds":
                         var splits: string[] = node[key].split(",");
