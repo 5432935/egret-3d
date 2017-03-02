@@ -8,6 +8,8 @@
         "allowUnreachableCode": true
     },
     "files": [
+        "Util/lzma/LZMAConfig.ts",
+        
         "Util/ByteArray.ts",
         "Util/BooleanArray.ts",
         "Util/Debug.ts",

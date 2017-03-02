@@ -13,15 +13,15 @@ module nid {
         private highCoder:BitTreeDecoder;//8
 
         constructor() {
-            this.lowCoder  = BitTreeDecoder.constructArray(3, 1 << LZMA.kNumPosBitsMax );
-            this.midCoder  = BitTreeDecoder.constructArray(3, 1 << LZMA.kNumPosBitsMax );
+            this.lowCoder  = BitTreeDecoder.constructArray(3, 1 << LZMAConfig.kNumPosBitsMax );
+            this.midCoder  = BitTreeDecoder.constructArray(3, 1 << LZMAConfig.kNumPosBitsMax );
             this.highCoder = new BitTreeDecoder(8);
         }
 
         public init():void {
-            this.choice = [LZMA.PROB_INIT_VAL,LZMA.PROB_INIT_VAL];
+            this.choice = [LZMAConfig.PROB_INIT_VAL,LZMAConfig.PROB_INIT_VAL];
             this.highCoder.init();
-            for (var i:number = 0; i < (1 << LZMA.kNumPosBitsMax); i++)
+            for (var i:number = 0; i < (1 << LZMAConfig.kNumPosBitsMax); i++)
             {
                 this.lowCoder[i].init();
                 this.midCoder[i].init();

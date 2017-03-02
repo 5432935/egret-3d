@@ -17,7 +17,7 @@ module nid
 
         }
         public init():void{
-            LZMA.INIT_PROBS(this.probs);
+            LZMAConfig.INIT_PROBS(this.probs);
         }
         public decode(rc:RangeDecoder):number
         {
@@ -28,7 +28,7 @@ module nid
         }
         public reverseDecode(rc:RangeDecoder):number
         {
-            return LZMA.BitTreeReverseDecode(this.probs, this.numBits, rc);
+            return LZMAConfig.BitTreeReverseDecode(this.probs, this.numBits, rc);
         }
         static constructArray(numBits:number,len:number):Array<BitTreeDecoder>
         {

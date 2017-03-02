@@ -47,16 +47,16 @@ module nid
         private litStateI:number;
 
         constructor() {
-            this.posSlotDecoder = BitTreeDecoder.constructArray(6,LZMA.kNumLenToPosStates);//6
-            this.alignDecoder   = new BitTreeDecoder(LZMA.kNumAlignBits);
-            this.posDecoders    = new Uint16Array(1 + LZMA.kNumFullDistances - LZMA.kEndPosModelIndex);
+            this.posSlotDecoder = BitTreeDecoder.constructArray(6,LZMAConfig.kNumLenToPosStates);//6
+            this.alignDecoder   = new BitTreeDecoder(LZMAConfig.kNumAlignBits);
+            this.posDecoders    = new Uint16Array(1 + LZMAConfig.kNumFullDistances - LZMAConfig.kEndPosModelIndex);
 
-            this.isMatch    = new Uint16Array(LZMA.kNumStates << LZMA.kNumPosBitsMax);
-            this.isRep      = new Uint16Array(LZMA.kNumStates);
-            this.isRepG0    = new Uint16Array(LZMA.kNumStates);
-            this.isRepG1    = new Uint16Array(LZMA.kNumStates);
-            this.isRepG2    = new Uint16Array(LZMA.kNumStates);
-            this.isRep0Long = new Uint16Array(LZMA.kNumStates << LZMA.kNumPosBitsMax);
+            this.isMatch    = new Uint16Array(LZMAConfig.kNumStates << LZMAConfig.kNumPosBitsMax);
+            this.isRep      = new Uint16Array(LZMAConfig.kNumStates);
+            this.isRepG0    = new Uint16Array(LZMAConfig.kNumStates);
+            this.isRepG1    = new Uint16Array(LZMAConfig.kNumStates);
+            this.isRepG2    = new Uint16Array(LZMAConfig.kNumStates);
+            this.isRep0Long = new Uint16Array(LZMAConfig.kNumStates << LZMAConfig.kNumPosBitsMax);
 
             this.lenDecoder     = new LenDecoder();
             this.repLenDecoder  = new LenDecoder();
@@ -79,12 +79,12 @@ module nid
             this.initLiterals();
             this.initDist();
 
-            LZMA.INIT_PROBS(this.isMatch);
-            LZMA.INIT_PROBS(this.isRep);
-            LZMA.INIT_PROBS(this.isRepG0);
-            LZMA.INIT_PROBS(this.isRepG1);
-            LZMA.INIT_PROBS(this.isRepG2);
-            LZMA.INIT_PROBS(this.isRep0Long);
+            LZMAConfig.INIT_PROBS(this.isMatch);
+            LZMAConfig.INIT_PROBS(this.isRep);
+            LZMAConfig.INIT_PROBS(this.isRepG0);
+            LZMAConfig.INIT_PROBS(this.isRepG1);
+            LZMAConfig.INIT_PROBS(this.isRepG2);
+            LZMAConfig.INIT_PROBS(this.isRep0Long);
 
             this.lenDecoder.init();
             this.repLenDecoder.init();
@@ -103,7 +103,7 @@ module nid
         {
             var num:number = 0x300 << (this.lc + this.lp);//UInt32
             for (var i:number = 0; i < num; i++) {
-                this.litProbs[i] = LZMA.PROB_INIT_VAL;
+                this.litProbs[i] = LZMAConfig.PROB_INIT_VAL;
             }
         }
         private decodeLiteral(state, rep0):void//unsigned , UInt32
@@ -139,8 +139,8 @@ module nid
         private decodeDistance(len):number//unsigned byte
         {
             var lenState:number = len;//unsigned byte
-            if (lenState > LZMA.kNumLenToPosStates - 1)
-                lenState = LZMA.kNumLenToPosStates - 1;
+            if (lenState > LZMAConfig.kNumLenToPosStates - 1)
+                lenState = LZMAConfig.kNumLenToPosStates - 1;
 
             var posSlot = this.posSlotDecoder[lenState].decode(this.rangeDec);//unsigned byte
             if (posSlot < 4)
@@ -148,23 +148,23 @@ module nid
 
             var numDirectBits = ((posSlot >>> 1) - 1);//unsigned byte
             MEMORY.u32[this.loc1] = ((2 | (posSlot & 1)) << numDirectBits);//UInt32
-            if (posSlot < LZMA.kEndPosModelIndex){
-                MEMORY.u32[this.loc1] += LZMA.BitTreeReverseDecode(this.posDecoders, numDirectBits, this.rangeDec, MEMORY.u32[this.loc1] - posSlot);
+            if (posSlot < LZMAConfig.kEndPosModelIndex){
+                MEMORY.u32[this.loc1] += LZMAConfig.BitTreeReverseDecode(this.posDecoders, numDirectBits, this.rangeDec, MEMORY.u32[this.loc1] - posSlot);
             }
             else
             {
-                MEMORY.u32[this.loc1] += this.rangeDec.decodeDirectBits(numDirectBits - LZMA.kNumAlignBits) << LZMA.kNumAlignBits;
+                MEMORY.u32[this.loc1] += this.rangeDec.decodeDirectBits(numDirectBits - LZMAConfig.kNumAlignBits) << LZMAConfig.kNumAlignBits;
                 MEMORY.u32[this.loc1] += this.alignDecoder.reverseDecode(this.rangeDec);
             }
             return MEMORY.u32[this.loc1];
         }
         private initDist():void
         {
-            for (var i = 0; i < LZMA.kNumLenToPosStates; i++){
+            for (var i = 0; i < LZMAConfig.kNumLenToPosStates; i++){
                 this.posSlotDecoder[i].init();
             }
             this.alignDecoder.init();
-            LZMA.INIT_PROBS(this.posDecoders);
+            LZMAConfig.INIT_PROBS(this.posDecoders);
         }
         public decodeProperties(properties:Uint8Array):void
         {
@@ -189,8 +189,8 @@ module nid
 
             this.dictSize = this.dictSizeInProperties;
 
-            if (this.dictSize < LZMA.LZMA_DIC_MIN){
-                this.dictSize = LZMA.LZMA_DIC_MIN;
+            if (this.dictSize < LZMAConfig.LZMA_DIC_MIN){
+                this.dictSize = LZMAConfig.LZMA_DIC_MIN;
             }
         }
         private updateState_Literal(state:number):number
@@ -219,16 +219,16 @@ module nid
             {
                 if (unpackSizeDefined && unpackSize == 0 && !this.markerIsMandatory){
                     if (this.rangeDec.isFinishedOK()){
-                        return LZMA.LZMA_RES_FINISHED_WITHOUT_MARKER;
+                        return LZMAConfig.LZMA_RES_FINISHED_WITHOUT_MARKER;
                     }
                 }
 
                 var posState = this.outWindow.totalPos & ((1 << this.pb) - 1);
 
-                if (this.rangeDec.decodeBit(this.isMatch,(state << LZMA.kNumPosBitsMax) + posState) == 0)
+                if (this.rangeDec.decodeBit(this.isMatch,(state << LZMAConfig.kNumPosBitsMax) + posState) == 0)
                 {
                     if (unpackSizeDefined && unpackSize == 0){
-                        return LZMA.LZMA_RES_ERROR;
+                        return LZMAConfig.LZMA_RES_ERROR;
                     }
                     this.decodeLiteral(state, rep0);
                     state = this.updateState_Literal(state);
@@ -241,14 +241,14 @@ module nid
                 if (this.rangeDec.decodeBit(this.isRep,state) != 0)
                 {
                     if (unpackSizeDefined && unpackSize == 0){
-                        return LZMA.LZMA_RES_ERROR;
+                        return LZMAConfig.LZMA_RES_ERROR;
                     }
                     if (this.outWindow.isEmpty()){
-                        return LZMA.LZMA_RES_ERROR;
+                        return LZMAConfig.LZMA_RES_ERROR;
                     }
                     if (this.rangeDec.decodeBit(this.isRepG0,state) == 0)
                     {
-                        if (this.rangeDec.decodeBit(this.isRep0Long,(state << LZMA.kNumPosBitsMax) + posState) == 0)
+                        if (this.rangeDec.decodeBit(this.isRep0Long,(state << LZMAConfig.kNumPosBitsMax) + posState) == 0)
                         {
                             state = this.updateState_ShortRep(state);
                             this.outWindow.putByte(this.outWindow.getByte(rep0 + 1));
@@ -290,18 +290,18 @@ module nid
                     rep0  = this.decodeDistance(len);
                     if (rep0 == 0xFFFFFFFF) {
                         return this.rangeDec.isFinishedOK() ?
-                            LZMA.LZMA_RES_FINISHED_WITH_MARKER :
-                            LZMA.LZMA_RES_ERROR;
+                            LZMAConfig.LZMA_RES_FINISHED_WITH_MARKER :
+                            LZMAConfig.LZMA_RES_ERROR;
                     }
 
                     if (unpackSizeDefined && unpackSize == 0){
-                        return LZMA.LZMA_RES_ERROR;
+                        return LZMAConfig.LZMA_RES_ERROR;
                     }
                     if (rep0 >= this.dictSize || !this.outWindow.checkDistance(rep0)){
-                        return LZMA.LZMA_RES_ERROR;
+                        return LZMAConfig.LZMA_RES_ERROR;
                     }
                 }
-                len += LZMA.kMatchMinLen;
+                len += LZMAConfig.kMatchMinLen;
                 var isError:boolean = false;
                 if (unpackSizeDefined && unpackSize < len)
                 {
@@ -311,7 +311,7 @@ module nid
                 this.outWindow.copyMatch(rep0 + 1, len);
                 unpackSize -= len;
                 if (isError){
-                    return LZMA.LZMA_RES_ERROR;
+                    return LZMAConfig.LZMA_RES_ERROR;
                 }
             }
         }
