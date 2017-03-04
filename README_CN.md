@@ -22,18 +22,19 @@
 
 # Egret Engine 3D
 
-Egret is a brand new open mobile 3D game and application engine which allows you to quickly build mobile games and apps on Android,iOS and Windows.
+Egret Engine 3.0 包含了白鹭时代研发的遵循HTML5标准的2D引擎及全新打造的3D引擎。
+它解决了HTML5性能问题及碎片化问题，灵活地满足开发者开发2D或3D游戏的需求，并有着极强的跨平台运行能力。
 
-## Platforms
+## 引擎覆盖平台
 
-| Mobile Browsers / WebView | Mobile App | PC |
+| 移动端 浏览器 | 移动端 原生APP | PC端 |
 |:------------- |:---------------:| -------------:|
 | iOS 7.0+      | Android 4.0+ |  Chrome / FireFox |
 | Android 4.0+      | iOS 8.0 +        |  Safari |
 | Windows Phone 8 | Windows Phone 8     | Edge / IE9+  |
 
 
-## Show Case
+## 案例
 
 <p align="center">
 	<a href="http://developer.egret.com/cn/article/index/id/1074" ><img src="./docs/imgs/case1.jpg"
@@ -46,16 +47,16 @@ Egret is a brand new open mobile 3D game and application engine which allows you
          height="200"></a>
 </p>
 
-## Install
+## 安装
 
-1. install **npm** [how to install NPM](https://www.npmjs.com/)
-2. install **typescript**
+1. 安装 **npm** [如何安装NPM](https://www.npmjs.com/)
+2. 安装 **typescript**
 
 ```
 $ npm install typescript -g
 ```
 
-install Egret Engine 3D
+安装 Egret Engine 3D
 
 ```
 $ git clone https://github.com/egret-labs/egret-3d.git
@@ -64,7 +65,7 @@ $ cd Egret3D
 $ tsc
 ```
 
-get JavaScript files
+得到最终JavaScript文件
 
 ```
 egret-3d/node_modules/egret3d/egret3d.d.ts
@@ -74,19 +75,19 @@ egret-3d/node_modules/egret3d/egret3d.js.map
 
 ## Getting Started
 
-#### Create Project
+#### 创建项目
 
-##### create a project with **Egret Wing**
+##### 使用Egret Wing创建项目
 
 ![使用Egret Wing创建项目](./docs/imgs/wing_create_pro.png)
 
-##### create a project Egret Command tool
+##### 使用 Egret 命令创建 
 
 ```
 $ egret create demo
 ```
 
-change `Main.ts`
+修改Main.ts文件
 
 ```
 class Main extends egret.DisplayObjectContainer {
@@ -139,19 +140,19 @@ class Main extends egret.DisplayObjectContainer {
 }
 ```
 
-##### Build
+##### 编译
 
 ```
 $ egret build
 ```
 
-##### Run
+##### 运行
 
 ```
 $ egret run
 ```
 
-if you use **Egret Wing**, please use `F5` with run。
+如果使用 **Egret Wing**, 可使用快捷键 `F5` 运行。
 
 <p align="center">
 	<img src="./docs/imgs/run_chrome.png"
@@ -160,16 +161,16 @@ if you use **Egret Wing**, please use `F5` with run。
          height="200">
 </p>
 
-##### Publish
+##### 发布
 
 ```
 $ egret publish
 ```
 
 
-## Resource
+## 资源
 
-#### Tools
+#### 工具
 
 - [Egret Engine 3D Plugin for Unity](http://developer.egret.com/cn/github/egret-docs/Engine3D/unity/0/index.html)
 - [Egret Engine](https://egret.com/products/engine.html)
@@ -177,17 +178,17 @@ $ egret publish
 - [Egret Runtime](https://egret.com/products/runtime.html)
 - [Egret Wing](https://egret.com/products/wing.html)
 
-#### Document
+#### 文档
 
 - [API](http://developer.egret.com/cn/apidoc/)
-- [Document](http://developer.egret.com/cn/github/egret-docs/Engine3D/update/update325/index.html)
-- [Example](http://developer.egret.com/cn/example/egret3d/360)
-- [Forum](http://bbs.egret.com)
+- [文档](http://developer.egret.com/cn/github/egret-docs/Engine3D/update/update325/index.html)
+- [示例](http://developer.egret.com/cn/example/egret3d/360)
+- [论坛](http://bbs.egret.com)
 
-#### Social
+#### 社交平台
 
-- QQ Group：180593985
-- Weibo: [weibo.com/egretlabs](http://weibo.com/egretlabs)
+- QQ群：180593985
+- weibo: [weibo.com/egretlabs](http://weibo.com/egretlabs)
 
 #### WeChat
 
@@ -199,11 +200,11 @@ $ egret publish
     <img src="./docs/imgs/qr-edn.jpg"
          height="120">
 </p>
-## Contributing
+## 贡献
 
-A good question is to participate in the first step in the open source community, you can mention[Issues](https://github.com/egret-labs/egret-3d/issues)。
+一个好的问题是参与开源社区的第一步，你可以先提[Issues](https://github.com/egret-labs/egret-3d/issues)。
 
-We encourage you to ask and answer questions in the [official community](http://bbs.egret.com), but also to help the latter to solve the problem more efficiently.
+我们鼓励你到[官方社区](http://bbs.egret.com)进行提问和回答问题，也能够帮助后来者更高效的解决问题。
 
 ## License
 
