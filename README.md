@@ -201,9 +201,9 @@ $ egret publish
 </p>
 ## Contributing
 
-A good question is to participate in the first step in the open source community, you can mention[Issues](https://github.com/egret-labs/egret-3d/issues)。
+Raising a good question is the first step to participate a open source community.You can report issues [[here](https://github.com/egret-labs/egret-3d/issues)].
 
-We encourage you to ask and answer questions in the [official community](http://bbs.egret.com), but also to help the latter to solve the problem more efficiently.
+Issue discussion in [offical community](http://bbs.egret.com) is recommended. It can help the latters solve problems more efficiently.
 
 ## License
 
