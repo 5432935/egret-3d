@@ -80,7 +80,7 @@ egret-3d/node_modules/egret3d/egret3d.js.map
 
 ![使用Egret Wing创建项目](./docs/imgs/wing_create_pro.png)
 
-##### create a project Egret Command tool
+##### create a project with Egret Command tool
 
 ```
 $ egret create demo
