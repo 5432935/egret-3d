@@ -74,7 +74,8 @@
 
                 this._pixelArray = new Uint8Array(this.width * this.height * 4);
 
-                var colors: egret3d.Color[] = [egret3d.Color.white(), egret3d.Color.black()];
+                //var colors: egret3d.Color[] = [egret3d.Color.white(), egret3d.Color.black()];
+                var colors: egret3d.Color[] = [Color.white(), Color.black()];
 
                 var colorIndex = 0;
 
