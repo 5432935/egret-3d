@@ -1,5 +1,5 @@
 ﻿module egret3d {
-                    
+
     /**
     * @private
     * @class egret3d.Frustum
@@ -22,7 +22,7 @@
         private _pos: Vector3D;
         private _plane: Array<Plane3D>;
 
-        private _frustum: Wireframe = new Wireframe();
+        private _frustum: Wireframe;
         private camera: Camera3D;
 
         private nearCenter: Vector3D = new Vector3D();
@@ -58,7 +58,7 @@
         public center: Vector3D;
 
         private _curVer: Array<Vector3D>;
-        
+
         /**
         * @language zh_CN
         * 构造
@@ -84,12 +84,20 @@
             }
             this.box = new BoundBox(null, new Vector3D(), new Vector3D());
             this.center = new Vector3D();
-            this._frustum.material.diffuseColor = 0xffffff;
-            this._frustum.name = "CameraFrustum";
 
-            this._frustum.geometry.vertexCount = 8;
-            this._frustum.geometry.indexCount = 24;
-            this._frustum.geometry.setVertexIndices(0, [0, 1, 1, 2, 2, 3, 0, 3, 4, 5, 5, 6, 6, 7, 4, 7, 0, 4, 1, 5, 3, 7, 2, 6]);
+        }
+
+        protected initFrustum() {
+            if (this._frustum == null) {
+                this._frustum = new Wireframe();
+                this._frustum.material.diffuseColor = 0xffffff;
+                this._frustum.name = "CameraFrustum";
+
+                this._frustum.geometry.vertexCount = 8;
+                this._frustum.geometry.indexCount = 24;
+                this._frustum.geometry.setVertexIndices(0, [0, 1, 1, 2, 2, 3, 0, 3, 4, 5, 5, 6, 6, 7, 4, 7, 0, 4, 1, 5, 3, 7, 2, 6]);
+            }
+
         }
 
         /**
@@ -99,6 +107,7 @@
         * @platform Web,Native
         */
         public set visible(value: boolean) {
+            this.initFrustum();
             if (value) {
                 if (!this._frustum.parent) {
                     this.camera.addChild(this._frustum);
@@ -124,6 +133,9 @@
         * @platform Web,Native
         */
         public get visible(): boolean {
+            if (this._frustum == null) {
+                return false;
+            }
             return this._frustum.parent ? true : false;
         }
 
@@ -271,8 +283,10 @@
                     break;
             }
 
-            for (var i: number = 0; i < this.vertices.length; ++i) {
-                this._frustum.geometry.setVerticesForIndex(i, VertexFormat.VF_POSITION, [this.vertices[i].x, this.vertices[i].y, this.vertices[i].z], 1);
+            if (this._frustum != null) {
+                for (var i: number = 0; i < this.vertices.length; ++i) {
+                    this._frustum.geometry.setVerticesForIndex(i, VertexFormat.VF_POSITION, [this.vertices[i].x, this.vertices[i].y, this.vertices[i].z], 1);
+                }
             }
         }
 
@@ -286,7 +300,7 @@
         public update() {
 
             /// 摄像机变化之后的顶点也变化;
-            var mat: Matrix4_4 = Matrix4_4.helpMatrix ;
+            var mat: Matrix4_4 = Matrix4_4.helpMatrix;
             mat.copyFrom(this.camera.modelMatrix);
 
             //this._frustum.modelMatrix = mat;
@@ -344,7 +358,7 @@
             this.center.scaleBy(0.5);
             this.center.copyFrom(this.nearCenter.add(this.center, MathUtil.CALCULATION_VECTOR3D_2));
         }
-        
+
         /**
         * @language zh_CN
         * 检测一个坐标点是否在视椎体内
@@ -363,7 +377,7 @@
             }
             return true;
         }
-                
+
         /**
         * @language zh_CN
         * 检测一个球是否在视椎体内
@@ -428,7 +442,7 @@
         * @platform Web,Native
         */
         public dispose() {
-            if (this._frustum) {
+            if (this._frustum != null) {
                 this._frustum.dispose();
             }
             this._frustum = null;

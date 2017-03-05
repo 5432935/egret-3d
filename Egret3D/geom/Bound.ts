@@ -21,7 +21,7 @@
         * @platform Web,Native
         */
         public vexData: Float32Array;
-                        
+
         /**
         * @language zh_CN
         * 索引数据
@@ -37,7 +37,7 @@
         * @platform Web,Native
         */
         public vexLength: number = 3;
-        
+
         /**
         * @language zh_CN
         * 子包围盒
@@ -54,8 +54,19 @@
         */
         public owner: Object3D;
 
-        protected _bound: Wireframe = new Wireframe();
+        protected _bound: Wireframe;
 
+        protected initBound() {
+            if (this._bound == null) {
+                this._bound = new Wireframe();
+
+                this._bound.material.diffuseColor = 0xffffff;
+                this._bound.name = "Bound";
+                this._bound.geometry.vertexCount = 8;
+                this._bound.geometry.indexCount = 24;
+                this._bound.geometry.setVertexIndices(0, [0, 1, 1, 2, 2, 3, 0, 3, 4, 5, 5, 6, 6, 7, 4, 7, 0, 4, 1, 5, 3, 7, 2, 6]);
+            }
+        }
         /**
         * @language zh_CN
         * 设置是否可见
@@ -63,6 +74,7 @@
         * @platform Web,Native
         */
         public set visible(value: boolean) {
+            this.initBound();
             if (value) {
                 if (!this._bound.parent) {
                     this.owner.addChild(this._bound);
@@ -89,6 +101,9 @@
         * @platform Web,Native
         */
         public get visible(): boolean {
+            if (this._bound == null) {
+                return false;
+            }
             return this._bound.parent ? true : false;
         }
 
@@ -104,12 +119,6 @@
         */
         constructor(owner: Object3D) {
             this.owner = owner;
-            
-            this._bound.material.diffuseColor = 0xffffff;
-            this._bound.name = "Bound";
-            this._bound.geometry.vertexCount = 8;
-            this._bound.geometry.indexCount = 24;
-            this._bound.geometry.setVertexIndices(0, [0, 1, 1, 2, 2, 3, 0, 3, 4, 5, 5, 6, 6, 7, 4, 7, 0, 4, 1, 5, 3, 7, 2, 6]);
         }
 
         /**
@@ -189,12 +198,12 @@
         protected createChild() {
             this.childBound = new Bound(this.owner);
         }
-                                                
+
         /**
         * @private
         * @language zh_CN
         */
-        public inBound(frustum: Frustum): boolean{
+        public inBound(frustum: Frustum): boolean {
             return true;
         }
 
@@ -209,13 +218,13 @@
         * @platform Web,Native
         */
         public dispose() {
-            if (this._bound) {
+            if (this._bound != null) {
                 this._bound.dispose();
             }
 
             if (this.childBound) {
                 this.childBound.dispose();
             }
-        } 
+        }
     }
 }

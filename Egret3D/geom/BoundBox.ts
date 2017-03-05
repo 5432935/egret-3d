@@ -11,7 +11,7 @@
     * @platform Web,Native
     */
     export class BoundBox extends Bound {
-        
+
         /**
         * @language zh_CN
         * 盒子最小点
@@ -19,7 +19,7 @@
         * @platform Web,Native
         */
         public min: Vector3D = new Vector3D();
-                
+
         /**
         * @language zh_CN
         * 盒子最大点
@@ -27,7 +27,7 @@
         * @platform Web,Native
         */
         public max: Vector3D = new Vector3D();
-             
+
         /**
         * @language zh_CN
         * 盒子宽
@@ -35,7 +35,7 @@
         * @platform Web,Native
         */
         public width: number = 0;
-                                
+
         /**
         * @language zh_CN
         * 盒子高
@@ -59,7 +59,7 @@
         * @platform Web,Native
         */
         public volume: number = 0;
-        
+
         /**
         * @language zh_CN
         * 盒子包围球中心点
@@ -67,7 +67,7 @@
         * @platform Web,Native
         */
         public center: Vector3D = new Vector3D();
-                
+
         /**
         * @language zh_CN
         * 盒子包围球半径
@@ -88,7 +88,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        constructor(owner:Object3D = null, min: Vector3D = null, max: Vector3D = null) {
+        constructor(owner: Object3D = null, min: Vector3D = null, max: Vector3D = null) {
             super(owner);
             if (!min) {
                 min = new Vector3D();
@@ -101,7 +101,7 @@
             this.max.copyFrom(max);
             this.calculateBox();
         }
-        
+
         /**
         * @language zh_CN
         * 拷贝一个包围盒
@@ -114,7 +114,7 @@
             this.max.copyFrom(box.max);
             this.calculateBox();
         }
-                
+
         /**
         * @language zh_CN
         * 填充当前包围盒
@@ -128,7 +128,7 @@
             this.max.copyFrom(max);
             this.calculateBox();
         }
-                
+
         /**
         * @language zh_CN
         * 检测一个点是否包围盒内
@@ -145,7 +145,7 @@
             }
             return false;
         }
-                        
+
         /**
         * @language zh_CN
         * 检测两个包围盒是否相交
@@ -192,7 +192,7 @@
             }
             return true;
         }
-               
+
         /**
         * @language zh_CN
         * 检测两个包围对象是否相交
@@ -227,7 +227,7 @@
 
             return this._box0.intersectAABBs(this._box1, <BoundBox>intersect);
         }
-                                                                
+
         /**
         * @language zh_CN
         * 以字符串形式返回box的值
@@ -238,7 +238,7 @@
         public toString(): string {
             return "BoundBox [min:(" + this.min.x + ", " + this.min.y + ", " + this.min.z + ") max:(" + this.max.x + ", " + this.max.y + ", " + this.max.z + ")]";
         }
-                                        
+
         /**
         * @language zh_CN
         * 计算包围盒数据
@@ -246,7 +246,7 @@
         * @platform Web,Native
         */
         public calculateBox() {
-            
+
             var sub: Vector3D = this.max.subtract(this.min, MathUtil.CALCULATION_VECTOR3D_0);
 
             this.vexData = this.vexData || new Float32Array(24);
@@ -340,8 +340,37 @@
             var tmp: Vector3D = this.center.add(c, MathUtil.CALCULATION_VECTOR3D_2);
             this.center.copyFrom(tmp);
 
+            if (this._bound != null) {
+                for (var i: number = 0; i < 8; ++i) {
+                    this._bound.geometry.setVerticesForIndex(i, VertexFormat.VF_POSITION, [this.vexData[i * 3 + 0], this.vexData[i * 3 + 1], this.vexData[i * 3 + 2]], 1);
+                }
+            }
+        }
+
+        public set visible(value: boolean) {
+            if (this._bound == null) {
+                this.initBound();
+            }
+
             for (var i: number = 0; i < 8; ++i) {
                 this._bound.geometry.setVerticesForIndex(i, VertexFormat.VF_POSITION, [this.vexData[i * 3 + 0], this.vexData[i * 3 + 1], this.vexData[i * 3 + 2]], 1);
+            }
+
+            if (value) {
+                if (!this._bound.parent) {
+                    this.owner.addChild(this._bound);
+                }
+                else {
+                    if (this._bound.parent != this.owner) {
+                        this._bound.parent.removeChild(this._bound);
+                        this.owner.addChild(this._bound);
+                    }
+                }
+            }
+            else {
+                if (this._bound.parent) {
+                    this._bound.parent.removeChild(this._bound);
+                }
             }
         }
 
@@ -372,7 +401,7 @@
                 if (this.max.z < this.vexData[i + 2]) {
                     this.max.z = this.vexData[i + 2];
                 }
-               
+
                 if (this.min.x > this.vexData[i]) {
                     this.min.x = this.vexData[i];
                 }
