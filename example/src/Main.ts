@@ -50,6 +50,9 @@ class Main extends egret.DisplayObject {
         // Light
         //----------------------------------------------------------------------
 
+        //let demo: DirectLightSample = new DirectLightSample();
+        //let demo: PointLightSample = new PointLightSample();
+        //let demo: SpotLightSample = new SpotLightSample();
 
         //----------------------------------------------------------------------
         // Animation
