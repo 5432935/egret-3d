@@ -39,4 +39,4 @@ function compileShader(inputPath, outputPath, outputName) {
 }
 
 // exports.compileShader = compileShader;
-compileShader("../shader/", "../Egret3D/shader/", "ShaderLib");
+compileShader("../shader/", "../src/shader/", "ShaderLib");
