@@ -25,15 +25,13 @@ class UVAnim {
 
         let uvRollMethod: egret3d.UVRollMethod = new egret3d.UVRollMethod();
         mat.diffusePass.addMethod(uvRollMethod);
-        uvRollMethod.speedU = 0.01;
-        uvRollMethod.speedV = 0.01;
+        uvRollMethod.speedU = 0.0001;
+        uvRollMethod.speedV = 0.0001;
         uvRollMethod.start(true);
 
-        let geom: egret3d.PlaneGeometry = new egret3d.PlaneGeometry(512, 512, 10, 10, 1, 1)
+        let geom: egret3d.ElevationGeometry = new egret3d.ElevationGeometry(img, 512, 50, 512);
         let mesh: egret3d.Mesh = new egret3d.Mesh(geom, mat);
         StageMgr.Instance().view3d.addChild3D(mesh);
-
-
 
         this.InitCameraCtl();
         StageMgr.Instance().stage3d.addEventListener(egret3d.Event3D.ENTER_FRAME, this.update, this);
