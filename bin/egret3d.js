@@ -17610,8 +17610,9 @@ var egret3d;
             Context3DProxy.gl.linkProgram(shaderProgram);
             var p = Context3DProxy.gl.getProgramParameter(shaderProgram, Context3DProxy.gl.LINK_STATUS);
             if (!p) {
-                alert("vsShader error" + Context3DProxy.gl.getShaderInfoLog(vsShader.shader));
-                alert("fsShader error" + Context3DProxy.gl.getShaderInfoLog(fsShader.shader));
+                console.log("vsShader error" + Context3DProxy.gl.getShaderInfoLog(vsShader.shader));
+                console.log("fsShader error" + Context3DProxy.gl.getShaderInfoLog(fsShader.shader));
+                console.log("program error" + Context3DProxy.gl.getProgramInfoLog(shaderProgram));
             }
             var program = new egret3d.Program3D(shaderProgram);
             return program;

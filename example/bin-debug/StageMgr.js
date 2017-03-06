@@ -33,7 +33,6 @@ var StageMgr = (function () {
         this._view3D.backColor = _bgColor;
         this._stage3d.addView3D(this._view3D);
         this._stage3d.start();
-        console.log("init");
         this._stage3d.addEventListener(egret3d.Event3D.RESIZE, this.OnWindowResize, this);
     };
     StageMgr.prototype.OnWindowResize = function (e) {
