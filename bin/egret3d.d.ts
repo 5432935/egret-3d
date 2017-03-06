@@ -196,7 +196,7 @@ declare module egret3d {
         /**
          * @private
          */
-        readonly bufferOffset: number;
+        bufferOffset: number;
         /**
          * @language en_US
          * The current position of the file pointer (in bytes) to move or return to the ByteArray object. The next time you start reading reading method call in this position, or will start writing in this position next time call a write method.
@@ -258,7 +258,7 @@ declare module egret3d {
          * @version Egret 2.4
          * @platform Web,Native
          */
-        readonly bytesAvailable: number;
+        bytesAvailable: number;
         /**
          * @language en_US
          * Clears the contents of the byte array and resets the length and position properties to 0.
@@ -808,7 +808,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly dirty: boolean;
+        dirty: boolean;
         /**
         * @language zh_CN
         * 强制设置需要计算
@@ -823,7 +823,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly makeResult: number;
+        makeResult: number;
         private make();
         /**
         * @language zh_CN
@@ -865,7 +865,7 @@ declare module egret3d {
          * @language zh_CN
          * 取到当前Debug单例对象
          */
-        static readonly instance: Debug;
+        static instance: Debug;
     }
 }
 declare module egret3d {
@@ -1771,7 +1771,7 @@ declare module egret3d {
          * @version Egret 3.0
          * @platform Web,Native
          */
-        readonly length: number;
+        length: number;
         /**
          * @language en_US
          * Creates a new point. If you pass no parameters to this method, a point is
@@ -2218,7 +2218,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly length: number;
+        length: number;
         /**
         * @language en_US
         * The square of the length of the current Vector3D object, calculated。
@@ -2234,7 +2234,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly lengthSquared: number;
+        lengthSquared: number;
         /**
         * @language en_US
         * Creates an instance of a Vector3D object. If you do not specify a。
@@ -2891,7 +2891,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly magnitude: number;
+        magnitude: number;
         /**
         * @private
         *
@@ -3824,7 +3824,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly determinant: number;
+        determinant: number;
         /**
         * @language zh_CN
         * 返回矩阵位移
@@ -3850,7 +3850,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly scale: Vector3D;
+        scale: Vector3D;
         /**
         * @language zh_CN
         * 以字符串返回矩阵的值
@@ -4573,7 +4573,7 @@ declare module egret3d {
         * 得到变换矩阵，如果没有绑定Object3D对象返回本身的矩阵，否则返回父节点的模型矩阵
         * @returns 变换矩阵
         */
-        readonly transform: Matrix4_4;
+        transform: Matrix4_4;
         /**
         * @language zh_CN
         * 检测一个点是否包围盒内
@@ -5228,7 +5228,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly isStopImmediatePropagation: boolean;
+        isStopImmediatePropagation: boolean;
     }
 }
 declare module egret3d {
@@ -5809,7 +5809,7 @@ declare module egret3d {
          * @version Egret 3.0
          * @platform Web,Native
          */
-        readonly orientation: Orientation;
+        orientation: Orientation;
         private _acceleration;
         /**
          * @language zh_CN
@@ -6248,7 +6248,7 @@ declare module egret3d {
         private _pickEvent3d;
         private _retRenderList;
         protected _ray: Ray;
-        private readonly _view3ds;
+        private _view3ds;
         /**
         * @language zh_CN
         * 构造函数
@@ -7157,7 +7157,7 @@ declare module egret3d {
         *
         * 单例
         */
-        static readonly instance: ShaderUtil;
+        static instance: ShaderUtil;
         /**
         * @language zh_CN
         * @private
@@ -7857,7 +7857,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly animTime: number;
+        animTime: number;
         /**
         * @language zh_CN
         *  当前播放动画
@@ -7882,7 +7882,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly propertyAnimController: PropertyAnimController;
+        propertyAnimController: PropertyAnimController;
         /**
         * @language zh_CN
         * 是否正在播放
@@ -7935,14 +7935,14 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly animStateNames: string[];
+        animStateNames: string[];
         /**
         * @language zh_CN
         * 动画状态对象列表
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly animStates: IAnimationState[];
+        animStates: IAnimationState[];
         /**
         * @private
         */
@@ -8135,7 +8135,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly jointNum: number;
+        jointNum: number;
         /**
         * @language zh_CN
         * 通过名称查找指定骨骼
@@ -8370,7 +8370,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly currentSkeletonPose: SkeletonPose;
+        currentSkeletonPose: SkeletonPose;
         /**
         * @language zh_CN
         * 用骨头名字查找骨头索引
@@ -8414,7 +8414,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly jointNum: number;
+        jointNum: number;
     }
 }
 declare module egret3d {
@@ -8555,7 +8555,7 @@ declare module egret3d {
         * @platform Web,Native
         */
         addAnimClip(clip: SkeletonAnimationClip): void;
-        readonly animClip: {
+        animClip: {
             [key: string]: AnimClipState;
         };
         getCurrentState(): AnimClipState;
@@ -8681,7 +8681,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly skeletonAnimationController: SkeletonAnimation;
+        skeletonAnimationController: SkeletonAnimation;
         /**
         * @language zh_CN
         * 骨骼动画状态
@@ -8689,7 +8689,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly state: SkeletonAnimationState;
+        state: SkeletonAnimationState;
         /**
         * @language zh_CN
         * 挂载 基于 Object3D 的物体到指定的骨骼或虚拟提上
@@ -8757,7 +8757,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly jointNum: number;
+        jointNum: number;
         /**
         * @language zh_CN
         * 当前动画是否正在播放
@@ -9054,7 +9054,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly buffer: any;
+        buffer: any;
         private _success;
         private _error;
         private _event;
@@ -9175,7 +9175,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        static readonly instance: AudioManager;
+        static instance: AudioManager;
     }
 }
 declare module egret3d {
@@ -9886,7 +9886,7 @@ declare module egret3d {
         constructor();
         incRef(): void;
         decRef(): void;
-        readonly isDispose: boolean;
+        isDispose: boolean;
     }
 }
 declare module egret3d {
@@ -10871,7 +10871,7 @@ declare module egret3d {
         * @private
         * WebGLShader 的引用
         */
-        readonly shader: WebGLShader;
+        shader: WebGLShader;
         /**
         * @language zh_CN
         * 释放接口
@@ -11377,7 +11377,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly currentBound: Bound;
+        currentBound: Bound;
         /**
         * @language zh_CN
         * 鼠标检测数据
@@ -12128,7 +12128,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly root: Object3D;
+        root: Object3D;
         /**
         * @private
         * @language zh_CN
@@ -12240,7 +12240,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly drawOrder: number;
+        drawOrder: number;
         /**
         * @language zh_CN
         * 材质信息。</p>
@@ -12338,7 +12338,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly materialCount: number;
+        materialCount: number;
         /**
         * @language zh_CN
         * 获取材质
@@ -12440,7 +12440,7 @@ declare module egret3d {
         /**
         * @private
         */
-        readonly aabb: QuadAABB;
+        aabb: QuadAABB;
         /**
         * @private
         */
@@ -12461,7 +12461,7 @@ declare module egret3d {
         /**
         * @private
         */
-        readonly isTriangle: boolean;
+        isTriangle: boolean;
         protected onUpdateTransform(): void;
         /**
         * @language zh_CN
@@ -12949,7 +12949,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly terrainGeometry: ElevationGeometry;
+        terrainGeometry: ElevationGeometry;
         protected onUpdateTransform(): void;
         /**
         * @language zh_CN
@@ -13067,7 +13067,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly mouseX: number;
+        mouseX: number;
         /**
         * @language zh_CN
         * 获取鼠标在该显示对象的相对位置Y
@@ -13075,7 +13075,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly mouseY: number;
+        mouseY: number;
         /**
         * @language zh_CN
         * 获得当前舞台引用
@@ -13083,7 +13083,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly stage: QuadStage;
+        stage: QuadStage;
         /**
         * @language zh_CN
         * 获得子节点列表的引用
@@ -13091,7 +13091,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly childs: DisplayObject[];
+        childs: DisplayObject[];
         /**
         * @language zh_CN
         * 获得父亲节点，有可能为null
@@ -13099,7 +13099,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly parent: DisplayObject;
+        parent: DisplayObject;
         /**
         * @language zh_CN
         * 设定渲染类型，指定当前quad是否为textfield
@@ -13304,7 +13304,7 @@ declare module egret3d {
         /**
         * @private
         */
-        readonly globalVisible: boolean;
+        globalVisible: boolean;
         /**
         * @language zh_CN
         * 获取是否可见
@@ -13331,7 +13331,7 @@ declare module egret3d {
         /**
         * @private
         */
-        readonly globalX: number;
+        globalX: number;
         /**
         * @private
         * @language zh_CN
@@ -13340,7 +13340,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly globalY: number;
+        globalY: number;
         /**
         * @language zh_CN
         * 返回 object 世界位置
@@ -13349,7 +13349,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly globalPosition: Point;
+        globalPosition: Point;
         /**
         * @private
         * @language zh_CN
@@ -13365,7 +13365,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly globalRotationX: number;
+        globalRotationX: number;
         /**
         * @private
         * @language zh_CN
@@ -13374,7 +13374,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly globalRotationY: number;
+        globalRotationY: number;
         /**
         * @private
         * @language zh_CN
@@ -13383,7 +13383,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly globalRotationZ: number;
+        globalRotationZ: number;
         /**
         * @private
         * @language zh_CN
@@ -13393,7 +13393,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly globalRotation: Vector3D;
+        globalRotation: Vector3D;
         /**
         * @private
         * @language zh_CN
@@ -13410,7 +13410,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly globalScale: Vector3D;
+        globalScale: Vector3D;
         /**
         * @private
         * @language zh_CN
@@ -13418,7 +13418,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly globalScaleX: number;
+        globalScaleX: number;
         /**
         * @private
         * @language zh_CN
@@ -13426,7 +13426,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly globalScaleY: number;
+        globalScaleY: number;
         /**
         * @private
         * @language zh_CN
@@ -13434,7 +13434,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly globalScaleZ: number;
+        globalScaleZ: number;
         /**
         * @private
         * @language zh_CN
@@ -13444,11 +13444,11 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly globalOrientation: Quaternion;
+        globalOrientation: Quaternion;
         /**
         * @private
         */
-        readonly globalMask: Rectangle;
+        globalMask: Rectangle;
         /**
         * @language zh_CN
         * 返回位移。</p>
@@ -13676,7 +13676,7 @@ declare module egret3d {
         /**
         * private
         */
-        readonly globalColor: ColorTransform;
+        globalColor: ColorTransform;
         /**
         * @language zh_CN
         * 返回颜色值 0xffffff格式
@@ -14024,7 +14024,7 @@ declare module egret3d.gui {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        static readonly instance: GUISkinManager;
+        static instance: GUISkinManager;
     }
     /**
     * @private
@@ -14455,7 +14455,7 @@ declare module egret3d.gui {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly length: number;
+        length: number;
         /**
         * @language zh_CN
         * 文本字段中最多可包含的字符数（即用户输入的字符数）。
@@ -14522,14 +14522,14 @@ declare module egret3d.gui {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly selectionBeginIndex: number;
+        selectionBeginIndex: number;
         /**
         * @language zh_CN
         * (只读)当前所选内容中最后一个字符从零开始的字符索引值。
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly selectionEndIndex: number;
+        selectionEndIndex: number;
         /**
         * @language zh_CN
         * 该文本字段的类型。
@@ -14737,7 +14737,7 @@ declare module egret3d.gui {
        * @version Egret 3.0
        * @platform Web,Native
        */
-        readonly textField: UITextField;
+        textField: UITextField;
         /**
        * @language zh_CN
        * 获取或设置组件的文本标签。
@@ -14786,7 +14786,7 @@ declare module egret3d.gui {
        * @version Egret 3.0
        * @platform Web,Native
        */
-        readonly buttonAndLabelWidth: number;
+        buttonAndLabelWidth: number;
         /**
        * @language zh_CN
        * 获取或设置按钮和文本的间隔（以像素为单位）。
@@ -14858,7 +14858,7 @@ declare module egret3d.gui {
         /**
         * @private
         */
-        readonly background: Quad;
+        background: Quad;
         /**
         * @language zh_CN
         * 获取或设置组件的高度（以像素为单位）。
@@ -15108,7 +15108,7 @@ declare module egret3d.gui {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly selection: UIRadioButton;
+        selection: UIRadioButton;
         /**
         * @language zh_CN
         * 获取或设置当前选中项的索引
@@ -15227,14 +15227,14 @@ declare module egret3d.gui {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly bar: DisplayObject;
+        bar: DisplayObject;
         /**
         * @language zh_CN
         * 获取背景的显示对象.
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly background: DisplayObject;
+        background: DisplayObject;
         /**
         * @private
         */
@@ -16159,14 +16159,14 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly vertices: Vector3D[];
+        vertices: Vector3D[];
         /**
         * @language zh_CN
         * 摄像机渲染线框
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly wireframe: Wireframe;
+        wireframe: Wireframe;
         /**
         * @language zh_CN
         * 视椎体中心点
@@ -17221,7 +17221,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly width: number;
+        width: number;
         private _height;
         /**
         * @language zh_CN
@@ -17230,7 +17230,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly height: number;
+        height: number;
         private _depth;
         /**
         * @language zh_CN
@@ -17239,7 +17239,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly depth: number;
+        depth: number;
         /**
         * @language zh_CN
         * 构造函数
@@ -17286,7 +17286,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly height: number;
+        height: number;
         private _radius;
         /**
         * @language zh_CN
@@ -17295,7 +17295,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly radius: number;
+        radius: number;
         /**
         * @language zh_CN
         * 构造函数
@@ -17345,7 +17345,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly segmentsW: number;
+        segmentsW: number;
         private _segmentsH;
         /**
         * @language zh_CN
@@ -17354,7 +17354,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly segmentsH: number;
+        segmentsH: number;
         private _width;
         /**
         * @language zh_CN
@@ -17363,7 +17363,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly width: number;
+        width: number;
         private _height;
         /**
         * @language zh_CN
@@ -17372,7 +17372,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly height: number;
+        height: number;
         private _scaleU;
         /**
         * @language zh_CN
@@ -17381,7 +17381,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly scaleU: number;
+        scaleU: number;
         private _scaleV;
         /**
         * @language zh_CN
@@ -17390,7 +17390,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly scaleV: number;
+        scaleV: number;
         /**
         * @language zh_CN
         * 构造函数
@@ -17432,7 +17432,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly segmentsW: number;
+        segmentsW: number;
         private _segmentsH;
         /**
         * @language zh_CN
@@ -17441,7 +17441,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly segmentsH: number;
+        segmentsH: number;
         private _radius;
         /**
         * @language zh_CN
@@ -17450,7 +17450,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly radius: number;
+        radius: number;
         /**
         * @language zh_CN
         * 构造函数
@@ -17568,7 +17568,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly width: number;
+        width: number;
         /**
         * @language zh_CN
         * 得到高度
@@ -17576,7 +17576,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly height: number;
+        height: number;
         /**
         * @language zh_CN
         * 得到深度
@@ -17584,7 +17584,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly depth: number;
+        depth: number;
         /**
         * @language zh_CN
         * 得到高度图
@@ -17592,7 +17592,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly heightmap: ImageTexture;
+        heightmap: ImageTexture;
         /**
         * @language zh_CN
         * 得到格子列数
@@ -17600,7 +17600,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly segmentsW: number;
+        segmentsW: number;
         /**
         * @language zh_CN
         * 得到格子行数
@@ -17608,7 +17608,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly segmentsH: number;
+        segmentsH: number;
         /**
         * @language zh_CN
         * 构造函数
@@ -17901,7 +17901,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        private static readonly instance;
+        private static instance;
         /**
         * @language zh_CN
         * 创建一个新的 Input 对象。
@@ -18474,14 +18474,14 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly bytesLoaded: number;
+        bytesLoaded: number;
         /**
         * @language zh_CN
         * 需要获取的总字节数
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly bytesTotal: number;
+        bytesTotal: number;
         private onReadyStateChange(event);
         private loadComplete();
         private onProgress(event);
@@ -18630,14 +18630,14 @@ declare module egret3d {
        * @version Egret 3.0
        * @platform Web,Native
        */
-        readonly totalCount: number;
+        totalCount: number;
         /**
      * @language zh_CN
      * 获取当前已加载完成的数量
      * @version Egret 3.0
      * @platform Web,Native
      */
-        readonly loadedCount: number;
+        loadedCount: number;
         /**
          * @private
         * @language zh_CN
@@ -19223,7 +19223,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly configParser: IConfigParser;
+        configParser: IConfigParser;
         /**
         * @language zh_CN
         * 获取根目录
@@ -22509,7 +22509,7 @@ declare module egret3d {
         * 获取GrassMethod
         * @returns 草的Method，用于外部控制
         */
-        readonly method: GrassMethod;
+        method: GrassMethod;
         /**
         * @private
         */
@@ -24414,7 +24414,7 @@ declare module egret3d {
          * @version Egret 3.0
          * @platform Web,Native
          */
-        readonly diffusePass: DiffusePass;
+        diffusePass: DiffusePass;
         /**
          * @language zh_CN
          * 设置材质 ambientPower 值。
@@ -25293,7 +25293,7 @@ declare module egret3d {
        * @version Egret 3.0
        * @platform Web,Native
        */
-        readonly offsetIndex: number;
+        offsetIndex: number;
         /**
         * @private
         */
@@ -25335,7 +25335,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly offsetIndex: number;
+        offsetIndex: number;
         /**
         * @language zh_CN
         * 填充顶点数据
@@ -26547,7 +26547,7 @@ declare module egret3d {
         private _count;
         private _verticesDataDirty;
         constructor();
-        readonly endCoords: Vector3D[];
+        endCoords: Vector3D[];
         /**
         * @language zh_CN
         * 将粒子的出生位置设置为原结束为止，然后重新设置结束位置
@@ -26708,7 +26708,7 @@ declare module egret3d {
        * @version Egret 3.0
        * @platform Web,Native
        */
-        readonly emitter: ParticleEmitter;
+        emitter: ParticleEmitter;
         /**
         * @language zh_CN
         * 添加动画功能节点
@@ -27404,7 +27404,7 @@ declare module egret3d {
         * @platform Web,Native
         */
         constructor(node: number);
-        readonly nodeType: number;
+        nodeType: number;
     }
     /**
     * @language zh_CN
@@ -28604,11 +28604,11 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly trackEndCoords: Vector3D[];
+        trackEndCoords: Vector3D[];
         /**
         * @private
         */
-        readonly generator: ParticleLifeGenerator;
+        generator: ParticleLifeGenerator;
         /**
         * @language zh_CN
         * 渲染排序的参数，数值越大，先渲染。<p/>
@@ -28616,7 +28616,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly drawOrder: number;
+        drawOrder: number;
         /**
         * @private
         * 添加子发射器
@@ -28648,7 +28648,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly data: ParticleData;
+        data: ParticleData;
         /**
         * @language zh_CN
         * 获取时间节点
@@ -28656,7 +28656,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly timeNode: ParticleTime;
+        timeNode: ParticleTime;
         /**
         * @language zh_CN
         * 获取位置节点，该节点控制每个粒子单元的出生位置，并将数据写入顶点数据中。
@@ -28664,7 +28664,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly positionNode: ParticlePosition;
+        positionNode: ParticlePosition;
         /**
         * @language zh_CN
         * 获取跟随的目标，全局粒子可能会绑定有一个跟随的目标，获得该目标对象
@@ -28739,7 +28739,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly loopProgress: number;
+        loopProgress: number;
         /**
         * @language zh_CN
         * @private
@@ -28923,7 +28923,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        static readonly instance: PickSystem;
+        static instance: PickSystem;
         enablePick: boolean;
         /**
         * @private
@@ -28996,7 +28996,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly quad: QuadRoot;
+        quad: QuadRoot;
         /**
         * @private
         * @language zh_CN
@@ -29330,14 +29330,14 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly width: number;
+        width: number;
         /**
        * @language zh_CN
        * 获取贴图像素高度
        * @version Egret 3.0
        * @platform Web,Native
        */
-        readonly height: number;
+        height: number;
         /**
         * @language zh_CN
         * 上传贴图数据给GPU
@@ -30002,7 +30002,7 @@ declare module egret3d {
          * @platform Web,Native
          */
         cameraType: CameraType;
-        readonly maxWidthAndHeight: Point;
+        maxWidthAndHeight: Point;
         /**
         * @language zh_CN
         * 返回相机横纵比
@@ -30088,7 +30088,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly viewPort: Rectangle;
+        viewPort: Rectangle;
         /**
         * @language zh_CN
         * 返回相机视图投影矩阵
@@ -30097,8 +30097,8 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly viewProjectionMatrix: Matrix4_4;
-        readonly orthProjectionMatrix: Matrix4_4;
+        viewProjectionMatrix: Matrix4_4;
+        orthProjectionMatrix: Matrix4_4;
         /**
          * @private
          * @language zh_CN
@@ -30150,7 +30150,7 @@ declare module egret3d {
          * @version Egret 3.0
          * @platform Web,Native
          */
-        readonly viewMatrix: Matrix4_4;
+        viewMatrix: Matrix4_4;
         /**
          * @language zh_CN
          *
@@ -30158,7 +30158,7 @@ declare module egret3d {
          * @version Egret 3.0
          * @platform Web,Native
          */
-        readonly lookAtPosition: Vector3D;
+        lookAtPosition: Vector3D;
         private raw;
         /**
         * @private
@@ -30432,35 +30432,35 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly radius: number;
+        radius: number;
         /**
         * @language zh_CN
         * 获得宽
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly sideX: number;
+        sideX: number;
         /**
         * @language zh_CN
         * 获得高
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly sideY: number;
+        sideY: number;
         /**
         * @language zh_CN
         * 获得中心点x
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly centreX: number;
+        centreX: number;
         /**
         * @language zh_CN
         * 获得中心点y
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly centreY: number;
+        centreY: number;
         /**
         * @language zh_CN
         * 与另外一个包围盒碰撞测试
@@ -31108,7 +31108,7 @@ declare module egret3d {
         /**
         * @private
         */
-        readonly transformMatrix: Matrix4_4;
+        transformMatrix: Matrix4_4;
         protected updateTexture(context: Context3DProxy): void;
         /**
         * @private
@@ -31129,7 +31129,7 @@ declare module egret3d {
         enable: boolean;
         prefix: string;
         constructor();
-        readonly entities: any;
+        entities: any;
         getFps(): number;
         updateFps(): void;
         getNow(): number;
@@ -31205,7 +31205,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly renderQuen: RenderQuen;
+        renderQuen: RenderQuen;
         /**
         * @language zh_CN
         * 获取控制阴影实例对象
@@ -31213,7 +31213,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly shadowCast: ShadowCast;
+        shadowCast: ShadowCast;
         /**
         * @private
         * @language zh_CN
@@ -31358,7 +31358,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly viewPort: Rectangle;
+        viewPort: Rectangle;
         /**
         * @private
         * @language zh_CN
@@ -31367,7 +31367,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly entityCollect: EntityCollect;
+        entityCollect: EntityCollect;
         /**
         * @private
         * @language zh_CN
@@ -31683,7 +31683,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        readonly view3Ds: Array<View3D>;
+        view3Ds: Array<View3D>;
         /**
         * @language zh_CN
         * Egret3DCanvas 中 增加一个view3d
