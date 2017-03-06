@@ -36,6 +36,7 @@ class SpotLightSample{
 
         this.InitCameraCtl();
         StageMgr.Instance().stage3d.addEventListener(egret3d.Event3D.ENTER_FRAME, this.update, this);
+        
     }
 
     private cameraCtl: egret3d.LookAtController;
@@ -48,20 +49,5 @@ class SpotLightSample{
     private _lightIntensity = 0.01;
     public update(e: egret3d.Event3D) {
         this.cameraCtl.update();
-        if (this.light.intensity >= 0.5) {
-            this._lightIntensity = -0.01;
-        }
-        if (this.light.intensity <= 0.1) {
-            this._lightIntensity = 0.01;
-        }
-        this.light.intensity += this._lightIntensity;
-
-        if (this.light.dir.x >= 1) {
-            this._rotationX = -0.01;
-        }
-        if (this.light.dir.x <= -1) {
-            this._rotationX = 0.01;
-        }
-        this.light.dir.x += this._rotationX;
     }
 }
