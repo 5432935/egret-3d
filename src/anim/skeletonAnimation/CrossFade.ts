@@ -46,14 +46,21 @@
         }
 
         public getNextAnim(): string {
-            var anyState = this._crossFades["base"]; 
+            var anyState = this._crossFades["base"];
+            
             if (anyState) {
                 return "base";
-            } else if (this._currentCrossFadeNode.nextName != "") {
-                return this._currentCrossFadeNode.nextName;
-            } else if (this._currentCrossFadeNode.nextName == "") {
-                if (this._currentCrossFadeNode.crossB_state.clip.isLoop) {
-                    return this._currentCrossFadeNode.crossB;
+            } else {
+                if(this._currentCrossFadeNode) {
+                    if (this._currentCrossFadeNode.nextName != "") {
+                        return this._currentCrossFadeNode.nextName;
+                    } else if (this._currentCrossFadeNode.nextName == "") {
+                        if (this._currentCrossFadeNode.crossB_state.clip.isLoop) {
+                            return this._currentCrossFadeNode.crossB;
+                        }
+                    }
+                } else {
+                    console.warn("CrossFade: miss _currentCrossFadeNode!");
                 }
             }
             return "";

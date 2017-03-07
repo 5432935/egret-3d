@@ -151,8 +151,9 @@
 
             this._currentCrossFadeNode = null;
 
-            if (this._crossFade)
+            if (this._crossFade) {
                 this._currentCrossFadeNode = this._crossFade.checkCrossFade(this.currentAnimName, name, this._animState);
+            }  
 
             if (!this._currentCrossFadeNode && !reset) {
                 a = this._animState[this.currentAnimName];
@@ -241,9 +242,9 @@
             let _lerpAPose: SkeletonPose = this._lerpAPose;
             let _lerpBPose: SkeletonPose = this._lerpBPose;
             let gpuSkeletonPose = this.gpuSkeletonPose;
-            let currentCrossFadeNode = this._currentCrossFadeNode; 
-            let a: AnimClipState = this._currentCrossFadeNode.crossA_state;
-            let b: AnimClipState = this._currentCrossFadeNode.crossB_state;
+            let currentCrossFadeNode = this._currentCrossFadeNode;
+            let a: AnimClipState = currentCrossFadeNode.crossA_state || this._animState[currentCrossFadeNode.crossA];
+            let b: AnimClipState = currentCrossFadeNode.crossB_state || this._animState[currentCrossFadeNode.crossB];
             let hasA: boolean = false;
             let hasB: boolean = false;
             let mix: boolean = false;
@@ -280,12 +281,11 @@
                     }
                 }
             } else {
-                if (this._crossFade)
+                if (this._currentCrossFadeNode) {
                     this.play(this._crossFade.getNextAnim(), 1);
-                else
                     this._currentCrossFadeNode = null;
+                }
             }
-
         }
 
         /*
