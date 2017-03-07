@@ -157,11 +157,11 @@
                 var scenePos: Vector3D = camera.object3DToScreenRay(renderItem.position, Vector3D.HELP_0);
                 renderItem.zIndex = Vector3D.HELP_0.z;
                 this.softLayerRenderItems[Layer.TAG_NAME_ALPHA_OBJECT].push(renderItem);
-            }
-            
-            for (var i: number = 0; i < Layer.layerType.length; i++) {
-                if (renderItem.tag.name == Layer.layerType[i]) {
-                    this.softLayerRenderItems[Layer.layerType[i]].push(renderItem);
+            } else {
+                for (var i: number = 0; i < Layer.layerType.length; i++) {
+                    if (renderItem.tag.name == Layer.layerType[i]) {
+                        this.softLayerRenderItems[Layer.layerType[i]].push(renderItem);
+                    }
                 }
             }
 
