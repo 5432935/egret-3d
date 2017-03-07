@@ -134,7 +134,13 @@
         */
         public copy(other: Mesh) {
             super.copy(other);
-            this.multiMaterial = other.multiMaterial;
+            for(var key in other.multiMaterial) {
+                if(key == "0") {
+                    continue;
+                }
+                this._multiMaterial[key] = other.multiMaterial[key];
+            }
+            this._materialCount = other.materialCount;
         }
 
         /**
