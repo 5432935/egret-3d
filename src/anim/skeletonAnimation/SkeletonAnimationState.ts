@@ -281,10 +281,10 @@
                     }
                 }
             } else {
-                if (this._currentCrossFadeNode) {
+                if (this._crossFade) {
                     this.play(this._crossFade.getNextAnim(), 1);
-                    this._currentCrossFadeNode = null;
                 }
+                this._currentCrossFadeNode = null;
             }
         }
 

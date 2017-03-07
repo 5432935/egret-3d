@@ -14590,10 +14590,10 @@ var egret3d;
                 }
             }
             else {
-                if (this._currentCrossFadeNode) {
+                if (this._crossFade) {
                     this.play(this._crossFade.getNextAnim(), 1);
-                    this._currentCrossFadeNode = null;
                 }
+                this._currentCrossFadeNode = null;
             }
         };
         /*
@@ -61772,8 +61772,8 @@ var egret3d;
             context3DProxy.enableBlend();
             this.$render();
             // 恢复2D上下文
-            context3DProxy.enableDepth();
-            context3DProxy.enableCullFace();
+            context3DProxy.disableDepth();
+            context3DProxy.disableCullFace();
         };
         Egret3DCanvas.prototype.resizeBlend2D = function () {
             if (this.blend2D) {

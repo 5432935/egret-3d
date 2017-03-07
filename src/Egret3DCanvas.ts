@@ -416,7 +416,7 @@
 
             let context3DProxy = Egret3DCanvas.context3DProxy;
             let gl = Context3DProxy.gl;
-            
+
             context3DProxy.reset();
             context3DProxy.enableDepth();
             context3DProxy.enableCullFace();
@@ -425,8 +425,8 @@
             this.$render(); 
 
             // 恢复2D上下文
-            context3DProxy.enableDepth();
-            context3DProxy.enableCullFace();
+            context3DProxy.disableDepth();
+            context3DProxy.disableCullFace();
         }
 
         public resizeBlend2D():void {
