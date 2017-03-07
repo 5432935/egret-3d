@@ -4,17 +4,15 @@
         "noImplicitAny": false,
         "sourceMap": false,
         "declaration": true,
-        "out": "./bin/egret3d.js",
+        "outFile": "./bin/egret3d.js",
         "allowUnreachableCode": true
     },
     "files": [
         "src/Util/lzma/LZMAConfig.ts",
-        
         "src/Util/ByteArray.ts",
         "src/Util/BooleanArray.ts",
         "src/Util/Debug.ts",
         "src/Util/StringUtil.ts",
-
         "src/Util/lzma/MEMORY.ts",
         "src/Util/lzma/LZMADecoder.ts",
         "src/Util/lzma/LZMA.ts",
@@ -24,11 +22,9 @@
         "src/Util/lzma/LenDecoder.ts",
         "src/Util/lzma/LZMAWorker.ts",
         "src/Util/lzma/LZMAHelper.ts",
-
         "src/Egret3DLog.ts",
         "src/config/TextureMethodType.ts",
         "src/config/ContextConfig.ts",
-
         "src/geom/UV.ts",
         "src/geom/Point.ts",
         "src/geom/PointUtils.ts",
@@ -60,7 +56,6 @@
         "src/events/ParserEvent3D.ts",
         "src/events/EventDispatcher.ts",
         "src/events/EventManager.ts",
-
         "src/shader/register/ShaderBase.ts",
         "src/shader/register/VarRegister.ts",
         "src/shader/register/Attribute.ts",
@@ -76,24 +71,19 @@
         "src/shader/register/Extension.ts",
         "src/shader/register/DefineVar.ts",
         "src/shader/register/VaryingType.ts",
-
         "src/shader/ShaderLib.ts",
         "src/shader/ShaderPool.ts",
         "src/shader/ShaderContent.ts",
         "src/shader/ShaderUtil.ts",
-
         "src/core/partition/kdTree/KDTree.ts",
-
         "src/anim/AnimationNode.ts",
         "src/anim/AnimationCurve.ts",
         "src/anim/IAnimationState.ts",
         "src/anim/IAnimation.ts",
         "src/anim/TimerAxis.ts",
-
         "src/anim/PropertyAnimation/AnimCurve.ts",
         "src/anim/PropertyAnimation/PropertyAnim.ts",
         "src/anim/PropertyAnimation/PropertyAnimController.ts",
-
         "src/anim/SkeletonAnimation/Joint.ts",
         "src/anim/SkeletonAnimation/Skeleton.ts",
         "src/anim/SkeletonAnimation/SkeletonPose.ts",
@@ -102,22 +92,16 @@
         "src/anim/SkeletonAnimation/CrossFade.ts",
         "src/anim/SkeletonAnimation/SkeletonAnimationState.ts",
         "src/anim/SkeletonAnimation/SkeletonAnimation.ts",
-
         "src/audio/Channel.ts",
         "src/audio/Channel3d.ts",
         "src/audio/Sound.ts",
         "src/audio/AudioManager.ts",
-
-
-
         "src/controller/ControllerBase.ts",
         "src/controller/LookAtController.ts",
         "src/controller/HoverController.ts",
-		"src/controller/FreeController.ts",
-
+        "src/controller/FreeController.ts",
         "src/controller/PanController.ts",
         "src/controller/CameraAnimationController.ts",
-
         "src/core/context/Reference.ts",
         "src/core/context/Context3DProxy.ts",
         "src/core/context/FrameBuffer.ts",
@@ -128,7 +112,6 @@
         "src/core/context/Shader.ts",
         "src/core/context/ContextTexture2D.ts",
         "src/core/context/ContextTexture3D.ts",
-
         "src/core/node/Object3D.ts",
         "src/render/IRender.ts",
         "src/core/node/Entity.ts",
@@ -139,7 +122,6 @@
         "src/core/node/WireframeLine.ts",
         "src/core/node/terrain/LODQuadTree.ts",
         "src/core/node/terrain/Terrain.ts",
-
         "src/gui/BitmapFont.ts",
         "src/gui/DisplayObject.ts",
         "src/gui/QuadData.ts",
@@ -149,7 +131,6 @@
         "src/gui/GUITextureGroup.ts",
         "src/gui/QuadStage.ts",
         "src/gui/GUISkinManager.ts",
-
         "src/gui/component/UILayout.ts",
         "src/gui/component/UIElement.ts",
         "src/gui/component/UIButton.ts",
@@ -163,22 +144,17 @@
         "src/gui/component/UIRadioButtonGroup.ts",
         "src/gui/component/UIProgressBar.ts",
         "src/gui/component/UISlider.ts",
-
         "src/lights/LightBase.ts",
         "src/lights/PointLight.ts",
         "src/lights/SpotLight.ts",
         "src/lights/DirectLight.ts",
         "src/lights/LightGroup.ts",
-
         "src/core/traverse/EntityCollect.ts",
         "src/core/traverse/EntityCollect.ts",
         "src/core/traverse/Frustum.ts",
         "src/core/traverse/Layer.ts",
         "src/core/traverse/Tag.ts",
         "src/core/traverse/Picker.ts",
-
-
-
         "src/geometry/Geometry.ts",
         "src/geometry/GeometryData.ts",
         "src/geometry/SubGeometry.ts",
@@ -190,25 +166,18 @@
         "src/geometry/GeometryUtil.ts",
         "src/geometry/ElevationGeometry.ts",
         "src/geometry/OctahedronSphereGeometry.ts",
-
-
-
-		"src/collision/TerrainCollision.ts",
+        "src/collision/TerrainCollision.ts",
         "src/input/input.ts",
         "src/input/OrientationController.ts",
-
         "src/loader/ILoader.ts",
         "src/loader/URLLoader.ts",
         "src/loader/BinaryLoader.ts",
         "src/loader/AssetManager.ts",
         "src/loader/TextureResourceManager.ts",
-
-
         "src/loader/parser/DDSParser.ts",
         "src/loader/parser/PVRParser.ts",
         "src/loader/parser/TGAParser.ts",
         "src/loader/parser/HDRParser.ts",
-
         "src/loader/parser/EAM/EAMParser.ts",
         "src/loader/parser/EAM/EAMVersion.ts",
         "src/loader/parser/ECA/ECAParser.ts",
@@ -222,7 +191,6 @@
         "src/loader/parser/EUM/EUMParser.ts",
         "src/loader/parser/EUM/EUMVersion.ts",
         "src/loader/parser/XML/XMLParser.ts",
-
         "src/loader/parser/unit/UnitParserUtils.ts",
         "src/loader/parser/unit/MethodUtils.ts",
         "src/loader/parser/unit/UnitParser.ts",
@@ -239,22 +207,15 @@
         "src/loader/parser/unit/UnitMatSphereData.ts",
         "src/loader/parser/unit/UnitLightData.ts",
         "src/loader/parser/unit/UnitHUDData.ts",
-
         "src/loader/parser/map/MapLoader.ts",
-
         "src/loader/parser/role/Role.ts",
         "src/loader/parser/role/RoleLoader.ts",
-
         "src/loader/parser/particle/ParticleXmlParser.ts",
         "src/loader/parser/particle/ParticleJsonParser.ts",
         "src/loader/parser/particle/ParticleParser.ts",
-
         "src/loader/parser/texture_packer/TexturePackerParser.ts",
-
         "src/loader/parser/ParserUtils.ts",
-
         "src/loader/QueueLoader.ts",
-
         "src/material/pass/MethodData.ts",
         "src/material/method/MethodBase.ts",
         "src/material/method/GUIMethod.ts",
@@ -279,15 +240,11 @@
         "src/material/method/WaterNormalMethod.ts",
         "src/material/method/EnvironmentMethod.ts",
         "src/material/method/RimlightMethod.ts",
-
         "src/plant/GrassMesh.ts",
         "src/plant/GrassMethod.ts",
-
-
-		"src/material/method/WaterBumpMethod.ts",
+        "src/material/method/WaterBumpMethod.ts",
         "src/material/pass/PassUsage.ts",
         "src/material/MaterialData.ts",
-
         "src/material/pass/MaterialPass.ts",
         "src/material/pass/ColorPass.ts",
         "src/material/pass/DiffusePass.ts",
@@ -298,25 +255,17 @@
         "src/material/pass/GbufferPass.ts",
         "src/material/pass/OutLinePass.ts",
         "src/material/pass/PickPass.ts",
-
         "src/material/pass/PassUtil.ts",
-
-
         "src/material/MaterialBase.ts",
-
         "src/material/ColorMaterial.ts",
         "src/material/TextureMaterial.ts",
         "src/material/FakePBRMaterial.ts",
         "src/material/CubeTextureMaterial.ts",
-
         "src/render/RenderBase.ts",
         "src/render/MultiRender.ts",
         "src/render/RenderQuen.ts",
         "src/render/PostRender.ts",
-
         "src/particle/Value.ts",
-
-
         "src/particle/particleNode/ParticleEndNode.ts",
         "src/particle/particleNode/ParticleLifeGenerator.ts",
         "src/particle/particleNode/ParticleTime.ts",
@@ -324,7 +273,6 @@
         "src/particle/particleNode/ParticleRotation.ts",
         "src/particle/particleNode/ParticleScale.ts",
         "src/particle/particleNode/ParticleStartColor.ts",
-
         "src/particle/particleNode/ParticleFollowNode.ts",
         "src/particle/particleNode/ParticleVelocityNode.ts",
         "src/particle/particleNode/ParticleColorGlobalNode.ts",
@@ -346,20 +294,14 @@
         "src/particle/particleNode/ParticleUVRollNode.ts",
         "src/particle/particleNode/ParticleSubEmitterNode.ts",
         "src/particle/particleNode/ParticleTrackPositionNode.ts",
-
-
-
         "src/particle/ParticleAnimationState.ts",
         "src/particle/ParticleAnimation.ts",
         "src/particle/ParticleData.ts",
         "src/particle/ParticleEmitter.ts",
         "src/particle/EffectGroup.ts",
-
         "src/pick/PickSystem.ts",
-
         "src/scene/Scene3D.ts",
         "src/scene/TreeBase.ts",
-
         "src/texture/ITexture.ts",
         "src/texture/ImageTexture.ts",
         "src/texture/Texture.ts",
@@ -367,38 +309,28 @@
         "src/texture/CheckerboardTexture.ts",
         "src/texture/VideoTexture.ts",
         "src/texture/RenderTexture.ts",
-
-
-		"src/shadow/ShadowCast.ts",
-
+        "src/shadow/ShadowCast.ts",
         "src/camera/CameraManager.ts",
         "src/camera/Camera3D.ts",
-
         "src/core/partition/quad/IQuadNode.ts",
         "src/core/partition/quad/QuadAABB.ts",
         "src/core/partition/quad/QuadTree.ts",
         "src/core/partition/quad/QuadRoot.ts",
         "src/core/partition/quad/QuadTreeCell.ts",
-
         "src/Util/DoubleArray.ts",
         "src/Util/StaticMergeUtil.ts",
-
         "src/hud/HUD.ts",
-
         "src/Egret3DPerformance.ts",
         "src/Egret3DInspector.ts",
-
         "src/View3D.ts",
         "src/VRView3D.ts",
         "src/Egret3DCanvas.ts",
         "src/Egret3DEngine.ts",
-
         "src/post/IPost.ts",
         "src/post/GaussPost.ts",
         "src/post/BloomPost.ts",
         "src/post/Gbuffer.ts",
         "src/post/PostProcessing.ts",
         "src/post/ColorCorrectionPost.ts"
-
     ]
 }
