@@ -618,8 +618,8 @@
                 context3DProxy.disableBlend();
                 context3DProxy.setBlendFactors(ContextConfig.ONE, ContextConfig.ZERO);
             } else {
-                if (this._materialData.alphaBlending)
-                    Context3DProxy.gl.depthMask(false);
+                // if (this._materialData.alphaBlending)
+                    // Context3DProxy.gl.depthMask(false);
 
                 context3DProxy.enableBlend();
                 context3DProxy.setBlendFactors(this._materialData.blend_src, this._materialData.blend_dest);

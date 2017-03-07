@@ -15,10 +15,6 @@
         }
     }
 
-    // 切换prgram脏标记
-    // 用于完成2D渲染后强制标脏
-    export let proDirty:boolean = true;
-
     /**
     * @class egret3d.Egret3DCanvas
     * @classdesc
@@ -418,17 +414,19 @@
                 return;
             }
 
-            var gl = Context3DProxy.gl;
-            gl.enable(gl.DEPTH_TEST);
-            // 为3d的buffer以及着色器标脏
-            proDirty = true;
+            let context3DProxy = Egret3DCanvas.context3DProxy;
+            let gl = Context3DProxy.gl;
+            
+            context3DProxy.reset();
+            context3DProxy.enableDepth();
+            context3DProxy.enableCullFace();
+            context3DProxy.enableBlend();
 
             this.$render(); 
 
             // 恢复2D上下文
-            gl.disable(gl.CULL_FACE);
-            gl.disable(gl.SCISSOR_TEST);
-            gl.disable(gl.DEPTH_TEST);
+            context3DProxy.enableDepth();
+            context3DProxy.enableCullFace();
         }
 
         public resizeBlend2D():void {

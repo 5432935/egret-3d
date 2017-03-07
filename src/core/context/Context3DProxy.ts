@@ -69,6 +69,31 @@
 
         //--------------
 
+        /**
+        * @private
+        * @language zh_CN
+        * reset
+        * 重置缓存的状态
+        */
+        public reset():void {
+            this.DEPTH_TEST = false;
+
+            this.CULL_FACE = false;
+
+            this.BLEND = false;
+
+            this.blend_Factors_src = -1;
+
+            this.blend_Factors_dst = -1;
+
+            this.cullingMode = -1;
+
+            this.depthCompareMode = -1;
+
+            this.program = undefined;
+
+            this.programChange = undefined;
+        }
 
         /**
         * @private
@@ -595,10 +620,9 @@
         */
         public setProgram(program: Program3D) {
             this.programChange = false;
-            if (this.program == program && !egret3d.proDirty) {
+            if (this.program == program) {
                 return;
             };
-            egret3d.proDirty = false;
             this.programChange = true;
             this.program = program;
             Context3DProxy.gl.useProgram(program.program);
