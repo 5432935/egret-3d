@@ -618,8 +618,15 @@
                 context3DProxy.disableBlend();
                 context3DProxy.setBlendFactors(ContextConfig.ONE, ContextConfig.ZERO);
             } else {
-                // if (this._materialData.alphaBlending)
-                    // Context3DProxy.gl.depthMask(false);
+                // 如果是透明，强制关闭depthWrite
+                // 此处或许不必要
+                if(this._materialData.alphaBlending) {
+                    this._materialData.depthWrite = false;
+                }
+
+                if (!this._materialData.depthWrite) {
+                    Context3DProxy.gl.depthMask(false);
+                }
 
                 context3DProxy.enableBlend();
                 context3DProxy.setBlendFactors(this._materialData.blend_src, this._materialData.blend_dest);
@@ -753,10 +760,10 @@
             }
 
             context3DProxy.drawElement(this._materialData.drawMode, subGeometry.start * Uint16Array.BYTES_PER_ELEMENT, subGeometry.count);
-           // gl.drawElements(gl.POINTS, 8, gl.UNSIGNED_INT, 0);
-            if (this._materialData.alphaBlending)
+            // gl.drawElements(gl.POINTS, 8, gl.UNSIGNED_INT, 0);
+            if (!this._materialData.depthWrite) {
                 Context3DProxy.gl.depthMask(true);
-
+            }
         }
 
         public deactiveState(passUsage: PassUsage, context3DProxy: Context3DProxy) {

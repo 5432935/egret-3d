@@ -23361,6 +23361,14 @@ declare module egret3d {
         depthTest: boolean;
         /**
         * @language zh_CN
+        * 深度写入 。
+        * @default true
+        * @version Egret 4.0
+        * @platform Web,Native
+        */
+        depthWrite: boolean;
+        /**
+        * @language zh_CN
         * 深度测试模式
         * @default true
         * @version Egret 3.0
@@ -24099,6 +24107,19 @@ declare module egret3d {
          * @platform Web,Native
          */
         depth: boolean;
+        /**
+        * @language zh_CN
+        * 返回深度写入开关
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        /**
+        * @language zh_CN
+        * 设置深度写入开关
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        depthWrite: boolean;
         /**
         * @language zh_CN
         * 返回深度测试方式

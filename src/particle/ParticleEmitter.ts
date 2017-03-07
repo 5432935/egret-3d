@@ -49,6 +49,9 @@
         constructor(data: ParticleData, material: MaterialBase = null) {
             super(null, material);
 
+            // 粒子自动关闭depth写入
+            this.material.depthWrite = false;
+
             //##FilterBegin## ##Particle##
             this.tag.name = "effect";
             this.type = IRender.TYPE_PARTICLE_EMIT;

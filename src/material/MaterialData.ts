@@ -264,6 +264,15 @@
 
         /**
         * @language zh_CN
+        * 深度写入 。
+        * @default true
+        * @version Egret 4.0
+        * @platform Web,Native
+        */
+        public depthWrite: boolean = true;
+
+        /**
+        * @language zh_CN
         * 深度测试模式
         * @default true
         * @version Egret 3.0
@@ -582,6 +591,7 @@
             data.castShadow = this.castShadow;
             data.acceptShadow = this.acceptShadow;
             data.depthTest = this.depthTest;
+            data.depthWrite = this.depthWrite;
             data.blendMode = this.blendMode;
             data.blend_src = this.blend_src;
             data.blend_dest = this.blend_dest;

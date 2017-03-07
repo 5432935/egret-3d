@@ -21133,7 +21133,13 @@ var egret3d;
         */
         Mesh.prototype.copy = function (other) {
             _super.prototype.copy.call(this, other);
-            this.multiMaterial = other.multiMaterial;
+            for (var key in other.multiMaterial) {
+                if (key == "0") {
+                    continue;
+                }
+                this._multiMaterial[key] = other.multiMaterial[key];
+            }
+            this._materialCount = other.materialCount;
         };
         /**
         * @language zh_CN
@@ -45816,6 +45822,14 @@ var egret3d;
             this.depthTest = true;
             /**
             * @language zh_CN
+            * 深度写入 。
+            * @default true
+            * @version Egret 4.0
+            * @platform Web,Native
+            */
+            this.depthWrite = true;
+            /**
+            * @language zh_CN
             * 深度测试模式
             * @default true
             * @version Egret 3.0
@@ -46062,6 +46076,7 @@ var egret3d;
             data.castShadow = this.castShadow;
             data.acceptShadow = this.acceptShadow;
             data.depthTest = this.depthTest;
+            data.depthWrite = this.depthWrite;
             data.blendMode = this.blendMode;
             data.blend_src = this.blend_src;
             data.blend_dest = this.blend_dest;
@@ -46652,8 +46667,14 @@ var egret3d;
                 context3DProxy.setBlendFactors(egret3d.ContextConfig.ONE, egret3d.ContextConfig.ZERO);
             }
             else {
-                // if (this._materialData.alphaBlending)
-                // Context3DProxy.gl.depthMask(false);
+                // 如果是透明，强制关闭depthWrite
+                // 此处或许不必要
+                if (this._materialData.alphaBlending) {
+                    this._materialData.depthWrite = false;
+                }
+                if (!this._materialData.depthWrite) {
+                    egret3d.Context3DProxy.gl.depthMask(false);
+                }
                 context3DProxy.enableBlend();
                 context3DProxy.setBlendFactors(this._materialData.blend_src, this._materialData.blend_dest);
             }
@@ -46766,8 +46787,9 @@ var egret3d;
             }
             context3DProxy.drawElement(this._materialData.drawMode, subGeometry.start * Uint16Array.BYTES_PER_ELEMENT, subGeometry.count);
             // gl.drawElements(gl.POINTS, 8, gl.UNSIGNED_INT, 0);
-            if (this._materialData.alphaBlending)
+            if (!this._materialData.depthWrite) {
                 egret3d.Context3DProxy.gl.depthMask(true);
+            }
         };
         MaterialPass.prototype.deactiveState = function (passUsage, context3DProxy) {
             var sampler2D;
@@ -47622,6 +47644,28 @@ var egret3d;
              */
             set: function (bool) {
                 this.materialData.depthTest = bool;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(MaterialBase.prototype, "depthWrite", {
+            /**
+            * @language zh_CN
+            * 返回深度写入开关
+            * @version Egret 3.0
+            * @platform Web,Native
+            */
+            get: function () {
+                return this.materialData.depthWrite;
+            },
+            /**
+            * @language zh_CN
+            * 设置深度写入开关
+            * @version Egret 3.0
+            * @platform Web,Native
+            */
+            set: function (v) {
+                this.materialData.depthWrite = v;
             },
             enumerable: true,
             configurable: true
@@ -55846,6 +55890,8 @@ var egret3d;
             _super.call(this, null, material);
             this._isEmitterDirty = true;
             this._userNodes = [];
+            // 粒子自动关闭depth写入
+            this.material.depthWrite = false;
             //##FilterBegin## ##Particle##
             this.tag.name = "effect";
             this.type = egret3d.IRender.TYPE_PARTICLE_EMIT;

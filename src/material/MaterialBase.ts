@@ -168,6 +168,26 @@
         }
 
         /**
+        * @language zh_CN
+        * 返回深度写入开关
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get depthWrite(): boolean {
+            return this.materialData.depthWrite;
+        }
+
+        /**
+        * @language zh_CN
+        * 设置深度写入开关
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set depthWrite(v: boolean) {
+            this.materialData.depthWrite = v;
+        }
+
+        /**
          * @language zh_CN
          * 设置是否开启深度测试方式
          * @param v 模式
