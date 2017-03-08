@@ -46671,11 +46671,6 @@ var egret3d;
                 context3DProxy.setBlendFactors(egret3d.ContextConfig.ONE, egret3d.ContextConfig.ZERO);
             }
             else {
-                // 如果是透明，强制关闭depthWrite
-                // 此处或许不必要
-                if (this._materialData.alphaBlending) {
-                    this._materialData.depthWrite = false;
-                }
                 if (!this._materialData.depthWrite) {
                     egret3d.Context3DProxy.gl.depthMask(false);
                 }

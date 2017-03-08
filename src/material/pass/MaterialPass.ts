@@ -618,12 +618,6 @@
                 context3DProxy.disableBlend();
                 context3DProxy.setBlendFactors(ContextConfig.ONE, ContextConfig.ZERO);
             } else {
-                // 如果是透明，强制关闭depthWrite
-                // 此处或许不必要
-                if(this._materialData.alphaBlending) {
-                    this._materialData.depthWrite = false;
-                }
-
                 if (!this._materialData.depthWrite) {
                     Context3DProxy.gl.depthMask(false);
                 }
