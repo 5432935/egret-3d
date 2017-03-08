@@ -89,9 +89,16 @@
         * @platform Web,Native
         */
         private applyRender(child: any, camera: Camera3D) {
+
+            //检查鼠标能pick
+            if (child.enablePick) {
+                this.specialCastItem[SpecialCast.Pick].push(child);
+                this.numberPick++;
+            }
+
             if (!child.visible) {
                 return;
-            }
+            }  
 
             this.addRenderItem(child, camera);
 
@@ -133,12 +140,6 @@
                 if (!camera.isVisibleToCamera(renderItem)) {
                     return;
                 }
-            }
-
-            //检查鼠标能pick
-            if (renderItem.enablePick) {
-                this.specialCastItem[SpecialCast.Pick].push(renderItem);
-                this.numberPick++;
             }
 
             if (!renderItem.material) {

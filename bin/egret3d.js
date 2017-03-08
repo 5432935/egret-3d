@@ -28191,6 +28191,11 @@ var egret3d;
         * @platform Web,Native
         */
         EntityCollect.prototype.applyRender = function (child, camera) {
+            //检查鼠标能pick
+            if (child.enablePick) {
+                this.specialCastItem[SpecialCast.Pick].push(child);
+                this.numberPick++;
+            }
             if (!child.visible) {
                 return;
             }
@@ -28233,11 +28238,6 @@ var egret3d;
                 if (!camera.isVisibleToCamera(renderItem)) {
                     return;
                 }
-            }
-            //检查鼠标能pick
-            if (renderItem.enablePick) {
-                this.specialCastItem[SpecialCast.Pick].push(renderItem);
-                this.numberPick++;
             }
             if (!renderItem.material) {
                 return;
