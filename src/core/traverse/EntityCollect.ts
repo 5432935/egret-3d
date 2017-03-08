@@ -89,6 +89,10 @@
         * @platform Web,Native
         */
         private applyRender(child: any, camera: Camera3D) {
+            if (!child.visible) {
+                return;
+            }
+
             this.addRenderItem(child, camera);
 
             for (var i: number = 0; i < child.childs.length; i++) {
@@ -137,7 +141,7 @@
                 this.numberPick++;
             }
 
-            if (!renderItem.visible || !renderItem.material) {
+            if (!renderItem.material) {
                 return;
             }
 
@@ -187,6 +191,8 @@
         * @platform Web,Native
         */
         public update(camera: Camera3D) {
+            camera.modelMatrix;
+
             this.clear();
 
             if (Egret3DEngine.instance.debug) {

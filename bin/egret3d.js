@@ -28191,6 +28191,9 @@ var egret3d;
         * @platform Web,Native
         */
         EntityCollect.prototype.applyRender = function (child, camera) {
+            if (!child.visible) {
+                return;
+            }
             this.addRenderItem(child, camera);
             for (var i = 0; i < child.childs.length; i++) {
                 this.applyRender(child.childs[i], camera);
@@ -28236,7 +28239,7 @@ var egret3d;
                 this.specialCastItem[SpecialCast.Pick].push(renderItem);
                 this.numberPick++;
             }
-            if (!renderItem.visible || !renderItem.material) {
+            if (!renderItem.material) {
                 return;
             }
             //检查阴影产生者
@@ -28281,6 +28284,7 @@ var egret3d;
         * @platform Web,Native
         */
         EntityCollect.prototype.update = function (camera) {
+            camera.modelMatrix;
             this.clear();
             if (egret3d.Egret3DEngine.instance.debug) {
                 egret3d.Egret3DEngine.instance.performance.startCounter("entityCollect applyRender", 60);
