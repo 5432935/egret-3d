@@ -25,7 +25,7 @@ class Main extends egret.DisplayObject {
 
         //let demo: TextureMaterialSample = new TextureMaterialSample();
         //let demo: ColorMaterialSample = new ColorMaterialSample();
-        //let demo: View3DSample = new View3DSample();
+        let demo: View3DSample = new View3DSample();
 
         //----------------------------------------------------------------------
         // Render
@@ -58,7 +58,7 @@ class Main extends egret.DisplayObject {
         // Animation
         //----------------------------------------------------------------------
 
-        let demo: UVAnim = new UVAnim();
+        //let demo: UVAnim = new UVAnim();
     }
 
 }

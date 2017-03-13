@@ -1,4 +1,55 @@
 {
-	"groups":[],
-	"resources":[]
+	"groups": [
+		{
+			"name": "preload",
+			"keys": "cloudy_noon_BK_png,cloudy_noon_DN_png,cloudy_noon_FR_png,cloudy_noon_LF_png,cloudy_noon_RT_png,cloudy_noon_UP_png,timg_jpg,earth_png,uv_jpg"
+		}
+	],
+	"resources": [
+		{
+			"name": "cloudy_noon_BK_png",
+			"type": "image",
+			"url": "skybox/cloudy_noon_BK.png"
+		},
+		{
+			"name": "cloudy_noon_DN_png",
+			"type": "image",
+			"url": "skybox/cloudy_noon_DN.png"
+		},
+		{
+			"name": "cloudy_noon_FR_png",
+			"type": "image",
+			"url": "skybox/cloudy_noon_FR.png"
+		},
+		{
+			"name": "cloudy_noon_LF_png",
+			"type": "image",
+			"url": "skybox/cloudy_noon_LF.png"
+		},
+		{
+			"name": "cloudy_noon_RT_png",
+			"type": "image",
+			"url": "skybox/cloudy_noon_RT.png"
+		},
+		{
+			"name": "cloudy_noon_UP_png",
+			"type": "image",
+			"url": "skybox/cloudy_noon_UP.png"
+		},
+		{
+			"name": "timg_jpg",
+			"type": "image",
+			"url": "elevation/timg.jpg"
+		},
+		{
+			"name": "earth_png",
+			"type": "image",
+			"url": "texture/earth.png"
+		},
+		{
+			"name": "uv_jpg",
+			"type": "image",
+			"url": "texture/uv.jpg"
+		}
+	]
 }

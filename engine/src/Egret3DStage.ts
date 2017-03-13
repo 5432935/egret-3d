@@ -1,0 +1,514 @@
+﻿module egret3d {
+
+    /**
+    * @private
+    * @language zh_CN
+    * 注册GUI使用的Texture
+    * GUI 使用的贴图只能是公用型的材质,为了提高渲染效率，减少提交次数，gui使用的材质均需要pack起来进行注册
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
+    export var registGUITexture = function (texture: Texture) {
+        texture.upload(Stage3D.context3DProxy);
+        for (const v of Stage3D._instance.view3Ds) {
+            v.getGUIStage().registerTexture(texture);
+        }
+    }
+
+    /**
+    * @class egret3d.Stage3D
+    * @classdesc
+    * 3dCanvas 是一个3d渲染画布 它继承EventDispatcher 可以监听部分事件。
+    * 如：Event3D.ENTER_FRAME 每帧响应回调事件
+    * 一个3d渲染画布里面有多个view3d ，
+    * 多个view3d进行渲染
+    * @includeExample Stage3D.ts
+    * @see egret3d.EventDispatcher
+    * @see egret3d.View3D
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
+    export class Stage3D extends EventDispatcher {
+
+        /**
+        * @private
+        */
+        static _instance: Stage3D;
+
+        /**
+        * @private
+        */
+        static context3DProxy: Context3DProxy;
+                    
+        /**
+        * @private
+        */
+        private canvas3DRectangle: Rectangle = new Rectangle();
+
+        private canvas: HTMLCanvasElement;
+
+        private _view3DS: Array<View3D> = new Array<View3D>();
+        private sizeDiry: boolean = true;
+
+
+        private _enterFrameEvent3D: Event3D;
+
+        protected _time: number = 0;
+        protected _delay: number = 0;
+        protected _renderer: number = 0;
+        // protected _timeDate: Date = null;
+        protected _envetManager: EventManager;
+
+        protected static _canvas2D: HTMLCanvasElement;
+        protected static _ctx2D: CanvasRenderingContext2D;
+
+
+        /**
+        * @language zh_CN
+        * Stage3D X 偏移
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public offsetX: number = 0;
+
+        /**
+        * @language zh_CN
+        * Stage3D Y 偏移
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public offsetY: number = 0;
+
+        /**
+        * @language zh_CN
+        * 渲染之后的回调
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public afterRender: Function;
+
+        protected _start: boolean = false;
+
+        protected blend2D:boolean = false;
+
+        protected stage2D;
+        /**
+        * @language zh_CN
+        * 构造一个Stage3D对象
+        * @param stage2D 从外部注入stage2D，可选
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        constructor(stage2D?) {
+            super();
+
+            if (Stage3D._instance)
+                throw new Error("不能重复实例化这个类!");
+            Stage3D._instance = this;
+
+            ShaderUtil.instance.load();
+            this._envetManager = new EventManager(this);
+
+            this.stage2D = stage2D;
+            this.blend2D = !!stage2D;
+            if(this.blend2D) {
+                this.canvas = stage2D.$screen.canvas;
+            } else {
+                this.canvas = document.createElement("canvas");
+                this.canvas.style.position = "absolute";
+                this.canvas.style.zIndex = "-1";
+
+                if (document.getElementsByClassName("egret-player").length > 0) {
+                    document.getElementsByClassName("egret-player")[0].appendChild(this.canvas);
+                }
+                else {
+                    document.body.appendChild(this.canvas);
+                
+                }
+
+                this.canvas.id = "egret3D";
+            }
+            
+            this.canvas.oncontextmenu = function () {
+                return false;
+            };
+
+            Stage3D.context3DProxy = new egret3d.Context3DProxy();
+
+            Context3DProxy.gl = <WebGLRenderingContext>this.canvas.getContext("webgl");
+
+            if (!Context3DProxy.gl)
+                Context3DProxy.gl = <WebGLRenderingContext>this.canvas.getContext("experimental-webgl");
+
+
+            if (!Context3DProxy.gl)
+                alert("you drivers not suport webgl");
+
+            this.create2dContext();
+
+            Stage3D.context3DProxy.register();
+            console.log("this.context3D ==>", Context3DProxy.gl);
+
+            Input.canvas = this;
+            if(this.blend2D) {
+                Input["instance"].init(this.canvas);
+                
+                this.resizeBlend2D();
+            }
+            this.initEvent();
+        }
+
+        private getExtension(name: string):any {
+            var ext = Context3DProxy.gl.getExtension(name);
+            if (!ext) {
+                alert("you drivers not suport " + name );
+            }
+            return ext;
+        }
+
+        private initEvent() {
+            this._enterFrameEvent3D = new Event3D(Event3D.ENTER_FRAME);
+            this._enterFrameEvent3D.target = this;
+
+           
+        }
+
+
+        private create2dContext(): void {
+            Stage3D._canvas2D = document.createElement("canvas");
+            Stage3D._canvas2D.hidden = true;
+            Stage3D._ctx2D = Stage3D._canvas2D.getContext("2d");
+        }
+
+         /**
+        * @language zh_CN
+        * 获得一张图片的像素值
+        * @param imageElement图片数据
+        * @param offsetX x方向偏移
+        * @param offsetY y方向偏移
+        * @param width 获取像素宽度
+        * @param height 获取像素高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public static draw2DImage(imageElement:HTMLImageElement, offsetX:number = 0, offsetY:number = 0, width:number = 1, height:number = 1): ImageData {
+            document.body.appendChild(this._canvas2D);
+            this._canvas2D.width = imageElement.width;
+            this._canvas2D.height = imageElement.height;
+            this._ctx2D.drawImage(imageElement, offsetX, offsetX, width, height);
+            var imageData:ImageData = this._ctx2D.getImageData(0, 0, width, height);
+            document.body.removeChild(this._canvas2D);
+            return imageData;
+        }
+        /**
+        * @language zh_CN
+        * 设置 Stage3D 的x坐标
+        * @param x x坐标
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set x(value: number) {
+            if (this.canvas3DRectangle.x != value && !this.blend2D)
+                this.resize(value, this.canvas3DRectangle.y, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
+        }
+                                            
+        /**
+        * @language zh_CN
+        * 获取 Stage3D 的x坐标
+        * @returns number 返回x坐标
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get x(): number {
+            return this.canvas3DRectangle.x;
+        }
+
+        /**
+        * @language zh_CN
+        * 设置 Stage3D 的y坐标
+        * @param y y坐标
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set y(value: number) {
+            if (this.canvas3DRectangle.y != value && !this.blend2D)
+                this.resize(this.canvas3DRectangle.x, value, this.canvas3DRectangle.width, this.canvas3DRectangle.height);
+        }
+                                                    
+        /**
+        * @language zh_CN
+        * 获取 Stage3D 的y坐标
+        * @returns number 返回y坐标
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get y(): number {
+            return this.canvas3DRectangle.y;
+        }
+        
+        /**
+        * @language zh_CN
+        * 设置 Stage3D 的宽度
+        * @param value Stage3D 的宽度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set width(value: number) {
+            if (this.canvas3DRectangle.width != value && !this.blend2D)
+                this.resize(this.canvas3DRectangle.x, this.canvas3DRectangle.y, value, this.canvas3DRectangle.height);
+        }
+                                                            
+        /**
+        * @language zh_CN
+        * 获取 Stage3D 的宽度
+        * @returns number 返回Stage3D 的宽度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get width(): number {
+            return this.canvas3DRectangle.width;
+        }
+                
+        /**
+        * @language zh_CN
+        * 设置 Stage3D 的高度
+        * @param value Stage3D 的高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public set height(value: number) {
+            if (this.canvas3DRectangle.height != value && !this.blend2D)
+                this.resize(this.canvas3DRectangle.x, this.canvas3DRectangle.y, this.canvas3DRectangle.width, value);
+        }
+                                                                    
+        /**
+        * @language zh_CN
+        * 获取 Stage3D 的高度
+        * @returns number 返回Stage3D 的高度
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get height(): number {
+            return this.canvas3DRectangle.height;
+        }
+                                                                            
+        /**
+        * @language zh_CN
+        * 获取 Stage3D 所有的view3d
+        * @returns Array<View3D> 返回Stage3D view3ds列表
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public get view3Ds(): Array<View3D> {
+            return this._view3DS;
+        }
+                                                                                    
+        /**
+        * @language zh_CN
+        * Stage3D 中 增加一个view3d
+        * @param view3D 增加的渲染视口
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public addView3D(view3D: View3D) {
+            var index: number = this._view3DS.indexOf(view3D);
+            if (index == -1)
+                this._view3DS.push(view3D);
+        }
+                                                                                            
+        /**
+        * @language zh_CN
+        * Stage3D 中 移除一个view3d
+        * @param view3D 移除的渲染视口
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public removeView3D(view3D: View3D) {
+            var index: number = this._view3DS.indexOf(view3D);
+            if (index != -1)
+                this._view3DS.splice(index, 1);
+        }
+
+        private $render() {
+            let now:number = Egret3DEngine.instance.performance.getNow();
+            // TODO 第一帧可能会有异常
+            this._delay = now - this._time;
+            this._time = now;
+
+            if (Egret3DEngine.instance.debug) {
+                Egret3DEngine.instance.performance.startCounter("renderer", 60);
+            }
+
+            // 处理 enter frame
+            this._enterFrameEvent3D.time = this._time;
+            this._enterFrameEvent3D.delay = this._delay;
+            this.dispatchEvent(this._enterFrameEvent3D);
+
+
+            // 更新views
+            for (var i: number = 0; i < this._view3DS.length; i++) {
+                if (Egret3DEngine.instance.debug) {
+                    Egret3DEngine.instance.performance.startCounter("view3D-" + i.toString(), 60);
+                    Egret3DEngine.instance.performance.prefix = "view3D-" + i.toString() + "-";
+                }   
+
+                this._view3DS[i].update(this._time, this._delay);
+
+                if (Egret3DEngine.instance.debug) {
+                    Egret3DEngine.instance.performance.prefix = "";
+                    Egret3DEngine.instance.performance.endCounter("view3D-" + i.toString());
+                }
+            }
+
+            if (Egret3DEngine.instance.debug) {
+                Egret3DEngine.instance.performance.updateFps();
+                Egret3DEngine.instance.performance.endCounter("renderer");
+
+                // 这里显示更新inspector
+                Egret3DEngine.instance.inspector.show(this._delay, Egret3DEngine.instance.performance, this); 
+            }
+
+            if (this.afterRender) {
+                this.afterRender();
+            }
+        }
+
+        /**
+         * @language zh_CN
+         * Stage3D 调用一次渲染
+         * @version Egret 4.0
+         * @platform Web,Native
+         */
+        public render() {
+            if(!this.blend2D) {
+                return;
+            }
+
+            let context3DProxy = Stage3D.context3DProxy;
+            let gl = Context3DProxy.gl;
+
+            context3DProxy.reset();
+            context3DProxy.enableDepth();
+            context3DProxy.enableCullFace();
+            context3DProxy.enableBlend();
+
+            this.$render(); 
+
+            // 恢复2D上下文
+            context3DProxy.disableDepth();
+            context3DProxy.disableCullFace();
+        }
+
+        public resizeBlend2D():void {
+            if(this.blend2D) {
+                Input.scaleX = this.stage2D.$screen["webTouchHandler"].scaleX;
+                Input.scaleY = this.stage2D.$screen["webTouchHandler"].scaleY;
+
+                this.resize(0, 0, this.canvas.width, this.canvas.height);
+
+                var bouding = this.canvas.getBoundingClientRect();
+                this.offsetX = -bouding.left;
+                this.offsetY = -bouding.top;
+            }
+        }
+
+        /**
+        * @language zh_CN
+        * Stage3D 开始启动
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public start() {
+            if(this.blend2D) {
+                return;
+            }
+            this._start = true;
+            this.update(0);
+
+            Stage3D.context3DProxy.enableBlend();
+            Stage3D.context3DProxy.enableCullFace();
+            Context3DProxy.gl.enable(Context3DProxy.gl.SCISSOR_TEST);
+
+        }
+
+        /**
+        * @language zh_CN
+        * Stage3D 停止启动
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public stop() {
+            this._start = false;
+        }
+
+        
+        /**
+        * @language zh_CN
+        * @private
+        * @version Egret 3.0
+        * @platform Web,Native
+        */
+        public update(delay: number) {
+            if (!this._start) {
+                return;
+            }
+            
+            this.$render();
+
+            Context3DProxy.gl.flush();
+
+            requestAnimationFrame((delay) => this.update(delay));
+        }
+
+        /**
+        * @language zh_CN
+        * 初始化,并创建显示区域的后台缓冲大小。
+        * @param GPU_CONFIG
+        * @param canvasRec
+        * @event call
+        */
+        public resize(x: number, y: number, width: number, height: number) {
+
+            //var meta: HTMLMetaElement = <HTMLMetaElement>document.getElementById("view");
+            //meta.content = "width=device-width, initial-scale=" + 1.0 / 2.0 + ", maximum-scale=" + 1.0 / 2.0+ ", user-scalable=no";
+
+            this.canvas3DRectangle.x = x;
+            this.canvas3DRectangle.y = y;
+            this.canvas3DRectangle.width = width;
+            this.canvas3DRectangle.height = height;
+            ContextConfig.canvasRectangle = this.canvas3DRectangle;
+
+            if(!this.blend2D) {
+                this.canvas.style.left = this.canvas3DRectangle.x.toString() + "px";
+                this.canvas.style.top = this.canvas3DRectangle.y.toString() + "px";
+                this.canvas.width = this.canvas3DRectangle.width;
+                this.canvas.height = this.canvas3DRectangle.height;
+            } else {
+                Input.scaleX = this.stage2D.$screen["webTouchHandler"].scaleX;
+                Input.scaleY = this.stage2D.$screen["webTouchHandler"].scaleY;
+            }
+        }
+
+        // custom context implement
+
+        public onStart(egret2dContext) {
+            egret2dContext.setAutoClear(false);
+        }
+
+        public onRender(egret2dContext) {
+            egret2dContext.save();
+            this.render();
+            egret2dContext.restore();
+        }
+
+        public onStop() {
+
+        }
+
+        public onResize() {
+            this.resizeBlend2D();
+        }
+    }
+
+
+}

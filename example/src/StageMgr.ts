@@ -1,9 +1,9 @@
 class StageMgr {
 
-    private _stage3d: egret3d.Stage3D;
+    private _stage3d: egret3d.Egret3DCanvas//.Stage3D;
     private _view3D: egret3d.View3D;
 
-    public get stage3d(): egret3d.Stage3D {
+    public get stage3d(): egret3d.Egret3DCanvas {
         return this._stage3d;
     }
 
@@ -17,7 +17,7 @@ class StageMgr {
     }
 
     public init(_bgColor: number = 0xffcccccc) {
-        this._stage3d = new egret3d.Stage3D();
+        this._stage3d = new egret3d.Egret3DCanvas();
         this._stage3d.x = 0;
         this._stage3d.y = 0;
         this._stage3d.width = window.innerWidth;

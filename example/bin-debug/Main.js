@@ -28,12 +28,12 @@ var Main = (function (_super) {
         //----------------------------------------------------------------------
         //let demo: TextureMaterialSample = new TextureMaterialSample();
         //let demo: ColorMaterialSample = new ColorMaterialSample();
-        //let demo: View3DSample = new View3DSample();
+        var demo = new View3DSample();
         //----------------------------------------------------------------------
         // Render
         //----------------------------------------------------------------------
         //let demo: WireframeSample = new WireframeSample();
-        var demo = new WireframeDrawSample();
+        //let demo: WireframeDrawSample = new WireframeDrawSample();
         //let demo: SkyboxSample = new SkyboxSample();
         //----------------------------------------------------------------------
         // Post
@@ -44,9 +44,13 @@ var Main = (function (_super) {
         //----------------------------------------------------------------------
         // Light
         //----------------------------------------------------------------------
+        //let demo: DirectLightSample = new DirectLightSample();
+        //let demo: PointLightSample = new PointLightSample();
+        //let demo: SpotLightSample = new SpotLightSample();
         //----------------------------------------------------------------------
         // Animation
         //----------------------------------------------------------------------
+        //let demo: UVAnim = new UVAnim();
     };
     return Main;
 }(egret.DisplayObject));

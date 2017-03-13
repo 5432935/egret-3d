@@ -12,5 +12,6 @@ void main() {
 	}else{
 	   outColor.xyzw = light ; 
 	}
+	//outColor.xyz = diffuseColor.xyz;
     outColor.xyzw *= varying_color.xyzw;
 }

@@ -1,0 +1,401 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Egret</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+    <style>
+        html, body {
+            -ms-touch-action: none;
+            background: #888888;
+            padding: 0;
+            border: 0;
+            margin: 0;
+            height: 100%;
+        }
+    </style>
+
+    <!--这个标签为通过egret提供的第三方库的方式生成的 javascript 文件。删除 modules_files 标签后，库文件加载列表将不会变化，请谨慎操作！-->
+    <!--modules_files_start-->
+	<script egret="lib" src="libs/modules/egret/egret.js" src-release="libs/modules/egret/egret.min.js"></script>
+	<script egret="lib" src="libs/modules/egret/egret.web.js" src-release="libs/modules/egret/egret.web.min.js"></script>
+	<script egret="lib" src="libs/modules/game/game.js" src-release="libs/modules/game/game.min.js"></script>
+	<script egret="lib" src="libs/modules/tween/tween.js" src-release="libs/modules/tween/tween.min.js"></script>
+	<script egret="lib" src="libs/modules/res/res.js" src-release="libs/modules/res/res.min.js"></script>
+	<!--modules_files_end-->
+
+    <!--这个标签为不通过egret提供的第三方库的方式使用的 javascript 文件，请将这些文件放在libs下，但不要放在modules下面。-->
+    <!--other_libs_files_start-->
+    <script egret="lib" src="polyfill/promise.js" src-release="polyfill/promise.min.js"></script>
+    <!--other_libs_files_end-->
+
+    <!--这个标签会被替换为项目中所有的 javascript 文件。删除 game_files 标签后，项目文件加载列表将不会变化，请谨慎操作！-->
+    <!--game_files_start-->
+	<script egret="game" src="bin-debug/events/EventDispatcher.js"></script>
+	<script egret="game" src="bin-debug/geom/Vector3.js"></script>
+	<script egret="game" src="bin-debug/gui/DisplayObject.js"></script>
+	<script egret="game" src="bin-debug/geom/Matrix4.js"></script>
+	<script egret="game" src="bin-debug/geom/Quaternion.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UIElement.js"></script>
+	<script egret="game" src="bin-debug/Util/lzma/BitTreeDecoder.js"></script>
+	<script egret="game" src="bin-debug/Util/lzma/LZMAConfig.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UIButton.js"></script>
+	<script egret="game" src="bin-debug/Util/lzma/RangeDecoder.js"></script>
+	<script egret="game" src="bin-debug/Util/lzma/LenDecoder.js"></script>
+	<script egret="game" src="bin-debug/core/node/Object3D.js"></script>
+	<script egret="game" src="bin-debug/Util/lzma/OutWindow.js"></script>
+	<script egret="game" src="bin-debug/geom/Rectangle.js"></script>
+	<script egret="game" src="bin-debug/loader/ILoader.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/UnitParser.js"></script>
+	<script egret="game" src="bin-debug/render/IRender.js"></script>
+	<script egret="game" src="bin-debug/texture/ITexture.js"></script>
+	<script egret="game" src="bin-debug/events/Event3D.js"></script>
+	<script egret="game" src="bin-debug/geom/Point.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UILabelButton.js"></script>
+	<script egret="game" src="bin-debug/Util/lzma/LzmaDecoder.js"></script>
+	<script egret="game" src="bin-debug/core/context/Reference.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UIPanel.js"></script>
+	<script egret="game" src="bin-debug/Egret3DPerformance.js"></script>
+	<script egret="game" src="bin-debug/controller/ControllerBase.js"></script>
+	<script egret="game" src="bin-debug/anim/AnimationNode.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UIToggleButtonBase.js"></script>
+	<script egret="game" src="bin-debug/core/context/Context3DProxy.js"></script>
+	<script egret="game" src="bin-debug/lights/LightBase.js"></script>
+	<script egret="game" src="bin-debug/events/LoaderEvent3D.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/IConfigParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/json/UnitJsonParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/UnitLoader.js"></script>
+	<script egret="game" src="bin-debug/geom/Bound.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/xml/UnitXmlParser.js"></script>
+	<script egret="game" src="bin-debug/material/BaseMaterialDefines.js"></script>
+	<script egret="game" src="bin-debug/material/old/MaterialBase.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/MethodBase.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/MaterialPass.js"></script>
+	<script egret="game" src="bin-debug/View3D.js"></script>
+	<script egret="game" src="bin-debug/render/RenderBase.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/VarRegister.js"></script>
+	<script egret="game" src="bin-debug/texture/CheckerboardTexture.js"></script>
+	<script egret="game" src="bin-debug/core/node/Mesh.js"></script>
+	<script egret="game" src="bin-debug/audio/Channel.js"></script>
+	<script egret="game" src="bin-debug/geom/Ray.js"></script>
+	<script egret="game" src="bin-debug/Util/lzma/LZMA.js"></script>
+	<script egret="game" src="bin-debug/core/node/Wireframe.js"></script>
+	<script egret="game" src="bin-debug/data/HashMap.js"></script>
+	<script egret="game" src="bin-debug/geometry/Geometry.js"></script>
+	<script egret="game" src="bin-debug/Egret3DInspector.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/json/UnitJsonParser_1.js"></script>
+	<script egret="game" src="bin-debug/core/partition/quad/QuadRoot.js"></script>
+	<script egret="game" src="bin-debug/core/partition/quad/QuadTree.js"></script>
+	<script egret="game" src="bin-debug/core/partition/quad/QuadTreeCell.js"></script>
+	<script egret="game" src="bin-debug/core/traverse/EntityCollect.js"></script>
+	<script egret="game" src="bin-debug/core/traverse/Frustum.js"></script>
+	<script egret="game" src="bin-debug/core/traverse/Layer.js"></script>
+	<script egret="game" src="bin-debug/core/traverse/Picker.js"></script>
+	<script egret="game" src="bin-debug/core/traverse/Tag.js"></script>
+	<script egret="game" src="bin-debug/anim/skeletonAnimation/CrossFade.js"></script>
+	<script egret="game" src="bin-debug/Egret3DEngine.js"></script>
+	<script egret="game" src="bin-debug/anim/skeletonAnimation/Joint.js"></script>
+	<script egret="game" src="bin-debug/Egret3DLog.js"></script>
+	<script egret="game" src="bin-debug/anim/skeletonAnimation/Skeleton.js"></script>
+	<script egret="game" src="bin-debug/Egret3DStage.js"></script>
+	<script egret="game" src="bin-debug/events/AnimationEvent3D.js"></script>
+	<script egret="game" src="bin-debug/anim/skeletonAnimation/SkeletonAnimation.js"></script>
+	<script egret="game" src="bin-debug/anim/skeletonAnimation/SkeletonAnimationClip.js"></script>
+	<script egret="game" src="bin-debug/events/EventManager.js"></script>
+	<script egret="game" src="bin-debug/events/KeyEvent3D.js"></script>
+	<script egret="game" src="bin-debug/anim/skeletonAnimation/SkeletonAnimationState.js"></script>
+	<script egret="game" src="bin-debug/events/MouseEvent3D.js"></script>
+	<script egret="game" src="bin-debug/events/OrientationEvent3D.js"></script>
+	<script egret="game" src="bin-debug/events/ParserEvent3D.js"></script>
+	<script egret="game" src="bin-debug/events/PickEvent3D.js"></script>
+	<script egret="game" src="bin-debug/events/PickResult.js"></script>
+	<script egret="game" src="bin-debug/events/TouchEvent3D.js"></script>
+	<script egret="game" src="bin-debug/geom/BezierCurve.js"></script>
+	<script egret="game" src="bin-debug/anim/skeletonAnimation/SkeletonPose.js"></script>
+	<script egret="game" src="bin-debug/geom/BoundBox.js"></script>
+	<script egret="game" src="bin-debug/geom/Color.js"></script>
+	<script egret="game" src="bin-debug/geom/ColorGradients.js"></script>
+	<script egret="game" src="bin-debug/geom/ColorTransform.js"></script>
+	<script egret="game" src="bin-debug/geom/MathUtil.js"></script>
+	<script egret="game" src="bin-debug/anim/TimerAxis.js"></script>
+	<script egret="game" src="bin-debug/geom/Orientation3D.js"></script>
+	<script egret="game" src="bin-debug/geom/Plane3D.js"></script>
+	<script egret="game" src="bin-debug/geom/PlaneClassification.js"></script>
+	<script egret="game" src="bin-debug/audio/AudioManager.js"></script>
+	<script egret="game" src="bin-debug/geom/PointUtils.js"></script>
+	<script egret="game" src="bin-debug/anim/AnimaNodeCollection.js"></script>
+	<script egret="game" src="bin-debug/audio/Channel3d.js"></script>
+	<script egret="game" src="bin-debug/audio/Sound.js"></script>
+	<script egret="game" src="bin-debug/geom/UV.js"></script>
+	<script egret="game" src="bin-debug/camera/Camera3D.js"></script>
+	<script egret="game" src="bin-debug/geometry/CubeGeometry.js"></script>
+	<script egret="game" src="bin-debug/geometry/CylinderGeometry.js"></script>
+	<script egret="game" src="bin-debug/geometry/ElevationGeometry.js"></script>
+	<script egret="game" src="bin-debug/collision/TerrainCollision.js"></script>
+	<script egret="game" src="bin-debug/geometry/GeometryData.js"></script>
+	<script egret="game" src="bin-debug/geometry/GeometryUtil.js"></script>
+	<script egret="game" src="bin-debug/geometry/OctahedronSphereGeometry.js"></script>
+	<script egret="game" src="bin-debug/geometry/PlaneGeometry.js"></script>
+	<script egret="game" src="bin-debug/geometry/SphereGeometry.js"></script>
+	<script egret="game" src="bin-debug/geometry/SubGeometry.js"></script>
+	<script egret="game" src="bin-debug/gui/BitmapFont.js"></script>
+	<script egret="game" src="bin-debug/config/ContextConfig.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UICheckBox.js"></script>
+	<script egret="game" src="bin-debug/config/TextureMethodType.js"></script>
+	<script egret="game" src="bin-debug/controller/CameraAnimationController.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UILayout.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UIList.js"></script>
+	<script egret="game" src="bin-debug/anim/IAnimation.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UIProgressBar.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UIRadioButton.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UIRadioButtonGroup.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UISlider.js"></script>
+	<script egret="game" src="bin-debug/gui/component/UITextField.js"></script>
+	<script egret="game" src="bin-debug/controller/FreeController.js"></script>
+	<script egret="game" src="bin-debug/controller/HoverController.js"></script>
+	<script egret="game" src="bin-debug/gui/GUIEventFire.js"></script>
+	<script egret="game" src="bin-debug/gui/GUISkinManager.js"></script>
+	<script egret="game" src="bin-debug/gui/GUITextureGroup.js"></script>
+	<script egret="game" src="bin-debug/gui/Quad.js"></script>
+	<script egret="game" src="bin-debug/gui/QuadData.js"></script>
+	<script egret="game" src="bin-debug/gui/QuadMesh.js"></script>
+	<script egret="game" src="bin-debug/gui/QuadStage.js"></script>
+	<script egret="game" src="bin-debug/hud/HUD.js"></script>
+	<script egret="game" src="bin-debug/input/Input.js"></script>
+	<script egret="game" src="bin-debug/input/OrientationController.js"></script>
+	<script egret="game" src="bin-debug/lights/DirectLight.js"></script>
+	<script egret="game" src="bin-debug/controller/LookAtController.js"></script>
+	<script egret="game" src="bin-debug/lights/LightGroup.js"></script>
+	<script egret="game" src="bin-debug/lights/PointLight.js"></script>
+	<script egret="game" src="bin-debug/lights/SpotLight.js"></script>
+	<script egret="game" src="bin-debug/loader/AssetManager.js"></script>
+	<script egret="game" src="bin-debug/loader/BinaryLoader.js"></script>
+	<script egret="game" src="bin-debug/controller/PanController.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/DDSParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/E3dPack/E3dPackParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/E3dPack/E3dPackVersion.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/EAM/EAMParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/EAM/EAMVersion.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/ECA/ECAParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/ECA/ECAVersion.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/EPA/EPAParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/EPA/EPAVersion.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/ESM/ESMParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/ESM/ESMVersion.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/EUM/EUMParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/EUM/EUMVersion.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/HDRParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/map/MapLoader.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/ParserUtils.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/particle/ParticleJsonParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/particle/ParticleParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/particle/ParticleXmlParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/PVR.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/PVRParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/role/Role.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/role/RoleLoader.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/texture_packer/TexturePackerParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/TGAParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/binary/UnitBinParser.js"></script>
+	<script egret="game" src="bin-debug/anim/IAnimationState.js"></script>
+	<script egret="game" src="bin-debug/anim/AnimationCurve.js"></script>
+	<script egret="game" src="bin-debug/core/context/ContextTexture2D.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/MethodUtils.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/UnitConfigParser.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/UnitHUDData.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/UnitLightData.js"></script>
+	<script egret="game" src="bin-debug/core/context/ContextTexture3D.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/UnitMatMethodData.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/UnitMatSphereData.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/UnitNodeData.js"></script>
+	<script egret="game" src="bin-debug/core/context/FrameBuffer.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/UnitParserUtils.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/unit/xml/UnitXmlParser_1.js"></script>
+	<script egret="game" src="bin-debug/core/context/IndexBuffer3D.js"></script>
+	<script egret="game" src="bin-debug/loader/parser/XML/XMLParser.js"></script>
+	<script egret="game" src="bin-debug/loader/QueueLoader.js"></script>
+	<script egret="game" src="bin-debug/loader/TextureResourceManager.js"></script>
+	<script egret="game" src="bin-debug/loader/URLLoader.js"></script>
+	<script egret="game" src="bin-debug/Main.js"></script>
+	<script egret="game" src="bin-debug/core/context/MipmapData.js"></script>
+	<script egret="game" src="bin-debug/material/DefaultMaterialDefines.js"></script>
+	<script egret="game" src="bin-debug/material/IMaterial.js"></script>
+	<script egret="game" src="bin-debug/material/IMaterialDefines.js"></script>
+	<script egret="game" src="bin-debug/material/Material.js"></script>
+	<script egret="game" src="bin-debug/material/old/ColorMaterial.js"></script>
+	<script egret="game" src="bin-debug/material/old/CubeTextureMaterial.js"></script>
+	<script egret="game" src="bin-debug/material/old/FakePBRMaterial.js"></script>
+	<script egret="game" src="bin-debug/core/context/Program3D.js"></script>
+	<script egret="game" src="bin-debug/material/old/MaterialData.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/AlphaMaskMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/AOMapMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/ColorGradientsMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/ColorMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/ColorTransformMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/CubeMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/EnvironmentMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/FogMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/GUIMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/LightMapMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/LineFogMethod.js"></script>
+	<script egret="game" src="bin-debug/anim/PropertyAnimation/AnimCurve.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/MultiUVSpriteMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/MulUVRollMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/plantDistortedMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/RimlightMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/ShadowMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/StreamerMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/TerrainARGBMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/UVRollMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/UVSpriteSheetMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/WaterBumpMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/WaterNormalMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/method/WaterWaveMethod.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/ColorPass.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/DiffusePass.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/FakePBRPass.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/GbufferPass.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/MatCapPass.js"></script>
+	<script egret="game" src="bin-debug/core/context/Shader.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/MethodData.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/NormalPass.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/OutLinePass.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/PassUsage.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/PassUtil.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/PickPass.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/PositionPass.js"></script>
+	<script egret="game" src="bin-debug/material/old/pass/ShadowPass.js"></script>
+	<script egret="game" src="bin-debug/material/old/TextureMaterial.js"></script>
+	<script egret="game" src="bin-debug/particle/EffectGroup.js"></script>
+	<script egret="game" src="bin-debug/particle/ParticleAnimation.js"></script>
+	<script egret="game" src="bin-debug/particle/ParticleAnimationState.js"></script>
+	<script egret="game" src="bin-debug/particle/ParticleData.js"></script>
+	<script egret="game" src="bin-debug/particle/ParticleEmitter.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleColorGlobalNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleEndNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleFollowNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleLifeGenerator.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticlePosition.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleRotation.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleRotationConstNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleRotationOneBezierNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleRotationTwoBezierNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleRotationXYZConstNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleScale.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleSizeGlobalNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleStartColor.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleSubEmitterNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleTextureSheetNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleTime.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleTrackPositionNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleUVRollNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleVelocityForceConstNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleVelocityForceOneBezierNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleVelocityForceTwoBezierNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleVelocityLimitConstNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleVelocityLimitOneBezierNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleVelocityLimitTwoBezierNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleVelocityNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleVelocityOverConstNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleVelocityOverOneBezierNode.js"></script>
+	<script egret="game" src="bin-debug/particle/particleNode/ParticleVelocityOverTwoBezierNode.js"></script>
+	<script egret="game" src="bin-debug/particle/Value.js"></script>
+	<script egret="game" src="bin-debug/pick/PickSystem.js"></script>
+	<script egret="game" src="bin-debug/plant/GrassMesh.js"></script>
+	<script egret="game" src="bin-debug/plant/GrassMethod.js"></script>
+	<script egret="game" src="bin-debug/post/BloomPost.js"></script>
+	<script egret="game" src="bin-debug/post/ColorCorrectionPost.js"></script>
+	<script egret="game" src="bin-debug/post/GaussPost.js"></script>
+	<script egret="game" src="bin-debug/post/Gbuffer.js"></script>
+	<script egret="game" src="bin-debug/post/IPost.js"></script>
+	<script egret="game" src="bin-debug/post/PostProcessing.js"></script>
+	<script egret="game" src="bin-debug/post/PostRenderBuffer.js"></script>
+	<script egret="game" src="bin-debug/core/context/VertexBuffer3D.js"></script>
+	<script egret="game" src="bin-debug/render/MultiRender.js"></script>
+	<script egret="game" src="bin-debug/render/PostRender.js"></script>
+	<script egret="game" src="bin-debug/core/node/Billboard.js"></script>
+	<script egret="game" src="bin-debug/render/RenderQuen.js"></script>
+	<script egret="game" src="bin-debug/scene/Scene3D.js"></script>
+	<script egret="game" src="bin-debug/scene/TreeBase.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/Attribute.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/AttributeType.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/ConstVar.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/DefineVar.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/Extension.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/Sampler2D.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/Sampler3D.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/ShaderBase.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/TmpVar.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/Uniform.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/UniformType.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/VarConfig.js"></script>
+	<script egret="game" src="bin-debug/core/node/Entity.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/Varying.js"></script>
+	<script egret="game" src="bin-debug/shader/old/register/VaryingType.js"></script>
+	<script egret="game" src="bin-debug/shader/old/ShaderContent.js"></script>
+	<script egret="game" src="bin-debug/shader/old/ShaderLib.js"></script>
+	<script egret="game" src="bin-debug/shader/old/ShaderPool.js"></script>
+	<script egret="game" src="bin-debug/shader/old/ShaderUtil.js"></script>
+	<script egret="game" src="bin-debug/shader/ShaderGenerator.js"></script>
+	<script egret="game" src="bin-debug/shader/ShaderStore.js"></script>
+	<script egret="game" src="bin-debug/shadow/ShadowCast.js"></script>
+	<script egret="game" src="bin-debug/texture/CheckerboardFloatTexture.js"></script>
+	<script egret="game" src="bin-debug/anim/PropertyAnimation/PropertyAnim.js"></script>
+	<script egret="game" src="bin-debug/texture/CubeTexture.js"></script>
+	<script egret="game" src="bin-debug/texture/ImageTexture.js"></script>
+	<script egret="game" src="bin-debug/anim/PropertyAnimation/PropertyAnimController.js"></script>
+	<script egret="game" src="bin-debug/texture/RenderTexture.js"></script>
+	<script egret="game" src="bin-debug/texture/Texture.js"></script>
+	<script egret="game" src="bin-debug/texture/TextureUtil.js"></script>
+	<script egret="game" src="bin-debug/texture/VideoTexture.js"></script>
+	<script egret="game" src="bin-debug/Util/BooleanArray.js"></script>
+	<script egret="game" src="bin-debug/Util/ByteArray.js"></script>
+	<script egret="game" src="bin-debug/Util/Debug.js"></script>
+	<script egret="game" src="bin-debug/Util/DoubleArray.js"></script>
+	<script egret="game" src="bin-debug/core/node/Sky.js"></script>
+	<script egret="game" src="bin-debug/core/node/terrain/LODQuadTree.js"></script>
+	<script egret="game" src="bin-debug/core/node/terrain/Terrain.js"></script>
+	<script egret="game" src="bin-debug/anim/skeletonAnimation/AnimClipState.js"></script>
+	<script egret="game" src="bin-debug/core/node/WireframeLine.js"></script>
+	<script egret="game" src="bin-debug/Util/lzma/LZMAHelper.js"></script>
+	<script egret="game" src="bin-debug/Util/lzma/LZMAWorker.js"></script>
+	<script egret="game" src="bin-debug/Util/lzma/MEMORY.js"></script>
+	<script egret="game" src="bin-debug/core/partition/kdTree/KDTree.js"></script>
+	<script egret="game" src="bin-debug/core/partition/quad/IQuadNode.js"></script>
+	<script egret="game" src="bin-debug/Util/StaticMergeUtil.js"></script>
+	<script egret="game" src="bin-debug/Util/StringUtil.js"></script>
+	<script egret="game" src="bin-debug/core/partition/quad/QuadAABB.js"></script>
+	<script egret="game" src="bin-debug/VRView3D.js"></script>
+	<!--game_files_end-->
+</head>
+<body>
+
+    <div style="margin: auto;width: 100%;height: 100%;" class="egret-player"
+         data-entry-class="Main"
+         data-orientation="auto"
+         data-scale-mode="showAll"
+         data-frame-rate="30"
+         data-content-width="640"
+         data-content-height="1136"
+         data-show-paint-rect="false"
+         data-multi-fingered="2"
+         data-show-fps="false" data-show-log="false"
+         data-show-fps-style="x:0,y:0,size:12,textColor:0xffffff,bgAlpha:0.9">
+    </div>
+    <script>
+        /**
+         * {
+         * "renderMode":, //引擎渲染模式，"canvas" 或者 "webgl"
+         * "audioType": "" //使用的音频类型，0:默认，1:qq audio，2:web audio，3:audio
+         * "antialias": //WebGL模式下是否开启抗锯齿，true:开启，false:关闭，默认为false
+         * }
+         **/
+        egret.runEgret({renderMode:"webgl", audioType:0});
+    </script>
+</body>
+</html>

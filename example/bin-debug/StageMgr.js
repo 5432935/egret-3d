@@ -23,7 +23,7 @@ var StageMgr = (function () {
     };
     StageMgr.prototype.init = function (_bgColor) {
         if (_bgColor === void 0) { _bgColor = 0xffcccccc; }
-        this._stage3d = new egret3d.Stage3D();
+        this._stage3d = new egret3d.Egret3DCanvas();
         this._stage3d.x = 0;
         this._stage3d.y = 0;
         this._stage3d.width = window.innerWidth;

@@ -29,7 +29,7 @@ class UVAnim {
         uvRollMethod.speedV = 0.0001;
         uvRollMethod.start(true);
 
-        let geom: egret3d.ElevationGeometry = new egret3d.ElevationGeometry(img, 512, 50, 512);
+        let geom: egret3d.ElevationGeometry = new egret3d.ElevationGeometry(img, 1000, 50, 1000);
         let mesh: egret3d.Mesh = new egret3d.Mesh(geom, mat);
         StageMgr.Instance().view3d.addChild3D(mesh);
 

@@ -21,7 +21,7 @@ function compileShader(inputPath, outputPath, outputName) {
             var file = files[i];
 
             if(file.indexOf(".glsl") > 0) {
-                var name = file.replace(/\.glsl$/, "");
+                var name = file.replace(/\.fx$/, "");
 
                 all += name + ": " + JSON.stringify(parseShader(file, inputPath)) + ",\n";
             }
@@ -39,4 +39,4 @@ function compileShader(inputPath, outputPath, outputName) {
 }
 
 // exports.compileShader = compileShader;
-compileShader("../shader/", "../src/shader/", "ShaderLib");
+compileShader("../Shaders/", "./", "ShaderLib");
