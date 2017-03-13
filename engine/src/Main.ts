@@ -6,6 +6,9 @@ class Main extends egret.DisplayObjectContainer {
 
     public constructor() {
         super();
+
+        egret3d.ShaderGenerator.createProgram();
+
         let data:egret3d.DefaultMaterialDefines = new egret3d.DefaultMaterialDefines("default_fragment");
         data.DIFFUSE = true;
         data.AMBIENT = true;

@@ -12,21 +12,25 @@ module egret3d {
         private static _indexParameters: any = {};
 
         //根据shader的命名创建对应shader和program
-        public static createShaderAndProgram(defdata: IMaterialDefines, _vsShaderSourceName: string, _fsShaderSourceName: string): string {
+        public static createProgram(defdata: IMaterialDefines, _vsShaderSourceName: string, _fsShaderSourceName: string): Program3D {
             //vsShader
-            let vsSource:string = ShaderGenerator.generateShaderSource( defdata, _vsShaderSourceName );
-            let vsShader:Shader = ShaderGenerator.createShader( vsSource, ShaderType.VertexShader, defdata.toName()+_vsShaderSourceName );
+            let vsSource: string = ShaderGenerator.generateShaderSource(defdata, _vsShaderSourceName);
+            let vsShader: Shader = ShaderGenerator.createShader(vsSource, ShaderType.VertexShader, defdata.toName() + _vsShaderSourceName);
             //fsShader
-            let fsSource:string = ShaderGenerator.generateShaderSource( defdata, _fsShaderSourceName );
-            let fsShader:Shader = ShaderGenerator.createShader( vsSource, ShaderType.FragmentShader, defdata.toName()+_fsShaderSourceName );
+            let fsSource: string = ShaderGenerator.generateShaderSource(defdata, _fsShaderSourceName);
+            let fsShader: Shader = ShaderGenerator.createShader(vsSource, ShaderType.FragmentShader, defdata.toName() + _fsShaderSourceName);
             //program
-            let programName:string = ShaderGenerator.createProgram(vsShader, fsShader);
+            let program: Program3D = ShaderGenerator.createProgramLogic(vsShader, fsShader);
 
-            return programName;
+            //清除shader
+            vsShader.dispose();
+            fsShader.dispose();
+
+            return program;
         }
 
         //创建shader
-        public static createShader(_source: string, _type: number, _name: string): Shader {
+        private static createShader(_source: string, _type: number, _name: string): Shader {
             let shader: WebGLShader = Context3DProxy.gl.createShader(_type);
 
             Context3DProxy.gl.shaderSource(shader, _source);
@@ -34,14 +38,12 @@ module egret3d {
 
             let tmpShader: Shader = new Shader(shader);
             tmpShader.name = _name;
-            //放入仓中
-            ShaderCache.addShader(tmpShader);
 
             return tmpShader;
         }
 
         //创建Program
-        public static createProgram(vsShader: Shader, fsShader: Shader): string {
+        private static createProgramLogic(vsShader: Shader, fsShader: Shader): Program3D {
             let shaderProgram = Context3DProxy.gl.createProgram();
             Context3DProxy.gl.attachShader(shaderProgram, vsShader.shader);
             Context3DProxy.gl.attachShader(shaderProgram, fsShader.shader);
@@ -59,14 +61,15 @@ module egret3d {
             /////
             let program: Program3D = new Program3D(shaderProgram);
             program.name = vsShader.name + fsShader.name;
+            
             //放入仓中
             ShaderCache.addProgram(program);
 
-            return program.name;
+            return program;
         }
 
         //生成shader源码
-        public static generateShaderSource(defdata: IMaterialDefines, _ShaderSourceName: string): string {
+        private static generateShaderSource(defdata: IMaterialDefines, _ShaderSourceName: string): string {
             let keys = defdata.keys();
             let len = keys.length;
             let defStr = "";

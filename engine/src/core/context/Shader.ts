@@ -11,7 +11,6 @@ module egret3d{
             this._shader = shader;
         }
 
-
         /**
         * @language zh_CN
         * @private
