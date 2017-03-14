@@ -59,6 +59,8 @@
         */
         private _shader: WebGLShader;
 
+        public type:number;
+
         /**
         * @language zh_CN
         * 构造
