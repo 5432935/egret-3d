@@ -20,7 +20,7 @@
     * @version Egret 3.0
     * @platform Web,Native
     */
-    export class Context3DProxy {
+    export class Context3DProxy implements IContextProxy, IContextMaterialProxy, IContextVertexProxy {
 
         /**
         * @language zh_CN
@@ -228,7 +228,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public creatProgram(vsShader: Shader, fsShader: Shader): Program3D {
+        /*public creatProgram(vsShader: Shader, fsShader: Shader): Program3D {
             var shaderProgram = Context3DProxy.gl.createProgram();
             Context3DProxy.gl.attachShader(shaderProgram, vsShader.shader);
             Context3DProxy.gl.attachShader(shaderProgram, fsShader.shader);
@@ -242,6 +242,7 @@
             var program: Program3D = new Program3D(shaderProgram);
             return program;
         }
+        */
 
         /**
         * @language zh_CN
@@ -1200,8 +1201,10 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
+        /*
         public setStencilReferenceValue() {
         }
+        */
 
         /**
         * @language zh_CN
@@ -1210,8 +1213,10 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
+        /*
         public setStencilActions(triangleFace: string, compareMode: string, actionOnBothPass: string, actionOnDepthFail: string, actionOnDepthPassStencilFail: string) {
         }
+        */
 
         /**
         * @language zh_CN
