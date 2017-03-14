@@ -19,7 +19,7 @@
     * @platform Web,Native
     */
     export class Shader {
-        
+
         /**
         * @language zh_CN
         * @private
@@ -34,13 +34,13 @@
         * 声明 shader 为片段 类型
         * @see egret3d.ShaderPool
         */
-        static fragment: number = 1; 
+        static fragment: number = 1;
 
-         /**
-        * @language zh_CN
-        * @private
-        * 获取已经有的shader 的ID
-        */
+        /**
+       * @language zh_CN
+       * @private
+       * 获取已经有的shader 的ID
+       */
         static ID_COUNT: number = 0;
 
         /**
@@ -51,7 +51,7 @@
         */
         public id: string;
 
-        
+
         /**
         * @language zh_CN
         * @private
@@ -59,7 +59,9 @@
         */
         private _shader: WebGLShader;
 
-        public type:number;
+        public type: number;
+
+        public name: string;
 
         /**
         * @language zh_CN

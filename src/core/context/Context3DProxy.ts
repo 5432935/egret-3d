@@ -190,6 +190,9 @@
             ContextSamplerType.TEXTURE_7 = Context3DProxy.gl.TEXTURE7;
             ContextSamplerType.TEXTURE_8 = Context3DProxy.gl.TEXTURE8;
 
+            ShaderType.VertexShader = Context3DProxy.gl.VERTEX_SHADER;
+            ShaderType.FragmentShader = Context3DProxy.gl.FRAGMENT_SHADER;
+
             console.log("requst GPU Config", Context3DProxy.gl);
 
             ShaderPool.register(this);

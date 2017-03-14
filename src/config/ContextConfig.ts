@@ -1,6 +1,11 @@
 ﻿module egret3d {
 
-        /**
+    export class ShaderType {
+        public static VertexShader: number;
+        public static FragmentShader: number;
+    }
+
+    /**
     * @private
     */
     export enum UniformType { uniform1f, uniform1fv, uniform1i, uniform1iv, uniform2f, uniform2fv, uniform2i, uniform2iv, uniform3f, uniform3fv, uniform3i, uniform3iv, uniform4f, uniform4fv, uniform4i, uniform4iv, uniformMatrix2fv, uniformMatrix3fv, uniformMatrix4fv }
@@ -21,7 +26,7 @@
     * @private
     */
     export enum FrameBufferType { shadowFrameBufrfer, defaultFrameBuffer, positionFrameBuffer, normalFrameBuffer, specularFrameBuffer, leftEyeFrameBuffer, rightEyeFrameBuffer, nextFrameBuffer }
-    
+
     /**
     * @private
     */
@@ -51,14 +56,14 @@
         * @platform Web,Native
         */
         ALPHA,
-        
+
         /**
         * @language zh_CN
         * 强制为该显示对象创建一个透明度组。
         * @version Egret 3.0
         * @platform Web,Native
         */
-        LAYER, 
+        LAYER,
 
         /**
         * @language zh_CN
@@ -66,7 +71,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        NORMAL, 
+        NORMAL,
 
         /**
         * @language zh_CN
@@ -74,7 +79,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        MULTIPLY, 
+        MULTIPLY,
 
         /**
         * @language zh_CN
@@ -82,7 +87,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        ADD, 
+        ADD,
 
         /**
         * @language zh_CN
@@ -90,7 +95,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        SUB, 
+        SUB,
 
         /**
         * @language zh_CN
@@ -98,7 +103,7 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        DIV, 
+        DIV,
 
         /**
         * @language zh_CN
@@ -136,43 +141,43 @@
         * 纹理1数据
         */
         public static TEXTURE_1: any;
-        
+
         /**
         * @language zh_CN
         * 纹理2数据
         */
         public static TEXTURE_2: any;
-        
+
         /**
         * @language zh_CN
         * 纹理3数据
         */
         public static TEXTURE_3: any;
-        
+
         /**
         * @language zh_CN
         * 纹理4数据
         */
         public static TEXTURE_4: any;
-        
+
         /**
         * @language zh_CN
         * 纹理5数据
         */
         public static TEXTURE_5: any;
-        
+
         /**
         * @language zh_CN
         * 纹理6数据
         */
         public static TEXTURE_6: any;
-        
+
         /**
         * @language zh_CN
         * 纹理7数据
         */
         public static TEXTURE_7: any;
-        
+
         /**
         * @language zh_CN
         * 纹理8数据
@@ -210,7 +215,7 @@
     * @platform Web,Native
     */
     export class DrawMode {
-                    
+
         /**
         * @language zh_CN
         * 线框显示模式
@@ -218,7 +223,7 @@
         * @platform Web,Native
         */
         static LINES: number;
-                            
+
         /**
         * @language zh_CN
         * 点显示模式
@@ -226,7 +231,7 @@
         * @platform Web,Native
         */
         static POINTS: number;
-                                    
+
         /**
         * @language zh_CN
         * 三角形显示模式
@@ -234,7 +239,7 @@
         * @platform Web,Native
         */
         static TRIANGLES: number;
-                                    
+
         /**
         * @language zh_CN
         * 连接线显示模式
@@ -244,7 +249,7 @@
         static LINE_STRIP: number;
 
     }
-          
+
     /**
     * @class egret3d.ContextConfig
     * @classdesc
@@ -256,57 +261,57 @@
     * @platform Web,Native
     */
     export class ContextConfig {
-                    
+
         /**
         * @private
         */
         static Direct3D_Opengl_Auto: string = "Direct3D_Opengl_Auto";
-                            
+
         /**
         * @private
         */
         static Direct3D_9_0: string = "Direct3D_9_0";
-                            
+
         /**
         * @private
         */
         static Direct3D_10_0: string = "Direct3D_10_0";
-                            
+
         /**
         * @private
         */
         static Direct3D_11_0: string = "Direct3D_11_0";
-                            
+
         /**
         * @private
         */
         static OpenGLES_2_0: string = "OpenGLES_2_0";
-                            
+
         /**
         * @private
         */
         static OpenGLES_3_0: string = "OpenGLES_3_0";
-                            
+
         /**
         * @private
         */
         static OpenGL: string = "OpenGL";
-                            
+
         /**
         * @private
         */
         static canvas: HTMLCanvasElement;
-                            
+
         /**
         * @private
         */
         static VERTEX_SHADER: number;
-                            
+
         /**
         * @private
         */
         static FRAGMENT_SHADER: number;
-                            
+
         /**
         * @private
         */
@@ -331,8 +336,8 @@
         /**
         * @private
         */
-        static CULL_FACE: number;                            
-                
+        static CULL_FACE: number;
+
         /**
         * @language zh_CN
         * 裁剪正面进行反面渲染
@@ -340,7 +345,7 @@
         * @platform Web,Native
         */
         static FRONT: number;
-                
+
         /**
         * @language zh_CN
         * 裁剪反面进行正面渲染
@@ -348,15 +353,15 @@
         * @platform Web,Native
         */
         static BACK: number;
-        
+
         /**
         * @language zh_CN
         * 裁剪正面和反面
         * @version Egret 3.0
         * @platform Web,Native
         */
-        static FRONT_AND_BACK: number;   
-     
+        static FRONT_AND_BACK: number;
+
         /**
         * @language zh_CN
         * 深度测试
@@ -364,7 +369,7 @@
         * @platform Web,Native
         */
         static DEPTH_TEST: number;
- 
+
         /**
         * @language zh_CN
         * 深度缓冲值
@@ -372,72 +377,72 @@
         * @platform Web,Native
         */
         static DEPTH_BUFFER_BIT: number;
-                                    
+
         /**
         * @private
         */
         static ELEMENT_ARRAY_BUFFER: number;
-                                            
+
         /**
         * @private
         */
         static UNSIGNED_SHORT: number;
-                                            
+
         /**
         * @private
         */
         static NEAREST: number;
-                                            
+
         /**
         * @private
         */
         static REPEAT: number;
-                                            
+
         /**
         * @private
         */
         static ONE: number;
-                                            
+
         /**
         * @private
         */
         static ZERO: number;
-                                            
+
         /**
         * @private
         */
         static SRC_ALPHA: number;
-                                            
+
         /**
         * @private
         */
         static ONE_MINUS_SRC_ALPHA: number;
-                                            
+
         /**
         * @private
         */
         static SRC_COLOR: number;
-                                            
+
         /**
         * @private
         */
         static ONE_MINUS_SRC_COLOR: number;
-                                            
+
         /**
         * @private
         */
         static ColorFormat_RGB565: number;
-                                            
+
         /**
         * @private
         */
         static ColorFormat_RGBA5551: number;
-                                            
+
         /**
         * @private
         */
         static ColorFormat_RGBA4444: number;
-                                            
+
         /**
         * @private
         */
@@ -445,22 +450,22 @@
         /**
         * @private
         */
-        static ColorFormat_RGB888: number;                               
+        static ColorFormat_RGB888: number;
         /**
         * @private
         */
         static ColorFormat_DXT1_RGB: number = 0;
-                                            
+
         /**
         * @private
         */
         static ColorFormat_DXT1_RGBA: number = 0;
-                                            
+
         /**
         * @private
         */
         static ColorFormat_DXT3_RGBA: number = 0;
-                                            
+
         /**
         * @private
         */
@@ -470,8 +475,8 @@
         * @private
         * canvas窗口矩形
         */
-        static canvasRectangle: Rectangle ;
-                                            
+        static canvasRectangle: Rectangle;
+
         /**
         * @private
         * 用户窗口矩形

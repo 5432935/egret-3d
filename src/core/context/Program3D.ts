@@ -38,6 +38,7 @@
         */
         public program: WebGLProgram;
                 
+        public name:string = "";
         /**
         * @language zh_CN
         * 构造函数
