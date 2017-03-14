@@ -343,4 +343,3 @@ var egret3d;
     egret3d.IRender = IRender;
     __reflect(IRender.prototype, "egret3d.IRender");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=IRender.js.map

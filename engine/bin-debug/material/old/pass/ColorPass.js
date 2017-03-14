@@ -29,8 +29,8 @@ var egret3d;
             var i = 0;
             this._passChange = false;
             this._passUsage = new egret3d.PassUsage();
-            this._passUsage.vertexShader.shaderType = egret3d.Shader.vertex;
-            this._passUsage.fragmentShader.shaderType = egret3d.Shader.fragment;
+            this._passUsage.vertexShader.shaderType = egret3d.ShaderType.VertexShader;
+            this._passUsage.fragmentShader.shaderType = egret3d.ShaderType.FragmentShader;
             //pre Phase ---------------------------------------------------
             if (animation) {
                 // to add accept animation shader
@@ -60,4 +60,3 @@ var egret3d;
     egret3d.ColorPass = ColorPass;
     __reflect(ColorPass.prototype, "egret3d.ColorPass");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ColorPass.js.map

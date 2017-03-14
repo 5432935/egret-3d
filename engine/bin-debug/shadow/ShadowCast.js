@@ -146,4 +146,3 @@ var egret3d;
     egret3d.ShadowCast = ShadowCast;
     __reflect(ShadowCast.prototype, "egret3d.ShadowCast");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ShadowCast.js.map

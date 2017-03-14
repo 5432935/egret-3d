@@ -113,4 +113,3 @@ var egret3d;
     egret3d.ShadowPass = ShadowPass;
     __reflect(ShadowPass.prototype, "egret3d.ShadowPass");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ShadowPass.js.map

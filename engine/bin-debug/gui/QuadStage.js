@@ -245,4 +245,3 @@ var egret3d;
     egret3d.QuadStage = QuadStage;
     __reflect(QuadStage.prototype, "egret3d.QuadStage");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=QuadStage.js.map

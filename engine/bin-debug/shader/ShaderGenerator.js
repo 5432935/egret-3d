@@ -12,8 +12,54 @@ var egret3d;
     var ShaderGenerator = (function () {
         function ShaderGenerator() {
         }
-        ShaderGenerator.createShaderSource = function (defdata, _ShaderName) {
-            var shaderName = defdata.toName();
+        //根据shader的命名创建对应shader和program
+        ShaderGenerator.createProgram = function (defdata, _vsShaderSourceName, _fsShaderSourceName) {
+            //vsShader
+            var vsSource = ShaderGenerator.generateShaderSource(defdata, _vsShaderSourceName);
+            var vsShader = ShaderGenerator.createShader(vsSource, egret3d.ShaderType.VertexShader, defdata.toName() + _vsShaderSourceName);
+            //fsShader
+            var fsSource = ShaderGenerator.generateShaderSource(defdata, _fsShaderSourceName);
+            var fsShader = ShaderGenerator.createShader(vsSource, egret3d.ShaderType.FragmentShader, defdata.toName() + _fsShaderSourceName);
+            //program
+            var program = ShaderGenerator.createProgramLogic(vsShader, fsShader);
+            //清除shader
+            vsShader.dispose();
+            fsShader.dispose();
+            return program;
+        };
+        //创建shader
+        ShaderGenerator.createShader = function (_source, _type, _name) {
+            var shader = egret3d.Context3DProxy.gl.createShader(_type);
+            egret3d.Context3DProxy.gl.shaderSource(shader, _source);
+            egret3d.Context3DProxy.gl.compileShader(shader);
+            var tmpShader = new egret3d.Shader(shader);
+            tmpShader.name = _name;
+            return tmpShader;
+        };
+        //创建Program
+        ShaderGenerator.createProgramLogic = function (vsShader, fsShader) {
+            var shaderProgram = egret3d.Context3DProxy.gl.createProgram();
+            egret3d.Context3DProxy.gl.attachShader(shaderProgram, vsShader.shader);
+            egret3d.Context3DProxy.gl.attachShader(shaderProgram, fsShader.shader);
+            egret3d.Context3DProxy.gl.linkProgram(shaderProgram);
+            //debug模式下启用
+            if (egret3d.Egret3DEngine.instance.debug) {
+                var p = egret3d.Context3DProxy.gl.getProgramParameter(shaderProgram, egret3d.Context3DProxy.gl.LINK_STATUS);
+                if (!p) {
+                    console.log("vsShader error" + egret3d.Context3DProxy.gl.getShaderInfoLog(vsShader.shader));
+                    console.log("fsShader error" + egret3d.Context3DProxy.gl.getShaderInfoLog(fsShader.shader));
+                    console.log("program error" + egret3d.Context3DProxy.gl.getProgramInfoLog(shaderProgram));
+                }
+            }
+            /////
+            var program = new egret3d.Program3D(shaderProgram);
+            program.name = vsShader.name + fsShader.name;
+            //放入仓中
+            egret3d.ShaderCache.addProgram(program);
+            return program;
+        };
+        //生成shader源码
+        ShaderGenerator.generateShaderSource = function (defdata, _ShaderSourceName) {
             var keys = defdata.keys();
             var len = keys.length;
             var defStr = "";
@@ -22,12 +68,15 @@ var egret3d;
                     defStr += "#define " + keys[i] + "\n";
                 }
             }
-            ShaderGenerator._processIncludes(egret3d.ShaderStore.lib[_ShaderName], function (rel) {
+            var source = "";
+            ShaderGenerator._processIncludes(egret3d.ShaderStore.lib[_ShaderSourceName], function (rel) {
                 //处理完成后shader代码
                 defStr += rel;
-                //console.log( defStr );
+                source = defStr;
             });
+            return source;
         };
+        ///#include 替换
         ShaderGenerator._processIncludes = function (sourceCode, callback) {
             var regex = /#include<(.+)>(\((.*)\))*(\[(.*)\])*/g;
             var match = regex.exec(sourceCode);
@@ -77,4 +126,3 @@ var egret3d;
     egret3d.ShaderGenerator = ShaderGenerator;
     __reflect(ShaderGenerator.prototype, "egret3d.ShaderGenerator");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ShaderGenerator.js.map

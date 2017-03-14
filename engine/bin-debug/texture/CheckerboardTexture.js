@@ -133,4 +133,3 @@ var egret3d;
     egret3d.CheckerboardTexture = CheckerboardTexture;
     __reflect(CheckerboardTexture.prototype, "egret3d.CheckerboardTexture");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=CheckerboardTexture.js.map

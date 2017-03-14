@@ -77,4 +77,3 @@ var egret3d;
     egret3d.Texture = Texture;
     __reflect(Texture.prototype, "egret3d.Texture");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Texture.js.map

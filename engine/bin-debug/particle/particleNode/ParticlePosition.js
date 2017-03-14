@@ -208,4 +208,3 @@ var egret3d;
     egret3d.ParticlePosition = ParticlePosition;
     __reflect(ParticlePosition.prototype, "egret3d.ParticlePosition");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticlePosition.js.map

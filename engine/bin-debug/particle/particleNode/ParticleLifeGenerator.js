@@ -198,4 +198,3 @@ var egret3d;
     egret3d.ParticleLifeGenerator = ParticleLifeGenerator;
     __reflect(ParticleLifeGenerator.prototype, "egret3d.ParticleLifeGenerator");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleLifeGenerator.js.map

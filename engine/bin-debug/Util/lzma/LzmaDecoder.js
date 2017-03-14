@@ -239,4 +239,3 @@ var nid;
     nid.LzmaDecoder = LzmaDecoder;
     __reflect(LzmaDecoder.prototype, "nid.LzmaDecoder");
 })(nid || (nid = {}));
-//# sourceMappingURL=LzmaDecoder.js.map

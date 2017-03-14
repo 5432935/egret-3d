@@ -1306,4 +1306,3 @@ var egret3d;
     egret3d.MaterialBase = MaterialBase;
     __reflect(MaterialBase.prototype, "egret3d.MaterialBase");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MaterialBase.js.map

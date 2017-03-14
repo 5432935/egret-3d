@@ -186,4 +186,3 @@ var egret3d;
     egret3d.GrassMethod = GrassMethod;
     __reflect(GrassMethod.prototype, "egret3d.GrassMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=GrassMethod.js.map

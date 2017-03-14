@@ -73,4 +73,3 @@ var nid;
     nid.LZMA = LZMA;
     __reflect(LZMA.prototype, "nid.LZMA");
 })(nid || (nid = {}));
-//# sourceMappingURL=LZMA.js.map

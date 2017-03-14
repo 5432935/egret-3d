@@ -212,4 +212,3 @@ var egret3d;
     egret3d.SpotLight = SpotLight;
     __reflect(SpotLight.prototype, "egret3d.SpotLight");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=SpotLight.js.map

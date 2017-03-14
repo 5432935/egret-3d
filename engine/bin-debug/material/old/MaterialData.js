@@ -545,4 +545,3 @@ var egret3d;
     egret3d.MaterialData = MaterialData;
     __reflect(MaterialData.prototype, "egret3d.MaterialData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MaterialData.js.map

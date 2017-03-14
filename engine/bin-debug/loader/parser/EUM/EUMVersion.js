@@ -101,4 +101,3 @@ var egret3d;
     egret3d.EUMVersion = EUMVersion;
     __reflect(EUMVersion.prototype, "egret3d.EUMVersion");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=EUMVersion.js.map

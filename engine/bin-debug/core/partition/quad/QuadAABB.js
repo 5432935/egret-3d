@@ -293,4 +293,3 @@ var egret3d;
     egret3d.QuadAABB = QuadAABB;
     __reflect(QuadAABB.prototype, "egret3d.QuadAABB");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=QuadAABB.js.map

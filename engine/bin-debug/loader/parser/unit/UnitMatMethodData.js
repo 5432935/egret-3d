@@ -74,4 +74,3 @@ var egret3d;
     egret3d.UnitMatMethodData = UnitMatMethodData;
     __reflect(UnitMatMethodData.prototype, "egret3d.UnitMatMethodData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UnitMatMethodData.js.map

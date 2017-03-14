@@ -164,4 +164,3 @@ var egret3d;
     egret3d.ColorTransform = ColorTransform;
     __reflect(ColorTransform.prototype, "egret3d.ColorTransform");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ColorTransform.js.map

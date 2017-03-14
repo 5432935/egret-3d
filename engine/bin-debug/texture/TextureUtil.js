@@ -83,4 +83,3 @@ var egret3d;
     egret3d.TextureUtil = TextureUtil;
     __reflect(TextureUtil.prototype, "egret3d.TextureUtil");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=TextureUtil.js.map

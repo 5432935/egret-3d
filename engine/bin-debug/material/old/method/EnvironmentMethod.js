@@ -109,4 +109,3 @@ var egret3d;
     egret3d.EnvironmentMethod = EnvironmentMethod;
     __reflect(EnvironmentMethod.prototype, "egret3d.EnvironmentMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=EnvironmentMethod.js.map

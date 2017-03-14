@@ -1185,4 +1185,3 @@ var egret3d;
     egret3d.ByteArray = ByteArray;
     __reflect(ByteArray.prototype, "egret3d.ByteArray");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ByteArray.js.map

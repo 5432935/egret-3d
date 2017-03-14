@@ -1830,4 +1830,3 @@ var egret3d;
     egret3d.Object3D = Object3D;
     __reflect(Object3D.prototype, "egret3d.Object3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Object3D.js.map

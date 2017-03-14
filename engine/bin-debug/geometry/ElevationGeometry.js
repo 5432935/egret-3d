@@ -388,4 +388,3 @@ var egret3d;
     egret3d.ElevationGeometry = ElevationGeometry;
     __reflect(ElevationGeometry.prototype, "egret3d.ElevationGeometry");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ElevationGeometry.js.map

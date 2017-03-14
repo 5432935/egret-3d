@@ -24,4 +24,3 @@ var egret3d;
     egret3d.UnitBinParser = UnitBinParser;
     __reflect(UnitBinParser.prototype, "egret3d.UnitBinParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UnitBinParser.js.map

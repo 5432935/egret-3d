@@ -46,4 +46,3 @@ var egret3d;
         __reflect(ConstVar.prototype, "egret3d.GLSL.ConstVar");
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ConstVar.js.map

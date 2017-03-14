@@ -198,4 +198,3 @@ var egret3d;
     egret3d.Mesh = Mesh;
     __reflect(Mesh.prototype, "egret3d.Mesh", ["egret3d.IQuadNode"]);
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Mesh.js.map

@@ -47,4 +47,3 @@ var egret3d;
     egret3d.CubeMethod = CubeMethod;
     __reflect(CubeMethod.prototype, "egret3d.CubeMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=CubeMethod.js.map

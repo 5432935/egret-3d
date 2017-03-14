@@ -233,4 +233,3 @@ var egret3d;
     egret3d.Rectangle = Rectangle;
     __reflect(Rectangle.prototype, "egret3d.Rectangle");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Rectangle.js.map

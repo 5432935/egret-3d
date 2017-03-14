@@ -120,4 +120,3 @@ var egret3d;
     egret3d.ParticleRotation = ParticleRotation;
     __reflect(ParticleRotation.prototype, "egret3d.ParticleRotation");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleRotation.js.map

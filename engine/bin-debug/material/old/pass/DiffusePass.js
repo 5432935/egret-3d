@@ -33,4 +33,3 @@ var egret3d;
     egret3d.DiffusePass = DiffusePass;
     __reflect(DiffusePass.prototype, "egret3d.DiffusePass");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=DiffusePass.js.map

@@ -110,4 +110,3 @@ var egret3d;
     egret3d.ParticleScale = ParticleScale;
     __reflect(ParticleScale.prototype, "egret3d.ParticleScale");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleScale.js.map

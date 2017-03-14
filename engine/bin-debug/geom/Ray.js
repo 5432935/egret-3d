@@ -330,4 +330,3 @@ var egret3d;
     egret3d.Ray = Ray;
     __reflect(Ray.prototype, "egret3d.Ray");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Ray.js.map

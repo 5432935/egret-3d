@@ -817,4 +817,3 @@ var egret3d;
         __reflect(UITextField.prototype, "egret3d.gui.UITextField");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UITextField.js.map

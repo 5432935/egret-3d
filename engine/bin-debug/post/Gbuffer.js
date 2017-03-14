@@ -25,4 +25,3 @@ var egret3d;
     egret3d.Gbuffer = Gbuffer;
     __reflect(Gbuffer.prototype, "egret3d.Gbuffer", ["egret3d.IPost"]);
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Gbuffer.js.map

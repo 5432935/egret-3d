@@ -156,4 +156,3 @@ var egret3d;
 //this._fix.y = this._final.y - this._view.camera3D.globalRotationX;
 //this._view.camera3D.globalRotationY += this._fix.x / this._step;
 //this._view.camera3D.globalRotationX += this._fix.y / this._step; 
-//# sourceMappingURL=PanController.js.map

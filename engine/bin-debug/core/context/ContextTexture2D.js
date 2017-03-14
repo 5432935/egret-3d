@@ -60,4 +60,3 @@ var egret3d;
     egret3d.ContextTexture2D = ContextTexture2D;
     __reflect(ContextTexture2D.prototype, "egret3d.ContextTexture2D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ContextTexture2D.js.map

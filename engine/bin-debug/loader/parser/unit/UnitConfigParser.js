@@ -120,4 +120,3 @@ var egret3d;
     egret3d.UnitConfigParser = UnitConfigParser;
     __reflect(UnitConfigParser.prototype, "egret3d.UnitConfigParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UnitConfigParser.js.map

@@ -21,4 +21,3 @@ var egret3d;
     egret3d.AnimationCurve = AnimationCurve;
     __reflect(AnimationCurve.prototype, "egret3d.AnimationCurve");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=AnimationCurve.js.map

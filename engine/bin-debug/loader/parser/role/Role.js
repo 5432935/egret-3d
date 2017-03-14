@@ -178,4 +178,3 @@ var egret3d;
     egret3d.Role = Role;
     __reflect(Role.prototype, "egret3d.Role");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Role.js.map

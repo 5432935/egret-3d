@@ -171,4 +171,3 @@ var egret3d;
     egret3d.EventManager = EventManager;
     __reflect(EventManager.prototype, "egret3d.EventManager");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=EventManager.js.map

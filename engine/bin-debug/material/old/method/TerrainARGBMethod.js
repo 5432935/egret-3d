@@ -187,4 +187,3 @@ var egret3d;
     egret3d.TerrainARGBMethod = TerrainARGBMethod;
     __reflect(TerrainARGBMethod.prototype, "egret3d.TerrainARGBMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=TerrainARGBMethod.js.map

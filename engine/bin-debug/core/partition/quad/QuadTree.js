@@ -330,4 +330,3 @@ var egret3d;
     egret3d.QuadTree = QuadTree;
     __reflect(QuadTree.prototype, "egret3d.QuadTree");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=QuadTree.js.map

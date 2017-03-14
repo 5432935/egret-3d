@@ -182,4 +182,3 @@ var egret3d;
     egret3d.HDRParser = HDRParser;
     __reflect(HDRParser.prototype, "egret3d.HDRParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=HDRParser.js.map

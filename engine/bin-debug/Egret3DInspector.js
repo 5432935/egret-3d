@@ -84,4 +84,3 @@ var egret3d;
     egret3d.Egret3DInspector = Egret3DInspector;
     __reflect(Egret3DInspector.prototype, "egret3d.Egret3DInspector");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Egret3DInspector.js.map

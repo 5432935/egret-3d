@@ -3,7 +3,7 @@
     /**
     * @private
     */
-    export class ShaderPool {
+    export class ShaderPool2 {
         //总shader的map容器
         static programlib: HashMap = new HashMap();
         static vsShaderHashMap: HashMap = new HashMap();
@@ -13,7 +13,7 @@
         constructor() {
             
         }
-
+/*
         public static register(context: Context3DProxy) {
             this.context = context;
         }
@@ -63,7 +63,7 @@
             var program3D: Program3D = this.context.creatProgram(vsShader, fsShader);
             return program3D; 
         }
-
+*/
     }
 }
 

@@ -197,4 +197,3 @@ var egret3d;
         __reflect(UIProgressBar.prototype, "egret3d.gui.UIProgressBar");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UIProgressBar.js.map

@@ -295,4 +295,3 @@ var egret3d;
     egret3d.ParticleSubEmitterNodePhase = ParticleSubEmitterNodePhase;
     __reflect(ParticleSubEmitterNodePhase.prototype, "egret3d.ParticleSubEmitterNodePhase");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleSubEmitterNode.js.map

@@ -53,4 +53,3 @@ var egret3d;
     egret3d.PostRender = PostRender;
     __reflect(PostRender.prototype, "egret3d.PostRender");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PostRender.js.map

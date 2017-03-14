@@ -24,4 +24,3 @@ var egret3d;
     egret3d.TreeBase = TreeBase;
     __reflect(TreeBase.prototype, "egret3d.TreeBase");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=TreeBase.js.map

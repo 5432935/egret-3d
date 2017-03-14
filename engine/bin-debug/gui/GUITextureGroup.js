@@ -69,4 +69,3 @@ var egret3d;
     egret3d.GUITextureGroup = GUITextureGroup;
     __reflect(GUITextureGroup.prototype, "egret3d.GUITextureGroup");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=GUITextureGroup.js.map

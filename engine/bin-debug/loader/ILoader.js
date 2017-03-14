@@ -316,4 +316,3 @@ var egret3d;
     egret3d.ILoader = ILoader;
     __reflect(ILoader.prototype, "egret3d.ILoader");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ILoader.js.map

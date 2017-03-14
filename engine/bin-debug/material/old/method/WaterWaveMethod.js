@@ -219,4 +219,3 @@ var egret3d;
     egret3d.WaterWaveMethod = WaterWaveMethod;
     __reflect(WaterWaveMethod.prototype, "egret3d.WaterWaveMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=WaterWaveMethod.js.map

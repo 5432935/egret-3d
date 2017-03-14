@@ -140,4 +140,3 @@ var egret3d;
     egret3d.BinaryLoader = BinaryLoader;
     __reflect(BinaryLoader.prototype, "egret3d.BinaryLoader");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=BinaryLoader.js.map

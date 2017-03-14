@@ -49,4 +49,3 @@ var egret3d;
     egret3d.IndexBuffer3D = IndexBuffer3D;
     __reflect(IndexBuffer3D.prototype, "egret3d.IndexBuffer3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=IndexBuffer3D.js.map

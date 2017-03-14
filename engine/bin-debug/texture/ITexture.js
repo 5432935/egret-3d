@@ -221,4 +221,3 @@ var egret3d;
     egret3d.ITexture = ITexture;
     __reflect(ITexture.prototype, "egret3d.ITexture");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ITexture.js.map

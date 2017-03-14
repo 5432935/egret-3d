@@ -138,4 +138,3 @@ var egret3d;
         __reflect(DefaultSkinName.prototype, "egret3d.gui.DefaultSkinName");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=GUISkinManager.js.map

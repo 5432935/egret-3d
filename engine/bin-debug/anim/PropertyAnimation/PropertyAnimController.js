@@ -291,4 +291,3 @@ var egret3d;
     egret3d.PropertyAnimController = PropertyAnimController;
     __reflect(PropertyAnimController.prototype, "egret3d.PropertyAnimController", ["egret3d.IAnimation"]);
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PropertyAnimController.js.map

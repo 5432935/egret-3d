@@ -147,4 +147,3 @@ var egret3d;
     egret3d.MouseEvent3D = MouseEvent3D;
     __reflect(MouseEvent3D.prototype, "egret3d.MouseEvent3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MouseEvent3D.js.map

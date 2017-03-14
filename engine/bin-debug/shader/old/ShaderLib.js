@@ -152,4 +152,3 @@ var egret3d;
     egret3d.ShaderLib = ShaderLib;
     __reflect(ShaderLib.prototype, "egret3d.ShaderLib");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ShaderLib.js.map

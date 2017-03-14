@@ -156,4 +156,3 @@ var egret3d;
     egret3d.RenderTexture = RenderTexture;
     __reflect(RenderTexture.prototype, "egret3d.RenderTexture");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=RenderTexture.js.map

@@ -520,4 +520,3 @@ var egret3d;
     egret3d.DDSParser = DDSParser;
     __reflect(DDSParser.prototype, "egret3d.DDSParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=DDSParser.js.map

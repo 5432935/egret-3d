@@ -193,4 +193,3 @@ var egret3d;
     egret3d.WaterBumpMethod = WaterBumpMethod;
     __reflect(WaterBumpMethod.prototype, "egret3d.WaterBumpMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=WaterBumpMethod.js.map

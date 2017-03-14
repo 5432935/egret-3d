@@ -39,4 +39,3 @@ var egret3d;
         __reflect(Extension.prototype, "egret3d.GLSL.Extension");
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Extension.js.map

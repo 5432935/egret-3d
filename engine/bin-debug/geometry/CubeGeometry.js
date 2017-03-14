@@ -169,4 +169,3 @@ var egret3d;
     egret3d.CubeGeometry = CubeGeometry;
     __reflect(CubeGeometry.prototype, "egret3d.CubeGeometry");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=CubeGeometry.js.map

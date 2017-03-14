@@ -331,4 +331,3 @@ var egret3d;
     egret3d.TGAParser = TGAParser;
     __reflect(TGAParser.prototype, "egret3d.TGAParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=TGAParser.js.map

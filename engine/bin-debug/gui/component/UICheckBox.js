@@ -54,4 +54,3 @@ var egret3d;
         __reflect(UICheckBox.prototype, "egret3d.gui.UICheckBox");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UICheckBox.js.map

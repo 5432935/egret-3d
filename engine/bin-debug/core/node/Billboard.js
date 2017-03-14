@@ -86,4 +86,3 @@ var egret3d;
     egret3d.Billboard = Billboard;
     __reflect(Billboard.prototype, "egret3d.Billboard");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Billboard.js.map

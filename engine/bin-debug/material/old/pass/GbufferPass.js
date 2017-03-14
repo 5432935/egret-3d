@@ -78,4 +78,3 @@ var egret3d;
     egret3d.GbufferPass = GbufferPass;
     __reflect(GbufferPass.prototype, "egret3d.GbufferPass");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=GbufferPass.js.map

@@ -568,4 +568,3 @@ var egret3d;
     egret3d.HoverController = HoverController;
     __reflect(HoverController.prototype, "egret3d.HoverController");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=HoverController.js.map

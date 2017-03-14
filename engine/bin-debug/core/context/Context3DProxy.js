@@ -29,7 +29,7 @@ var egret3d;
             * @language zh_CN
             * @private
             */
-            this.version = "3.2.2";
+            //public version: string = "3.2.2";
             /**
             * @language zh_CN
             * @private
@@ -156,7 +156,7 @@ var egret3d;
                         ContextSamplerType.TEXTURE_8 = Context3DProxy.gl.TEXTURE8;
             */
             console.log("requst GPU Config", Context3DProxy.gl);
-            egret3d.ShaderPool.register(this);
+            //ShaderPool.register(this);
         };
         //public creatBackBuffer(x: number, y: number, width: number, height: number) {
         //    this._canvas.style.left = x.toString();
@@ -460,14 +460,18 @@ var egret3d;
         * @version Egret 3.0
         * @platform Web,Native
         */
-        Context3DProxy.prototype.creatVertexShader = function (source) {
-            var shader = Context3DProxy.gl.createShader(Context3DProxy.gl.VERTEX_SHADER);
+        /*
+        public creatVertexShader(source: string, _name:string): Shader {
+            var shader: WebGLShader = Context3DProxy.gl.createShader(Context3DProxy.gl.VERTEX_SHADER);
             Context3DProxy.gl.shaderSource(shader, source);
             Context3DProxy.gl.compileShader(shader);
-            var tmpShader = new egret3d.Shader(shader);
-            tmpShader.id = (egret3d.Shader.ID_COUNT++).toString();
+
+            var tmpShader: Shader = new Shader(shader);
+            //tmpShader.id = (Shader.ID_COUNT++).toString();
+            tmpShader.name = _name;
             return tmpShader;
-        };
+        }
+        */
         /**
         * @language zh_CN
         * 向显卡请求创建片段shader对象
@@ -476,14 +480,17 @@ var egret3d;
         * @version Egret 3.0
         * @platform Web,Native
         */
-        Context3DProxy.prototype.creatFragmentShader = function (source) {
-            var shader = Context3DProxy.gl.createShader(Context3DProxy.gl.FRAGMENT_SHADER);
+        /*
+        public creatFragmentShader(source: string): Shader {
+            var shader: WebGLShader = Context3DProxy.gl.createShader(Context3DProxy.gl.FRAGMENT_SHADER);
             Context3DProxy.gl.shaderSource(shader, source);
             Context3DProxy.gl.compileShader(shader);
-            var tmpShader = new egret3d.Shader(shader);
-            tmpShader.id = (egret3d.Shader.ID_COUNT++).toString();
+
+            var tmpShader: Shader = new Shader(shader);
+            tmpShader.id = (Shader.ID_COUNT++).toString();
             return tmpShader;
-        };
+        }
+        */
         /**
         * @language zh_CN
         * 清除渲染buffer
@@ -1141,4 +1148,3 @@ var egret3d;
     egret3d.Context3DProxy = Context3DProxy;
     __reflect(Context3DProxy.prototype, "egret3d.Context3DProxy");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Context3DProxy.js.map

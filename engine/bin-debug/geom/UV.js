@@ -41,4 +41,3 @@ var egret3d;
     egret3d.UV = UV;
     __reflect(UV.prototype, "egret3d.UV");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UV.js.map

@@ -354,4 +354,3 @@ var egret3d;
     egret3d.MathUtil = MathUtil;
     __reflect(MathUtil.prototype, "egret3d.MathUtil");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MathUtil.js.map

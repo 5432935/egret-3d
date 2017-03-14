@@ -133,4 +133,3 @@ var egret3d;
     egret3d.FreeController = FreeController;
     __reflect(FreeController.prototype, "egret3d.FreeController");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=FreeController.js.map

@@ -29,4 +29,3 @@ var egret3d;
     egret3d.ParticleEndNode = ParticleEndNode;
     __reflect(ParticleEndNode.prototype, "egret3d.ParticleEndNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleEndNode.js.map

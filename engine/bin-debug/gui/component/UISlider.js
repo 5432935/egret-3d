@@ -266,4 +266,3 @@ var egret3d;
         __reflect(UISlider.prototype, "egret3d.gui.UISlider");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UISlider.js.map

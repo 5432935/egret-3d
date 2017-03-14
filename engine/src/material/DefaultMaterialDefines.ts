@@ -74,5 +74,7 @@ module egret3d {
         public SHADOWFULLFLOAT = false;
         public CAMERACOLORGRADING = false;
         public CAMERACOLORCURVES = false;
+
+        
     }
 }

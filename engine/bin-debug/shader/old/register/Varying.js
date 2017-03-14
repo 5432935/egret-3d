@@ -45,4 +45,3 @@ var egret3d;
         __reflect(Varying.prototype, "egret3d.GLSL.Varying");
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Varying.js.map

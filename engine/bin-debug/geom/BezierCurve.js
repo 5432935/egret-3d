@@ -268,4 +268,3 @@ var egret3d;
     egret3d.BezierData = BezierData;
     __reflect(BezierData.prototype, "egret3d.BezierData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=BezierCurve.js.map

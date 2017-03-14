@@ -87,4 +87,3 @@ var egret3d;
     egret3d.AnimaNodeCollection = AnimaNodeCollection;
     __reflect(AnimaNodeCollection.prototype, "egret3d.AnimaNodeCollection");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=AnimaNodeCollection.js.map

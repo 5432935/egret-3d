@@ -34,6 +34,7 @@ var egret3d;
         * @platform Web,Native
         */
         function Program3D(pg3D) {
+            this.name = "";
             this.program = pg3D;
         }
         /**
@@ -53,4 +54,3 @@ var egret3d;
     egret3d.Program3D = Program3D;
     __reflect(Program3D.prototype, "egret3d.Program3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Program3D.js.map

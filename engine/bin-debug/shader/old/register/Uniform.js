@@ -45,4 +45,3 @@ var egret3d;
         __reflect(Uniform.prototype, "egret3d.GLSL.Uniform");
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Uniform.js.map

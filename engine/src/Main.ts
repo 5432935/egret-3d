@@ -6,7 +6,7 @@ class Main extends egret.DisplayObjectContainer {
 
     public constructor() {
         super();
-
+/*
         egret3d.ShaderGenerator.createProgram();
 
         let data:egret3d.DefaultMaterialDefines = new egret3d.DefaultMaterialDefines("default_fragment");
@@ -15,6 +15,7 @@ class Main extends egret.DisplayObjectContainer {
         console.log( data["DIFFUSE"] ); 
         console.log( data.toName() )
         egret3d.ShaderGenerator.createShaderSource( data, "default_fragment" );
+        */
 
         this.once(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
     }

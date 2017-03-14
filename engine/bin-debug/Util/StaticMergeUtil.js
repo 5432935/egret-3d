@@ -205,4 +205,3 @@ var egret3d;
     egret3d.StaticMergeUtil = StaticMergeUtil;
     __reflect(StaticMergeUtil.prototype, "egret3d.StaticMergeUtil");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=StaticMergeUtil.js.map

@@ -397,8 +397,8 @@
             }
 
 
-            self._passUsage.vertexShader.shaderType = Shader.vertex;
-            self._passUsage.fragmentShader.shaderType = Shader.fragment;
+            self._passUsage.vertexShader.shaderType = ShaderType.VertexShader;
+            self._passUsage.fragmentShader.shaderType = ShaderType.FragmentShader;
 
             self._passUsage.vertexShader.addUseShaderName(self.vsShader);
             self._passUsage.fragmentShader.addUseShaderName(self.fsShader);
@@ -406,7 +406,7 @@
             self._passUsage.vertexShader.shader = self._passUsage.vertexShader.getShader(self._passUsage);
             self._passUsage.fragmentShader.shader = self._passUsage.fragmentShader.getShader(self._passUsage);
 
-            self._passUsage.program3D = ShaderPool.getProgram(self._passUsage.vertexShader.shader.id, self._passUsage.fragmentShader.shader.id);
+            //self._passUsage.program3D = ShaderGenerator.createProgram(); ShaderPool.getProgram(self._passUsage.vertexShader.shader.id, self._passUsage.fragmentShader.shader.id);
 
             for (var property in self._passUsage) {
                 if ((<string>property).indexOf("uniform") != -1) {

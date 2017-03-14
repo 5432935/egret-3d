@@ -76,4 +76,3 @@ var egret3d;
     egret3d.ParticleUVRollNode = ParticleUVRollNode;
     __reflect(ParticleUVRollNode.prototype, "egret3d.ParticleUVRollNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleUVRollNode.js.map

@@ -108,4 +108,3 @@ var egret3d;
     egret3d.EPAVersion = EPAVersion;
     __reflect(EPAVersion.prototype, "egret3d.EPAVersion");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=EPAVersion.js.map

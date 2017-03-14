@@ -131,4 +131,3 @@ var egret3d;
     egret3d.ParticleVelocityForceTwoBezierNode = ParticleVelocityForceTwoBezierNode;
     __reflect(ParticleVelocityForceTwoBezierNode.prototype, "egret3d.ParticleVelocityForceTwoBezierNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleVelocityForceTwoBezierNode.js.map

@@ -132,4 +132,3 @@ var egret3d;
     egret3d.ParticleSizeGlobalNode = ParticleSizeGlobalNode;
     __reflect(ParticleSizeGlobalNode.prototype, "egret3d.ParticleSizeGlobalNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleSizeGlobalNode.js.map

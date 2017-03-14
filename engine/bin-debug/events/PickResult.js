@@ -44,4 +44,3 @@ var egret3d;
     egret3d.PickResult = PickResult;
     __reflect(PickResult.prototype, "egret3d.PickResult");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PickResult.js.map

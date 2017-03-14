@@ -10,12 +10,16 @@ var Main = (function (_super) {
     __extends(Main, _super);
     function Main() {
         var _this = _super.call(this) || this;
-        var data = new egret3d.DefaultMaterialDefines("default_fragment");
-        data.DIFFUSE = true;
-        data.AMBIENT = true;
-        console.log(data["DIFFUSE"]);
-        console.log(data.toName());
-        egret3d.ShaderGenerator.createShaderSource(data, "default_fragment");
+        /*
+                egret3d.ShaderGenerator.createProgram();
+        
+                let data:egret3d.DefaultMaterialDefines = new egret3d.DefaultMaterialDefines("default_fragment");
+                data.DIFFUSE = true;
+                data.AMBIENT = true;
+                console.log( data["DIFFUSE"] );
+                console.log( data.toName() )
+                egret3d.ShaderGenerator.createShaderSource( data, "default_fragment" );
+                */
         _this.once(egret.Event.ADDED_TO_STAGE, _this.onAddToStage, _this);
         return _this;
     }
@@ -60,4 +64,3 @@ var Main = (function (_super) {
     return Main;
 }(egret.DisplayObjectContainer));
 __reflect(Main.prototype, "Main");
-//# sourceMappingURL=Main.js.map

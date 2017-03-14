@@ -241,4 +241,3 @@ var egret3d;
     egret3d.Channel3d = Channel3d;
     __reflect(Channel3d.prototype, "egret3d.Channel3d");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Channel3d.js.map

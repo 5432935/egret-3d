@@ -118,4 +118,3 @@ var egret3d;
     egret3d.ControllerBase = ControllerBase;
     __reflect(ControllerBase.prototype, "egret3d.ControllerBase");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ControllerBase.js.map

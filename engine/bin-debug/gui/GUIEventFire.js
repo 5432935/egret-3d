@@ -122,4 +122,3 @@ var egret3d;
     egret3d.GUIEventFire = GUIEventFire;
     __reflect(GUIEventFire.prototype, "egret3d.GUIEventFire");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=GUIEventFire.js.map

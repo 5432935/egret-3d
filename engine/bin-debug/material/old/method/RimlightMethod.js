@@ -147,4 +147,3 @@ var egret3d;
     egret3d.RimlightMethod = RimlightMethod;
     __reflect(RimlightMethod.prototype, "egret3d.RimlightMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=RimlightMethod.js.map

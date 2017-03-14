@@ -436,7 +436,7 @@ var egret3d;
             this._passUsage.vertexShader.shader = this._passUsage.vertexShader.getShader(this._passUsage);
             this._passUsage.fragmentShader.shader = this._passUsage.fragmentShader.getShader(this._passUsage);
             //this._passUsage.program3D = context3DProxy.creatProgram(this._passUsage.vertexShader.shader, this._passUsage.fragmentShader.shader);
-            this._passUsage.program3D = egret3d.ShaderPool.getProgram(this._passUsage.vertexShader.shader.id, this._passUsage.fragmentShader.shader.id);
+            this._passUsage.program3D = ShaderPool.getProgram(this._passUsage.vertexShader.shader.id, this._passUsage.fragmentShader.shader.id);
             for (var property in this._passUsage) {
                 if (property.indexOf("uniform") != -1) {
                     if (this._passUsage[property]) {
@@ -678,4 +678,3 @@ var egret3d;
     egret3d.MaterialPass = MaterialPass;
     __reflect(MaterialPass.prototype, "egret3d.MaterialPass");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MaterialPass.js.map

@@ -32,4 +32,3 @@ var egret3d;
     egret3d.BloomPost = BloomPost;
     __reflect(BloomPost.prototype, "egret3d.BloomPost", ["egret3d.IPost"]);
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=BloomPost.js.map

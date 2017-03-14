@@ -207,4 +207,3 @@ var egret3d;
     egret3d.Plane3D = Plane3D;
     __reflect(Plane3D.prototype, "egret3d.Plane3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Plane3D.js.map

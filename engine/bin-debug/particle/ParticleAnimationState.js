@@ -278,4 +278,3 @@ var egret3d;
     egret3d.ParticleAnimationState = ParticleAnimationState;
     __reflect(ParticleAnimationState.prototype, "egret3d.ParticleAnimationState", ["egret3d.IAnimationState"]);
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleAnimationState.js.map

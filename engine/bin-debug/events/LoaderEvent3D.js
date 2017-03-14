@@ -123,4 +123,3 @@ var egret3d;
     egret3d.LoaderEvent3D = LoaderEvent3D;
     __reflect(LoaderEvent3D.prototype, "egret3d.LoaderEvent3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=LoaderEvent3D.js.map

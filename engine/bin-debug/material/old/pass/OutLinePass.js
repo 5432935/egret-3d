@@ -190,4 +190,3 @@ var egret3d;
     egret3d.OutLinePass = OutLinePass;
     __reflect(OutLinePass.prototype, "egret3d.OutLinePass");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=OutLinePass.js.map

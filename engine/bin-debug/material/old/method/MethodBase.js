@@ -48,4 +48,3 @@ var egret3d;
     egret3d.MethodBase = MethodBase;
     __reflect(MethodBase.prototype, "egret3d.MethodBase");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MethodBase.js.map

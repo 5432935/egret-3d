@@ -34,4 +34,3 @@ var egret3d;
         __reflect(UILayout.prototype, "egret3d.gui.UILayout");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UILayout.js.map

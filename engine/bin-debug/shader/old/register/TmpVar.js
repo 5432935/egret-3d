@@ -45,4 +45,3 @@ var egret3d;
         __reflect(TmpVar.prototype, "egret3d.GLSL.TmpVar");
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=TmpVar.js.map

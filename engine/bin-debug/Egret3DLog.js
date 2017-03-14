@@ -25,4 +25,3 @@ var egret3d;
     egret3d.Egret3DLog = Egret3DLog;
     __reflect(Egret3DLog.prototype, "egret3d.Egret3DLog");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Egret3DLog.js.map

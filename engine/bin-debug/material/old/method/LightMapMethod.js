@@ -94,4 +94,3 @@ var egret3d;
     egret3d.LightmapMethod = LightmapMethod;
     __reflect(LightmapMethod.prototype, "egret3d.LightmapMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=LightMapMethod.js.map

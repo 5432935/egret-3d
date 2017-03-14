@@ -59,4 +59,3 @@ var egret3d;
     egret3d.GUIRootContainer = GUIRootContainer;
     __reflect(GUIRootContainer.prototype, "egret3d.GUIRootContainer");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=QuadMesh.js.map

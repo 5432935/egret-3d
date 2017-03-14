@@ -103,4 +103,3 @@ var egret3d;
     egret3d.MatCapPass = MatCapPass;
     __reflect(MatCapPass.prototype, "egret3d.MatCapPass");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MatCapPass.js.map

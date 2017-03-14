@@ -100,4 +100,3 @@ var egret3d;
     egret3d.UnitJsonParser = UnitJsonParser;
     __reflect(UnitJsonParser.prototype, "egret3d.UnitJsonParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UnitJsonParser.js.map

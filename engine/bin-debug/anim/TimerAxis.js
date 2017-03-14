@@ -67,4 +67,3 @@ var egret3d;
     egret3d.TimerAxis = TimerAxis;
     __reflect(TimerAxis.prototype, "egret3d.TimerAxis");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=TimerAxis.js.map

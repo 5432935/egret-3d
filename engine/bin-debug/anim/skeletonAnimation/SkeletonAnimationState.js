@@ -251,4 +251,3 @@ var egret3d;
     egret3d.SkeletonAnimationState = SkeletonAnimationState;
     __reflect(SkeletonAnimationState.prototype, "egret3d.SkeletonAnimationState");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=SkeletonAnimationState.js.map

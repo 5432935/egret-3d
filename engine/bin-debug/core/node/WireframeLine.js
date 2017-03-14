@@ -90,4 +90,3 @@ var egret3d;
     egret3d.WireframeLine = WireframeLine;
     __reflect(WireframeLine.prototype, "egret3d.WireframeLine");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=WireframeLine.js.map

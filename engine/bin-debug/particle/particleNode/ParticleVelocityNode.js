@@ -130,4 +130,3 @@ var egret3d;
     egret3d.ParticleVelocityNode = ParticleVelocityNode;
     __reflect(ParticleVelocityNode.prototype, "egret3d.ParticleVelocityNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleVelocityNode.js.map

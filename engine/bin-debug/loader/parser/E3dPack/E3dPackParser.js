@@ -44,4 +44,3 @@ var egret3d;
     egret3d.E3dPackParser = E3dPackParser;
     __reflect(E3dPackParser.prototype, "egret3d.E3dPackParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=E3dPackParser.js.map

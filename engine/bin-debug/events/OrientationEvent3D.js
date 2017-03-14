@@ -282,4 +282,3 @@ var egret3d;
     egret3d.OrientationEvent3D = OrientationEvent3D;
     __reflect(OrientationEvent3D.prototype, "egret3d.OrientationEvent3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=OrientationEvent3D.js.map

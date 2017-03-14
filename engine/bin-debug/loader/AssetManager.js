@@ -198,4 +198,3 @@ var egret3d;
     */
     egret3d.assetMgr = new AssetManager();
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=AssetManager.js.map

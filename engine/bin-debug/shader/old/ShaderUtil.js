@@ -241,7 +241,7 @@ var egret3d;
             }
             //usage.sampler3DList = shaderContent.sampler3DList;
             this.synthesisShader(shaderContent, shaderBase);
-            return egret3d.ShaderPool.getGPUShader(shaderBase.shaderType, shaderContent.name, shaderContent.source);
+            return ShaderPool.getGPUShader(shaderBase.shaderType, shaderContent.name, shaderContent.source);
         };
         ShaderUtil.prototype.synthesisShader = function (content, shaderBase) {
             var i;
@@ -397,4 +397,3 @@ var egret3d;
     egret3d.ShaderUtil = ShaderUtil;
     __reflect(ShaderUtil.prototype, "egret3d.ShaderUtil");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ShaderUtil.js.map

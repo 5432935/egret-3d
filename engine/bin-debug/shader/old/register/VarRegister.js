@@ -113,4 +113,3 @@ var egret3d;
         __reflect(VarRegister.prototype, "egret3d.GLSL.VarRegister");
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=VarRegister.js.map

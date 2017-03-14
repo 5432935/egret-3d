@@ -139,4 +139,3 @@ var egret3d;
     egret3d.VideoTexture = VideoTexture;
     __reflect(VideoTexture.prototype, "egret3d.VideoTexture");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=VideoTexture.js.map

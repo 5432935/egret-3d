@@ -109,4 +109,3 @@ var egret3d;
     egret3d.Scene3D = Scene3D;
     __reflect(Scene3D.prototype, "egret3d.Scene3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Scene3D.js.map

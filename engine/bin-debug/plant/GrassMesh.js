@@ -310,4 +310,3 @@ var egret3d;
     egret3d.GrassData = GrassData;
     __reflect(GrassData.prototype, "egret3d.GrassData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=GrassMesh.js.map

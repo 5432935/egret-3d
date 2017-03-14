@@ -36,4 +36,3 @@ var egret3d;
     egret3d.GaussPost = GaussPost;
     __reflect(GaussPost.prototype, "egret3d.GaussPost", ["egret3d.IPost"]);
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=GaussPost.js.map

@@ -1401,4 +1401,3 @@ var egret3d;
     egret3d.DisplayObject = DisplayObject;
     __reflect(DisplayObject.prototype, "egret3d.DisplayObject");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=DisplayObject.js.map

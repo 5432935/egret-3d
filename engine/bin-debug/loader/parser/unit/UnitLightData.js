@@ -72,4 +72,3 @@ var egret3d;
     egret3d.UnitLightData = UnitLightData;
     __reflect(UnitLightData.prototype, "egret3d.UnitLightData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UnitLightData.js.map

@@ -194,4 +194,3 @@ var egret3d;
         __reflect(UIPanel.prototype, "egret3d.gui.UIPanel");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UIPanel.js.map

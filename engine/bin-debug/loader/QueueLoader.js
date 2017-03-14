@@ -389,4 +389,3 @@ var egret3d;
     egret3d.QueueLoader = QueueLoader;
     __reflect(QueueLoader.prototype, "egret3d.QueueLoader");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=QueueLoader.js.map

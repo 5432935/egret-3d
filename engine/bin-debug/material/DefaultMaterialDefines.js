@@ -10,7 +10,7 @@ var egret3d;
 (function (egret3d) {
     var DefaultMaterialDefines = (function (_super) {
         __extends(DefaultMaterialDefines, _super);
-        function DefaultMaterialDefines(shaderName) {
+        function DefaultMaterialDefines() {
             var _this = _super.call(this) || this;
             _this.DIFFUSE = false;
             _this.AMBIENT = false;
@@ -69,8 +69,18 @@ var egret3d;
             _this.SHADOWFULLFLOAT = false;
             _this.CAMERACOLORGRADING = false;
             _this.CAMERACOLORCURVES = false;
-            _this._shaderName = shaderName;
-            _this._keys = ["DIFFUSE", "AMBIENT", "OPACITY", "OPACITYRGB", "REFLECTION"];
+            _this._keys = ["DIFFUSE", "AMBIENT", "OPACITY", "OPACITYRGB", "REFLECTION",
+                "EMISSIVE", "SPECULAR", "BUMP", "PARALLAX", "PARALLAXOCCLUSION",
+                "SPECULAROVERALPHA", "CLIPPLANE", "ALPHATEST", "ALPHAFROMDIFFUSE", "POINTSIZE",
+                "FOG", "SPECULARTERM", "DIFFUSEFRESNEL", "OPACITYFRESNEL", "REFLECTIONFRESNEL",
+                "REFRACTIONFRESNEL", "EMISSIVEFRESNEL", "FRESNEL", "NORMAL", "UV1",
+                "UV2", "VERTEXCOLOR", "VERTEXALPHA", "NUM_BONE_INFLUENCERS", "BonesPerMesh",
+                "INSTANCES", "GLOSSINESS", "ROUGHNESS", "EMISSIVEASILLUMINATION", "LINKEMISSIVEWITHDIFFUSE",
+                "REFLECTIONFRESNELFROMSPECULAR", "LIGHTMAP", "USELIGHTMAPASSHADOWMAP", "REFLECTIONMAP_3D", "REFLECTIONMAP_SPHERICAL",
+                "REFLECTIONMAP_PLANAR", "REFLECTIONMAP_CUBIC", "REFLECTIONMAP_PROJECTION", "REFLECTIONMAP_SKYBOX", "REFLECTIONMAP_EXPLICIT",
+                "REFLECTIONMAP_EQUIRECTANGULAR", "REFLECTIONMAP_EQUIRECTANGULAR_FIXED", "INVERTCUBICMAP", "LOGARITHMICDEPTH", "REFRACTION",
+                "REFRACTIONMAP_3D", "REFLECTIONOVERALPHA", "INVERTNORMALMAPX", "INVERTNORMALMAPY", "SHADOWFULLFLOAT",
+                "CAMERACOLORGRADING", "CAMERACOLORCURVES"];
             return _this;
         }
         return DefaultMaterialDefines;
@@ -78,4 +88,3 @@ var egret3d;
     egret3d.DefaultMaterialDefines = DefaultMaterialDefines;
     __reflect(DefaultMaterialDefines.prototype, "egret3d.DefaultMaterialDefines");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=DefaultMaterialDefines.js.map

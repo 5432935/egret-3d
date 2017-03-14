@@ -153,4 +153,3 @@ var egret3d;
     egret3d.ParticleTextureSheetNode = ParticleTextureSheetNode;
     __reflect(ParticleTextureSheetNode.prototype, "egret3d.ParticleTextureSheetNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleTextureSheetNode.js.map

@@ -36,4 +36,3 @@ var egret3d;
     egret3d.EUMParser = EUMParser;
     __reflect(EUMParser.prototype, "egret3d.EUMParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=EUMParser.js.map

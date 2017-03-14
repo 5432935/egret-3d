@@ -306,4 +306,3 @@ var egret3d;
     egret3d.Color = Color;
     __reflect(Color.prototype, "egret3d.Color");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Color.js.map

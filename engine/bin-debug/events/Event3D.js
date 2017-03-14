@@ -129,4 +129,3 @@ var egret3d;
     egret3d.Event3D = Event3D;
     __reflect(Event3D.prototype, "egret3d.Event3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Event3D.js.map

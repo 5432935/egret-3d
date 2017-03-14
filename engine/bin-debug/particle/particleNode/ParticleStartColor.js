@@ -115,4 +115,3 @@ var egret3d;
     egret3d.ParticleStartColor = ParticleStartColor;
     __reflect(ParticleStartColor.prototype, "egret3d.ParticleStartColor");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleStartColor.js.map

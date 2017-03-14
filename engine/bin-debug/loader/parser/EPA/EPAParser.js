@@ -37,4 +37,3 @@ var egret3d;
     egret3d.EPAParser = EPAParser;
     __reflect(EPAParser.prototype, "egret3d.EPAParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=EPAParser.js.map

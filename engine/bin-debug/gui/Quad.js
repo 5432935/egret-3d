@@ -272,4 +272,3 @@ var egret3d;
     egret3d.Quad = Quad;
     __reflect(Quad.prototype, "egret3d.Quad");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Quad.js.map

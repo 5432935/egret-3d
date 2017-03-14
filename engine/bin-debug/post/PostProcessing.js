@@ -70,4 +70,3 @@ var egret3d;
     egret3d.PostProcessing = PostProcessing;
     __reflect(PostProcessing.prototype, "egret3d.PostProcessing");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PostProcessing.js.map

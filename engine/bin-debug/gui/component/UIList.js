@@ -142,4 +142,3 @@ var egret3d;
         __reflect(UIList.prototype, "egret3d.gui.UIList");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UIList.js.map

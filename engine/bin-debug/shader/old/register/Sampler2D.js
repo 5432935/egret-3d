@@ -44,4 +44,3 @@ var egret3d;
         __reflect(Sampler2D.prototype, "egret3d.GLSL.Sampler2D");
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Sampler2D.js.map

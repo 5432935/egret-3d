@@ -245,4 +245,3 @@ var egret3d;
     egret3d.OctahedronSphereGeometry = OctahedronSphereGeometry;
     __reflect(OctahedronSphereGeometry.prototype, "egret3d.OctahedronSphereGeometry");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=OctahedronSphereGeometry.js.map

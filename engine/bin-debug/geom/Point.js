@@ -259,4 +259,3 @@ var egret3d;
     egret3d.Point = Point;
     __reflect(Point.prototype, "egret3d.Point");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Point.js.map

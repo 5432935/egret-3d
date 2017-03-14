@@ -146,4 +146,3 @@ var egret3d;
     egret3d.DirectLight = DirectLight;
     __reflect(DirectLight.prototype, "egret3d.DirectLight");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=DirectLight.js.map

@@ -77,4 +77,3 @@ var egret3d;
     egret3d.AlphaMaskMethod = AlphaMaskMethod;
     __reflect(AlphaMaskMethod.prototype, "egret3d.AlphaMaskMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=AlphaMaskMethod.js.map

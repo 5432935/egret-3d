@@ -233,4 +233,3 @@ var egret3d;
     egret3d.FogMethod = FogMethod;
     __reflect(FogMethod.prototype, "egret3d.FogMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=FogMethod.js.map

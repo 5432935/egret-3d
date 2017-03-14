@@ -63,4 +63,3 @@ var egret3d;
     egret3d.XMLParser = XMLParser;
     __reflect(XMLParser.prototype, "egret3d.XMLParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=XMLParser.js.map

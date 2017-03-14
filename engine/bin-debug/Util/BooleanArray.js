@@ -140,4 +140,3 @@ var egret3d;
     egret3d.BooleanArray = BooleanArray;
     __reflect(BooleanArray.prototype, "egret3d.BooleanArray");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=BooleanArray.js.map

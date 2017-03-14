@@ -37,4 +37,3 @@ var egret3d;
     egret3d.ECAVersion = ECAVersion;
     __reflect(ECAVersion.prototype, "egret3d.ECAVersion");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ECAVersion.js.map

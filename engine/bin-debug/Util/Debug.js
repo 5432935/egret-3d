@@ -69,4 +69,3 @@ var egret3d;
     egret3d.Debug = Debug;
     __reflect(Debug.prototype, "egret3d.Debug");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Debug.js.map

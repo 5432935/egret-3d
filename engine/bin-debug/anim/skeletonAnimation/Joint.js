@@ -127,4 +127,3 @@ var egret3d;
     egret3d.Joint = Joint;
     __reflect(Joint.prototype, "egret3d.Joint");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Joint.js.map

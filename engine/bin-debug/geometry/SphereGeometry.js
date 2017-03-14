@@ -227,4 +227,3 @@ var egret3d;
     egret3d.SphereGeometry = SphereGeometry;
     __reflect(SphereGeometry.prototype, "egret3d.SphereGeometry");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=SphereGeometry.js.map

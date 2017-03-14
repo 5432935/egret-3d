@@ -154,4 +154,3 @@ var egret3d;
     egret3d.CameraAnimationFrame = CameraAnimationFrame;
     __reflect(CameraAnimationFrame.prototype, "egret3d.CameraAnimationFrame");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=CameraAnimationController.js.map

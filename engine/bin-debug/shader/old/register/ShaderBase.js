@@ -65,4 +65,3 @@ var egret3d;
     egret3d.ShaderBase = ShaderBase;
     __reflect(ShaderBase.prototype, "egret3d.ShaderBase");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ShaderBase.js.map

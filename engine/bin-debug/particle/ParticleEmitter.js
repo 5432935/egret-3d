@@ -643,4 +643,3 @@ var egret3d;
     egret3d.ParticleEmitter = ParticleEmitter;
     __reflect(ParticleEmitter.prototype, "egret3d.ParticleEmitter");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleEmitter.js.map

@@ -195,4 +195,3 @@ var egret3d;
     */
     egret3d.textureResMgr = new TextureResourceManager();
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=TextureResourceManager.js.map

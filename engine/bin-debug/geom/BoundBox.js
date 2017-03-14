@@ -406,4 +406,3 @@ var egret3d;
     egret3d.BoundBox = BoundBox;
     __reflect(BoundBox.prototype, "egret3d.BoundBox");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=BoundBox.js.map

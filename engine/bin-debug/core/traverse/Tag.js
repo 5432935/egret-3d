@@ -51,4 +51,3 @@ var egret3d;
     egret3d.Tag = Tag;
     __reflect(Tag.prototype, "egret3d.Tag");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Tag.js.map

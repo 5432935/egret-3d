@@ -64,4 +64,3 @@ var egret3d;
     egret3d.QuadData = QuadData;
     __reflect(QuadData.prototype, "egret3d.QuadData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=QuadData.js.map

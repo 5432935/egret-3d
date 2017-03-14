@@ -729,4 +729,3 @@ var egret3d;
     egret3d.Camera3D = Camera3D;
     __reflect(Camera3D.prototype, "egret3d.Camera3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Camera3D.js.map

@@ -248,4 +248,3 @@ var egret3d;
     egret3d.EventDispatcher = EventDispatcher;
     __reflect(EventDispatcher.prototype, "egret3d.EventDispatcher");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=EventDispatcher.js.map

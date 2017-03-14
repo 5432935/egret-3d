@@ -94,4 +94,3 @@ var egret3d;
     egret3d.ParticleVelocityLimitConstNode = ParticleVelocityLimitConstNode;
     __reflect(ParticleVelocityLimitConstNode.prototype, "egret3d.ParticleVelocityLimitConstNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleVelocityLimitConstNode.js.map

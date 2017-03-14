@@ -40,4 +40,3 @@ var egret3d;
     egret3d.ParserEvent3D = ParserEvent3D;
     __reflect(ParserEvent3D.prototype, "egret3d.ParserEvent3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParserEvent3D.js.map

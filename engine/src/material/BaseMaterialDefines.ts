@@ -38,8 +38,13 @@ module egret3d {
         * @version Egret 4.0
         * @platform Web,Native
         */
-        public change(): void {
-            this._name = "";
+        public isChange(): boolean {
+            let _cName: string = this.cName();
+            if (this._name != _cName) {
+                this._name = _cName;
+                return true;
+            }
+            return false;
         }
 
         /**
@@ -51,15 +56,25 @@ module egret3d {
         */
         public toName(): string {
             if (this._name == "") {
-                let len: number = this._keys.length;
-                for (let i: number = 0; i < len; i++) {
-                    if (this[this._keys[i]] == true) {
-                        this._name += (this._keys[i] + "_");
-                    }
-                }
-                
+                this._name = this.cName();
             }
             return this._name;
+        }
+
+        private cName(): string {
+            let _cName: string = "";
+            let len: number = this._keys.length;
+            for (let i: number = 0; i < len; i++) {
+                if (this[this._keys[i]] == true) {
+                    _cName += (this._keys[i] + "_");
+                }
+            }
+            return _cName;
+        }
+
+        public dispose(): void {
+            this._keys = null;
+            this._name = null;
         }
     }
 }

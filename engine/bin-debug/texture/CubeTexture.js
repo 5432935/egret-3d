@@ -177,4 +177,3 @@ var egret3d;
     egret3d.CubeTexture = CubeTexture;
     __reflect(CubeTexture.prototype, "egret3d.CubeTexture");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=CubeTexture.js.map

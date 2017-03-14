@@ -50,4 +50,3 @@ var egret3d;
     egret3d.ColorMaterial = ColorMaterial;
     __reflect(ColorMaterial.prototype, "egret3d.ColorMaterial");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ColorMaterial.js.map

@@ -642,4 +642,3 @@ var egret3d;
     egret3d.Quaternion = Quaternion;
     __reflect(Quaternion.prototype, "egret3d.Quaternion");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Quaternion.js.map

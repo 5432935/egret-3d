@@ -61,4 +61,3 @@ var egret3d;
     egret3d.NormalPass = NormalPass;
     __reflect(NormalPass.prototype, "egret3d.NormalPass");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=NormalPass.js.map

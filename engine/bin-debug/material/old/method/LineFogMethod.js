@@ -186,4 +186,3 @@ var egret3d;
     egret3d.LineFogMethod = LineFogMethod;
     __reflect(LineFogMethod.prototype, "egret3d.LineFogMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=LineFogMethod.js.map

@@ -171,4 +171,3 @@ var egret3d;
     egret3d.AudioManager = AudioManager;
     __reflect(AudioManager.prototype, "egret3d.AudioManager");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=AudioManager.js.map

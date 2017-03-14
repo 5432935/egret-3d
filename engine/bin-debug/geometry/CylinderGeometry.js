@@ -117,4 +117,3 @@ var egret3d;
     egret3d.CylinderGeometry = CylinderGeometry;
     __reflect(CylinderGeometry.prototype, "egret3d.CylinderGeometry");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=CylinderGeometry.js.map

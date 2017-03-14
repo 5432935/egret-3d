@@ -245,4 +245,3 @@ var egret3d;
     egret3d.EntityCollect = EntityCollect;
     __reflect(EntityCollect.prototype, "egret3d.EntityCollect");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=EntityCollect.js.map

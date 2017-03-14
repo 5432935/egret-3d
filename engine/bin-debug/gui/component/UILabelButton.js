@@ -148,4 +148,3 @@ var egret3d;
         __reflect(UILabelButton.prototype, "egret3d.gui.UILabelButton");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UILabelButton.js.map

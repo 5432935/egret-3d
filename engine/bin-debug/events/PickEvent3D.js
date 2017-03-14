@@ -83,4 +83,3 @@ var egret3d;
     egret3d.PickEvent3D = PickEvent3D;
     __reflect(PickEvent3D.prototype, "egret3d.PickEvent3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PickEvent3D.js.map

@@ -696,4 +696,3 @@ var egret3d;
     egret3d.Input = Input;
     __reflect(Input.prototype, "egret3d.Input");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Input.js.map

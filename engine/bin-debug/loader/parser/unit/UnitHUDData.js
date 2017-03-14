@@ -15,4 +15,3 @@ var egret3d;
     egret3d.UnitHUDData = UnitHUDData;
     __reflect(UnitHUDData.prototype, "egret3d.UnitHUDData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UnitHUDData.js.map

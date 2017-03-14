@@ -148,4 +148,3 @@ var egret3d;
     egret3d.FakePBRMaterial = FakePBRMaterial;
     __reflect(FakePBRMaterial.prototype, "egret3d.FakePBRMaterial");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=FakePBRMaterial.js.map

@@ -39,4 +39,3 @@ var egret3d;
     egret3d.MipmapData = MipmapData;
     __reflect(MipmapData.prototype, "egret3d.MipmapData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MipmapData.js.map

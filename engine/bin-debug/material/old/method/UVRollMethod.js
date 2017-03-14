@@ -146,4 +146,3 @@ var egret3d;
     egret3d.UVRollMethod = UVRollMethod;
     __reflect(UVRollMethod.prototype, "egret3d.UVRollMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UVRollMethod.js.map

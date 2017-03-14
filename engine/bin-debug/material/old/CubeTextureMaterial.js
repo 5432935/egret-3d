@@ -60,4 +60,3 @@ var egret3d;
     egret3d.CubeTextureMaterial = CubeTextureMaterial;
     __reflect(CubeTextureMaterial.prototype, "egret3d.CubeTextureMaterial");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=CubeTextureMaterial.js.map

@@ -166,4 +166,3 @@ var egret3d;
     egret3d.PVRParser = PVRParser;
     __reflect(PVRParser.prototype, "egret3d.PVRParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PVRParser.js.map

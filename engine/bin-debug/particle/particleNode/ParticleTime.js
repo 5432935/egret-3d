@@ -103,4 +103,3 @@ var egret3d;
     egret3d.ParticleTime = ParticleTime;
     __reflect(ParticleTime.prototype, "egret3d.ParticleTime");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleTime.js.map

@@ -575,4 +575,3 @@ var egret3d;
     egret3d.View3D = View3D;
     __reflect(View3D.prototype, "egret3d.View3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=View3D.js.map

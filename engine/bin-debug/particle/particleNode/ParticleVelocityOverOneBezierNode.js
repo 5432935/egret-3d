@@ -89,4 +89,3 @@ var egret3d;
     egret3d.ParticleVelocityOverOneBezierNode = ParticleVelocityOverOneBezierNode;
     __reflect(ParticleVelocityOverOneBezierNode.prototype, "egret3d.ParticleVelocityOverOneBezierNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleVelocityOverOneBezierNode.js.map

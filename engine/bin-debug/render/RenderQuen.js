@@ -54,4 +54,3 @@ var egret3d;
     egret3d.RenderQuen = RenderQuen;
     __reflect(RenderQuen.prototype, "egret3d.RenderQuen");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=RenderQuen.js.map

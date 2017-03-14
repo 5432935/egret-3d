@@ -86,4 +86,3 @@ var egret3d;
     egret3d.AnimClipState = AnimClipState;
     __reflect(AnimClipState.prototype, "egret3d.AnimClipState");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=AnimClipState.js.map

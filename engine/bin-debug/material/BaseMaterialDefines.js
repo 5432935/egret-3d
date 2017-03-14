@@ -7,13 +7,12 @@ var egret3d;
         function BaseMaterialDefines() {
             /**
             * @language zh_CN
-            * 名称
+            * 名称，该名称字运行时使用
             * @default BaseMaterialDefines._name
             * @version Egret 4.0
             * @platform Web,Native
             */
             this._name = "";
-            this._shaderName = "";
         }
         /**
         * @language zh_CN
@@ -32,8 +31,13 @@ var egret3d;
         * @version Egret 4.0
         * @platform Web,Native
         */
-        BaseMaterialDefines.prototype.change = function () {
-            this._name = "";
+        BaseMaterialDefines.prototype.isChange = function () {
+            var _cName = this.cName();
+            if (this._name != _cName) {
+                this._name = _cName;
+                return true;
+            }
+            return false;
         };
         /**
         * @language zh_CN
@@ -44,19 +48,22 @@ var egret3d;
         */
         BaseMaterialDefines.prototype.toName = function () {
             if (this._name == "") {
-                var len = this._keys.length;
-                for (var i = 0; i < len; i++) {
-                    if (this[this._keys[i]] == true) {
-                        this._name += (this._keys[i] + "_");
-                    }
-                }
-                this._name += this._shaderName;
+                this._name = this.cName();
             }
             return this._name;
+        };
+        BaseMaterialDefines.prototype.cName = function () {
+            var _cName = "";
+            var len = this._keys.length;
+            for (var i = 0; i < len; i++) {
+                if (this[this._keys[i]] == true) {
+                    _cName += (this._keys[i] + "_");
+                }
+            }
+            return _cName;
         };
         return BaseMaterialDefines;
     }());
     egret3d.BaseMaterialDefines = BaseMaterialDefines;
     __reflect(BaseMaterialDefines.prototype, "egret3d.BaseMaterialDefines", ["egret3d.IMaterialDefines"]);
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=BaseMaterialDefines.js.map

@@ -82,4 +82,3 @@ var egret3d;
     egret3d.MultiRender = MultiRender;
     __reflect(MultiRender.prototype, "egret3d.MultiRender");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MultiRender.js.map

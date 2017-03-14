@@ -47,4 +47,3 @@ var nid;
     nid.OutWindow = OutWindow;
     __reflect(OutWindow.prototype, "nid.OutWindow");
 })(nid || (nid = {}));
-//# sourceMappingURL=OutWindow.js.map

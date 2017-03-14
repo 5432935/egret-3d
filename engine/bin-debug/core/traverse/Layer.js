@@ -30,7 +30,7 @@ var egret3d;
     * @version Egret 3.0
     * @platform Web,Native
     */
-    Layer.TAG_NAME_NORMAL_ALPHA_OBJECT = "normalAlphaObject";
+    //public static TAG_NAME_NORMAL_ALPHA_OBJECT = "normalAlphaObject";
     /**
     * @language zh_CN
     * 带alpha对象
@@ -44,21 +44,21 @@ var egret3d;
     * @version Egret 3.0
     * @platform Web,Native
     */
-    Layer.TAG_NAME_DECAL = "decal";
+    //public static TAG_NAME_DECAL = "decal";
     /**
     * @language zh_CN
     * 特效对象
     * @version Egret 3.0
     * @platform Web,Native
     */
-    Layer.TAG_NAME_EFFECT = "effect";
+    //public static TAG_NAME_EFFECT = "effect";
     /**
     * @language zh_CN
     * GUI对象
     * @version Egret 3.0
     * @platform Web,Native
     */
-    Layer.TAG_NAME_GUI = "gui";
+    // public static TAG_NAME_GUI = "gui";
     /**
     * @language zh_CN
     * 渲染类型
@@ -67,21 +67,6 @@ var egret3d;
     * @platform Web,Native
     */
     Layer.layerType = ["normalObject", "normalAlphaObject", "alphaObject", "decal", "effect", "gui"];
-    /**
-    * @private
-    * @language zh_CN
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    Layer.layerTypeThan = [3, 2, 1, 0];
-    /**
-    * @private
-    * @language zh_CN
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    Layer.layerNumber = 5;
     egret3d.Layer = Layer;
     __reflect(Layer.prototype, "egret3d.Layer");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Layer.js.map

@@ -86,4 +86,3 @@ var egret3d;
     egret3d.Sky = Sky;
     __reflect(Sky.prototype, "egret3d.Sky");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Sky.js.map

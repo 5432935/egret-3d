@@ -634,4 +634,3 @@ var egret3d;
     egret3d.ESMVersion = ESMVersion;
     __reflect(ESMVersion.prototype, "egret3d.ESMVersion");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ESMVersion.js.map

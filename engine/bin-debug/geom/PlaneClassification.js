@@ -55,4 +55,3 @@ var egret3d;
     egret3d.PlaneClassification = PlaneClassification;
     __reflect(PlaneClassification.prototype, "egret3d.PlaneClassification");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PlaneClassification.js.map

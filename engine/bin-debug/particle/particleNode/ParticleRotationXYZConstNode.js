@@ -113,4 +113,3 @@ var egret3d;
     egret3d.ParticleRotationXYZConstNode = ParticleRotationXYZConstNode;
     __reflect(ParticleRotationXYZConstNode.prototype, "egret3d.ParticleRotationXYZConstNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleRotationXYZConstNode.js.map

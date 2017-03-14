@@ -71,4 +71,3 @@ var egret3d;
     egret3d.ColorGradients = ColorGradients;
     __reflect(ColorGradients.prototype, "egret3d.ColorGradients");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ColorGradients.js.map

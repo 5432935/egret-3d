@@ -28,4 +28,3 @@ var egret3d;
     egret3d.FrameBuffer = FrameBuffer;
     __reflect(FrameBuffer.prototype, "egret3d.FrameBuffer");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=FrameBuffer.js.map

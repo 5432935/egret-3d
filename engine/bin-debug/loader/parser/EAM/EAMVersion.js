@@ -207,4 +207,3 @@ var egret3d;
     egret3d.EAMVersion = EAMVersion;
     __reflect(EAMVersion.prototype, "egret3d.EAMVersion");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=EAMVersion.js.map

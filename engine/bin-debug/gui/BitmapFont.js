@@ -30,4 +30,3 @@ var egret3d;
         __reflect(BitmapFont.prototype, "egret3d.gui.BitmapFont");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=BitmapFont.js.map

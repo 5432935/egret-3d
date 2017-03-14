@@ -137,4 +137,3 @@ var egret3d;
     }());
     __reflect(BPQ.prototype, "BPQ");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=KDTree.js.map

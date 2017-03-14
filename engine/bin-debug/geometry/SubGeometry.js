@@ -338,4 +338,3 @@ var egret3d;
     egret3d.SubGeometry = SubGeometry;
     __reflect(SubGeometry.prototype, "egret3d.SubGeometry");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=SubGeometry.js.map

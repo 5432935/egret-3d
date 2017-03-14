@@ -145,4 +145,3 @@ var egret3d;
         __reflect(UIToggleButtonBase.prototype, "egret3d.gui.UIToggleButtonBase");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UIToggleButtonBase.js.map

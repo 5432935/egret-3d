@@ -49,4 +49,3 @@ var egret3d;
     egret3d.ESMParser = ESMParser;
     __reflect(ESMParser.prototype, "egret3d.ESMParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ESMParser.js.map

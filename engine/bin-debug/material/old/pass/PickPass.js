@@ -40,4 +40,3 @@ var egret3d;
     egret3d.PickPass = PickPass;
     __reflect(PickPass.prototype, "egret3d.PickPass");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PickPass.js.map

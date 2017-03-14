@@ -147,4 +147,3 @@ var egret3d;
     egret3d.VRView3D = VRView3D;
     __reflect(VRView3D.prototype, "egret3d.VRView3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=VRView3D.js.map

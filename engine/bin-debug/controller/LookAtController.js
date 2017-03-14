@@ -443,4 +443,3 @@ var egret3d;
     egret3d.LookAtController = LookAtController;
     __reflect(LookAtController.prototype, "egret3d.LookAtController");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=LookAtController.js.map

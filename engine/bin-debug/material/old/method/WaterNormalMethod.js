@@ -198,4 +198,3 @@ var egret3d;
     egret3d.WaterNormalMethod = WaterNormalMethod;
     __reflect(WaterNormalMethod.prototype, "egret3d.WaterNormalMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=WaterNormalMethod.js.map

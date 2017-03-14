@@ -93,4 +93,3 @@ var egret3d;
     egret3d.AnimationNode = AnimationNode;
     __reflect(AnimationNode.prototype, "egret3d.AnimationNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=AnimationNode.js.map

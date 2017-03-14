@@ -91,4 +91,3 @@ var egret3d;
     egret3d.Egret3DPerformance = Egret3DPerformance;
     __reflect(Egret3DPerformance.prototype, "egret3d.Egret3DPerformance");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Egret3DPerformance.js.map

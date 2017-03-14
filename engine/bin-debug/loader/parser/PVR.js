@@ -18,4 +18,3 @@ var egret3d;
     egret3d.PVR = PVR;
     __reflect(PVR.prototype, "egret3d.PVR");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PVR.js.map

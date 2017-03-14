@@ -75,4 +75,3 @@ var egret3d;
     egret3d.GUIMethod = GUIMethod;
     __reflect(GUIMethod.prototype, "egret3d.GUIMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=GUIMethod.js.map

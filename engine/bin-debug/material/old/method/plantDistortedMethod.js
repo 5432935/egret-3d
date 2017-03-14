@@ -87,4 +87,3 @@ var egret3d;
     egret3d.PlantDistortedMethod = PlantDistortedMethod;
     __reflect(PlantDistortedMethod.prototype, "egret3d.PlantDistortedMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=plantDistortedMethod.js.map

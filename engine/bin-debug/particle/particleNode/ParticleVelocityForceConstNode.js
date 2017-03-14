@@ -100,4 +100,3 @@ var egret3d;
     egret3d.ParticleVelocityForceConstNode = ParticleVelocityForceConstNode;
     __reflect(ParticleVelocityForceConstNode.prototype, "egret3d.ParticleVelocityForceConstNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleVelocityForceConstNode.js.map

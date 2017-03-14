@@ -82,4 +82,3 @@ var egret3d;
         __reflect(VarConstName.prototype, "egret3d.GLSL.VarConstName");
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=VarConfig.js.map

@@ -308,4 +308,3 @@ var egret3d;
     egret3d.URLLoader = URLLoader;
     __reflect(URLLoader.prototype, "egret3d.URLLoader");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=URLLoader.js.map

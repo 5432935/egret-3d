@@ -57,4 +57,3 @@ var egret3d;
     egret3d.PassUsage = PassUsage;
     __reflect(PassUsage.prototype, "egret3d.PassUsage");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PassUsage.js.map

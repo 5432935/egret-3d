@@ -72,4 +72,3 @@ var egret3d;
     egret3d.ParticleRotationOneBezierNode = ParticleRotationOneBezierNode;
     __reflect(ParticleRotationOneBezierNode.prototype, "egret3d.ParticleRotationOneBezierNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleRotationOneBezierNode.js.map

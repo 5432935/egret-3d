@@ -58,4 +58,3 @@ var egret3d;
     egret3d.PositionPass = PositionPass;
     __reflect(PositionPass.prototype, "egret3d.PositionPass");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PositionPass.js.map

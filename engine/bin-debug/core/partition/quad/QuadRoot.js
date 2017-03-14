@@ -110,4 +110,3 @@ var egret3d;
     egret3d.QuadRoot = QuadRoot;
     __reflect(QuadRoot.prototype, "egret3d.QuadRoot");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=QuadRoot.js.map

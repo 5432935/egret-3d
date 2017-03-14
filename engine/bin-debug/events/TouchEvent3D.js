@@ -64,4 +64,3 @@ var egret3d;
     egret3d.TouchEvent3D = TouchEvent3D;
     __reflect(TouchEvent3D.prototype, "egret3d.TouchEvent3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=TouchEvent3D.js.map

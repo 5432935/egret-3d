@@ -346,4 +346,3 @@ var egret3d;
     egret3d.UVSpriteSheetMethod = UVSpriteSheetMethod;
     __reflect(UVSpriteSheetMethod.prototype, "egret3d.UVSpriteSheetMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UVSpriteSheetMethod.js.map

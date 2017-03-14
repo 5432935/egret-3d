@@ -125,4 +125,3 @@ var egret3d;
         __reflect(UIElement.prototype, "egret3d.gui.UIElement");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UIElement.js.map

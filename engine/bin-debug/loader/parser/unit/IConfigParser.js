@@ -27,4 +27,3 @@ var egret3d;
     egret3d.IConfigParser = IConfigParser;
     __reflect(IConfigParser.prototype, "egret3d.IConfigParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=IConfigParser.js.map

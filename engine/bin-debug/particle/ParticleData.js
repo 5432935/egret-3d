@@ -1948,4 +1948,3 @@ var egret3d;
     egret3d.ParticleDataTextureSheet = ParticleDataTextureSheet;
     __reflect(ParticleDataTextureSheet.prototype, "egret3d.ParticleDataTextureSheet");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleData.js.map

@@ -134,4 +134,3 @@ var egret3d;
     egret3d.ImageTexture = ImageTexture;
     __reflect(ImageTexture.prototype, "egret3d.ImageTexture");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ImageTexture.js.map

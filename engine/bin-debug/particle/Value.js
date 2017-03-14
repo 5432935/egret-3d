@@ -936,4 +936,3 @@ var egret3d;
     egret3d.Value = Value;
     __reflect(Value.prototype, "egret3d.Value");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Value.js.map

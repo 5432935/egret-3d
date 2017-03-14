@@ -34,4 +34,3 @@ var egret3d;
     egret3d.ECAParser = ECAParser;
     __reflect(ECAParser.prototype, "egret3d.ECAParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ECAParser.js.map

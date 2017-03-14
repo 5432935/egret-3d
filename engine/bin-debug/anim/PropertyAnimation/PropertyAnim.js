@@ -367,4 +367,3 @@ var egret3d;
     }());
     __reflect(PropertyData.prototype, "PropertyData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PropertyAnim.js.map

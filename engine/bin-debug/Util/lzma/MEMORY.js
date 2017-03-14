@@ -49,4 +49,3 @@ var nid;
     nid.MEMORY = MEMORY;
     __reflect(MEMORY.prototype, "nid.MEMORY");
 })(nid || (nid = {}));
-//# sourceMappingURL=MEMORY.js.map

@@ -279,4 +279,3 @@ var egret3d;
     egret3d.EffectGroup = EffectGroup;
     __reflect(EffectGroup.prototype, "egret3d.EffectGroup");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=EffectGroup.js.map

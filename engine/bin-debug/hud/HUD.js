@@ -391,13 +391,13 @@ var egret3d;
             if (!self._indexBuffer3D) {
                 self._indexBuffer3D = context.creatIndexBuffer(HUD.singleQuadIndex);
             }
-            self._passUsage.vertexShader.shaderType = egret3d.Shader.vertex;
-            self._passUsage.fragmentShader.shaderType = egret3d.Shader.fragment;
+            self._passUsage.vertexShader.shaderType = egret3d.ShaderType.VertexShader;
+            self._passUsage.fragmentShader.shaderType = egret3d.ShaderType.FragmentShader;
             self._passUsage.vertexShader.addUseShaderName(self.vsShader);
             self._passUsage.fragmentShader.addUseShaderName(self.fsShader);
             self._passUsage.vertexShader.shader = self._passUsage.vertexShader.getShader(self._passUsage);
             self._passUsage.fragmentShader.shader = self._passUsage.fragmentShader.getShader(self._passUsage);
-            self._passUsage.program3D = egret3d.ShaderPool.getProgram(self._passUsage.vertexShader.shader.id, self._passUsage.fragmentShader.shader.id);
+            //self._passUsage.program3D = ShaderGenerator.createProgram(); ShaderPool.getProgram(self._passUsage.vertexShader.shader.id, self._passUsage.fragmentShader.shader.id);
             for (var property in self._passUsage) {
                 if (property.indexOf("uniform") != -1) {
                     if (self._passUsage[property]) {
@@ -538,4 +538,3 @@ var egret3d;
     egret3d.HUD = HUD;
     __reflect(HUD.prototype, "egret3d.HUD");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=HUD.js.map

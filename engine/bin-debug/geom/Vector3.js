@@ -882,4 +882,3 @@ var egret3d;
     egret3d.Vector3 = Vector3;
     __reflect(Vector3.prototype, "egret3d.Vector3");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Vector3.js.map

@@ -68,4 +68,3 @@ var egret3d;
         __reflect(UIRadioButton.prototype, "egret3d.gui.UIRadioButton");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UIRadioButton.js.map

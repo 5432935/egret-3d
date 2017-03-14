@@ -36,4 +36,3 @@ var egret3d;
     egret3d.ColorCorrectionPost = ColorCorrectionPost;
     __reflect(ColorCorrectionPost.prototype, "egret3d.ColorCorrectionPost", ["egret3d.IPost"]);
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ColorCorrectionPost.js.map

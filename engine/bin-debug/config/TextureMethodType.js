@@ -36,4 +36,3 @@ var egret3d;
         ShaderPhaseType[ShaderPhaseType["end_fragment"] = 17] = "end_fragment";
     })(ShaderPhaseType = egret3d.ShaderPhaseType || (egret3d.ShaderPhaseType = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=TextureMethodType.js.map

@@ -143,4 +143,3 @@ var egret3d;
     egret3d.PointLight = PointLight;
     __reflect(PointLight.prototype, "egret3d.PointLight");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PointLight.js.map

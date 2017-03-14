@@ -1412,4 +1412,3 @@ var egret3d;
     egret3d.UnitLoader = UnitLoader;
     __reflect(UnitLoader.prototype, "egret3d.UnitLoader");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UnitLoader.js.map

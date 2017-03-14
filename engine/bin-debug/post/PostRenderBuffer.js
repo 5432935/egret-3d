@@ -37,4 +37,3 @@ var egret3d;
     egret3d.PostRenderBuffer = PostRenderBuffer;
     __reflect(PostRenderBuffer.prototype, "egret3d.PostRenderBuffer");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PostRenderBuffer.js.map

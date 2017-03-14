@@ -37,4 +37,3 @@ var nid;
     nid.BitTreeDecoder = BitTreeDecoder;
     __reflect(BitTreeDecoder.prototype, "nid.BitTreeDecoder");
 })(nid || (nid = {}));
-//# sourceMappingURL=BitTreeDecoder.js.map

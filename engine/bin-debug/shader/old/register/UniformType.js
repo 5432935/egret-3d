@@ -122,4 +122,3 @@ var egret3d;
         __reflect(UniformType.prototype, "egret3d.GLSL.UniformType");
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UniformType.js.map

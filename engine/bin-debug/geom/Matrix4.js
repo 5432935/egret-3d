@@ -1536,4 +1536,3 @@ var egret3d;
     egret3d.Matrix4 = Matrix4;
     __reflect(Matrix4.prototype, "egret3d.Matrix4");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Matrix4.js.map

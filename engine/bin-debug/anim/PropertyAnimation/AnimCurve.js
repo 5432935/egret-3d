@@ -172,4 +172,3 @@ var egret3d;
     egret3d.AnimCurve = AnimCurve;
     __reflect(AnimCurve.prototype, "egret3d.AnimCurve");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=AnimCurve.js.map

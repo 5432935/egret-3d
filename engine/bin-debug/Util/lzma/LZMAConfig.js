@@ -48,4 +48,3 @@ var nid;
     nid.LZMAConfig = LZMAConfig;
     __reflect(LZMAConfig.prototype, "nid.LZMAConfig");
 })(nid || (nid = {}));
-//# sourceMappingURL=LZMAConfig.js.map

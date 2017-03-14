@@ -36,4 +36,3 @@ var nid;
     nid.LenDecoder = LenDecoder;
     __reflect(LenDecoder.prototype, "nid.LenDecoder");
 })(nid || (nid = {}));
-//# sourceMappingURL=LenDecoder.js.map

@@ -120,4 +120,3 @@ var egret3d;
     egret3d.MethodUtils = MethodUtils;
     __reflect(MethodUtils.prototype, "egret3d.MethodUtils");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MethodUtils.js.map

@@ -82,4 +82,3 @@ var egret3d;
     egret3d.RenderBase = RenderBase;
     __reflect(RenderBase.prototype, "egret3d.RenderBase");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=RenderBase.js.map

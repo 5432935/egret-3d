@@ -51,4 +51,3 @@ var egret3d;
     egret3d.MapLoader = MapLoader;
     __reflect(MapLoader.prototype, "egret3d.MapLoader");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MapLoader.js.map

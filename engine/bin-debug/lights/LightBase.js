@@ -344,4 +344,3 @@ var egret3d;
     egret3d.LightBase = LightBase;
     __reflect(LightBase.prototype, "egret3d.LightBase");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=LightBase.js.map

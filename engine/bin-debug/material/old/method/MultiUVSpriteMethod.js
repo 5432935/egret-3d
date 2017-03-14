@@ -107,4 +107,3 @@ var egret3d;
     egret3d.MultiUVSpriteMethod = MultiUVSpriteMethod;
     __reflect(MultiUVSpriteMethod.prototype, "egret3d.MultiUVSpriteMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=MultiUVSpriteMethod.js.map

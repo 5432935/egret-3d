@@ -64,4 +64,3 @@ var egret3d;
     egret3d.UnitXmlParser = UnitXmlParser;
     __reflect(UnitXmlParser.prototype, "egret3d.UnitXmlParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UnitXmlParser.js.map

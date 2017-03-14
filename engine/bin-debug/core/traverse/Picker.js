@@ -188,4 +188,3 @@ var egret3d;
     egret3d.Picker = Picker;
     __reflect(Picker.prototype, "egret3d.Picker");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Picker.js.map

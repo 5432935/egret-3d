@@ -131,4 +131,3 @@ var egret3d;
     egret3d.DoubleArray = DoubleArray;
     __reflect(DoubleArray.prototype, "egret3d.DoubleArray");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=DoubleArray.js.map

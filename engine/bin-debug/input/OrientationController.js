@@ -278,4 +278,3 @@ var egret3d;
     egret3d.OrientationController = OrientationController;
     __reflect(OrientationController.prototype, "egret3d.OrientationController");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=OrientationController.js.map

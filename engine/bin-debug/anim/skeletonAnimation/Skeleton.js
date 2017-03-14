@@ -92,4 +92,3 @@ var egret3d;
     egret3d.Skeleton = Skeleton;
     __reflect(Skeleton.prototype, "egret3d.Skeleton");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Skeleton.js.map

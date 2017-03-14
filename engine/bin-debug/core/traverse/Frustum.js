@@ -407,4 +407,3 @@ var egret3d;
     egret3d.Frustum = Frustum;
     __reflect(Frustum.prototype, "egret3d.Frustum");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Frustum.js.map

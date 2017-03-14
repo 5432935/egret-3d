@@ -40,4 +40,3 @@ var egret3d;
         __reflect(Attribute.prototype, "egret3d.GLSL.Attribute");
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Attribute.js.map

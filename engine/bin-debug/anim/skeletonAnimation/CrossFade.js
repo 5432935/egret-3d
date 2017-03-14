@@ -87,4 +87,3 @@ var egret3d;
     egret3d.CrossFade = CrossFade;
     __reflect(CrossFade.prototype, "egret3d.CrossFade");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=CrossFade.js.map

@@ -30,4 +30,3 @@ var egret3d;
     egret3d.Reference = Reference;
     __reflect(Reference.prototype, "egret3d.Reference");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Reference.js.map

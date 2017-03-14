@@ -30,4 +30,3 @@ var egret3d;
     egret3d.TexturePackerParser = TexturePackerParser;
     __reflect(TexturePackerParser.prototype, "egret3d.TexturePackerParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=TexturePackerParser.js.map

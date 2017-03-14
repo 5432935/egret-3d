@@ -49,4 +49,3 @@ var egret3d;
     egret3d.Orientation3D = Orientation3D;
     __reflect(Orientation3D.prototype, "egret3d.Orientation3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Orientation3D.js.map

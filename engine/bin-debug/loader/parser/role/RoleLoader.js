@@ -42,4 +42,3 @@ var egret3d;
     egret3d.RoleLoader = RoleLoader;
     __reflect(RoleLoader.prototype, "egret3d.RoleLoader");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=RoleLoader.js.map

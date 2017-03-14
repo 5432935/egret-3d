@@ -35,4 +35,3 @@ var egret3d;
     egret3d.E3dPackVersion = E3dPackVersion;
     __reflect(E3dPackVersion.prototype, "egret3d.E3dPackVersion");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=E3dPackVersion.js.map

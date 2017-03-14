@@ -223,4 +223,3 @@ var egret3d;
     egret3d.SkeletonPose = SkeletonPose;
     __reflect(SkeletonPose.prototype, "egret3d.SkeletonPose");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=SkeletonPose.js.map

@@ -149,4 +149,3 @@ var egret3d;
     egret3d.EyePick = EyePick;
     __reflect(EyePick.prototype, "egret3d.EyePick");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=PickSystem.js.map

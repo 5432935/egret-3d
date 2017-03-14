@@ -69,4 +69,3 @@ var egret3d;
     egret3d.Egret3DEngine = Egret3DEngine;
     __reflect(Egret3DEngine.prototype, "egret3d.Egret3DEngine");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Egret3DEngine.js.map

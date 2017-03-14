@@ -150,4 +150,3 @@ var egret3d;
     egret3d.Terrain = Terrain;
     __reflect(Terrain.prototype, "egret3d.Terrain");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Terrain.js.map

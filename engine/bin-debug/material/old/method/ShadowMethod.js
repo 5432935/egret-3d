@@ -83,4 +83,3 @@ var egret3d;
     egret3d.ShadowMethod = ShadowMethod;
     __reflect(ShadowMethod.prototype, "egret3d.ShadowMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ShadowMethod.js.map

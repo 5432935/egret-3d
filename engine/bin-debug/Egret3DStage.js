@@ -442,4 +442,3 @@ var egret3d;
     egret3d.Stage3D = Stage3D;
     __reflect(Stage3D.prototype, "egret3d.Stage3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Egret3DStage.js.map

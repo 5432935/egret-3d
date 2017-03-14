@@ -206,4 +206,3 @@ var egret3d;
     egret3d.UnitMatSphereData = UnitMatSphereData;
     __reflect(UnitMatSphereData.prototype, "egret3d.UnitMatSphereData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UnitMatSphereData.js.map

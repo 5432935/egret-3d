@@ -30,4 +30,3 @@ var egret3d;
     egret3d.Entity = Entity;
     __reflect(Entity.prototype, "egret3d.Entity");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Entity.js.map

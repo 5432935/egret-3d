@@ -568,4 +568,3 @@ var egret3d;
     egret3d.StringUtil = StringUtil;
     __reflect(StringUtil.prototype, "egret3d.StringUtil");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=StringUtil.js.map

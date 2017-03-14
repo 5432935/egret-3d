@@ -11,4 +11,3 @@ var egret3d;
     egret3d.Material = Material;
     __reflect(Material.prototype, "egret3d.Material", ["egret3d.IMaterial"]);
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Material.js.map

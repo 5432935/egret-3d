@@ -124,4 +124,3 @@ var egret3d;
         __reflect(VaryingType.prototype, "egret3d.GLSL.VaryingType");
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=VaryingType.js.map

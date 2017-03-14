@@ -107,4 +107,3 @@ var egret3d;
     egret3d.GeometryUtil = GeometryUtil;
     __reflect(GeometryUtil.prototype, "egret3d.GeometryUtil");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=GeometryUtil.js.map

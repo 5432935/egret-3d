@@ -159,4 +159,3 @@ var egret3d;
     egret3d.Sound = Sound;
     __reflect(Sound.prototype, "egret3d.Sound");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Sound.js.map

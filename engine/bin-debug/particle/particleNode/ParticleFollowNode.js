@@ -216,4 +216,3 @@ var egret3d;
     egret3d.ParticleFollowNode = ParticleFollowNode;
     __reflect(ParticleFollowNode.prototype, "egret3d.ParticleFollowNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleFollowNode.js.map

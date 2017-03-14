@@ -63,4 +63,3 @@ var egret3d;
     egret3d.ParticleParser = ParticleParser;
     __reflect(ParticleParser.prototype, "egret3d.ParticleParser");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleParser.js.map

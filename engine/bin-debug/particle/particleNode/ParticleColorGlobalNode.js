@@ -150,4 +150,3 @@ var egret3d;
     egret3d.ParticleColorGlobalNode = ParticleColorGlobalNode;
     __reflect(ParticleColorGlobalNode.prototype, "egret3d.ParticleColorGlobalNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleColorGlobalNode.js.map

@@ -190,4 +190,3 @@ var egret3d;
     egret3d.Bound = Bound;
     __reflect(Bound.prototype, "egret3d.Bound");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=Bound.js.map

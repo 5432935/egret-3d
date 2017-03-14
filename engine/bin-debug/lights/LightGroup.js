@@ -121,4 +121,3 @@ var egret3d;
     egret3d.LightGroup = LightGroup;
     __reflect(LightGroup.prototype, "egret3d.LightGroup");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=LightGroup.js.map

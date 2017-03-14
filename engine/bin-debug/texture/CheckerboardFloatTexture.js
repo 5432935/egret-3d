@@ -111,4 +111,3 @@ var egret3d;
     egret3d.CheckerboardFloatTexture = CheckerboardFloatTexture;
     __reflect(CheckerboardFloatTexture.prototype, "egret3d.CheckerboardFloatTexture");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=CheckerboardFloatTexture.js.map

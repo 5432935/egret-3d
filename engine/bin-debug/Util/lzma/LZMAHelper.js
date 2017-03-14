@@ -50,4 +50,3 @@ var nid;
     __reflect(LZMAHelper.prototype, "nid.LZMAHelper");
 })(nid || (nid = {}));
 nid.LZMAHelper.init();
-//# sourceMappingURL=LZMAHelper.js.map

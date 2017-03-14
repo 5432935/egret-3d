@@ -72,4 +72,3 @@ var egret3d;
     egret3d.ParticleVelocityLimitOneBezierNode = ParticleVelocityLimitOneBezierNode;
     __reflect(ParticleVelocityLimitOneBezierNode.prototype, "egret3d.ParticleVelocityLimitOneBezierNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleVelocityLimitOneBezierNode.js.map

@@ -89,4 +89,3 @@ var nid;
     nid.RangeDecoder = RangeDecoder;
     __reflect(RangeDecoder.prototype, "nid.RangeDecoder");
 })(nid || (nid = {}));
-//# sourceMappingURL=RangeDecoder.js.map

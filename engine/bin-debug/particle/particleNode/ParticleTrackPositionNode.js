@@ -137,4 +137,3 @@ var egret3d;
     egret3d.ParticleTrackPositionNode = ParticleTrackPositionNode;
     __reflect(ParticleTrackPositionNode.prototype, "egret3d.ParticleTrackPositionNode");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=ParticleTrackPositionNode.js.map

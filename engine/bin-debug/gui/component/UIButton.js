@@ -236,4 +236,3 @@ var egret3d;
         __reflect(UIButton.prototype, "egret3d.gui.UIButton");
     })(gui = egret3d.gui || (egret3d.gui = {}));
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UIButton.js.map

@@ -58,4 +58,3 @@ var egret3d;
     egret3d.FakePBRPass = FakePBRPass;
     __reflect(FakePBRPass.prototype, "egret3d.FakePBRPass");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=FakePBRPass.js.map

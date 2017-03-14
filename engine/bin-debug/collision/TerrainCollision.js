@@ -170,4 +170,3 @@ var egret3d;
     egret3d.TerrainCollision = TerrainCollision;
     __reflect(TerrainCollision.prototype, "egret3d.TerrainCollision");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=TerrainCollision.js.map

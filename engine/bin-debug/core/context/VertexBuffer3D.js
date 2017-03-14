@@ -53,4 +53,3 @@ var egret3d;
     egret3d.VertexBuffer3D = VertexBuffer3D;
     __reflect(VertexBuffer3D.prototype, "egret3d.VertexBuffer3D");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=VertexBuffer3D.js.map

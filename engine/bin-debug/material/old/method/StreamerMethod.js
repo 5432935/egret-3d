@@ -170,4 +170,3 @@ var egret3d;
     egret3d.StreamerMethod = StreamerMethod;
     __reflect(StreamerMethod.prototype, "egret3d.StreamerMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=StreamerMethod.js.map

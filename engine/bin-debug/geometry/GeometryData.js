@@ -685,4 +685,3 @@ var egret3d;
     egret3d.GeometryData = GeometryData;
     __reflect(GeometryData.prototype, "egret3d.GeometryData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=GeometryData.js.map

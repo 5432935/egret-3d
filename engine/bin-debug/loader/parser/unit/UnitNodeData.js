@@ -145,4 +145,3 @@ var egret3d;
     egret3d.UnitNodeData = UnitNodeData;
     __reflect(UnitNodeData.prototype, "egret3d.UnitNodeData");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=UnitNodeData.js.map

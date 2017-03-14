@@ -86,4 +86,3 @@ var egret3d;
     egret3d.AOMapMethod = AOMapMethod;
     __reflect(AOMapMethod.prototype, "egret3d.AOMapMethod");
 })(egret3d || (egret3d = {}));
-//# sourceMappingURL=AOMapMethod.js.map

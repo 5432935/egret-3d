@@ -42,4 +42,3 @@ var nid;
 * @private
 */
 new nid.LZMAWorker();
-//# sourceMappingURL=LZMAWorker.js.map
