@@ -421,6 +421,7 @@
             context3DProxy.enableDepth();
             context3DProxy.enableCullFace();
             context3DProxy.enableBlend();
+            Context3DProxy.gl.enable(Context3DProxy.gl.SCISSOR_TEST);
 
             this.$render(); 
 
