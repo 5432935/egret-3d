@@ -119,7 +119,7 @@
                 throw new Error("不能重复实例化这个类!");
             Egret3DCanvas._instance = this;
 
-            ShaderUtil.instance.load();
+            ShaderPool.load();
             this._envetManager = new EventManager(this);
 
             this.stage2D = stage2D;

@@ -90,8 +90,8 @@
             var i: number = 0;
             this._passChange = false;
             this._passUsage = new PassUsage();
-            this._passUsage.vertexShader.shaderType = Shader.vertex;
-            this._passUsage.fragmentShader.shaderType = Shader.fragment;
+            this._passUsage.vertexShader.shaderType = ShaderType.VertexShader;
+            this._passUsage.fragmentShader.shaderType = ShaderType.FragmentShader;
 
             //pre Phase ---------------------------------------------------
             if (animation) {
@@ -154,7 +154,7 @@
                 this.upload(time, delay, context3DProxy, modeltransform, camera3D, render.animation, subGeometry.geometry,renderQuen);
             }
 
-            context3DProxy.setProgram(this._passUsage.program3D);
+            context3DProxy.setProgram(this._passUsage.program);
             subGeometry.activeState(time, delay, this._passUsage, context3DProxy);
   
             Context3DProxy.gl.depthMask(false);

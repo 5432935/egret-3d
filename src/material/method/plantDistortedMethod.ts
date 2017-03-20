@@ -62,7 +62,7 @@
         * @param camera3D
         */
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, moodeltransform: Matrix4_4, camera3D: Camera3D) {
-            usage["uniformTime"] = context3DProxy.getUniformLocation(usage.program3D, "uniformTime");
+            usage["uniformTime"] = context3DProxy.getUniformLocation(usage.program, "uniformTime");
         }
         
         /**

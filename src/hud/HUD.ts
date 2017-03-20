@@ -377,7 +377,7 @@
             var sampler2D: GLSL.Sampler2D;
             for (var index in this._passUsage.sampler2DList) {
                 sampler2D = this._passUsage.sampler2DList[index];
-                sampler2D.uniformIndex = context.getUniformLocation(this._passUsage.program3D, sampler2D.varName);
+                sampler2D.uniformIndex = context.getUniformLocation(this._passUsage.program, sampler2D.varName);
                 sampler2D.texture = this[sampler2D.varName];
             }
             this._changeTexture = false;
@@ -397,35 +397,35 @@
             }
 
 
-            self._passUsage.vertexShader.shaderType = Shader.vertex;
-            self._passUsage.fragmentShader.shaderType = Shader.fragment;
+            self._passUsage.vertexShader.shaderType = ShaderType.VertexShader;
+            self._passUsage.fragmentShader.shaderType = ShaderType.FragmentShader;
 
             self._passUsage.vertexShader.addUseShaderName(self.vsShader);
             self._passUsage.fragmentShader.addUseShaderName(self.fsShader);
 
-            self._passUsage.vertexShader.shader = self._passUsage.vertexShader.getShader(self._passUsage);
-            self._passUsage.fragmentShader.shader = self._passUsage.fragmentShader.getShader(self._passUsage);
+            // self._passUsage.vertexShader.shader = self._passUsage.vertexShader.getShader(self._passUsage);
+            // self._passUsage.fragmentShader.shader = self._passUsage.fragmentShader.getShader(self._passUsage);
 
-            self._passUsage.program3D = ShaderPool.getProgram(self._passUsage.vertexShader.shader.id, self._passUsage.fragmentShader.shader.id);
+            self._passUsage.program = ShaderPool.getProgram(self._passUsage.vertexShader, self._passUsage.fragmentShader, self._passUsage);
 
             for (var property in self._passUsage) {
                 if ((<string>property).indexOf("uniform") != -1) {
                     if (self._passUsage[property]) {
-                        (<GLSL.Uniform>self._passUsage[property]).uniformIndex = context.getUniformLocation(self._passUsage.program3D, property);
+                        (<GLSL.Uniform>self._passUsage[property]).uniformIndex = context.getUniformLocation(self._passUsage.program, property);
                     }
                 }
             }
 
             for (var uniformName in self.uniformData) {
                 let uniform = self.uniformData[uniformName];
-                uniform.uniformIndex = context.getUniformLocation(self._passUsage.program3D, uniformName);
+                uniform.uniformIndex = context.getUniformLocation(self._passUsage.program, uniformName);
             }
 
             self._attList.length = 0;
             var offset: number = 0;
             if (self._passUsage.attribute_position) {
                 if (!self._passUsage.attribute_position.uniformIndex) {
-                    self._passUsage.attribute_position.uniformIndex = context.getShaderAttribLocation(self._passUsage.program3D, self._passUsage.attribute_position.varName);
+                    self._passUsage.attribute_position.uniformIndex = context.getShaderAttribLocation(self._passUsage.program, self._passUsage.attribute_position.varName);
                 }
 
                 self._attList.push(self._passUsage.attribute_position);
@@ -440,7 +440,7 @@
 
             if (self._passUsage.attribute_uv0) {
                 if (!self._passUsage.attribute_uv0.uniformIndex) {
-                    self._passUsage.attribute_uv0.uniformIndex = context.getShaderAttribLocation(self._passUsage.program3D, self._passUsage.attribute_uv0.varName);
+                    self._passUsage.attribute_uv0.uniformIndex = context.getShaderAttribLocation(self._passUsage.program, self._passUsage.attribute_uv0.varName);
                 }
 
                 self._attList.push(self._passUsage.attribute_uv0);
@@ -454,7 +454,7 @@
                 offset += Geometry.uvSize * Float32Array.BYTES_PER_ELEMENT;
             }
 
-            self._passUsage["uv_scale"] = context.getUniformLocation(self._passUsage.program3D, "uv_scale");
+            self._passUsage["uv_scale"] = context.getUniformLocation(self._passUsage.program, "uv_scale");
         }
 
         /**
@@ -467,11 +467,11 @@
                 return;
             }
 
-            if (!self._passUsage.program3D) {
+            if (!self._passUsage.program) {
                 self.upload(contextProxy); 
             }
 
-            contextProxy.setProgram(self._passUsage.program3D);
+            contextProxy.setProgram(self._passUsage.program);
             contextProxy.bindVertexBuffer(self._vertexBuffer3D);
             contextProxy.bindIndexBuffer(self._indexBuffer3D);
 

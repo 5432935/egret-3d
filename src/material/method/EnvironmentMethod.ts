@@ -85,7 +85,7 @@
         * @param camera3D
         */
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
-            usage["reflectValue"] = context3DProxy.getUniformLocation(usage.program3D, "reflectValue");
+            usage["reflectValue"] = context3DProxy.getUniformLocation(usage.program, "reflectValue");
         }
         
         /**

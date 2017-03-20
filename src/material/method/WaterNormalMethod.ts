@@ -191,8 +191,8 @@
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
             //##FilterBegin## ##Water##
 
-            usage["waterNormalData"] = context3DProxy.getUniformLocation(usage.program3D, "waterNormalData");
-            usage["time"] = context3DProxy.getUniformLocation(usage.program3D, "time");
+            usage["waterNormalData"] = context3DProxy.getUniformLocation(usage.program, "waterNormalData");
+            usage["time"] = context3DProxy.getUniformLocation(usage.program, "time");
 
             //##FilterEnd##
         }

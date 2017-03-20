@@ -501,15 +501,15 @@
             //}
             this._passChange = false;
             this.initUseMethod(animation, geometry);
-            this._passUsage.vertexShader.shader = this._passUsage.vertexShader.getShader(this._passUsage);
-            this._passUsage.fragmentShader.shader = this._passUsage.fragmentShader.getShader(this._passUsage);
+            // this._passUsage.vertexShader.shader = this._passUsage.vertexShader.getShader(this._passUsage);
+            // this._passUsage.fragmentShader.shader = this._passUsage.fragmentShader.getShader(this._passUsage);
             //this._passUsage.program3D = context3DProxy.creatProgram(this._passUsage.vertexShader.shader, this._passUsage.fragmentShader.shader);
-            this._passUsage.program3D = ShaderPool.getProgram(this._passUsage.vertexShader.shader.id, this._passUsage.fragmentShader.shader.id);
+            this._passUsage.program = ShaderPool.getProgram(this._passUsage.vertexShader, this._passUsage.fragmentShader, this._passUsage);
 
             for (var property in this._passUsage) {
                 if ((<string>property).indexOf("uniform") != -1) {
                     if (this._passUsage[property]) {
-                        (<GLSL.Uniform>this._passUsage[property]).uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program3D, property);
+                        (<GLSL.Uniform>this._passUsage[property]).uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program, property);
                     }
                 }
             }
@@ -517,14 +517,14 @@
             var sampler2D: GLSL.Sampler2D;
             for (var index in this._passUsage.sampler2DList) {
                 sampler2D = this._passUsage.sampler2DList[index];
-                sampler2D.uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program3D, sampler2D.varName);
+                sampler2D.uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program, sampler2D.varName);
                 sampler2D.texture = this._materialData[sampler2D.varName];
             }
 
             var sampler3D: GLSL.Sampler2D;
             for (var index in this._passUsage.sampler3DList) {
                 sampler3D = this._passUsage.sampler3DList[index];
-                sampler3D.uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program3D, sampler3D.varName);
+                sampler3D.uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program, sampler3D.varName);
             }
 
             if (this.methodList) {
@@ -584,7 +584,7 @@
                 this.upload(time, delay, context3DProxy, modeltransform, camera3D, render.animation, subGeometry.geometry, renderQuen);
             }
 
-            context3DProxy.setProgram(this._passUsage.program3D);
+            context3DProxy.setProgram(this._passUsage.program);
             subGeometry.activeState(time, delay, this._passUsage, context3DProxy);
 
 

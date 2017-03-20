@@ -206,9 +206,9 @@
         */
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
             //##FilterBegin## ##Water##
-            usage["waveVSData"] = context3DProxy.getUniformLocation(usage.program3D, "waveVSData");
-            usage["waveFSData"] = context3DProxy.getUniformLocation(usage.program3D, "waveFSData");
-            usage["time"] = context3DProxy.getUniformLocation(usage.program3D, "time");
+            usage["waveVSData"] = context3DProxy.getUniformLocation(usage.program, "waveVSData");
+            usage["waveFSData"] = context3DProxy.getUniformLocation(usage.program, "waveFSData");
+            usage["time"] = context3DProxy.getUniformLocation(usage.program, "time");
             //##FilterEnd##
         }
         

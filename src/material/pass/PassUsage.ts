@@ -312,21 +312,21 @@
         /**
          * @language zh_CN
          */
-        public program3D: Program3D;
+        public program: WebGLProgram;
         /**
          * @language zh_CN
          */
-        public vs_shader: Shader;
+        // public vs_shader: Shader;
         /**
          * @language zh_CN
          */
-        public fs_shader: Shader;
+        // public fs_shader: Shader;
         //----------------------------------------------
 
         //public vertexShaderRegister: ver;
    
-        public vertexShader: ShaderBase = new ShaderBase(Shader.vertex);
-        public fragmentShader: ShaderBase = new ShaderBase(Shader.fragment);
+        public vertexShader: ShaderBase = new ShaderBase(ShaderType.VertexShader);
+        public fragmentShader: ShaderBase = new ShaderBase(ShaderType.FragmentShader);
 
         public maxDirectLight: number = 0;
         public maxSpotLight: number = 0;
@@ -343,23 +343,24 @@
          * @language zh_CN
          */
         public dispose() {
-            if (this.program3D) {
-                this.program3D.dispose();
-            }
-            this.program3D = null;
+            // if (this.program3D) {
+                // this.program3D.dispose();
+            ShaderPool.deleteProgram(this.vertexShader, this.fragmentShader, this);
+            // }
+            this.program = null;
 
-            if (this.vertexShader) {
-                if (this.vertexShader.shader) {
-                    this.vertexShader.shader.dispose();
-                }
-            }
+            // if (this.vertexShader) {
+            //     if (this.vertexShader.shader) {
+            //         this.vertexShader.shader.dispose();
+            //     }
+            // }
             this.vertexShader = null;
 
-            if (this.fragmentShader) {
-                if (this.fragmentShader.shader) {
-                    this.fragmentShader.shader.dispose();
-                }
-            }
+            // if (this.fragmentShader) {
+            //     if (this.fragmentShader.shader) {
+            //         this.fragmentShader.shader.dispose();
+            //     }
+            // }
             this.fragmentShader = null;
         }
 

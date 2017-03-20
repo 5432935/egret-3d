@@ -23,17 +23,17 @@
         */
         public maxBone: number = 0;
 
-        public shaderType: number = -1;
+        public shaderType:ShaderType;
 
-        public shader: Shader;
+        // public shader: Shader;
         /**
         * @language zh_CN
         * constructor
         * @param materialData
         * @param usage
         */
-        constructor(type:number) {
-            this.shaderType = type; 
+        constructor(type:ShaderType) {
+            this.shaderType = type;
         }
 
         /**
@@ -54,13 +54,7 @@
             this.endShadername = shaderName ;
         }
 
-        /**
-        * @language zh_CN
-        * 
-        * @returns string
-        */
-        public getShader(passUsage:PassUsage):Shader {
-
+        public getShaderName():string[] {
             if (this.endShadername != "") {
                 var index: number = this.shadersName.indexOf(this.endShadername);
                 if (index == -1) {
@@ -68,7 +62,24 @@
                 }
             }
 
-            return ShaderUtil.instance.fillShaderContent(this, this.shadersName, passUsage);
+            return this.shadersName;
         }
+
+        // /**
+        // * @language zh_CN
+        // * 
+        // * @returns string
+        // */
+        // public getShader(passUsage:PassUsage):Shader {
+
+        //     if (this.endShadername != "") {
+        //         var index: number = this.shadersName.indexOf(this.endShadername);
+        //         if (index == -1) {
+        //             this.shadersName.push(this.endShadername);
+        //         }
+        //     }
+
+        //     return ShaderUtil.instance.fillShaderContent(this, this.shadersName, passUsage);
+        // }
     }
 } 

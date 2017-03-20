@@ -22,8 +22,8 @@
             var i: number = 0;
             this._passChange = false;
             this._passUsage = new PassUsage();
-            this._passUsage.vertexShader.shaderType = Shader.vertex;
-            this._passUsage.fragmentShader.shaderType = Shader.fragment;
+            this._passUsage.vertexShader.shaderType = ShaderType.VertexShader;
+            this._passUsage.fragmentShader.shaderType = ShaderType.FragmentShader;
 
             //pre Phase ---------------------------------------------------
             if (animation) {

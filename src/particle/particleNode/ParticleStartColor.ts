@@ -73,7 +73,9 @@
                 progress = this.bornTime / duration;
                 progress = progress - Math.floor(progress);                         //取小数部分
                 this.lerpBirthColor(clr1, clr2, progress);
+                // console.log(clr1, progress)
                 clr1.scaleBy(scaleValue);
+                console.log(clr1, progress);
 
                 for (var j: number = 0; j < vertices; ++j) {
                     index = i * vertices + j;

@@ -10633,6 +10633,7 @@ var egret3d;
     * shader 基类
     */
     var ShaderBase = (function () {
+        // public shader: Shader;
         /**
         * @language zh_CN
         * constructor
@@ -10649,7 +10650,6 @@ var egret3d;
             *
             */
             this.maxBone = 0;
-            this.shaderType = -1;
             this.shaderType = type;
         }
         /**
@@ -10668,19 +10668,14 @@ var egret3d;
         ShaderBase.prototype.addEndShaderName = function (shaderName) {
             this.endShadername = shaderName;
         };
-        /**
-        * @language zh_CN
-        *
-        * @returns string
-        */
-        ShaderBase.prototype.getShader = function (passUsage) {
+        ShaderBase.prototype.getShaderName = function () {
             if (this.endShadername != "") {
                 var index = this.shadersName.indexOf(this.endShadername);
                 if (index == -1) {
                     this.shadersName.push(this.endShadername);
                 }
             }
-            return egret3d.ShaderUtil.instance.fillShaderContent(this, this.shadersName, passUsage);
+            return this.shadersName;
         };
         return ShaderBase;
     }());
@@ -11659,151 +11654,140 @@ var egret3d;
     }());
     egret3d.ShaderStore = ShaderStore;
 })(egret3d || (egret3d = {}));
-var egret3d;
-(function (egret3d) {
-    var ShaderCache = (function () {
-        function ShaderCache() {
-        }
-        ShaderCache.addProgram = function (program) {
-            ShaderCache.programlib.add(program.name, program);
-        };
-        ShaderCache.removeProgram = function (_name) {
-            var program = ShaderCache.getProgram(_name);
-            program.dispose();
-            ShaderCache.programlib.remove(_name);
-        };
-        ShaderCache.getProgram = function (_name) {
-            return ShaderCache.programlib.getValue(_name);
-        };
-        ShaderCache.programlib = new egret3d.HashMap();
-        return ShaderCache;
-    }());
-    egret3d.ShaderCache = ShaderCache;
-})(egret3d || (egret3d = {}));
-var egret3d;
-(function (egret3d) {
-    /**
-    * @private
-    * @class egret3d.ShaderGenerator
-    * @classdesc
-    * Shader 生成器
-    */
-    var ShaderGenerator = (function () {
-        function ShaderGenerator() {
-        }
-        //根据shader的命名创建对应shader和program
-        ShaderGenerator.createProgram = function (defdata, _vShaderSourceName, _fShaderSourceName) {
-            //vsShader
-            var vsSource = ShaderGenerator.generateShaderSource(defdata, _vShaderSourceName);
-            var vsShader = ShaderGenerator.createShader(vsSource, egret3d.ShaderType.VertexShader, defdata.toName() + _vShaderSourceName);
-            //fsShader
-            var fsSource = ShaderGenerator.generateShaderSource(defdata, _fShaderSourceName);
-            var fsShader = ShaderGenerator.createShader(vsSource, egret3d.ShaderType.FragmentShader, defdata.toName() + _fShaderSourceName);
-            //program
-            var program = ShaderGenerator.createProgramLogic(vsShader, fsShader);
-            //清除shader
-            vsShader.dispose();
-            fsShader.dispose();
-            return program.name;
-        };
-        //创建shader
-        ShaderGenerator.createShader = function (_source, _type, _name) {
-            var shader = egret3d.Context3DProxy.gl.createShader(_type);
-            egret3d.Context3DProxy.gl.shaderSource(shader, _source);
-            egret3d.Context3DProxy.gl.compileShader(shader);
-            var tmpShader = new egret3d.Shader(shader);
-            tmpShader.name = _name;
-            return tmpShader;
-        };
-        //创建Program
-        ShaderGenerator.createProgramLogic = function (vsShader, fsShader) {
-            var shaderProgram = egret3d.Context3DProxy.gl.createProgram();
-            egret3d.Context3DProxy.gl.attachShader(shaderProgram, vsShader.shader);
-            egret3d.Context3DProxy.gl.attachShader(shaderProgram, fsShader.shader);
-            egret3d.Context3DProxy.gl.linkProgram(shaderProgram);
-            //debug模式下启用
-            if (egret3d.Egret3DEngine.instance.debug) {
-                var p = egret3d.Context3DProxy.gl.getProgramParameter(shaderProgram, egret3d.Context3DProxy.gl.LINK_STATUS);
-                if (!p) {
-                    console.log("vsShader error" + egret3d.Context3DProxy.gl.getShaderInfoLog(vsShader.shader));
-                    console.log("fsShader error" + egret3d.Context3DProxy.gl.getShaderInfoLog(fsShader.shader));
-                    console.log("program error" + egret3d.Context3DProxy.gl.getProgramInfoLog(shaderProgram));
-                }
-            }
-            /////
-            var program = new egret3d.Program3D(shaderProgram);
-            program.name = vsShader.name + fsShader.name;
-            //放入仓中
-            egret3d.ShaderCache.addProgram(program);
-            return program;
-        };
-        //生成shader源码
-        ShaderGenerator.generateShaderSource = function (defdata, _ShaderSourceName) {
-            var keys = defdata.keys();
-            var len = keys.length;
-            var defStr = "";
-            for (var i = 0; i < len; i++) {
-                if (defdata[keys[i]] == true) {
-                    defStr += "#define " + keys[i] + "\n";
-                }
-            }
-            var source = "";
-            ShaderGenerator._processIncludes(egret3d.ShaderStore.lib[_ShaderSourceName], function (rel) {
-                //处理完成后shader代码
-                defStr += rel;
-                source = defStr;
-            });
-            return source;
-        };
-        ///#include 替换
-        ShaderGenerator._processIncludes = function (sourceCode, callback) {
-            var regex = /#include<(.+)>(\((.*)\))*(\[(.*)\])*/g;
-            var match = regex.exec(sourceCode);
-            var returnValue = new String(sourceCode);
-            while (match != null) {
-                var includeFile = match[1];
-                if (egret3d.ShaderStore.lib[includeFile]) {
-                    // Substitution
-                    var includeContent = egret3d.ShaderStore.lib[includeFile];
-                    if (match[2]) {
-                        var splits = match[3].split(",");
-                        for (var index = 0; index < splits.length; index += 2) {
-                            var source = new RegExp(splits[index], "g");
-                            var dest = splits[index + 1];
-                            includeContent = includeContent.replace(source, dest);
-                        }
-                    }
-                    if (match[4]) {
-                        var indexString = match[5];
-                        if (indexString.indexOf("..") !== -1) {
-                            var indexSplits = indexString.split("..");
-                            var minIndex = parseInt(indexSplits[0]);
-                            var maxIndex = parseInt(indexSplits[1]);
-                            var sourceIncludeContent = includeContent.slice(0);
-                            includeContent = "";
-                            if (isNaN(maxIndex)) {
-                                maxIndex = ShaderGenerator._indexParameters[indexSplits[1]];
-                            }
-                            for (var i = minIndex; i <= maxIndex; i++) {
-                                includeContent += sourceIncludeContent.replace(/\{X\}/g, i.toString()) + "\n";
-                            }
-                        }
-                        else {
-                            includeContent = includeContent.replace(/\{X\}/g, indexString);
-                        }
-                    }
-                    // Replace
-                    returnValue = returnValue.replace(match[0], includeContent);
-                }
-                match = regex.exec(sourceCode);
-            }
-            callback(returnValue);
-        };
-        ShaderGenerator._indexParameters = {};
-        return ShaderGenerator;
-    }());
-    egret3d.ShaderGenerator = ShaderGenerator;
-})(egret3d || (egret3d = {}));
+// module egret3d {
+//     export class ShaderCache {
+//         private static programlib: HashMap = new HashMap();
+//         public static addProgram(program: Program3D): void {
+//             ShaderCache.programlib.add(program.name, program);
+//         }
+//         public static removeProgram(_name: string): void {
+//             let program: Program3D = ShaderCache.getProgram( _name );
+//             program.dispose();
+//             ShaderCache.programlib.remove(_name);
+//         }
+//         public static getProgram(_name: string): Program3D {
+//             return ShaderCache.programlib.getValue(_name);
+//         }
+//     }
+// } 
+// module egret3d {
+//     /**
+//     * @private
+//     * @class egret3d.ShaderGenerator
+//     * @classdesc
+//     * Shader 生成器
+//     */
+//     export class ShaderGenerator {
+//         private static _indexParameters: any = {};
+//         //根据shader的命名创建对应shader和program
+//         public static createProgram(defdata: IMaterialDefines, _vShaderSourceName: string, _fShaderSourceName: string): string {
+//             //vsShader
+//             let vsSource: string = ShaderGenerator.generateShaderSource(defdata, _vShaderSourceName);
+//             let vsShader: Shader = ShaderGenerator.createShader(vsSource, ShaderType.VertexShader, defdata.toName() + _vShaderSourceName);
+//             //fsShader
+//             let fsSource: string = ShaderGenerator.generateShaderSource(defdata, _fShaderSourceName);
+//             let fsShader: Shader = ShaderGenerator.createShader(vsSource, ShaderType.FragmentShader, defdata.toName() + _fShaderSourceName);
+//             //program
+//             let program: Program3D = ShaderGenerator.createProgramLogic(vsShader, fsShader);
+//             //清除shader
+//             vsShader.dispose();
+//             fsShader.dispose();
+//             return program.name;
+//         }
+//         //创建shader
+//         private static createShader(_source: string, _type: number, _name: string): Shader {
+//             let shader: WebGLShader = Context3DProxy.gl.createShader(_type);
+//             Context3DProxy.gl.shaderSource(shader, _source);
+//             Context3DProxy.gl.compileShader(shader);
+//             let tmpShader: Shader = new Shader(shader);
+//             tmpShader.name = _name;
+//             return tmpShader;
+//         }
+//         //创建Program
+//         private static createProgramLogic(vsShader: Shader, fsShader: Shader): Program3D {
+//             let shaderProgram = Context3DProxy.gl.createProgram();
+//             Context3DProxy.gl.attachShader(shaderProgram, vsShader.shader);
+//             Context3DProxy.gl.attachShader(shaderProgram, fsShader.shader);
+//             Context3DProxy.gl.linkProgram(shaderProgram);
+//             //debug模式下启用
+//             if (Egret3DEngine.instance.debug) {
+//                 let p = Context3DProxy.gl.getProgramParameter(shaderProgram, Context3DProxy.gl.LINK_STATUS);
+//                 if (!p) {
+//                     console.log("vsShader error" + Context3DProxy.gl.getShaderInfoLog(vsShader.shader));
+//                     console.log("fsShader error" + Context3DProxy.gl.getShaderInfoLog(fsShader.shader));
+//                     console.log("program error" + Context3DProxy.gl.getProgramInfoLog(shaderProgram));
+//                 }
+//             }
+//             /////
+//             let program: Program3D = new Program3D(shaderProgram);
+//             program.name = vsShader.name + fsShader.name;
+//             //放入仓中
+//             ShaderCache.addProgram(program);
+//             return program;
+//         }
+//         //生成shader源码
+//         private static generateShaderSource(defdata: IMaterialDefines, _ShaderSourceName: string): string {
+//             let keys = defdata.keys();
+//             let len = keys.length;
+//             let defStr = "";
+//             for (let i: number = 0; i < len; i++) {
+//                 if (defdata[keys[i]] == true) {
+//                     defStr += "#define " + keys[i] + "\n";
+//                 }
+//             }
+//             let source: string = "";
+//             ShaderGenerator._processIncludes(ShaderStore.lib[_ShaderSourceName], (rel) => {
+//                 //处理完成后shader代码
+//                 defStr += rel;
+//                 source = defStr
+//             });
+//             return source;
+//         }
+//         ///#include 替换
+//         private static _processIncludes(sourceCode: string, callback: (data: any) => void): void {
+//             let regex = /#include<(.+)>(\((.*)\))*(\[(.*)\])*/g;
+//             let match = regex.exec(sourceCode);
+//             let returnValue = new String(sourceCode);
+//             while (match != null) {
+//                 let includeFile = match[1];
+//                 if (ShaderStore.lib[includeFile]) {
+//                     // Substitution
+//                     let includeContent = ShaderStore.lib[includeFile];
+//                     if (match[2]) {
+//                         let splits = match[3].split(",");
+//                         for (let index = 0; index < splits.length; index += 2) {
+//                             let source = new RegExp(splits[index], "g");
+//                             let dest = splits[index + 1];
+//                             includeContent = includeContent.replace(source, dest);
+//                         }
+//                     }
+//                     if (match[4]) {
+//                         let indexString = match[5];
+//                         if (indexString.indexOf("..") !== -1) {
+//                             let indexSplits = indexString.split("..");
+//                             let minIndex = parseInt(indexSplits[0]);
+//                             let maxIndex = parseInt(indexSplits[1]);
+//                             let sourceIncludeContent = includeContent.slice(0);
+//                             includeContent = "";
+//                             if (isNaN(maxIndex)) {
+//                                 maxIndex = ShaderGenerator._indexParameters[indexSplits[1]];
+//                             }
+//                             for (let i = minIndex; i <= maxIndex; i++) {
+//                                 includeContent += sourceIncludeContent.replace(/\{X\}/g, i.toString()) + "\n";
+//                             }
+//                         } else {
+//                             includeContent = includeContent.replace(/\{X\}/g, indexString);
+//                         }
+//                     }
+//                     // Replace
+//                     returnValue = returnValue.replace(match[0], includeContent);
+//                 }
+//                 match = regex.exec(sourceCode);
+//             }
+//             callback(returnValue);
+//         }
+//     }
+// } 
 var egret3d;
 (function (egret3d) {
     var ShaderLib = (function () {
@@ -11964,57 +11948,461 @@ var egret3d;
         ShaderPool.register = function (context) {
             this.context = context;
         };
-        ShaderPool.getGPUShader = function (shaderType, shaderID, source) {
-            var shader = this.vsShaderHashMap.getValue(shaderID);
-            if (!shader) {
-                shader = this.fsShaderHashMap.getValue(shaderID);
-            }
-            if (!shader) {
-                if (shaderType == egret3d.Shader.vertex) {
-                    shader = this.context.creatVertexShader(source);
-                    shader.id = shaderID;
-                    this.vsShaderHashMap.add(shaderID, shader);
-                }
-                else if (shaderType == egret3d.Shader.fragment) {
-                    shader = this.context.creatFragmentShader(source);
-                    shader.id = shaderID;
-                    this.fsShaderHashMap.add(shaderID, shader);
-                }
-            }
-            return shader;
-            //if (shaderType == Shader.vertex) {
-            //    return this.context.creatVertexShader(source);
-            //}
-            //return this.context.creatFragmentShader(source);
-        };
-        ShaderPool.getProgram = function (vs_shaderID, fs_shaderID) {
-            var vsShader = this.vsShaderHashMap.getValue(vs_shaderID);
-            var fsShader = this.fsShaderHashMap.getValue(fs_shaderID);
-            var name = vsShader.id + "_" + fsShader.id;
-            var program3D;
+        // public static getGPUShader( shaderType:number , source:string ):Shader {
+        //     // var shader: Shader = this.vsShaderHashMap.getValue(shaderID);
+        //     // if (!shader) {
+        //     //     shader = this.fsShaderHashMap.getValue(shaderID);
+        //     // }
+        //     // if (!shader) {
+        //         var shader: Shader;
+        //         if (shaderType == Shader.vertex) {
+        //             shader = this.context.creatVertexShader(source);
+        //             // shader.id = shaderID;
+        //             // this.vsShaderHashMap.add(shaderID, shader);
+        //         } else if (shaderType == Shader.fragment) {
+        //             shader = this.context.creatFragmentShader(source);
+        //             // shader.id = shaderID;
+        //             // this.fsShaderHashMap.add(shaderID, shader);
+        //         }
+        //     // }
+        //         return shader;
+        //     //if (shaderType == Shader.vertex) {
+        //     //    return this.context.creatVertexShader(source);
+        //     //}
+        //     //return this.context.creatFragmentShader(source);
+        // }
+        ShaderPool.getProgram = function (vshaderBase, fshaderBase, passUsage) {
+            var name = this.getProgramCode(vshaderBase.getShaderName(), fshaderBase.getShaderName(), passUsage);
+            var program;
             if (this.programlib.isHas(name)) {
-                program3D = this.programlib.getValue(name);
+                program = this.programlib.getValue(name);
             }
             else {
-                program3D = this.registerProgram(vsShader, fsShader);
-                this.programlib.add(name, program3D);
+                program = this.createProgram(vshaderBase, fshaderBase, passUsage);
+                this.programlib.add(name, program);
             }
-            return this.programlib.getValue(name);
+            return program;
         };
-        ShaderPool.unRegisterShader = function (list) {
-            //to delet shader
+        ShaderPool.deleteProgram = function (vshaderBase, fshaderBase, passUsage) {
+            var name = this.getProgramCode(vshaderBase.getShaderName(), fshaderBase.getShaderName(), passUsage);
+            var program;
+            if (this.programlib.isHas(name)) {
+                program = this.programlib.getValue(name);
+                this.context.deleteProgram(program);
+                this.programlib.remove(name);
+            }
         };
-        ShaderPool.registerProgram = function (vsShader, fsShader) {
-            var program3D = this.context.creatProgram(vsShader, fsShader);
-            return program3D;
+        ShaderPool.createProgram = function (vshaderBase, fshaderBase, passUsage) {
+            var vsShaderContent = this.fillShaderContent(vshaderBase, vshaderBase.getShaderName(), passUsage);
+            var fsShaderContent = this.fillShaderContent(fshaderBase, fshaderBase.getShaderName(), passUsage);
+            var vsShader = this.context.createShader(vshaderBase.shaderType, vsShaderContent.source);
+            var fsShader = this.context.createShader(fshaderBase.shaderType, fsShaderContent.source);
+            // passUsage.vertexShader.shader = vsShader;
+            // passUsage.fragmentShader.shader = fsShader;
+            var program = this.context.createProgram(vsShader, fsShader);
+            // delete WebGLShader after linked
+            this.context.deleteShader(vsShader);
+            this.context.deleteShader(fsShader);
+            // vsShader.dispose();
+            // fsShader.dispose();
+            return program;
         };
-        ShaderPool.unRegisterProgram = function (vsKey, fsKey) {
-            //to delet program
+        /**
+        * @language zh_CN
+        * @private
+        * 加载shader文件
+        */
+        ShaderPool.load = function () {
+            var del = [];
+            var add = [];
+            for (var key in egret3d.ShaderLib.lib) {
+                var s_pos = egret3d.ShaderLib.lib[key].indexOf(this.vs_begin);
+                var e_pos = egret3d.ShaderLib.lib[key].indexOf(this.vs_end);
+                var isDel = false;
+                if (s_pos != -1) {
+                    isDel = true;
+                    s_pos += this.vs_begin.length;
+                    del.push(key);
+                    add[key + "vs"] = egret3d.ShaderLib.lib[key].substr(s_pos, e_pos - s_pos);
+                }
+                s_pos = egret3d.ShaderLib.lib[key].indexOf(this.fs_begin);
+                e_pos = egret3d.ShaderLib.lib[key].indexOf(this.fs_end);
+                if (s_pos != -1) {
+                    s_pos += this.fs_begin.length;
+                    if (isDel) {
+                        del.push(key);
+                    }
+                    add[key + "fs"] = egret3d.ShaderLib.lib[key].substr(s_pos, e_pos - s_pos);
+                }
+            }
+            for (var key in del) {
+                delete egret3d.ShaderLib.lib[del[key]];
+            }
+            for (var key in add) {
+                egret3d.ShaderLib.lib[key] = add[key];
+            }
+            for (var key in egret3d.ShaderLib.lib) {
+                var content = this.readShader(egret3d.ShaderLib.lib[key]);
+                this._shaderContentDict[key] = content;
+                content.name = key;
+            }
+        };
+        ShaderPool.readShader = function (str) {
+            var content = new egret3d.GLSL.ShaderContent();
+            var shaderStr = egret3d.StringUtil.processShaderFile(str);
+            var source = egret3d.StringUtil.parseContent(shaderStr);
+            var shaderLine = source.concat();
+            while (shaderLine.length > 0) {
+                var line = shaderLine[0];
+                shaderLine.shift();
+                var ret = egret3d.StringUtil.getLineType(line);
+                var index = -1;
+                index = ret.indexOf("struct");
+                if (index != -1) {
+                    var tempArray = ret.split(" ");
+                    var structStr = line;
+                    content.addStruct(tempArray[1], structStr);
+                    egret3d.StringUtil.processStruct(tempArray[1], structStr, content);
+                    continue;
+                }
+                index = ret.indexOf("function");
+                if (index != -1) {
+                    var tempArray = ret.split(" ");
+                    var func = line;
+                    content.addFunc(tempArray[1], func);
+                    continue;
+                }
+                index = ret.indexOf("unknown");
+                if (index != -1) {
+                    var tempArray = egret3d.StringUtil.parseLines(line);
+                    var key = egret3d.StringUtil.getVarKey(tempArray);
+                    var valueType = egret3d.StringUtil.getVarType(tempArray);
+                    if (valueType == "sampler2D") {
+                        var sampler2D = egret3d.StringUtil.getSampler2D(line);
+                        if (sampler2D)
+                            content.addVar(sampler2D);
+                    }
+                    else if (valueType == "samplerCube") {
+                        var sampler3D = egret3d.StringUtil.getSampler3D(line);
+                        if (sampler3D)
+                            content.addVar(sampler3D);
+                    }
+                    else {
+                        if (key == "attribute") {
+                            var att = egret3d.StringUtil.getAttribute(line);
+                            if (att)
+                                content.addVar(att);
+                        }
+                        else if (key == "varying") {
+                            var varying = egret3d.StringUtil.getVarying(line);
+                            if (varying)
+                                content.addVar(varying);
+                        }
+                        else if (key == "uniform") {
+                            var uniform = egret3d.StringUtil.getUniform(line);
+                            if (uniform)
+                                content.addVar(uniform);
+                        }
+                        else if (key == "const") {
+                            var ConstVar = egret3d.StringUtil.getConst(line);
+                            if (ConstVar)
+                                content.addVar(ConstVar);
+                        }
+                        else if (key == "#extension") {
+                            var extension = egret3d.StringUtil.getExtension(line);
+                            if (extension)
+                                content.addVar(extension);
+                        }
+                        else if (key == "#define") {
+                            var def = egret3d.StringUtil.getDefine(line);
+                            if (def)
+                                content.addVar(def);
+                        }
+                        else {
+                            content.addVar(egret3d.StringUtil.getTemper(line));
+                        }
+                    }
+                    continue;
+                }
+            }
+            return content;
+        };
+        ShaderPool.getProgramCode = function (vshaderNameList, fshaderNameList, usage) {
+            var i = 0;
+            var varName = "";
+            for (i = 0; i < vshaderNameList.length; ++i) {
+                if (varName != "") {
+                    varName += "/";
+                }
+                varName += vshaderNameList[i];
+            }
+            for (i = 0; i < fshaderNameList.length; ++i) {
+                if (varName != "") {
+                    varName += "/";
+                }
+                varName += fshaderNameList[i];
+            }
+            varName += "/d" + usage.maxDirectLight;
+            varName += "/s" + usage.maxSpotLight;
+            varName += "/p" + usage.maxPointLight;
+            varName += "/b" + usage.maxBone;
+            return varName;
+        };
+        /**
+        * @language zh_CN
+        * 返回组合shader后的内容
+        * @param shaderNameList 要组合的shader名字列表
+        * @param usage
+        * @returns shader 内容
+        */
+        ShaderPool.fillShaderContent = function (shaderBase, shaderNameList, usage) {
+            var i = 0;
+            var varName = "";
+            for (i = 0; i < shaderNameList.length; ++i) {
+                if (varName != "") {
+                    varName += "/";
+                }
+                varName += shaderNameList[i];
+            }
+            varName += "/d" + usage.maxDirectLight;
+            varName += "/s" + usage.maxSpotLight;
+            varName += "/p" + usage.maxPointLight;
+            varName += "/b" + usage.maxBone;
+            var shaderContent;
+            if (!this._shaderContentDict[varName]) {
+                shaderContent = new egret3d.GLSL.ShaderContent();
+                shaderContent.name = varName;
+                for (i = 0; i < shaderNameList.length; ++i) {
+                    var tempContent = this._shaderContentDict[shaderNameList[i]];
+                    shaderContent.addContent(tempContent);
+                }
+            }
+            else {
+                shaderContent = this._shaderContentDict[varName].clone();
+            }
+            for (i = 0; i < shaderContent.attributeList.length; i++) {
+                varName = shaderContent.attributeList[i].varName;
+                usage[varName] = shaderContent.attributeList[i];
+            }
+            for (i = 0; i < shaderContent.varyingList.length; i++) {
+                varName = shaderContent.varyingList[i].varName;
+                if (!usage[varName]) {
+                    usage[varName] = shaderContent.varyingList[i];
+                }
+            }
+            for (i = 0; i < shaderContent.tempList.length; i++) {
+                varName = shaderContent.tempList[i].varName;
+                usage[varName] = shaderContent.tempList[i];
+            }
+            for (i = 0; i < shaderContent.uniformList.length; i++) {
+                varName = shaderContent.uniformList[i].varName;
+                usage[varName] = shaderContent.uniformList[i];
+            }
+            var constR;
+            for (i = 0; i < shaderContent.constList.length; i++) {
+                varName = shaderContent.constList[i].varName;
+                constR = shaderContent.constList[i];
+                usage[varName] = constR;
+                switch (varName) {
+                    case "max_directLight":
+                        constR.value = usage.maxDirectLight;
+                        break;
+                    case "max_spotLight":
+                        constR.value = usage.maxSpotLight;
+                        break;
+                    case "max_pointLight":
+                        constR.value = usage.maxPointLight;
+                        break;
+                    case "bonesNumber":
+                        shaderBase.maxBone = usage.maxBone;
+                        constR.value = usage.maxBone;
+                        break;
+                }
+            }
+            ///sampler
+            for (i = 0; i < shaderContent.sampler2DList.length; i++) {
+                var sampler2D = shaderContent.sampler2DList[i];
+                sampler2D.index = i;
+                usage.sampler2DList.push(sampler2D);
+                sampler2D.activeTextureIndex = this.getTexture2DIndex(i);
+            }
+            //for (i = 0; i < usage.sampler2DList.length; i++) {
+            //    var sampler2D: GLSL.Sampler2D = usage.sampler2DList[i];
+            //    sampler2D.index = i;
+            //}
+            ///sampler
+            for (i = 0; i < shaderContent.sampler3DList.length; i++) {
+                var sampler3D = shaderContent.sampler3DList[i];
+                sampler3D.activeTextureIndex = this.getTexture2DIndex(shaderContent.sampler2DList.length + i);
+                sampler3D.index = shaderContent.sampler2DList.length + i;
+                usage.sampler3DList.push(sampler3D);
+            }
+            //usage.sampler3DList = shaderContent.sampler3DList;
+            this.synthesisShader(shaderContent, shaderBase);
+            return shaderContent;
+            // return ShaderPool.getGPUShader(shaderBase.shaderType, shaderContent.name, shaderContent.source);
+        };
+        ShaderPool.synthesisShader = function (content, shaderBase) {
+            var i;
+            var source = "";
+            for (i = 0; i < content.extensionList.length; i++) {
+                source += this.connectExtension(content.extensionList[i]);
+            }
+            source += "precision highp float;            \t\n";
+            for (i = 0; i < content.defineList.length; i++) {
+                source += this.connectDefine(content.defineList[i]);
+            }
+            ///var attribute
+            for (i = 0; i < content.attributeList.length; i++) {
+                source += this.connectAtt(content.attributeList[i]);
+            }
+            ///var struct
+            for (i = 0; i < content.structNames.length; i++) {
+                source += this.connectStruct(content.structDict[content.structNames[i]]);
+            }
+            ///var varying
+            for (i = 0; i < content.varyingList.length; i++) {
+                source += this.connectVarying(content.varyingList[i]);
+            }
+            ///temp
+            for (i = 0; i < content.tempList.length; i++) {
+                source += this.connectTemp(content.tempList[i]);
+            }
+            ///const
+            for (i = 0; i < content.constList.length; i++) {
+                source += this.connectConst(content.constList[i]);
+            }
+            ///uniform
+            for (i = 0; i < content.uniformList.length; i++) {
+                source += this.connectUniform(content.uniformList[i]);
+            }
+            ///sampler
+            for (i = 0; i < content.sampler2DList.length; i++) {
+                var sampler2D = content.sampler2DList[i];
+                source += this.connectSampler(sampler2D);
+            }
+            ///sampler
+            for (i = 0; i < content.sampler3DList.length; i++) {
+                var sampler3D = content.sampler3DList[i];
+                source += this.connectSampler3D(sampler3D);
+            }
+            ///---------------------------------------------------------------------------------
+            ///---------------------------------------------------------------------------------
+            for (i = 0; i < content.funcNames.length; i++) {
+                source += content.funcDict[content.funcNames[i]];
+            }
+            content.source = source;
+        };
+        /**
+        * @language zh_CN
+        *
+        * @param att
+        */
+        ShaderPool.connectAtt = function (att) {
+            return "attribute " + att.valueType + " " + att.name + "; \r\n";
+        };
+        /**
+        * @language zh_CN
+        *
+        * @param tempVar
+        */
+        ShaderPool.connectTemp = function (tempVar) {
+            if (tempVar.value != "") {
+                return tempVar.valueType + " " + tempVar.name + " = " + tempVar.value + "; \r\n";
+            }
+            return tempVar.valueType + " " + tempVar.name + "; \r\n";
+        };
+        /**
+        * @language zh_CN
+        *
+        * @param struct
+        */
+        ShaderPool.connectStruct = function (struct) {
+            return struct + " \r\n";
+        };
+        /**
+        * @language zh_CN
+        *
+        * @param constVar
+        */
+        ShaderPool.connectConst = function (constVar) {
+            return "const " + constVar.valueType + " " + constVar.name + " = " + constVar.value + "; \r\n";
+        };
+        /**
+        * @language zh_CN
+        *
+        * @param varying
+        */
+        ShaderPool.connectVarying = function (varying) {
+            return "varying " + varying.valueType + " " + varying.name + "; \r\n";
+        };
+        /**
+        * @language zh_CN
+        *
+        * @param unifrom
+        */
+        ShaderPool.connectUniform = function (unifrom) {
+            return "uniform " + unifrom.valueType + " " + unifrom.name + "; \r\n";
+        };
+        /**
+        * @language zh_CN
+        *
+        * @param sampler
+        */
+        ShaderPool.connectSampler = function (sampler) {
+            return "uniform sampler2D " + sampler.name + "; \r\n";
+        };
+        ShaderPool.connectSampler3D = function (sampler) {
+            return "uniform samplerCube " + sampler.name + "; \r\n";
+        };
+        ShaderPool.connectExtension = function (extension) {
+            return "#extension " + extension.name + ":" + extension.value + "\r\n";
+        };
+        ShaderPool.connectDefine = function (def) {
+            return def.key + " " + def.name + " " + def.value + "\r\n";
+        };
+        ShaderPool.getTexture2DIndex = function (i) {
+            switch (i) {
+                case 0:
+                    return egret3d.ContextSamplerType.TEXTURE_0;
+                case 1:
+                    return egret3d.ContextSamplerType.TEXTURE_1;
+                case 2:
+                    return egret3d.ContextSamplerType.TEXTURE_2;
+                case 3:
+                    return egret3d.ContextSamplerType.TEXTURE_3;
+                case 4:
+                    return egret3d.ContextSamplerType.TEXTURE_4;
+                case 5:
+                    return egret3d.ContextSamplerType.TEXTURE_5;
+                case 6:
+                    return egret3d.ContextSamplerType.TEXTURE_6;
+                case 7:
+                    return egret3d.ContextSamplerType.TEXTURE_7;
+                case 8:
+                    return egret3d.ContextSamplerType.TEXTURE_8;
+            }
+            throw new Error("texture not big then 8");
         };
         //总shader的map容器
         ShaderPool.programlib = new egret3d.HashMap();
-        ShaderPool.vsShaderHashMap = new egret3d.HashMap();
-        ShaderPool.fsShaderHashMap = new egret3d.HashMap();
+        // private static unRegisterShader(list: Array<string>) {
+        //     //to delet shader
+        // }
+        // private static registerProgram(vsShader: Shader, fsShader: Shader):Program3D {
+        //     var program3D: Program3D = this.context.creatProgram(vsShader, fsShader);
+        //     return program3D; 
+        // }
+        // private static unRegisterProgram(vsKey: string, fsKey: string) {
+        //     //to delet program
+        // }
+        // private static _shaderLibs: any = {};
+        // private static _methodLibs: any = {};
+        ShaderPool._shaderContentDict = [];
+        ShaderPool.vs_begin = "##define vs begin##";
+        ShaderPool.vs_end = "##define vs end##";
+        ShaderPool.fs_begin = "##define fs begin##";
+        ShaderPool.fs_end = "##define fs end##";
         return ShaderPool;
     }());
     egret3d.ShaderPool = ShaderPool;
@@ -12392,405 +12780,397 @@ var egret3d;
         GLSL.ShaderContent = ShaderContent;
     })(GLSL = egret3d.GLSL || (egret3d.GLSL = {}));
 })(egret3d || (egret3d = {}));
-var egret3d;
-(function (egret3d) {
-    /**
-    * @private
-    * @class egret3d.FuncData
-    * @classdesc
-    * shader系统工具类，管理所有要用到的shader文件
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    var ShaderUtil = (function () {
-        function ShaderUtil() {
-            this._shaderContentDict = [];
-            this.vs_begin = "##define vs begin##";
-            this.vs_end = "##define vs end##";
-            this.fs_begin = "##define fs begin##";
-            this.fs_end = "##define fs end##";
-        }
-        Object.defineProperty(ShaderUtil, "instance", {
-            /**
-            * @language zh_CN
-            *
-            * 单例
-            */
-            get: function () {
-                if (!this._instance) {
-                    this._instance = new ShaderUtil();
-                }
-                return this._instance;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-        * @language zh_CN
-        * @private
-        * 加载shader文件
-        */
-        ShaderUtil.prototype.load = function () {
-            var del = [];
-            var add = [];
-            for (var key in egret3d.ShaderLib.lib) {
-                var s_pos = egret3d.ShaderLib.lib[key].indexOf(this.vs_begin);
-                var e_pos = egret3d.ShaderLib.lib[key].indexOf(this.vs_end);
-                var isDel = false;
-                if (s_pos != -1) {
-                    isDel = true;
-                    s_pos += this.vs_begin.length;
-                    del.push(key);
-                    add[key + "vs"] = egret3d.ShaderLib.lib[key].substr(s_pos, e_pos - s_pos);
-                }
-                s_pos = egret3d.ShaderLib.lib[key].indexOf(this.fs_begin);
-                e_pos = egret3d.ShaderLib.lib[key].indexOf(this.fs_end);
-                if (s_pos != -1) {
-                    s_pos += this.fs_begin.length;
-                    if (isDel) {
-                        del.push(key);
-                    }
-                    add[key + "fs"] = egret3d.ShaderLib.lib[key].substr(s_pos, e_pos - s_pos);
-                }
-            }
-            for (var key in del) {
-                delete egret3d.ShaderLib.lib[del[key]];
-            }
-            for (var key in add) {
-                egret3d.ShaderLib.lib[key] = add[key];
-            }
-            for (var key in egret3d.ShaderLib.lib) {
-                var content = this.readShader(egret3d.ShaderLib.lib[key]);
-                this._shaderContentDict[key] = content;
-                content.name = key;
-            }
-        };
-        ShaderUtil.prototype.readShader = function (str) {
-            var content = new egret3d.GLSL.ShaderContent();
-            var shaderStr = egret3d.StringUtil.processShaderFile(str);
-            var source = egret3d.StringUtil.parseContent(shaderStr);
-            var shaderLine = source.concat();
-            while (shaderLine.length > 0) {
-                var line = shaderLine[0];
-                shaderLine.shift();
-                var ret = egret3d.StringUtil.getLineType(line);
-                var index = -1;
-                index = ret.indexOf("struct");
-                if (index != -1) {
-                    var tempArray = ret.split(" ");
-                    var structStr = line;
-                    content.addStruct(tempArray[1], structStr);
-                    egret3d.StringUtil.processStruct(tempArray[1], structStr, content);
-                    continue;
-                }
-                index = ret.indexOf("function");
-                if (index != -1) {
-                    var tempArray = ret.split(" ");
-                    var func = line;
-                    content.addFunc(tempArray[1], func);
-                    continue;
-                }
-                index = ret.indexOf("unknown");
-                if (index != -1) {
-                    var tempArray = egret3d.StringUtil.parseLines(line);
-                    var key = egret3d.StringUtil.getVarKey(tempArray);
-                    var valueType = egret3d.StringUtil.getVarType(tempArray);
-                    if (valueType == "sampler2D") {
-                        var sampler2D = egret3d.StringUtil.getSampler2D(line);
-                        if (sampler2D)
-                            content.addVar(sampler2D);
-                    }
-                    else if (valueType == "samplerCube") {
-                        var sampler3D = egret3d.StringUtil.getSampler3D(line);
-                        if (sampler3D)
-                            content.addVar(sampler3D);
-                    }
-                    else {
-                        if (key == "attribute") {
-                            var att = egret3d.StringUtil.getAttribute(line);
-                            if (att)
-                                content.addVar(att);
-                        }
-                        else if (key == "varying") {
-                            var varying = egret3d.StringUtil.getVarying(line);
-                            if (varying)
-                                content.addVar(varying);
-                        }
-                        else if (key == "uniform") {
-                            var uniform = egret3d.StringUtil.getUniform(line);
-                            if (uniform)
-                                content.addVar(uniform);
-                        }
-                        else if (key == "const") {
-                            var ConstVar = egret3d.StringUtil.getConst(line);
-                            if (ConstVar)
-                                content.addVar(ConstVar);
-                        }
-                        else if (key == "#extension") {
-                            var extension = egret3d.StringUtil.getExtension(line);
-                            if (extension)
-                                content.addVar(extension);
-                        }
-                        else if (key == "#define") {
-                            var def = egret3d.StringUtil.getDefine(line);
-                            if (def)
-                                content.addVar(def);
-                        }
-                        else {
-                            content.addVar(egret3d.StringUtil.getTemper(line));
-                        }
-                    }
-                    continue;
-                }
-            }
-            return content;
-        };
-        /**
-        * @language zh_CN
-        * 返回组合shader后的内容
-        * @param shaderNameList 要组合的shader名字列表
-        * @param usage
-        * @returns shader 内容
-        */
-        ShaderUtil.prototype.fillShaderContent = function (shaderBase, shaderNameList, usage) {
-            var shaderContent;
-            var i = 0;
-            var varName = "";
-            for (i = 0; i < shaderNameList.length; ++i) {
-                if (varName != "") {
-                    varName += "/";
-                }
-                varName += shaderNameList[i];
-            }
-            varName += "/d" + usage.maxDirectLight;
-            varName += "/s" + usage.maxSpotLight;
-            varName += "/p" + usage.maxPointLight;
-            varName += "/b" + usage.maxBone;
-            if (!this._shaderContentDict[varName]) {
-                shaderContent = new egret3d.GLSL.ShaderContent();
-                shaderContent.name = varName;
-                for (i = 0; i < shaderNameList.length; ++i) {
-                    var tempContent = this._shaderContentDict[shaderNameList[i]];
-                    shaderContent.addContent(tempContent);
-                }
-            }
-            else {
-                shaderContent = this._shaderContentDict[varName].clone();
-            }
-            for (i = 0; i < shaderContent.attributeList.length; i++) {
-                varName = shaderContent.attributeList[i].varName;
-                usage[varName] = shaderContent.attributeList[i];
-            }
-            for (i = 0; i < shaderContent.varyingList.length; i++) {
-                varName = shaderContent.varyingList[i].varName;
-                if (!usage[varName]) {
-                    usage[varName] = shaderContent.varyingList[i];
-                }
-            }
-            for (i = 0; i < shaderContent.tempList.length; i++) {
-                varName = shaderContent.tempList[i].varName;
-                usage[varName] = shaderContent.tempList[i];
-            }
-            for (i = 0; i < shaderContent.uniformList.length; i++) {
-                varName = shaderContent.uniformList[i].varName;
-                usage[varName] = shaderContent.uniformList[i];
-            }
-            var constR;
-            for (i = 0; i < shaderContent.constList.length; i++) {
-                varName = shaderContent.constList[i].varName;
-                constR = shaderContent.constList[i];
-                usage[varName] = constR;
-                switch (varName) {
-                    case "max_directLight":
-                        constR.value = usage.maxDirectLight;
-                        break;
-                    case "max_spotLight":
-                        constR.value = usage.maxSpotLight;
-                        break;
-                    case "max_pointLight":
-                        constR.value = usage.maxPointLight;
-                        break;
-                    case "bonesNumber":
-                        shaderBase.maxBone = usage.maxBone;
-                        constR.value = usage.maxBone;
-                        break;
-                }
-            }
-            ///sampler
-            for (i = 0; i < shaderContent.sampler2DList.length; i++) {
-                var sampler2D = shaderContent.sampler2DList[i];
-                sampler2D.index = i;
-                usage.sampler2DList.push(sampler2D);
-                sampler2D.activeTextureIndex = ShaderUtil.getTexture2DIndex(i);
-            }
-            //for (i = 0; i < usage.sampler2DList.length; i++) {
-            //    var sampler2D: GLSL.Sampler2D = usage.sampler2DList[i];
-            //    sampler2D.index = i;
-            //}
-            ///sampler
-            for (i = 0; i < shaderContent.sampler3DList.length; i++) {
-                var sampler3D = shaderContent.sampler3DList[i];
-                sampler3D.activeTextureIndex = ShaderUtil.getTexture2DIndex(shaderContent.sampler2DList.length + i);
-                sampler3D.index = shaderContent.sampler2DList.length + i;
-                usage.sampler3DList.push(sampler3D);
-            }
-            //usage.sampler3DList = shaderContent.sampler3DList;
-            this.synthesisShader(shaderContent, shaderBase);
-            return egret3d.ShaderPool.getGPUShader(shaderBase.shaderType, shaderContent.name, shaderContent.source);
-        };
-        ShaderUtil.prototype.synthesisShader = function (content, shaderBase) {
-            var i;
-            var source = "";
-            for (i = 0; i < content.extensionList.length; i++) {
-                source += ShaderUtil.connectExtension(content.extensionList[i]);
-            }
-            source += "precision highp float;            \t\n";
-            for (i = 0; i < content.defineList.length; i++) {
-                source += ShaderUtil.connectDefine(content.defineList[i]);
-            }
-            ///var attribute
-            for (i = 0; i < content.attributeList.length; i++) {
-                source += ShaderUtil.connectAtt(content.attributeList[i]);
-            }
-            ///var struct
-            for (i = 0; i < content.structNames.length; i++) {
-                source += ShaderUtil.connectStruct(content.structDict[content.structNames[i]]);
-            }
-            ///var varying
-            for (i = 0; i < content.varyingList.length; i++) {
-                source += ShaderUtil.connectVarying(content.varyingList[i]);
-            }
-            ///temp
-            for (i = 0; i < content.tempList.length; i++) {
-                source += ShaderUtil.connectTemp(content.tempList[i]);
-            }
-            ///const
-            for (i = 0; i < content.constList.length; i++) {
-                source += ShaderUtil.connectConst(content.constList[i]);
-            }
-            ///uniform
-            for (i = 0; i < content.uniformList.length; i++) {
-                source += ShaderUtil.connectUniform(content.uniformList[i]);
-            }
-            ///sampler
-            for (i = 0; i < content.sampler2DList.length; i++) {
-                var sampler2D = content.sampler2DList[i];
-                source += ShaderUtil.connectSampler(sampler2D);
-            }
-            ///sampler
-            for (i = 0; i < content.sampler3DList.length; i++) {
-                var sampler3D = content.sampler3DList[i];
-                source += ShaderUtil.connectSampler3D(sampler3D);
-            }
-            ///---------------------------------------------------------------------------------
-            ///---------------------------------------------------------------------------------
-            for (i = 0; i < content.funcNames.length; i++) {
-                source += content.funcDict[content.funcNames[i]];
-            }
-            content.source = source;
-        };
-        //----------------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------------
-        /**
-        * @language zh_CN
-        *
-        * @param att
-        */
-        ShaderUtil.connectAtt = function (att) {
-            return "attribute " + att.valueType + " " + att.name + "; \r\n";
-        };
-        /**
-        * @language zh_CN
-        *
-        * @param tempVar
-        */
-        ShaderUtil.connectTemp = function (tempVar) {
-            if (tempVar.value != "") {
-                return tempVar.valueType + " " + tempVar.name + " = " + tempVar.value + "; \r\n";
-            }
-            return tempVar.valueType + " " + tempVar.name + "; \r\n";
-        };
-        /**
-        * @language zh_CN
-        *
-        * @param struct
-        */
-        ShaderUtil.connectStruct = function (struct) {
-            return struct + " \r\n";
-        };
-        /**
-        * @language zh_CN
-        *
-        * @param constVar
-        */
-        ShaderUtil.connectConst = function (constVar) {
-            return "const " + constVar.valueType + " " + constVar.name + " = " + constVar.value + "; \r\n";
-        };
-        /**
-        * @language zh_CN
-        *
-        * @param varying
-        */
-        ShaderUtil.connectVarying = function (varying) {
-            return "varying " + varying.valueType + " " + varying.name + "; \r\n";
-        };
-        /**
-        * @language zh_CN
-        *
-        * @param unifrom
-        */
-        ShaderUtil.connectUniform = function (unifrom) {
-            return "uniform " + unifrom.valueType + " " + unifrom.name + "; \r\n";
-        };
-        /**
-        * @language zh_CN
-        *
-        * @param sampler
-        */
-        ShaderUtil.connectSampler = function (sampler) {
-            return "uniform sampler2D " + sampler.name + "; \r\n";
-        };
-        ShaderUtil.connectSampler3D = function (sampler) {
-            return "uniform samplerCube " + sampler.name + "; \r\n";
-        };
-        ShaderUtil.connectExtension = function (extension) {
-            return "#extension " + extension.name + ":" + extension.value + "\r\n";
-        };
-        ShaderUtil.connectDefine = function (def) {
-            return def.key + " " + def.name + " " + def.value + "\r\n";
-        };
-        ShaderUtil.getTexture2DIndex = function (i) {
-            switch (i) {
-                case 0:
-                    return egret3d.ContextSamplerType.TEXTURE_0;
-                case 1:
-                    return egret3d.ContextSamplerType.TEXTURE_1;
-                case 2:
-                    return egret3d.ContextSamplerType.TEXTURE_2;
-                case 3:
-                    return egret3d.ContextSamplerType.TEXTURE_3;
-                case 4:
-                    return egret3d.ContextSamplerType.TEXTURE_4;
-                case 5:
-                    return egret3d.ContextSamplerType.TEXTURE_5;
-                case 6:
-                    return egret3d.ContextSamplerType.TEXTURE_6;
-                case 7:
-                    return egret3d.ContextSamplerType.TEXTURE_7;
-                case 8:
-                    return egret3d.ContextSamplerType.TEXTURE_8;
-            }
-            throw new Error("texture not big then 8");
-        };
-        ShaderUtil._shaderLibs = {};
-        ShaderUtil._methodLibs = {};
-        return ShaderUtil;
-    }());
-    egret3d.ShaderUtil = ShaderUtil;
-})(egret3d || (egret3d = {}));
+// module egret3d {
+//     /**
+//     * @private
+//     * @class egret3d.FuncData
+//     * @classdesc
+//     * shader系统工具类，管理所有要用到的shader文件
+//     * @version Egret 3.0
+//     * @platform Web,Native
+//     */
+//     export class ShaderUtil {
+//         private static _shaderLibs: any = {};
+//         private static _methodLibs: any = {};
+//         private _shaderContentDict: any = [];
+//         private static _instance: ShaderUtil;
+//         private vs_begin = "##define vs begin##";
+//         private vs_end = "##define vs end##";
+//         private fs_begin = "##define fs begin##";
+//         private fs_end = "##define fs end##";
+//         /**
+//         * @language zh_CN
+//         *  
+//         * 单例
+//         */
+//         public static get instance(): ShaderUtil {
+//             if (!this._instance) {
+//                 this._instance = new ShaderUtil();
+//             }
+//             return this._instance;
+//         }
+//         /**
+//         * @language zh_CN
+//         * @private
+//         * 加载shader文件
+//         */
+//         public load() {
+//             var del: any = [];
+//             var add: any = [];
+//             for (var key in ShaderLib.lib) {
+//                 var s_pos: number = ShaderLib.lib[key].indexOf(this.vs_begin);
+//                 var e_pos: number = ShaderLib.lib[key].indexOf(this.vs_end);
+//                 var isDel: boolean = false;
+//                 if (s_pos != -1) {
+//                     isDel = true;
+//                     s_pos += this.vs_begin.length;
+//                     del.push(key);
+//                     add[key + "vs"] = ShaderLib.lib[key].substr(s_pos, e_pos - s_pos);
+//                 }
+//                 s_pos = ShaderLib.lib[key].indexOf(this.fs_begin);
+//                 e_pos = ShaderLib.lib[key].indexOf(this.fs_end);
+//                 if (s_pos != -1) {
+//                     s_pos += this.fs_begin.length;
+//                     if (isDel) {
+//                         del.push(key);
+//                     }
+//                     add[key + "fs"] = ShaderLib.lib[key].substr(s_pos, e_pos - s_pos);
+//                 }
+//             }
+//             for (var key in del) {
+//                 delete ShaderLib.lib[del[key]];
+//             }
+//             for (var key in add) {
+//                 ShaderLib.lib[key] = add[key];
+//             }
+//             for (var key in ShaderLib.lib) {
+//                 var content = this.readShader(ShaderLib.lib[key]);
+//                 this._shaderContentDict[key] = content;
+//                 content.name = key;
+//             }
+//         }
+//         private readShader(str: string): GLSL.ShaderContent {
+//             var content: GLSL.ShaderContent = new GLSL.ShaderContent();
+//             var shaderStr: string = StringUtil.processShaderFile(str);
+//             var source: Array<string> = StringUtil.parseContent(shaderStr);
+//             var shaderLine: Array<string> = source.concat();
+//             while (shaderLine.length > 0) {
+//                 var line: string = shaderLine[0];
+//                 shaderLine.shift();
+//                 var ret: string = StringUtil.getLineType(line);
+//                 var index: number = -1;
+//                 index = ret.indexOf("struct");
+//                 if (index != -1) {
+//                     var tempArray: Array<string> = ret.split(" ");
+//                     var structStr: string = line;
+//                     content.addStruct(tempArray[1], structStr);
+//                     StringUtil.processStruct(tempArray[1], structStr, content);
+//                     continue;
+//                 }
+//                 index = ret.indexOf("function");
+//                 if (index != -1) {
+//                     var tempArray: Array<string> = ret.split(" ");
+//                     var func: string = line;
+//                     content.addFunc(tempArray[1], func);
+//                     continue;
+//                 }
+//                 index = ret.indexOf("unknown");
+//                 if (index != -1) {
+//                     var tempArray: Array<string> = StringUtil.parseLines(line);
+//                     var key: string = StringUtil.getVarKey(tempArray);
+//                     var valueType: string = StringUtil.getVarType(tempArray);
+//                     if (valueType == "sampler2D") {
+//                         var sampler2D: GLSL.Sampler2D = StringUtil.getSampler2D(line);
+//                         if (sampler2D)
+//                             content.addVar(sampler2D);
+//                     }
+//                     else if (valueType == "samplerCube") {
+//                         var sampler3D: GLSL.Sampler3D = StringUtil.getSampler3D(line);
+//                         if (sampler3D)
+//                             content.addVar(sampler3D);
+//                     }
+//                     else {
+//                         if (key == "attribute") {
+//                             var att: GLSL.Attribute = StringUtil.getAttribute(line);
+//                             if (att)
+//                                 content.addVar(att);
+//                         }
+//                         else if (key == "varying") {
+//                             var varying: GLSL.Varying = StringUtil.getVarying(line);
+//                             if (varying)
+//                                 content.addVar(varying);
+//                         }
+//                         else if (key == "uniform") {
+//                             var uniform: GLSL.Uniform = StringUtil.getUniform(line);
+//                             if (uniform)
+//                                 content.addVar(uniform);
+//                         }
+//                         else if (key == "const") {
+//                             var ConstVar: GLSL.ConstVar = StringUtil.getConst(line);
+//                             if (ConstVar)
+//                                 content.addVar(ConstVar);
+//                         }
+//                         else if (key == "#extension"){
+//                             var extension: GLSL.Extension = StringUtil.getExtension(line);
+//                             if (extension)
+//                                 content.addVar(extension);
+//                         }
+//                         else if (key == "#define") {
+//                             var def: GLSL.DefineVar = StringUtil.getDefine(line);
+//                             if (def)
+//                                 content.addVar(def);
+//                         }
+//                         else {
+//                             content.addVar(StringUtil.getTemper(line));
+//                         }
+//                     }
+//                     continue;
+//                 }
+//             }
+//             return content;
+//         }
+//         /**
+//         * @language zh_CN
+//         * 返回组合shader后的内容
+//         * @param shaderNameList 要组合的shader名字列表
+//         * @param usage
+//         * @returns shader 内容
+//         */
+//         public fillShaderContent(shaderBase: ShaderBase, shaderNameList: Array<string>, usage: PassUsage): Shader {
+//             var shaderContent: GLSL.ShaderContent;
+//             var i: number = 0;
+//             var varName: string = "";
+//             for (i = 0; i < shaderNameList.length; ++i) {
+//                 if (varName != "") {
+//                     varName += "/";
+//                 }
+//                 varName += shaderNameList[i];
+//             }
+//             varName += "/d" + usage.maxDirectLight;
+//             varName += "/s" + usage.maxSpotLight;
+//             varName += "/p" + usage.maxPointLight;
+//             varName += "/b" + usage.maxBone;
+//             if (!this._shaderContentDict[varName]) {
+//                 shaderContent = new GLSL.ShaderContent();
+//                 shaderContent.name = varName;
+//                 for (i = 0; i < shaderNameList.length; ++i) {
+//                     var tempContent: GLSL.ShaderContent = this._shaderContentDict[shaderNameList[i]];
+//                     shaderContent.addContent(tempContent);
+//                 }
+//             }
+//             else {
+//                 shaderContent = this._shaderContentDict[varName].clone();
+//             }
+//             for (i = 0; i < shaderContent.attributeList.length; i++) {
+//                 varName = shaderContent.attributeList[i].varName;
+//                 usage[varName] = shaderContent.attributeList[i];
+//             }
+//             for (i = 0; i < shaderContent.varyingList.length; i++) {
+//                 varName = shaderContent.varyingList[i].varName;
+//                 if (!usage[varName]) {
+//                     usage[varName] = shaderContent.varyingList[i];
+//                 }
+//             }
+//             for (i = 0; i < shaderContent.tempList.length; i++) {
+//                 varName = shaderContent.tempList[i].varName;
+//                 usage[varName] = shaderContent.tempList[i];
+//             }
+//             for (i = 0; i < shaderContent.uniformList.length; i++) {
+//                 varName = shaderContent.uniformList[i].varName;
+//                 usage[varName] = shaderContent.uniformList[i];
+//             }
+//             var constR: GLSL.ConstVar;
+//             for (i = 0; i < shaderContent.constList.length; i++) {
+//                 varName = shaderContent.constList[i].varName;
+//                 constR = shaderContent.constList[i];
+//                 usage[varName] = constR;
+//                 switch (varName) {
+//                     case "max_directLight":
+//                         constR.value = usage.maxDirectLight;
+//                         break;
+//                     case "max_spotLight":
+//                         constR.value = usage.maxSpotLight;
+//                         break;
+//                     case "max_pointLight":
+//                         constR.value = usage.maxPointLight;
+//                         break;
+//                     case "bonesNumber":
+//                         shaderBase.maxBone = usage.maxBone;
+//                         constR.value = usage.maxBone;
+//                         break;
+//                 }
+//             }
+//             ///sampler
+//             for (i = 0; i < shaderContent.sampler2DList.length; i++) {
+//                 var sampler2D: GLSL.Sampler2D = shaderContent.sampler2DList[i];
+//                 sampler2D.index = i;
+//                 usage.sampler2DList.push(sampler2D);
+//                 sampler2D.activeTextureIndex = ShaderUtil.getTexture2DIndex(i);
+//             }
+//             //for (i = 0; i < usage.sampler2DList.length; i++) {
+//             //    var sampler2D: GLSL.Sampler2D = usage.sampler2DList[i];
+//             //    sampler2D.index = i;
+//             //}
+//             ///sampler
+//             for (i = 0; i < shaderContent.sampler3DList.length; i++) {
+//                 var sampler3D: GLSL.Sampler3D = shaderContent.sampler3DList[i];
+//                 sampler3D.activeTextureIndex = ShaderUtil.getTexture2DIndex(shaderContent.sampler2DList.length + i);
+//                 sampler3D.index = shaderContent.sampler2DList.length + i;
+//                 usage.sampler3DList.push(sampler3D);
+//             }
+//             //usage.sampler3DList = shaderContent.sampler3DList;
+//             this.synthesisShader(shaderContent, shaderBase);
+//             return ShaderPool.getGPUShader(shaderBase.shaderType, shaderContent.name, shaderContent.source);
+//         }
+//         private synthesisShader(content: GLSL.ShaderContent, shaderBase:ShaderBase) {
+//             var i: number; 
+//             var source: string = "";
+//             for (i = 0; i < content.extensionList.length; i++) {
+//                 source += ShaderUtil.connectExtension(content.extensionList[i]);
+//             }
+//             source += "precision highp float;            \t\n";
+//             for (i = 0; i < content.defineList.length; i++) {
+//                 source += ShaderUtil.connectDefine(content.defineList[i]);
+//             }
+//             ///var attribute
+//             for (i = 0; i < content.attributeList.length; i++) {
+//                 source += ShaderUtil.connectAtt(content.attributeList[i]);
+//             }
+//             ///var struct
+//             for (i = 0; i < content.structNames.length; i++) {
+//                 source += ShaderUtil.connectStruct(content.structDict[content.structNames[i]]);
+//             }
+//             ///var varying
+//             for (i = 0; i < content.varyingList.length; i++) {
+//                 source += ShaderUtil.connectVarying(content.varyingList[i]);
+//             }
+//             ///temp
+//             for (i = 0; i < content.tempList.length; i++) {
+//                 source += ShaderUtil.connectTemp(content.tempList[i]);
+//             }
+//             ///const
+//             for (i = 0; i < content.constList.length; i++) {
+//                 source += ShaderUtil.connectConst(content.constList[i]);
+//             }
+//             ///uniform
+//             for (i = 0; i < content.uniformList.length; i++) {
+//                 source += ShaderUtil.connectUniform(content.uniformList[i]);
+//             }
+//             ///sampler
+//             for (i = 0; i < content.sampler2DList.length; i++) {
+//                 var sampler2D: GLSL.Sampler2D = content.sampler2DList[i];
+//                 source += ShaderUtil.connectSampler(sampler2D);
+//             }
+//             ///sampler
+//             for (i = 0; i < content.sampler3DList.length; i++) {
+//                 var sampler3D: GLSL.Sampler3D = content.sampler3DList[i];
+//                 source += ShaderUtil.connectSampler3D(sampler3D);
+//             }
+//             ///---------------------------------------------------------------------------------
+//             ///---------------------------------------------------------------------------------
+//             for (i = 0; i < content.funcNames.length; i++) {
+//                 source += content.funcDict[content.funcNames[i]];
+//             }
+//             content.source = source;
+//         }
+//        //----------------------------------------------------------------------------------------------------------------
+//        //----------------------------------------------------------------------------------------------------------------
+//        //----------------------------------------------------------------------------------------------------------------
+//        //----------------------------------------------------------------------------------------------------------------
+//        //----------------------------------------------------------------------------------------------------------------
+//         /**
+//         * @language zh_CN
+//         * 
+//         * @param att 
+//         */
+//         public static connectAtt(att: GLSL.Attribute):string {
+//             return "attribute " + att.valueType + " " + att.name + "; \r\n";
+//         }
+//         /**
+//         * @language zh_CN
+//         * 
+//         * @param tempVar 
+//         */
+//         private static connectTemp(tempVar: GLSL.TmpVar): string {
+//             if (tempVar.value != "") {
+//                 return tempVar.valueType + " " + tempVar.name + " = " + tempVar.value + "; \r\n";
+//             }
+//             return tempVar.valueType + " " + tempVar.name + "; \r\n";
+//         }
+//         /**
+//         * @language zh_CN
+//         * 
+//         * @param struct 
+//         */
+//         private static connectStruct(struct: string): string {
+//             return struct + " \r\n";
+//         }
+//         /**
+//         * @language zh_CN
+//         * 
+//         * @param constVar 
+//         */
+//         private static connectConst(constVar: GLSL.ConstVar): string {
+//             return "const " + constVar.valueType + " " + constVar.name + " = " + constVar.value + "; \r\n";
+//         }
+//         /**
+//         * @language zh_CN
+//         * 
+//         * @param varying 
+//         */
+//         private static connectVarying(varying: GLSL.Varying): string {
+//             return "varying " + varying.valueType + " " + varying.name + "; \r\n";
+//         }
+//         /**
+//         * @language zh_CN
+//         * 
+//         * @param unifrom 
+//         */
+//         private static connectUniform(unifrom: GLSL.Uniform): string {
+//             return "uniform " + unifrom.valueType + " " + unifrom.name + "; \r\n";
+//         }
+//         /**
+//         * @language zh_CN
+//         * 
+//         * @param sampler 
+//         */
+//         private static connectSampler(sampler: GLSL.Sampler2D): string {
+//             return "uniform sampler2D " + sampler.name + "; \r\n";
+//         }
+//         private static connectSampler3D(sampler: GLSL.Sampler3D): string {
+//             return "uniform samplerCube " + sampler.name + "; \r\n";
+//         }
+//         private static connectExtension(extension: GLSL.Extension): string {
+//             return "#extension " + extension.name + ":" +  extension.value + "\r\n";
+//         }
+//         private static connectDefine(def: GLSL.DefineVar): string {
+//             return def.key + " " + def.name + " " + def.value + "\r\n";
+//         }
+//         private static getTexture2DIndex(i: number): number {
+//             switch (i) {
+//                 case 0:
+//                     return ContextSamplerType.TEXTURE_0;
+//                 case 1:
+//                     return ContextSamplerType.TEXTURE_1;
+//                 case 2:
+//                     return ContextSamplerType.TEXTURE_2;
+//                 case 3:
+//                     return ContextSamplerType.TEXTURE_3;
+//                 case 4:
+//                     return ContextSamplerType.TEXTURE_4;
+//                 case 5:
+//                     return ContextSamplerType.TEXTURE_5;
+//                 case 6:
+//                     return ContextSamplerType.TEXTURE_6;
+//                 case 7:
+//                     return ContextSamplerType.TEXTURE_7;
+//                 case 8:
+//                     return ContextSamplerType.TEXTURE_8;
+//             }
+//             throw new Error("texture not big then 8")
+//         }
+//     }
+// } 
 var egret3d;
 (function (egret3d) {
     var KDData = (function () {
@@ -17769,19 +18149,23 @@ var egret3d;
         * @version Egret 3.0
         * @platform Web,Native
         */
-        Context3DProxy.prototype.creatProgram = function (vsShader, fsShader) {
+        Context3DProxy.prototype.createProgram = function (vsShader, fsShader) {
             var shaderProgram = Context3DProxy.gl.createProgram();
-            Context3DProxy.gl.attachShader(shaderProgram, vsShader.shader);
-            Context3DProxy.gl.attachShader(shaderProgram, fsShader.shader);
+            Context3DProxy.gl.attachShader(shaderProgram, vsShader);
+            Context3DProxy.gl.attachShader(shaderProgram, fsShader);
             Context3DProxy.gl.linkProgram(shaderProgram);
             var p = Context3DProxy.gl.getProgramParameter(shaderProgram, Context3DProxy.gl.LINK_STATUS);
             if (!p) {
-                console.log("vsShader error" + Context3DProxy.gl.getShaderInfoLog(vsShader.shader));
-                console.log("fsShader error" + Context3DProxy.gl.getShaderInfoLog(fsShader.shader));
+                console.log("vsShader error" + Context3DProxy.gl.getShaderInfoLog(vsShader));
+                console.log("fsShader error" + Context3DProxy.gl.getShaderInfoLog(fsShader));
                 console.log("program error" + Context3DProxy.gl.getProgramInfoLog(shaderProgram));
             }
-            var program = new egret3d.Program3D(shaderProgram);
-            return program;
+            return shaderProgram;
+            // var program: Program3D = new Program3D(shaderProgram);
+            // return program;
+        };
+        Context3DProxy.prototype.deleteProgram = function (program) {
+            Context3DProxy.gl.deleteProgram(program);
         };
         /**
         * @language zh_CN
@@ -18041,14 +18425,15 @@ var egret3d;
         * @version Egret 3.0
         * @platform Web,Native
         */
-        Context3DProxy.prototype.creatVertexShader = function (source) {
-            var shader = Context3DProxy.gl.createShader(Context3DProxy.gl.VERTEX_SHADER);
-            Context3DProxy.gl.shaderSource(shader, source);
-            Context3DProxy.gl.compileShader(shader);
-            var tmpShader = new egret3d.Shader(shader);
-            tmpShader.id = (egret3d.Shader.ID_COUNT++).toString();
-            return tmpShader;
-        };
+        // public creatVertexShader(source: string): WebGLShader {
+        //     var shader: WebGLShader = Context3DProxy.gl.createShader(Context3DProxy.gl.VERTEX_SHADER);
+        //     Context3DProxy.gl.shaderSource(shader, source);
+        //     Context3DProxy.gl.compileShader(shader);
+        //     return shader;
+        //     // var tmpShader: Shader = new Shader(shader);
+        //     // tmpShader.id = (Shader.ID_COUNT++).toString();
+        //     // return tmpShader;
+        // }
         /**
         * @language zh_CN
         * 向显卡请求创建片段shader对象
@@ -18057,13 +18442,23 @@ var egret3d;
         * @version Egret 3.0
         * @platform Web,Native
         */
-        Context3DProxy.prototype.creatFragmentShader = function (source) {
-            var shader = Context3DProxy.gl.createShader(Context3DProxy.gl.FRAGMENT_SHADER);
+        // public creatFragmentShader(source: string): WebGLShader {
+        //     var shader: WebGLShader = Context3DProxy.gl.createShader(Context3DProxy.gl.FRAGMENT_SHADER);
+        //     Context3DProxy.gl.shaderSource(shader, source);
+        //     Context3DProxy.gl.compileShader(shader);
+        //     return shader;
+        //     // var tmpShader: Shader = new Shader(shader);
+        //     // tmpShader.id = (Shader.ID_COUNT++).toString();
+        //     // return tmpShader;
+        // }
+        Context3DProxy.prototype.createShader = function (type, source) {
+            var shader = Context3DProxy.gl.createShader(type);
             Context3DProxy.gl.shaderSource(shader, source);
             Context3DProxy.gl.compileShader(shader);
-            var tmpShader = new egret3d.Shader(shader);
-            tmpShader.id = (egret3d.Shader.ID_COUNT++).toString();
-            return tmpShader;
+            return shader;
+        };
+        Context3DProxy.prototype.deleteShader = function (shader) {
+            Context3DProxy.gl.deleteShader(shader);
         };
         /**
         * @language zh_CN
@@ -18122,7 +18517,7 @@ var egret3d;
             ;
             this.programChange = true;
             this.program = program;
-            Context3DProxy.gl.useProgram(program.program);
+            Context3DProxy.gl.useProgram(program);
         };
         /**
         * @language zh_CN
@@ -18132,8 +18527,8 @@ var egret3d;
         * @version Egret 3.0
         * @platform Web,Native
         */
-        Context3DProxy.prototype.getUniformLocation = function (programe3D, name) {
-            return Context3DProxy.gl.getUniformLocation(programe3D.program, name);
+        Context3DProxy.prototype.getUniformLocation = function (program, name) {
+            return Context3DProxy.gl.getUniformLocation(program, name);
         };
         /**
         * @language zh_CN
@@ -18516,8 +18911,8 @@ var egret3d;
         * @version Egret 3.0
         * @platform Web,Native
         */
-        Context3DProxy.prototype.getShaderAttribLocation = function (programe, attribName) {
-            return Context3DProxy.gl.getAttribLocation(programe.program, attribName);
+        Context3DProxy.prototype.getShaderAttribLocation = function (program, attribName) {
+            return Context3DProxy.gl.getAttribLocation(program, attribName);
         };
         /**
         * @language zh_CN
@@ -18882,136 +19277,154 @@ var egret3d;
     }());
     egret3d.MipmapData = MipmapData;
 })(egret3d || (egret3d = {}));
-var egret3d;
-(function (egret3d) {
-    /**
-    * @class egret3d.Program3D
-    * @classdesc
-    * Program3D 类表示上载到渲染上下文的一对渲染程序（也称为“编译后的着色器”）。</p>
-    *
-    * 由 Program3D 对象管理的程序控制 drawTriangles 调用期间的整个三角形渲染。使用 upload 方法将二进制字节码上载到渲染上下文。（上载完成后，将不再引用原始字节数组中的数据；更改或放弃源字节数组不会更改该程序。）。</p>
-    * 这些程序始终由两个相互关联的部分组成：顶点程序和片段程序。</p>
-    * 顶点程序会操作 VertexBuffer3D 中定义的数据，负责将顶点投影到剪辑空间，并将任何所需的顶点数据（例如颜色）传递到片段着色器。</p>
-    * 片段着色器会操作顶点程序传递给它的属性，并为三角形的每个栅格化片段生成颜色，最终形成像素颜色。请注意，片段程序在 3D 编程文献中具有多个名称，包括片段着色器和像素着色器。</p>
-    * 通过将相应 Program3D 实例传递到 Context3DProxy setProgram() 方法，指定后续渲染操作要使用的程序对。</p>
-    * 您无法直接创建 Program3D 对象；请改用 Context3DProxy createProgram() 方法。</p>
-    *
-    * @see egret3d.Program3D
-    * @see egret3d.IndexBuffer3D
-    * @see egret3d.VertexBuffer3D
-    * @see egret3d.Texture2D
-    * @see egret3d.Shader
-    * @see egret3d.CubeTexture
-    * @includeExample core/context/Program3D.ts
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    var Program3D = (function () {
-        /**
-        * @language zh_CN
-        * 构造函数
-        * @param pg3D WebGLProgram对象
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        function Program3D(pg3D) {
-            this.name = "";
-            this.program = pg3D;
-        }
-        /**
-        * @language zh_CN
-        * 释放接口
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        Program3D.prototype.dispose = function () {
-            if (this.program) {
-                egret3d.Context3DProxy.gl.deleteProgram(this.program);
-                this.program = null;
-            }
-        };
-        return Program3D;
-    }());
-    egret3d.Program3D = Program3D;
-})(egret3d || (egret3d = {}));
-var egret3d;
-(function (egret3d) {
-    /**
-    * @class egret3d.Shader
-    * @classdesc
-    * Shader 类表示上载到渲染上下文的一对渲染程序中的 顶点找色shader，或片段着色的shader 。</p>
-    *
-    * shader 是基于 opengl es 2.0 标准 也就是webgl版本的shader着色器。</p>
-    *
-    * @see egret3d.Program3D
-    * @see egret3d.IndexBuffer3D
-    * @see egret3d.VertexBuffer3D
-    * @see egret3d.Texture2D
-    * @see egret3d.Shader
-    * @see egret3d.CubeTexture
-    * @includeExample core/context/Shader.ts
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    var Shader = (function () {
-        /**
-        * @language zh_CN
-        * 构造
-        * @param shader WebGLShader对象
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        function Shader(shader) {
-            this._shader = shader;
-        }
-        Object.defineProperty(Shader.prototype, "shader", {
-            /**
-            * @language zh_CN
-            * @private
-            * WebGLShader 的引用
-            */
-            get: function () {
-                return this._shader;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-        * @language zh_CN
-        * 释放接口
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        Shader.prototype.dispose = function () {
-            if (this._shader) {
-                egret3d.Context3DProxy.gl.deleteShader(this._shader);
-                this._shader = null;
-            }
-        };
-        /**
-        * @language zh_CN
-        * @private
-        * 声明 shader 为顶点 类型
-        * @see egret3d.ShaderPool
-        */
-        Shader.vertex = 0;
-        /**
-        * @language zh_CN
-        * @private
-        * 声明 shader 为片段 类型
-        * @see egret3d.ShaderPool
-        */
-        Shader.fragment = 1;
-        /**
-       * @language zh_CN
-       * @private
-       * 获取已经有的shader 的ID
-       */
-        Shader.ID_COUNT = 0;
-        return Shader;
-    }());
-    egret3d.Shader = Shader;
-})(egret3d || (egret3d = {}));
+// module egret3d {
+//     /**
+//     * @class egret3d.Program3D
+//     * @classdesc
+//     * Program3D 类表示上载到渲染上下文的一对渲染程序（也称为“编译后的着色器”）。</p>
+//     * 
+//     * 由 Program3D 对象管理的程序控制 drawTriangles 调用期间的整个三角形渲染。使用 upload 方法将二进制字节码上载到渲染上下文。（上载完成后，将不再引用原始字节数组中的数据；更改或放弃源字节数组不会更改该程序。）。</p>
+//     * 这些程序始终由两个相互关联的部分组成：顶点程序和片段程序。</p>
+//     * 顶点程序会操作 VertexBuffer3D 中定义的数据，负责将顶点投影到剪辑空间，并将任何所需的顶点数据（例如颜色）传递到片段着色器。</p>
+//     * 片段着色器会操作顶点程序传递给它的属性，并为三角形的每个栅格化片段生成颜色，最终形成像素颜色。请注意，片段程序在 3D 编程文献中具有多个名称，包括片段着色器和像素着色器。</p>
+//     * 通过将相应 Program3D 实例传递到 Context3DProxy setProgram() 方法，指定后续渲染操作要使用的程序对。</p>
+//     * 您无法直接创建 Program3D 对象；请改用 Context3DProxy createProgram() 方法。</p>
+//     *
+//     * @see egret3d.Program3D
+//     * @see egret3d.IndexBuffer3D
+//     * @see egret3d.VertexBuffer3D
+//     * @see egret3d.Texture2D
+//     * @see egret3d.Shader
+//     * @see egret3d.CubeTexture
+//     * @includeExample core/context/Program3D.ts
+//     * @version Egret 3.0
+//     * @platform Web,Native
+//     */
+//     export class Program3D {
+//         /**
+//         * @language zh_CN
+//         * @private
+//         * WebGLBuffer 的引用
+//         */
+//         //public vertextAttribActive: boolean = false ;
+//         /**
+//         * @language zh_CN
+//         * WebGLProgram 的引用
+//         * @version Egret 3.0
+//         * @platform Web,Native
+//         */
+//         public program: WebGLProgram;
+//         public name:string = "";
+//         /**
+//         * @language zh_CN
+//         * 构造函数
+//         * @param pg3D WebGLProgram对象
+//         * @version Egret 3.0
+//         * @platform Web,Native
+//         */
+//         constructor(pg3D: WebGLProgram) {
+//             this.program = pg3D;
+//         }
+//         /**
+//         * @language zh_CN
+//         * 释放接口
+//         * @version Egret 3.0
+//         * @platform Web,Native
+//         */
+//         public dispose(): void {
+//             if (this.program) {
+//                 Context3DProxy.gl.deleteProgram(this.program);
+//                 this.program = null;
+//             }
+//         }
+//     }
+// } 
+// module egret3d {
+//     /**
+//     * @class egret3d.Shader
+//     * @classdesc
+//     * Shader 类表示上载到渲染上下文的一对渲染程序中的 顶点找色shader，或片段着色的shader 。</p>
+//     * 
+//     * shader 是基于 opengl es 2.0 标准 也就是webgl版本的shader着色器。</p>
+//     *
+//     * @see egret3d.Program3D
+//     * @see egret3d.IndexBuffer3D
+//     * @see egret3d.VertexBuffer3D
+//     * @see egret3d.Texture2D
+//     * @see egret3d.Shader
+//     * @see egret3d.CubeTexture
+//     * @includeExample core/context/Shader.ts
+//     * @version Egret 3.0
+//     * @platform Web,Native
+//     */
+//     export class Shader {
+//         /**
+//         * @language zh_CN
+//         * @private
+//         * 声明 shader 为顶点 类型
+//         * @see egret3d.ShaderPool
+//         */
+//         static vertex: number = 0;
+//         /**
+//         * @language zh_CN
+//         * @private
+//         * 声明 shader 为片段 类型
+//         * @see egret3d.ShaderPool
+//         */
+//         static fragment: number = 1;
+//         /**
+//        * @language zh_CN
+//        * @private
+//        * 获取已经有的shader 的ID
+//        */
+//         // static ID_COUNT: number = 0;
+//         /**
+//         * @pirvate
+//         * @language zh_CN
+//         *  
+//         * 获取已经有的shader 的ID
+//         */
+//         // public id: string;
+//         /**
+//         * @language zh_CN
+//         * @private
+//         * WebGLShader 的引用
+//         */
+//         private _shader: WebGLShader;
+//         public type: number;
+//         public name: string;
+//         /**
+//         * @language zh_CN
+//         * 构造
+//         * @param shader WebGLShader对象
+//         * @version Egret 3.0
+//         * @platform Web,Native
+//         */
+//         constructor(shader: WebGLShader) {
+//             this._shader = shader;
+//         }
+//         /**
+//         * @language zh_CN
+//         * @private
+//         * WebGLShader 的引用
+//         */
+//         public get shader(): WebGLShader {
+//             return this._shader;
+//         }
+//         /**
+//         * @language zh_CN
+//         * 释放接口
+//         * @version Egret 3.0
+//         * @platform Web,Native
+//         */
+//         public dispose(): void {
+//             if (this._shader) {
+//                 Context3DProxy.gl.deleteShader(this._shader);
+//                 this._shader = null;
+//             }
+//         }
+//     }
+// }  
 var egret3d;
 (function (egret3d) {
     /**
@@ -30917,7 +31330,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_POSITION) {
                 if (passUsage.attribute_position) {
                     if (!passUsage.attribute_position.uniformIndex) {
-                        passUsage.attribute_position.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_position.varName);
+                        passUsage.attribute_position.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_position.varName);
                     }
                     passUsage.attribute_position.size = egret3d.Geometry.positionSize;
                     passUsage.attribute_position.dataType = egret3d.ContextConfig.FLOAT;
@@ -30932,7 +31345,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_NORMAL) {
                 if (passUsage.attribute_normal) {
                     if (!passUsage.attribute_normal.uniformIndex) {
-                        passUsage.attribute_normal.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_normal.varName);
+                        passUsage.attribute_normal.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_normal.varName);
                     }
                     passUsage.attribute_normal.size = egret3d.Geometry.normalSize;
                     passUsage.attribute_normal.dataType = egret3d.ContextConfig.FLOAT;
@@ -30947,7 +31360,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_TANGENT) {
                 if (passUsage.attribute_tangent) {
                     if (!passUsage.attribute_tangent.uniformIndex) {
-                        passUsage.attribute_tangent.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_tangent.varName);
+                        passUsage.attribute_tangent.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_tangent.varName);
                     }
                     passUsage.attribute_tangent.size = egret3d.Geometry.tangentSize;
                     passUsage.attribute_tangent.dataType = egret3d.ContextConfig.FLOAT;
@@ -30962,7 +31375,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_COLOR) {
                 if (passUsage.attribute_color) {
                     if (!passUsage.attribute_color.uniformIndex) {
-                        passUsage.attribute_color.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_color.varName);
+                        passUsage.attribute_color.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_color.varName);
                     }
                     passUsage.attribute_color.size = egret3d.Geometry.colorSize;
                     passUsage.attribute_color.dataType = egret3d.ContextConfig.FLOAT;
@@ -30977,7 +31390,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_UV0) {
                 if (passUsage.attribute_uv0) {
                     if (!passUsage.attribute_uv0.uniformIndex) {
-                        passUsage.attribute_uv0.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_uv0.varName);
+                        passUsage.attribute_uv0.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_uv0.varName);
                     }
                     passUsage.attribute_uv0.size = egret3d.Geometry.uvSize;
                     passUsage.attribute_uv0.dataType = egret3d.ContextConfig.FLOAT;
@@ -30992,7 +31405,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_UV1) {
                 if (passUsage.attribute_uv1) {
                     if (!passUsage.attribute_uv1.uniformIndex) {
-                        passUsage.attribute_uv1.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_uv1.varName);
+                        passUsage.attribute_uv1.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_uv1.varName);
                     }
                     passUsage.attribute_uv1.size = egret3d.Geometry.uv2Size;
                     passUsage.attribute_uv1.dataType = egret3d.ContextConfig.FLOAT;
@@ -31007,7 +31420,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_SKIN) {
                 if (passUsage.attribute_boneIndex) {
                     if (!passUsage.attribute_boneIndex.uniformIndex) {
-                        passUsage.attribute_boneIndex.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_boneIndex.varName);
+                        passUsage.attribute_boneIndex.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_boneIndex.varName);
                     }
                     passUsage.attribute_boneIndex.size = egret3d.Geometry.skinSize / 2;
                     passUsage.attribute_boneIndex.dataType = egret3d.ContextConfig.FLOAT;
@@ -31020,7 +31433,7 @@ var egret3d;
                 offsetBytes += egret3d.Geometry.skinSize / 2 * Float32Array.BYTES_PER_ELEMENT;
                 if (passUsage.attribute_boneWeight) {
                     if (!passUsage.attribute_boneWeight.uniformIndex) {
-                        passUsage.attribute_boneWeight.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_boneWeight.varName);
+                        passUsage.attribute_boneWeight.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_boneWeight.varName);
                     }
                     passUsage.attribute_boneWeight.size = egret3d.Geometry.skinSize / 2;
                     passUsage.attribute_boneWeight.dataType = egret3d.ContextConfig.FLOAT;
@@ -31035,7 +31448,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_QUAD_POS) {
                 if (passUsage.attribute_position) {
                     if (!passUsage.attribute_position.uniformIndex) {
-                        passUsage.attribute_position.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_position.varName);
+                        passUsage.attribute_position.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_position.varName);
                     }
                     passUsage.attribute_position.size = egret3d.QuadData.posSize;
                     passUsage.attribute_position.dataType = egret3d.ContextConfig.FLOAT;
@@ -31050,7 +31463,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_QUAD_ORIGN) {
                 if (passUsage.attribute_shapePosition) {
                     if (!passUsage.attribute_shapePosition.uniformIndex) {
-                        passUsage.attribute_shapePosition.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_shapePosition.varName);
+                        passUsage.attribute_shapePosition.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_shapePosition.varName);
                     }
                     passUsage.attribute_shapePosition.size = egret3d.QuadData.originalSize;
                     passUsage.attribute_shapePosition.dataType = egret3d.ContextConfig.FLOAT;
@@ -31065,7 +31478,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_QUAD_UVREC) {
                 if (passUsage.attribute_uvRec) {
                     if (!passUsage.attribute_uvRec.uniformIndex) {
-                        passUsage.attribute_uvRec.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_uvRec.varName);
+                        passUsage.attribute_uvRec.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_uvRec.varName);
                     }
                     passUsage.attribute_uvRec.size = egret3d.QuadData.uvRectangleSize;
                     passUsage.attribute_uvRec.dataType = egret3d.ContextConfig.FLOAT;
@@ -31080,7 +31493,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_QUAD_ROTATION) {
                 if (passUsage.attribute_rotate) {
                     if (!passUsage.attribute_rotate.uniformIndex) {
-                        passUsage.attribute_rotate.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_rotate.varName);
+                        passUsage.attribute_rotate.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_rotate.varName);
                     }
                     passUsage.attribute_rotate.size = egret3d.QuadData.rotationSize;
                     passUsage.attribute_rotate.dataType = egret3d.ContextConfig.FLOAT;
@@ -31095,7 +31508,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_QUAD_MASK) {
                 if (passUsage.attribute_maskRectangle) {
                     if (!passUsage.attribute_maskRectangle.uniformIndex) {
-                        passUsage.attribute_maskRectangle.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_maskRectangle.varName);
+                        passUsage.attribute_maskRectangle.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_maskRectangle.varName);
                     }
                     passUsage.attribute_maskRectangle.size = egret3d.QuadData.maskSize;
                     passUsage.attribute_maskRectangle.dataType = egret3d.ContextConfig.FLOAT;
@@ -31110,7 +31523,7 @@ var egret3d;
             if (this.geometry.vertexFormat & egret3d.VertexFormat.VF_QUAD_COLOR) {
                 if (passUsage.attribute_quad_color) {
                     if (!passUsage.attribute_quad_color.uniformIndex) {
-                        passUsage.attribute_quad_color.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_quad_color.varName);
+                        passUsage.attribute_quad_color.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_quad_color.varName);
                     }
                     passUsage.attribute_quad_color.size = egret3d.QuadData.colorSize;
                     passUsage.attribute_quad_color.dataType = egret3d.ContextConfig.FLOAT;
@@ -31127,7 +31540,7 @@ var egret3d;
                 var attribute = passUsage[var0.name];
                 if (attribute) {
                     if (!attribute.uniformIndex) {
-                        attribute.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, attribute.varName);
+                        attribute.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, attribute.varName);
                         attribute.size = var0.size;
                         attribute.dataType = egret3d.ContextConfig.FLOAT;
                         attribute.normalized = false;
@@ -42604,7 +43017,7 @@ var egret3d;
         * @param camera3D
         */
         TerrainARGBMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["uvs"] = context3DProxy.getUniformLocation(usage.program3D, "uvs");
+            usage["uvs"] = context3DProxy.getUniformLocation(usage.program, "uvs");
         };
         /**
         * @language zh_CN
@@ -42829,7 +43242,7 @@ var egret3d;
         * @param camera3D
         */
         FogMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["uniform_globalFog"] = context3DProxy.getUniformLocation(usage.program3D, "uniform_globalFog");
+            usage["uniform_globalFog"] = context3DProxy.getUniformLocation(usage.program, "uniform_globalFog");
         };
         /**
          * @language zh_CN
@@ -43007,7 +43420,7 @@ var egret3d;
         * @param camera3D
         */
         LineFogMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["uniform_globalFog"] = context3DProxy.getUniformLocation(usage.program3D, "uniform_globalFog");
+            usage["uniform_globalFog"] = context3DProxy.getUniformLocation(usage.program, "uniform_globalFog");
         };
         /**
          * @language zh_CN
@@ -43146,7 +43559,7 @@ var egret3d;
         * @param camera3D
         */
         UVRollMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["uvRoll"] = context3DProxy.getUniformLocation(usage.program3D, "uvRoll");
+            usage["uvRoll"] = context3DProxy.getUniformLocation(usage.program, "uvRoll");
         };
         /**
         * @private
@@ -43303,7 +43716,7 @@ var egret3d;
         * @param camera3D
         */
         MulUVRollMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["mulUvRoll"] = context3DProxy.getUniformLocation(usage.program3D, "mulUvRoll");
+            usage["mulUvRoll"] = context3DProxy.getUniformLocation(usage.program, "mulUvRoll");
         };
         /**
         * @private
@@ -43406,7 +43819,7 @@ var egret3d;
         * @param camera3D
         */
         MultiUVSpriteMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["multiUV"] = context3DProxy.getUniformLocation(usage.program3D, "multiUV");
+            usage["multiUV"] = context3DProxy.getUniformLocation(usage.program, "multiUV");
             if (this._isRandom)
                 this._multiData[3] = Math.floor(Math.random() * this.sum);
         };
@@ -43720,7 +44133,7 @@ var egret3d;
         * @param camera3D
         */
         UVSpriteSheetMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["uvSpriteSheet"] = context3DProxy.getUniformLocation(usage.program3D, "uvSpriteSheet");
+            usage["uvSpriteSheet"] = context3DProxy.getUniformLocation(usage.program, "uvSpriteSheet");
         };
         /**
         * @private
@@ -43909,7 +44322,7 @@ var egret3d;
         * @param camera3D
         */
         PlantDistortedMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, moodeltransform, camera3D) {
-            usage["uniformTime"] = context3DProxy.getUniformLocation(usage.program3D, "uniformTime");
+            usage["uniformTime"] = context3DProxy.getUniformLocation(usage.program, "uniformTime");
         };
         /**
         * @private
@@ -44053,7 +44466,7 @@ var egret3d;
         * @param camera3D
         */
         AOMapMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["aoPower"] = context3DProxy.getUniformLocation(usage.program3D, "aoPower");
+            usage["aoPower"] = context3DProxy.getUniformLocation(usage.program, "aoPower");
         };
         /**
         * @private
@@ -44141,8 +44554,8 @@ var egret3d;
         * @param camera3D
         */
         ColorTransformMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["uniform_colorTransformAlpha"] = context3DProxy.getUniformLocation(usage.program3D, "uniform_colorTransformAlpha");
-            usage["uniform_colorTransformM44"] = context3DProxy.getUniformLocation(usage.program3D, "uniform_colorTransformM44");
+            usage["uniform_colorTransformAlpha"] = context3DProxy.getUniformLocation(usage.program, "uniform_colorTransformAlpha");
+            usage["uniform_colorTransformM44"] = context3DProxy.getUniformLocation(usage.program, "uniform_colorTransformM44");
         };
         /**
         * @private
@@ -44211,7 +44624,7 @@ var egret3d;
         * @param camera3D
         */
         ColorGradientsMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["uniform_colorGradientsSource"] = context3DProxy.getUniformLocation(usage.program3D, "uniform_colorGradientsSource");
+            usage["uniform_colorGradientsSource"] = context3DProxy.getUniformLocation(usage.program, "uniform_colorGradientsSource");
         };
         /**
         * @private
@@ -44374,7 +44787,7 @@ var egret3d;
         * @param camera3D
         */
         StreamerMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["uvRoll"] = context3DProxy.getUniformLocation(usage.program3D, "uvRoll");
+            usage["uvRoll"] = context3DProxy.getUniformLocation(usage.program, "uvRoll");
         };
         /**
         * @private
@@ -44449,7 +44862,7 @@ var egret3d;
         */
         ShadowMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D, renderQuen) {
             if (usage.uniform_ShadowMatrix) {
-                usage.uniform_ShadowMatrix.uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_ShadowMatrix");
+                usage.uniform_ShadowMatrix.uniformIndex = context3DProxy.getUniformLocation(usage.program, "uniform_ShadowMatrix");
             }
         };
         /**
@@ -44736,9 +45149,9 @@ var egret3d;
         */
         WaterWaveMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
             //##FilterBegin## ##Water##
-            usage["waveVSData"] = context3DProxy.getUniformLocation(usage.program3D, "waveVSData");
-            usage["waveFSData"] = context3DProxy.getUniformLocation(usage.program3D, "waveFSData");
-            usage["time"] = context3DProxy.getUniformLocation(usage.program3D, "time");
+            usage["waveVSData"] = context3DProxy.getUniformLocation(usage.program, "waveVSData");
+            usage["waveFSData"] = context3DProxy.getUniformLocation(usage.program, "waveFSData");
+            usage["time"] = context3DProxy.getUniformLocation(usage.program, "time");
             //##FilterEnd##
         };
         /**
@@ -44928,8 +45341,8 @@ var egret3d;
         */
         WaterNormalMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
             //##FilterBegin## ##Water##
-            usage["waterNormalData"] = context3DProxy.getUniformLocation(usage.program3D, "waterNormalData");
-            usage["time"] = context3DProxy.getUniformLocation(usage.program3D, "time");
+            usage["waterNormalData"] = context3DProxy.getUniformLocation(usage.program, "waterNormalData");
+            usage["time"] = context3DProxy.getUniformLocation(usage.program, "time");
             //##FilterEnd##
         };
         /**
@@ -45037,7 +45450,7 @@ var egret3d;
         * @param camera3D
         */
         EnvironmentMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["reflectValue"] = context3DProxy.getUniformLocation(usage.program3D, "reflectValue");
+            usage["reflectValue"] = context3DProxy.getUniformLocation(usage.program, "reflectValue");
         };
         /**
         * @private
@@ -45170,7 +45583,7 @@ var egret3d;
         * @param camera3D
         */
         RimlightMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["uniform_rimData"] = context3DProxy.getUniformLocation(usage.program3D, "uniform_rimData");
+            usage["uniform_rimData"] = context3DProxy.getUniformLocation(usage.program, "uniform_rimData");
         };
         /**
          * @language zh_CN
@@ -45646,9 +46059,9 @@ var egret3d;
         * @param camera3D
         */
         GrassMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
-            usage["uniform_grass_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_grass_data");
-            usage["uniform_squeeze_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_squeeze_data");
-            usage["uniform_lightMap_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_lightMap_data");
+            usage["uniform_grass_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program, "uniform_grass_data");
+            usage["uniform_squeeze_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program, "uniform_squeeze_data");
+            usage["uniform_lightMap_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program, "uniform_lightMap_data");
         };
         /**
         * @private
@@ -45830,9 +46243,9 @@ var egret3d;
         */
         WaterBumpMethod.prototype.upload = function (time, delay, usage, geometry, context3DProxy, modeltransform, camera3D) {
             //##FilterBegin## ##Water##
-            usage["waterNormalData"] = context3DProxy.getUniformLocation(usage.program3D, "waterNormalData");
-            usage["horizonColor"] = context3DProxy.getUniformLocation(usage.program3D, "horizonColor");
-            usage["time"] = context3DProxy.getUniformLocation(usage.program3D, "time");
+            usage["waterNormalData"] = context3DProxy.getUniformLocation(usage.program, "waterNormalData");
+            usage["horizonColor"] = context3DProxy.getUniformLocation(usage.program, "horizonColor");
+            usage["time"] = context3DProxy.getUniformLocation(usage.program, "time");
             //##FilterEnd##
         };
         /**
@@ -45873,10 +46286,18 @@ var egret3d;
              * @language zh_CN
              */
             this.sampler3DList = new Array();
+            /**
+             * @language zh_CN
+             */
+            // public vs_shader: Shader;
+            /**
+             * @language zh_CN
+             */
+            // public fs_shader: Shader;
             //----------------------------------------------
             //public vertexShaderRegister: ver;
-            this.vertexShader = new egret3d.ShaderBase(egret3d.Shader.vertex);
-            this.fragmentShader = new egret3d.ShaderBase(egret3d.Shader.fragment);
+            this.vertexShader = new egret3d.ShaderBase(egret3d.ShaderType.VertexShader);
+            this.fragmentShader = new egret3d.ShaderBase(egret3d.ShaderType.FragmentShader);
             this.maxDirectLight = 0;
             this.maxSpotLight = 0;
             this.maxPointLight = 0;
@@ -45887,21 +46308,22 @@ var egret3d;
          * @language zh_CN
          */
         PassUsage.prototype.dispose = function () {
-            if (this.program3D) {
-                this.program3D.dispose();
-            }
-            this.program3D = null;
-            if (this.vertexShader) {
-                if (this.vertexShader.shader) {
-                    this.vertexShader.shader.dispose();
-                }
-            }
+            // if (this.program3D) {
+            // this.program3D.dispose();
+            egret3d.ShaderPool.deleteProgram(this.vertexShader, this.fragmentShader, this);
+            // }
+            this.program = null;
+            // if (this.vertexShader) {
+            //     if (this.vertexShader.shader) {
+            //         this.vertexShader.shader.dispose();
+            //     }
+            // }
             this.vertexShader = null;
-            if (this.fragmentShader) {
-                if (this.fragmentShader.shader) {
-                    this.fragmentShader.shader.dispose();
-                }
-            }
+            // if (this.fragmentShader) {
+            //     if (this.fragmentShader.shader) {
+            //         this.fragmentShader.shader.dispose();
+            //     }
+            // }
             this.fragmentShader = null;
         };
         return PassUsage;
@@ -46877,27 +47299,27 @@ var egret3d;
             //}
             this._passChange = false;
             this.initUseMethod(animation, geometry);
-            this._passUsage.vertexShader.shader = this._passUsage.vertexShader.getShader(this._passUsage);
-            this._passUsage.fragmentShader.shader = this._passUsage.fragmentShader.getShader(this._passUsage);
+            // this._passUsage.vertexShader.shader = this._passUsage.vertexShader.getShader(this._passUsage);
+            // this._passUsage.fragmentShader.shader = this._passUsage.fragmentShader.getShader(this._passUsage);
             //this._passUsage.program3D = context3DProxy.creatProgram(this._passUsage.vertexShader.shader, this._passUsage.fragmentShader.shader);
-            this._passUsage.program3D = egret3d.ShaderPool.getProgram(this._passUsage.vertexShader.shader.id, this._passUsage.fragmentShader.shader.id);
+            this._passUsage.program = egret3d.ShaderPool.getProgram(this._passUsage.vertexShader, this._passUsage.fragmentShader, this._passUsage);
             for (var property in this._passUsage) {
                 if (property.indexOf("uniform") != -1) {
                     if (this._passUsage[property]) {
-                        this._passUsage[property].uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program3D, property);
+                        this._passUsage[property].uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program, property);
                     }
                 }
             }
             var sampler2D;
             for (var index in this._passUsage.sampler2DList) {
                 sampler2D = this._passUsage.sampler2DList[index];
-                sampler2D.uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program3D, sampler2D.varName);
+                sampler2D.uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program, sampler2D.varName);
                 sampler2D.texture = this._materialData[sampler2D.varName];
             }
             var sampler3D;
             for (var index in this._passUsage.sampler3DList) {
                 sampler3D = this._passUsage.sampler3DList[index];
-                sampler3D.uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program3D, sampler3D.varName);
+                sampler3D.uniformIndex = context3DProxy.getUniformLocation(this._passUsage.program, sampler3D.varName);
             }
             if (this.methodList) {
                 for (var i = 0; i < this.methodList.length; i++) {
@@ -46947,7 +47369,7 @@ var egret3d;
             if (this._passChange) {
                 this.upload(time, delay, context3DProxy, modeltransform, camera3D, render.animation, subGeometry.geometry, renderQuen);
             }
-            context3DProxy.setProgram(this._passUsage.program3D);
+            context3DProxy.setProgram(this._passUsage.program);
             subGeometry.activeState(time, delay, this._passUsage, context3DProxy);
             if (this._materialData.depthTest) {
                 context3DProxy.enableDepth();
@@ -47143,8 +47565,8 @@ var egret3d;
             var i = 0;
             this._passChange = false;
             this._passUsage = new egret3d.PassUsage();
-            this._passUsage.vertexShader.shaderType = egret3d.Shader.vertex;
-            this._passUsage.fragmentShader.shaderType = egret3d.Shader.fragment;
+            this._passUsage.vertexShader.shaderType = egret3d.ShaderType.VertexShader;
+            this._passUsage.fragmentShader.shaderType = egret3d.ShaderType.FragmentShader;
             //pre Phase ---------------------------------------------------
             if (animation) {
                 // to add accept animation shader
@@ -47376,8 +47798,8 @@ var egret3d;
             var i = 0;
             this._passChange = false;
             this._passUsage = new egret3d.PassUsage();
-            this._passUsage.vertexShader.shaderType = egret3d.Shader.vertex;
-            this._passUsage.fragmentShader.shaderType = egret3d.Shader.fragment;
+            this._passUsage.vertexShader.shaderType = egret3d.ShaderType.VertexShader;
+            this._passUsage.fragmentShader.shaderType = egret3d.ShaderType.FragmentShader;
             //pre Phase ---------------------------------------------------
             if (animation) {
                 // to add accept animation shader
@@ -47428,8 +47850,8 @@ var egret3d;
             var i = 0;
             this._passChange = false;
             this._passUsage = new egret3d.PassUsage();
-            this._passUsage.vertexShader.shaderType = egret3d.Shader.vertex;
-            this._passUsage.fragmentShader.shaderType = egret3d.Shader.fragment;
+            this._passUsage.vertexShader.shaderType = egret3d.ShaderType.VertexShader;
+            this._passUsage.fragmentShader.shaderType = egret3d.ShaderType.FragmentShader;
             //pre Phase ---------------------------------------------------
             if (animation) {
                 // to add accept animation shader
@@ -47612,8 +48034,8 @@ var egret3d;
             var i = 0;
             this._passChange = false;
             this._passUsage = new egret3d.PassUsage();
-            this._passUsage.vertexShader.shaderType = egret3d.Shader.vertex;
-            this._passUsage.fragmentShader.shaderType = egret3d.Shader.fragment;
+            this._passUsage.vertexShader.shaderType = egret3d.ShaderType.VertexShader;
+            this._passUsage.fragmentShader.shaderType = egret3d.ShaderType.FragmentShader;
             //pre Phase ---------------------------------------------------
             if (animation) {
                 // to add accept animation shader
@@ -47663,7 +48085,7 @@ var egret3d;
             if (this._passChange) {
                 this.upload(time, delay, context3DProxy, modeltransform, camera3D, render.animation, subGeometry.geometry, renderQuen);
             }
-            context3DProxy.setProgram(this._passUsage.program3D);
+            context3DProxy.setProgram(this._passUsage.program);
             subGeometry.activeState(time, delay, this._passUsage, context3DProxy);
             egret3d.Context3DProxy.gl.depthMask(false);
             if (this._passUsage.uniform_materialSource) {
@@ -60713,7 +61135,7 @@ var egret3d;
             var sampler2D;
             for (var index in this._passUsage.sampler2DList) {
                 sampler2D = this._passUsage.sampler2DList[index];
-                sampler2D.uniformIndex = context.getUniformLocation(this._passUsage.program3D, sampler2D.varName);
+                sampler2D.uniformIndex = context.getUniformLocation(this._passUsage.program, sampler2D.varName);
                 sampler2D.texture = this[sampler2D.varName];
             }
             this._changeTexture = false;
@@ -60729,29 +61151,29 @@ var egret3d;
             if (!self._indexBuffer3D) {
                 self._indexBuffer3D = context.creatIndexBuffer(HUD.singleQuadIndex);
             }
-            self._passUsage.vertexShader.shaderType = egret3d.Shader.vertex;
-            self._passUsage.fragmentShader.shaderType = egret3d.Shader.fragment;
+            self._passUsage.vertexShader.shaderType = egret3d.ShaderType.VertexShader;
+            self._passUsage.fragmentShader.shaderType = egret3d.ShaderType.FragmentShader;
             self._passUsage.vertexShader.addUseShaderName(self.vsShader);
             self._passUsage.fragmentShader.addUseShaderName(self.fsShader);
-            self._passUsage.vertexShader.shader = self._passUsage.vertexShader.getShader(self._passUsage);
-            self._passUsage.fragmentShader.shader = self._passUsage.fragmentShader.getShader(self._passUsage);
-            self._passUsage.program3D = egret3d.ShaderPool.getProgram(self._passUsage.vertexShader.shader.id, self._passUsage.fragmentShader.shader.id);
+            // self._passUsage.vertexShader.shader = self._passUsage.vertexShader.getShader(self._passUsage);
+            // self._passUsage.fragmentShader.shader = self._passUsage.fragmentShader.getShader(self._passUsage);
+            self._passUsage.program = egret3d.ShaderPool.getProgram(self._passUsage.vertexShader, self._passUsage.fragmentShader, self._passUsage);
             for (var property in self._passUsage) {
                 if (property.indexOf("uniform") != -1) {
                     if (self._passUsage[property]) {
-                        self._passUsage[property].uniformIndex = context.getUniformLocation(self._passUsage.program3D, property);
+                        self._passUsage[property].uniformIndex = context.getUniformLocation(self._passUsage.program, property);
                     }
                 }
             }
             for (var uniformName in self.uniformData) {
                 var uniform = self.uniformData[uniformName];
-                uniform.uniformIndex = context.getUniformLocation(self._passUsage.program3D, uniformName);
+                uniform.uniformIndex = context.getUniformLocation(self._passUsage.program, uniformName);
             }
             self._attList.length = 0;
             var offset = 0;
             if (self._passUsage.attribute_position) {
                 if (!self._passUsage.attribute_position.uniformIndex) {
-                    self._passUsage.attribute_position.uniformIndex = context.getShaderAttribLocation(self._passUsage.program3D, self._passUsage.attribute_position.varName);
+                    self._passUsage.attribute_position.uniformIndex = context.getShaderAttribLocation(self._passUsage.program, self._passUsage.attribute_position.varName);
                 }
                 self._attList.push(self._passUsage.attribute_position);
                 self._passUsage.attribute_position.size = egret3d.Geometry.positionSize;
@@ -60763,7 +61185,7 @@ var egret3d;
             }
             if (self._passUsage.attribute_uv0) {
                 if (!self._passUsage.attribute_uv0.uniformIndex) {
-                    self._passUsage.attribute_uv0.uniformIndex = context.getShaderAttribLocation(self._passUsage.program3D, self._passUsage.attribute_uv0.varName);
+                    self._passUsage.attribute_uv0.uniformIndex = context.getShaderAttribLocation(self._passUsage.program, self._passUsage.attribute_uv0.varName);
                 }
                 self._attList.push(self._passUsage.attribute_uv0);
                 self._passUsage.attribute_uv0.size = egret3d.Geometry.uvSize;
@@ -60773,7 +61195,7 @@ var egret3d;
                 self._passUsage.attribute_uv0.offset = offset;
                 offset += egret3d.Geometry.uvSize * Float32Array.BYTES_PER_ELEMENT;
             }
-            self._passUsage["uv_scale"] = context.getUniformLocation(self._passUsage.program3D, "uv_scale");
+            self._passUsage["uv_scale"] = context.getUniformLocation(self._passUsage.program, "uv_scale");
         };
         /**
         * @private
@@ -60784,10 +61206,10 @@ var egret3d;
             if (!self.visible) {
                 return;
             }
-            if (!self._passUsage.program3D) {
+            if (!self._passUsage.program) {
                 self.upload(contextProxy);
             }
-            contextProxy.setProgram(self._passUsage.program3D);
+            contextProxy.setProgram(self._passUsage.program);
             contextProxy.bindVertexBuffer(self._vertexBuffer3D);
             contextProxy.bindIndexBuffer(self._indexBuffer3D);
             for (var i = 0; i < self._attList.length; ++i) {
@@ -61838,7 +62260,7 @@ var egret3d;
             if (Egret3DCanvas._instance)
                 throw new Error("不能重复实例化这个类!");
             Egret3DCanvas._instance = this;
-            egret3d.ShaderUtil.instance.load();
+            egret3d.ShaderPool.load();
             this._envetManager = new egret3d.EventManager(this);
             this.stage2D = stage2D;
             this.blend2D = !!stage2D;

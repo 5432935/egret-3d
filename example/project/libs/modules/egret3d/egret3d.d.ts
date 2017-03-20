@@ -1247,9 +1247,13 @@ declare module egret3d {
     }
 }
 declare module egret3d {
+    class ShaderType {
+        static VertexShader: number;
+        static FragmentShader: number;
+    }
     /**
-* @private
-*/
+    * @private
+    */
     enum UniformType {
         uniform1f = 0,
         uniform1fv = 1,
@@ -6331,12 +6335,7 @@ declare module egret3d {
         * @param shaderName xxx
         */
         addEndShaderName(shaderName: string): void;
-        /**
-        * @language zh_CN
-        *
-        * @returns string
-        */
-        getShader(passUsage: PassUsage): Shader;
+        getShaderName(): string[];
     }
 }
 declare module egret3d.GLSL {
@@ -6997,6 +6996,37 @@ declare module egret3d.GLSL {
     }
 }
 declare module egret3d {
+    class ShaderStore {
+        static lib: {
+            [key: string]: string;
+        };
+    }
+}
+declare module egret3d {
+    class ShaderCache {
+        private static programlib;
+        static addProgram(program: Program3D): void;
+        static removeProgram(_name: string): void;
+        static getProgram(_name: string): Program3D;
+    }
+}
+declare module egret3d {
+    /**
+    * @private
+    * @class egret3d.ShaderGenerator
+    * @classdesc
+    * Shader 生成器
+    */
+    class ShaderGenerator {
+        private static _indexParameters;
+        static createProgram(defdata: IMaterialDefines, _vShaderSourceName: string, _fShaderSourceName: string): string;
+        private static createShader(_source, _type, _name);
+        private static createProgramLogic(vsShader, fsShader);
+        private static generateShaderSource(defdata, _ShaderSourceName);
+        private static _processIncludes(sourceCode, callback);
+    }
+}
+declare module egret3d {
     class ShaderLib {
         static lib: {
             [key: string]: string;
@@ -7015,10 +7045,76 @@ declare module egret3d {
         constructor();
         static register(context: Context3DProxy): void;
         static getGPUShader(shaderType: number, shaderID: string, source: string): Shader;
-        static getProgram(vs_shaderID: string, fs_shaderID: string): Program3D;
-        private static unRegisterShader(list);
-        private static registerProgram(vsShader, fsShader);
-        private static unRegisterProgram(vsKey, fsKey);
+        static getProgram(vshaderBase: ShaderBase, fshaderBase: ShaderBase, passUsage: PassUsage): Program3D;
+        private static _shaderLibs;
+        private static _methodLibs;
+        private static _shaderContentDict;
+        private static vs_begin;
+        private static vs_end;
+        private static fs_begin;
+        private static fs_end;
+        /**
+        * @language zh_CN
+        * @private
+        * 加载shader文件
+        */
+        static load(): void;
+        private static readShader(str);
+        /**
+        * @language zh_CN
+        * 返回组合shader后的内容
+        * @param shaderNameList 要组合的shader名字列表
+        * @param usage
+        * @returns shader 内容
+        */
+        private static fillShaderContent(shaderBase, shaderNameList, usage);
+        private static synthesisShader(content, shaderBase);
+        /**
+        * @language zh_CN
+        *
+        * @param att
+        */
+        static connectAtt(att: GLSL.Attribute): string;
+        /**
+        * @language zh_CN
+        *
+        * @param tempVar
+        */
+        private static connectTemp(tempVar);
+        /**
+        * @language zh_CN
+        *
+        * @param struct
+        */
+        private static connectStruct(struct);
+        /**
+        * @language zh_CN
+        *
+        * @param constVar
+        */
+        private static connectConst(constVar);
+        /**
+        * @language zh_CN
+        *
+        * @param varying
+        */
+        private static connectVarying(varying);
+        /**
+        * @language zh_CN
+        *
+        * @param unifrom
+        */
+        private static connectUniform(unifrom);
+        /**
+        * @language zh_CN
+        *
+        * @param sampler
+        */
+        private static connectSampler(sampler);
+        private static connectSampler3D(sampler);
+        private static connectExtension(extension);
+        private static connectDefine(def);
+        private static getTexture2DIndex(i);
     }
 }
 declare module egret3d.GLSL {
@@ -7132,94 +7228,6 @@ declare module egret3d.GLSL {
         addContent(otherContent: ShaderContent): void;
         private mergeMainFunc(func1, func2);
         clone(): ShaderContent;
-    }
-}
-declare module egret3d {
-    /**
-    * @private
-    * @class egret3d.FuncData
-    * @classdesc
-    * shader系统工具类，管理所有要用到的shader文件
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    class ShaderUtil {
-        private static _shaderLibs;
-        private static _methodLibs;
-        private _shaderContentDict;
-        private static _instance;
-        private vs_begin;
-        private vs_end;
-        private fs_begin;
-        private fs_end;
-        /**
-        * @language zh_CN
-        *
-        * 单例
-        */
-        static instance: ShaderUtil;
-        /**
-        * @language zh_CN
-        * @private
-        * 加载shader文件
-        */
-        load(): void;
-        private readShader(str);
-        /**
-        * @language zh_CN
-        * 返回组合shader后的内容
-        * @param shaderNameList 要组合的shader名字列表
-        * @param usage
-        * @returns shader 内容
-        */
-        fillShaderContent(shaderBase: ShaderBase, shaderNameList: Array<string>, usage: PassUsage): Shader;
-        private synthesisShader(content, shaderBase);
-        /**
-        * @language zh_CN
-        *
-        * @param att
-        */
-        static connectAtt(att: GLSL.Attribute): string;
-        /**
-        * @language zh_CN
-        *
-        * @param tempVar
-        */
-        private static connectTemp(tempVar);
-        /**
-        * @language zh_CN
-        *
-        * @param struct
-        */
-        private static connectStruct(struct);
-        /**
-        * @language zh_CN
-        *
-        * @param constVar
-        */
-        private static connectConst(constVar);
-        /**
-        * @language zh_CN
-        *
-        * @param varying
-        */
-        private static connectVarying(varying);
-        /**
-        * @language zh_CN
-        *
-        * @param unifrom
-        */
-        private static connectUniform(unifrom);
-        /**
-        * @language zh_CN
-        *
-        * @param sampler
-        */
-        private static connectSampler(sampler);
-        private static connectSampler3D(sampler);
-        private static connectExtension(extension);
-        private static connectDefine(def);
-        private static getTexture2DIndex(i);
     }
 }
 declare module egret3d {
@@ -10796,6 +10804,7 @@ declare module egret3d {
         * @platform Web,Native
         */
         program: WebGLProgram;
+        name: string;
         /**
         * @language zh_CN
         * 构造函数
@@ -10865,6 +10874,8 @@ declare module egret3d {
         * WebGLShader 的引用
         */
         private _shader;
+        type: number;
+        name: string;
         /**
         * @language zh_CN
         * 构造
@@ -24001,6 +24012,22 @@ declare module egret3d {
     class PassUtil {
         static PassAuto: boolean[];
         static CreatPass(pass: PassType, materialData: MaterialData): MaterialPass[];
+    }
+}
+declare module egret3d {
+    /**
+    * @public
+    * @class egret3d.IMaterialDefines
+    * @classdesc
+    * MaterialDefines类接口
+    * @version Egret 3.0
+    * @platform Web,Native
+    */
+    interface IMaterialDefines {
+        isChange(): boolean;
+        keys(): string[];
+        toName(): string;
+        dispose(): void;
     }
 }
 declare module egret3d {

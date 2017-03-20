@@ -76,7 +76,7 @@
         * @param camera3D
         */
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
-            usage["multiUV"] = context3DProxy.getUniformLocation(usage.program3D, "multiUV"); 
+            usage["multiUV"] = context3DProxy.getUniformLocation(usage.program, "multiUV"); 
             if (this._isRandom)
                 this._multiData[3] = Math.floor( Math.random() * this.sum ) ;
         }

@@ -56,7 +56,7 @@
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D, renderQuen: RenderQuen) {
 
             if (usage.uniform_ShadowMatrix) {
-                usage.uniform_ShadowMatrix.uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_ShadowMatrix");
+                usage.uniform_ShadowMatrix.uniformIndex = context3DProxy.getUniformLocation(usage.program, "uniform_ShadowMatrix");
             }
         }
 

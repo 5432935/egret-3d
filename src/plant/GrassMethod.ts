@@ -169,9 +169,9 @@
         * @param camera3D
         */
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
-            usage["uniform_grass_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_grass_data");
-            usage["uniform_squeeze_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_squeeze_data");
-            usage["uniform_lightMap_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program3D, "uniform_lightMap_data");
+            usage["uniform_grass_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program, "uniform_grass_data");
+            usage["uniform_squeeze_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program, "uniform_squeeze_data");
+            usage["uniform_lightMap_data"].uniformIndex = context3DProxy.getUniformLocation(usage.program, "uniform_lightMap_data");
         }
         
         /**

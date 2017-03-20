@@ -6314,15 +6314,14 @@ declare module egret3d {
         *
         */
         maxBone: number;
-        shaderType: number;
-        shader: Shader;
+        shaderType: ShaderType;
         /**
         * @language zh_CN
         * constructor
         * @param materialData
         * @param usage
         */
-        constructor(type: number);
+        constructor(type: ShaderType);
         /**
         * @language zh_CN
         *
@@ -6335,12 +6334,7 @@ declare module egret3d {
         * @param shaderName xxx
         */
         addEndShaderName(shaderName: string): void;
-        /**
-        * @language zh_CN
-        *
-        * @returns string
-        */
-        getShader(passUsage: PassUsage): Shader;
+        getShaderName(): string[];
     }
 }
 declare module egret3d.GLSL {
@@ -7008,30 +7002,6 @@ declare module egret3d {
     }
 }
 declare module egret3d {
-    class ShaderCache {
-        private static programlib;
-        static addProgram(program: Program3D): void;
-        static removeProgram(_name: string): void;
-        static getProgram(_name: string): Program3D;
-    }
-}
-declare module egret3d {
-    /**
-    * @private
-    * @class egret3d.ShaderGenerator
-    * @classdesc
-    * Shader 生成器
-    */
-    class ShaderGenerator {
-        private static _indexParameters;
-        static createProgram(defdata: IMaterialDefines, _vShaderSourceName: string, _fShaderSourceName: string): string;
-        private static createShader(_source, _type, _name);
-        private static createProgramLogic(vsShader, fsShader);
-        private static generateShaderSource(defdata, _ShaderSourceName);
-        private static _processIncludes(sourceCode, callback);
-    }
-}
-declare module egret3d {
     class ShaderLib {
         static lib: {
             [key: string]: string;
@@ -7044,16 +7014,80 @@ declare module egret3d {
     */
     class ShaderPool {
         static programlib: HashMap;
-        static vsShaderHashMap: HashMap;
-        static fsShaderHashMap: HashMap;
         private static context;
         constructor();
         static register(context: Context3DProxy): void;
-        static getGPUShader(shaderType: number, shaderID: string, source: string): Shader;
-        static getProgram(vs_shaderID: string, fs_shaderID: string): Program3D;
-        private static unRegisterShader(list);
-        private static registerProgram(vsShader, fsShader);
-        private static unRegisterProgram(vsKey, fsKey);
+        static getProgram(vshaderBase: ShaderBase, fshaderBase: ShaderBase, passUsage: PassUsage): WebGLProgram;
+        static deleteProgram(vshaderBase: ShaderBase, fshaderBase: ShaderBase, passUsage: PassUsage): void;
+        private static createProgram(vshaderBase, fshaderBase, passUsage);
+        private static _shaderContentDict;
+        private static vs_begin;
+        private static vs_end;
+        private static fs_begin;
+        private static fs_end;
+        /**
+        * @language zh_CN
+        * @private
+        * 加载shader文件
+        */
+        static load(): void;
+        private static readShader(str);
+        private static getProgramCode(vshaderNameList, fshaderNameList, usage);
+        /**
+        * @language zh_CN
+        * 返回组合shader后的内容
+        * @param shaderNameList 要组合的shader名字列表
+        * @param usage
+        * @returns shader 内容
+        */
+        private static fillShaderContent(shaderBase, shaderNameList, usage);
+        private static synthesisShader(content, shaderBase);
+        /**
+        * @language zh_CN
+        *
+        * @param att
+        */
+        static connectAtt(att: GLSL.Attribute): string;
+        /**
+        * @language zh_CN
+        *
+        * @param tempVar
+        */
+        private static connectTemp(tempVar);
+        /**
+        * @language zh_CN
+        *
+        * @param struct
+        */
+        private static connectStruct(struct);
+        /**
+        * @language zh_CN
+        *
+        * @param constVar
+        */
+        private static connectConst(constVar);
+        /**
+        * @language zh_CN
+        *
+        * @param varying
+        */
+        private static connectVarying(varying);
+        /**
+        * @language zh_CN
+        *
+        * @param unifrom
+        */
+        private static connectUniform(unifrom);
+        /**
+        * @language zh_CN
+        *
+        * @param sampler
+        */
+        private static connectSampler(sampler);
+        private static connectSampler3D(sampler);
+        private static connectExtension(extension);
+        private static connectDefine(def);
+        private static getTexture2DIndex(i);
     }
 }
 declare module egret3d.GLSL {
@@ -7167,94 +7201,6 @@ declare module egret3d.GLSL {
         addContent(otherContent: ShaderContent): void;
         private mergeMainFunc(func1, func2);
         clone(): ShaderContent;
-    }
-}
-declare module egret3d {
-    /**
-    * @private
-    * @class egret3d.FuncData
-    * @classdesc
-    * shader系统工具类，管理所有要用到的shader文件
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    class ShaderUtil {
-        private static _shaderLibs;
-        private static _methodLibs;
-        private _shaderContentDict;
-        private static _instance;
-        private vs_begin;
-        private vs_end;
-        private fs_begin;
-        private fs_end;
-        /**
-        * @language zh_CN
-        *
-        * 单例
-        */
-        static instance: ShaderUtil;
-        /**
-        * @language zh_CN
-        * @private
-        * 加载shader文件
-        */
-        load(): void;
-        private readShader(str);
-        /**
-        * @language zh_CN
-        * 返回组合shader后的内容
-        * @param shaderNameList 要组合的shader名字列表
-        * @param usage
-        * @returns shader 内容
-        */
-        fillShaderContent(shaderBase: ShaderBase, shaderNameList: Array<string>, usage: PassUsage): Shader;
-        private synthesisShader(content, shaderBase);
-        /**
-        * @language zh_CN
-        *
-        * @param att
-        */
-        static connectAtt(att: GLSL.Attribute): string;
-        /**
-        * @language zh_CN
-        *
-        * @param tempVar
-        */
-        private static connectTemp(tempVar);
-        /**
-        * @language zh_CN
-        *
-        * @param struct
-        */
-        private static connectStruct(struct);
-        /**
-        * @language zh_CN
-        *
-        * @param constVar
-        */
-        private static connectConst(constVar);
-        /**
-        * @language zh_CN
-        *
-        * @param varying
-        */
-        private static connectVarying(varying);
-        /**
-        * @language zh_CN
-        *
-        * @param unifrom
-        */
-        private static connectUniform(unifrom);
-        /**
-        * @language zh_CN
-        *
-        * @param sampler
-        */
-        private static connectSampler(sampler);
-        private static connectSampler3D(sampler);
-        private static connectExtension(extension);
-        private static connectDefine(def);
-        private static getTexture2DIndex(i);
     }
 }
 declare module egret3d {
@@ -10012,7 +9958,8 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        creatProgram(vsShader: Shader, fsShader: Shader): Program3D;
+        createProgram(vsShader: WebGLShader, fsShader: WebGLShader): WebGLProgram;
+        deleteProgram(program: WebGLProgram): void;
         /**
         * @language zh_CN
         * 创建 顶点索引流
@@ -10124,7 +10071,6 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        creatVertexShader(source: string): Shader;
         /**
         * @language zh_CN
         * 向显卡请求创建片段shader对象
@@ -10133,7 +10079,8 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        creatFragmentShader(source: string): Shader;
+        createShader(type: ShaderType, source: string): WebGLShader;
+        deleteShader(shader: WebGLShader): void;
         /**
         * @language zh_CN
         * 清除渲染buffer
@@ -10168,7 +10115,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        setProgram(program: Program3D): void;
+        setProgram(program: WebGLProgram): void;
         /**
         * @language zh_CN
         * 获取矩阵变量ID
@@ -10177,7 +10124,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        getUniformLocation(programe3D: Program3D, name: string): any;
+        getUniformLocation(program: WebGLProgram, name: string): any;
         /**
         * @language zh_CN
         * 传值给shader一个float
@@ -10450,7 +10397,7 @@ declare module egret3d {
         * @version Egret 3.0
         * @platform Web,Native
         */
-        getShaderAttribLocation(programe: Program3D, attribName: string): any;
+        getShaderAttribLocation(program: WebGLProgram, attribName: string): any;
         /**
         * @language zh_CN
         * 指定顶点着色器变量索引及结构
@@ -10793,137 +10740,6 @@ declare module egret3d {
         * @platform Web,Native
         */
         constructor(data: Uint8Array, width: number, height: number);
-    }
-}
-declare module egret3d {
-    /**
-    * @class egret3d.Program3D
-    * @classdesc
-    * Program3D 类表示上载到渲染上下文的一对渲染程序（也称为“编译后的着色器”）。</p>
-    *
-    * 由 Program3D 对象管理的程序控制 drawTriangles 调用期间的整个三角形渲染。使用 upload 方法将二进制字节码上载到渲染上下文。（上载完成后，将不再引用原始字节数组中的数据；更改或放弃源字节数组不会更改该程序。）。</p>
-    * 这些程序始终由两个相互关联的部分组成：顶点程序和片段程序。</p>
-    * 顶点程序会操作 VertexBuffer3D 中定义的数据，负责将顶点投影到剪辑空间，并将任何所需的顶点数据（例如颜色）传递到片段着色器。</p>
-    * 片段着色器会操作顶点程序传递给它的属性，并为三角形的每个栅格化片段生成颜色，最终形成像素颜色。请注意，片段程序在 3D 编程文献中具有多个名称，包括片段着色器和像素着色器。</p>
-    * 通过将相应 Program3D 实例传递到 Context3DProxy setProgram() 方法，指定后续渲染操作要使用的程序对。</p>
-    * 您无法直接创建 Program3D 对象；请改用 Context3DProxy createProgram() 方法。</p>
-    *
-    * @see egret3d.Program3D
-    * @see egret3d.IndexBuffer3D
-    * @see egret3d.VertexBuffer3D
-    * @see egret3d.Texture2D
-    * @see egret3d.Shader
-    * @see egret3d.CubeTexture
-    * @includeExample core/context/Program3D.ts
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    class Program3D {
-        /**
-        * @language zh_CN
-        * @private
-        * WebGLBuffer 的引用
-        */
-        /**
-        * @language zh_CN
-        * WebGLProgram 的引用
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        program: WebGLProgram;
-        name: string;
-        /**
-        * @language zh_CN
-        * 构造函数
-        * @param pg3D WebGLProgram对象
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        constructor(pg3D: WebGLProgram);
-        /**
-        * @language zh_CN
-        * 释放接口
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        dispose(): void;
-    }
-}
-declare module egret3d {
-    /**
-    * @class egret3d.Shader
-    * @classdesc
-    * Shader 类表示上载到渲染上下文的一对渲染程序中的 顶点找色shader，或片段着色的shader 。</p>
-    *
-    * shader 是基于 opengl es 2.0 标准 也就是webgl版本的shader着色器。</p>
-    *
-    * @see egret3d.Program3D
-    * @see egret3d.IndexBuffer3D
-    * @see egret3d.VertexBuffer3D
-    * @see egret3d.Texture2D
-    * @see egret3d.Shader
-    * @see egret3d.CubeTexture
-    * @includeExample core/context/Shader.ts
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    class Shader {
-        /**
-        * @language zh_CN
-        * @private
-        * 声明 shader 为顶点 类型
-        * @see egret3d.ShaderPool
-        */
-        static vertex: number;
-        /**
-        * @language zh_CN
-        * @private
-        * 声明 shader 为片段 类型
-        * @see egret3d.ShaderPool
-        */
-        static fragment: number;
-        /**
-       * @language zh_CN
-       * @private
-       * 获取已经有的shader 的ID
-       */
-        static ID_COUNT: number;
-        /**
-        * @pirvate
-        * @language zh_CN
-        *
-        * 获取已经有的shader 的ID
-        */
-        id: string;
-        /**
-        * @language zh_CN
-        * @private
-        * WebGLShader 的引用
-        */
-        private _shader;
-        type: number;
-        name: string;
-        /**
-        * @language zh_CN
-        * 构造
-        * @param shader WebGLShader对象
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        constructor(shader: WebGLShader);
-        /**
-        * @language zh_CN
-        * @private
-        * WebGLShader 的引用
-        */
-        shader: WebGLShader;
-        /**
-        * @language zh_CN
-        * 释放接口
-        * @version Egret 3.0
-        * @platform Web,Native
-        */
-        dispose(): void;
     }
 }
 declare module egret3d {
@@ -23145,15 +22961,13 @@ declare module egret3d {
         /**
          * @language zh_CN
          */
-        program3D: Program3D;
+        program: WebGLProgram;
         /**
          * @language zh_CN
          */
-        vs_shader: Shader;
         /**
          * @language zh_CN
          */
-        fs_shader: Shader;
         vertexShader: ShaderBase;
         fragmentShader: ShaderBase;
         maxDirectLight: number;

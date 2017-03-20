@@ -121,7 +121,7 @@
         * @param camera3D
         */
         public upload(time: number, delay: number, usage: PassUsage, geometry: SubGeometry, context3DProxy: Context3DProxy, modeltransform: Matrix4_4, camera3D: Camera3D) {
-            usage["uniform_rimData"] = context3DProxy.getUniformLocation(usage.program3D, "uniform_rimData");
+            usage["uniform_rimData"] = context3DProxy.getUniformLocation(usage.program, "uniform_rimData");
         }
 
         /**

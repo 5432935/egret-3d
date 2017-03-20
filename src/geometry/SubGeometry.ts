@@ -110,7 +110,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_POSITION) {
                 if (passUsage.attribute_position) {
                     if (!passUsage.attribute_position.uniformIndex) {
-                        passUsage.attribute_position.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_position.varName);
+                        passUsage.attribute_position.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_position.varName);
                     }
 
                     passUsage.attribute_position.size = Geometry.positionSize;
@@ -128,7 +128,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_NORMAL) {
                 if (passUsage.attribute_normal) {
                     if (!passUsage.attribute_normal.uniformIndex) {
-                        passUsage.attribute_normal.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_normal.varName);
+                        passUsage.attribute_normal.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_normal.varName);
                     }
 
                     passUsage.attribute_normal.size = Geometry.normalSize;
@@ -146,7 +146,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_TANGENT) {
                 if (passUsage.attribute_tangent) {
                     if (!passUsage.attribute_tangent.uniformIndex) {
-                        passUsage.attribute_tangent.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_tangent.varName);
+                        passUsage.attribute_tangent.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_tangent.varName);
                     }
 
                     passUsage.attribute_tangent.size = Geometry.tangentSize;
@@ -164,7 +164,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_COLOR) {
                 if (passUsage.attribute_color) {
                     if (!passUsage.attribute_color.uniformIndex) {
-                        passUsage.attribute_color.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_color.varName);
+                        passUsage.attribute_color.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_color.varName);
                     }
 
                     passUsage.attribute_color.size = Geometry.colorSize;
@@ -182,7 +182,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_UV0) {
                 if (passUsage.attribute_uv0) {
                     if (!passUsage.attribute_uv0.uniformIndex) {
-                        passUsage.attribute_uv0.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_uv0.varName);
+                        passUsage.attribute_uv0.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_uv0.varName);
                     }
 
                     passUsage.attribute_uv0.size = Geometry.uvSize;
@@ -200,7 +200,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_UV1) {
                 if (passUsage.attribute_uv1) {
                     if (!passUsage.attribute_uv1.uniformIndex) {
-                        passUsage.attribute_uv1.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_uv1.varName);
+                        passUsage.attribute_uv1.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_uv1.varName);
                     }
 
                     passUsage.attribute_uv1.size = Geometry.uv2Size;
@@ -218,7 +218,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_SKIN) {
                 if (passUsage.attribute_boneIndex) {
                     if (!passUsage.attribute_boneIndex.uniformIndex) {
-                        passUsage.attribute_boneIndex.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_boneIndex.varName);
+                        passUsage.attribute_boneIndex.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_boneIndex.varName);
                     }
 
                     passUsage.attribute_boneIndex.size = Geometry.skinSize / 2;
@@ -234,7 +234,7 @@
 
                 if (passUsage.attribute_boneWeight) {
                     if (!passUsage.attribute_boneWeight.uniformIndex) {
-                        passUsage.attribute_boneWeight.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_boneWeight.varName);
+                        passUsage.attribute_boneWeight.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_boneWeight.varName);
                     }
                     passUsage.attribute_boneWeight.size = Geometry.skinSize / 2;
                     passUsage.attribute_boneWeight.dataType = ContextConfig.FLOAT;
@@ -250,7 +250,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_QUAD_POS) {
                 if (passUsage.attribute_position) {
                     if (!passUsage.attribute_position.uniformIndex) {
-                        passUsage.attribute_position.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_position.varName);
+                        passUsage.attribute_position.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_position.varName);
                     }
 
                     passUsage.attribute_position.size = QuadData.posSize;
@@ -269,7 +269,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_QUAD_ORIGN) {
                 if (passUsage.attribute_shapePosition) {
                     if (!passUsage.attribute_shapePosition.uniformIndex) {
-                        passUsage.attribute_shapePosition.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_shapePosition.varName);
+                        passUsage.attribute_shapePosition.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_shapePosition.varName);
                     }
 
                     passUsage.attribute_shapePosition.size = QuadData.originalSize;
@@ -287,7 +287,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_QUAD_UVREC) {
                 if (passUsage.attribute_uvRec) {
                     if (!passUsage.attribute_uvRec.uniformIndex) {
-                        passUsage.attribute_uvRec.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_uvRec.varName);
+                        passUsage.attribute_uvRec.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_uvRec.varName);
                     }
 
                     passUsage.attribute_uvRec.size = QuadData.uvRectangleSize ;
@@ -305,7 +305,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_QUAD_ROTATION) {
                 if (passUsage.attribute_rotate) {
                     if (!passUsage.attribute_rotate.uniformIndex) {
-                        passUsage.attribute_rotate.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_rotate.varName);
+                        passUsage.attribute_rotate.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_rotate.varName);
                     }
 
                     passUsage.attribute_rotate.size = QuadData.rotationSize;
@@ -323,7 +323,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_QUAD_MASK) {
                 if (passUsage.attribute_maskRectangle) {
                     if (!passUsage.attribute_maskRectangle.uniformIndex) {
-                        passUsage.attribute_maskRectangle.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_maskRectangle.varName);
+                        passUsage.attribute_maskRectangle.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_maskRectangle.varName);
                     }
 
                     passUsage.attribute_maskRectangle.size = QuadData.maskSize;
@@ -341,7 +341,7 @@
             if (this.geometry.vertexFormat & VertexFormat.VF_QUAD_COLOR) {
                 if (passUsage.attribute_quad_color) {
                     if (!passUsage.attribute_quad_color.uniformIndex) {
-                        passUsage.attribute_quad_color.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, passUsage.attribute_quad_color.varName);
+                        passUsage.attribute_quad_color.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, passUsage.attribute_quad_color.varName);
                     }
 
                     passUsage.attribute_quad_color.size = QuadData.colorSize;
@@ -361,7 +361,7 @@
                 var attribute: GLSL.Attribute = passUsage[var0.name];
                 if (attribute) {
                     if (!attribute.uniformIndex) {
-                        attribute.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program3D, attribute.varName);
+                        attribute.uniformIndex = contextPorxy.getShaderAttribLocation(passUsage.program, attribute.varName);
                         attribute.size = var0.size;
                         attribute.dataType = ContextConfig.FLOAT;
                         attribute.normalized = false;

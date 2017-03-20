@@ -59,7 +59,7 @@
 
         private depthCompareMode: number = -1;
 
-        private program: Program3D;
+        private program: WebGLProgram;
 
         private programChange: boolean;
 
@@ -231,19 +231,24 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public creatProgram(vsShader: Shader, fsShader: Shader): Program3D {
+        public createProgram(vsShader: WebGLShader, fsShader: WebGLShader): WebGLProgram {
             var shaderProgram = Context3DProxy.gl.createProgram();
-            Context3DProxy.gl.attachShader(shaderProgram, vsShader.shader);
-            Context3DProxy.gl.attachShader(shaderProgram, fsShader.shader);
+            Context3DProxy.gl.attachShader(shaderProgram, vsShader);
+            Context3DProxy.gl.attachShader(shaderProgram, fsShader);
             Context3DProxy.gl.linkProgram(shaderProgram);
             var p = Context3DProxy.gl.getProgramParameter(shaderProgram, Context3DProxy.gl.LINK_STATUS);
             if (!p) {
-                console.log("vsShader error" + Context3DProxy.gl.getShaderInfoLog(vsShader.shader));
-                console.log("fsShader error" + Context3DProxy.gl.getShaderInfoLog(fsShader.shader));
+                console.log("vsShader error" + Context3DProxy.gl.getShaderInfoLog(vsShader));
+                console.log("fsShader error" + Context3DProxy.gl.getShaderInfoLog(fsShader));
                 console.log("program error" + Context3DProxy.gl.getProgramInfoLog(shaderProgram));
             }
-            var program: Program3D = new Program3D(shaderProgram);
-            return program;
+            return shaderProgram;
+            // var program: Program3D = new Program3D(shaderProgram);
+            // return program;
+        }
+
+        public deleteProgram(program: WebGLProgram) :void {
+            Context3DProxy.gl.deleteProgram(program);
         }
 
         /**
@@ -539,15 +544,16 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public creatVertexShader(source: string): Shader {
-            var shader: WebGLShader = Context3DProxy.gl.createShader(Context3DProxy.gl.VERTEX_SHADER);
-            Context3DProxy.gl.shaderSource(shader, source);
-            Context3DProxy.gl.compileShader(shader);
+        // public creatVertexShader(source: string): WebGLShader {
+        //     var shader: WebGLShader = Context3DProxy.gl.createShader(Context3DProxy.gl.VERTEX_SHADER);
+        //     Context3DProxy.gl.shaderSource(shader, source);
+        //     Context3DProxy.gl.compileShader(shader);
+        //     return shader;
 
-            var tmpShader: Shader = new Shader(shader);
-            tmpShader.id = (Shader.ID_COUNT++).toString();
-            return tmpShader;
-        }
+        //     // var tmpShader: Shader = new Shader(shader);
+        //     // tmpShader.id = (Shader.ID_COUNT++).toString();
+        //     // return tmpShader;
+        // }
 
         /**
         * @language zh_CN
@@ -557,14 +563,26 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public creatFragmentShader(source: string): Shader {
-            var shader: WebGLShader = Context3DProxy.gl.createShader(Context3DProxy.gl.FRAGMENT_SHADER);
+        // public creatFragmentShader(source: string): WebGLShader {
+        //     var shader: WebGLShader = Context3DProxy.gl.createShader(Context3DProxy.gl.FRAGMENT_SHADER);
+        //     Context3DProxy.gl.shaderSource(shader, source);
+        //     Context3DProxy.gl.compileShader(shader);
+        //     return shader;
+
+        //     // var tmpShader: Shader = new Shader(shader);
+        //     // tmpShader.id = (Shader.ID_COUNT++).toString();
+        //     // return tmpShader;
+        // }
+
+        public createShader(type: ShaderType, source: string): WebGLShader {
+            var shader: WebGLShader = Context3DProxy.gl.createShader(<number>type);
             Context3DProxy.gl.shaderSource(shader, source);
             Context3DProxy.gl.compileShader(shader);
+            return shader;
+        }
 
-            var tmpShader: Shader = new Shader(shader);
-            tmpShader.id = (Shader.ID_COUNT++).toString();
-            return tmpShader;
+        public deleteShader(shader:WebGLShader): void {
+            Context3DProxy.gl.deleteShader(shader);
         }
 
         /**
@@ -621,14 +639,14 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public setProgram(program: Program3D) {
+        public setProgram(program: WebGLProgram) {
             this.programChange = false;
             if (this.program == program) {
                 return;
             };
             this.programChange = true;
             this.program = program;
-            Context3DProxy.gl.useProgram(program.program);
+            Context3DProxy.gl.useProgram(program);
         }
 
         /**
@@ -639,8 +657,8 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public getUniformLocation(programe3D: Program3D, name: string): any {
-            return Context3DProxy.gl.getUniformLocation(programe3D.program, name);
+        public getUniformLocation(program: WebGLProgram, name: string): any {
+            return Context3DProxy.gl.getUniformLocation(program, name);
         }
 
 
@@ -1050,8 +1068,8 @@
         * @version Egret 3.0
         * @platform Web,Native
         */
-        public getShaderAttribLocation(programe: Program3D, attribName: string): any {
-            return Context3DProxy.gl.getAttribLocation(programe.program, attribName);
+        public getShaderAttribLocation(program: WebGLProgram, attribName: string): any {
+            return Context3DProxy.gl.getAttribLocation(program, attribName);
         }
 
         /**

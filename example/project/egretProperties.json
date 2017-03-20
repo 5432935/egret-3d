@@ -16,7 +16,8 @@
 			"name": "game"
 		},
 		{
-			"name": "egret3d"
+			"name": "egret3d",
+			"path": "../../"
 		},
 		{
 			"name": "resourcemanager",
