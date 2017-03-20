@@ -136,7 +136,7 @@
          * @private
          * 解析颜色属性
          */
-        private parseColorProperty(property: ParticleDataProperty, c1: Object, c2: Object, cg1: Object, cg2: Object): void {
+        private parseColorProperty(property: ParticleDataProperty, c1: Object, c2: Object, cg1: any, cg2: any): void {
             if (c1) {
                 property.colorConst1 = Color.createColor(Number(c1));
             }
@@ -144,10 +144,10 @@
                 property.colorConst2 = Color.createColor(Number(c2));
             }
             if (cg1) {
-                property.colorGradients1 = this.parseGradientsColor(cg1, property.colorGradients1);
+                property.colorGradients1 = this.parseGradientsColor(cg1.item, property.colorGradients1);
             }
             if (cg2) {
-                property.colorGradients2 = this.parseGradientsColor(cg2, property.colorGradients2);
+                property.colorGradients2 = this.parseGradientsColor(cg2.item, property.colorGradients2);
             }
 
         }

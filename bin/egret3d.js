@@ -41409,10 +41409,10 @@ var egret3d;
                 property.colorConst2 = egret3d.Color.createColor(Number(c2));
             }
             if (cg1) {
-                property.colorGradients1 = this.parseGradientsColor(cg1, property.colorGradients1);
+                property.colorGradients1 = this.parseGradientsColor(cg1.item, property.colorGradients1);
             }
             if (cg2) {
-                property.colorGradients2 = this.parseGradientsColor(cg2, property.colorGradients2);
+                property.colorGradients2 = this.parseGradientsColor(cg2.item, property.colorGradients2);
             }
         };
         /**
