@@ -39363,6 +39363,7 @@ var egret3d;
                 clip.name = clipData.name;
             }
             proAnimation.addPropertyAnim(clip);
+            console.log(clip);
             if (this.autoPlayAnimation) {
                 //proAnimation.play(clipData.name);
                 this.addAutoAnimation(proAnimation, 1, false, false, clipData.name);
@@ -46937,7 +46938,7 @@ var egret3d;
                 this._materialData.materialSourceData[12] = this._materialData.specularLevel;
                 //this._materialData.materialSourceData[13] = this._materialData.normalDir;
                 this._materialData.materialSourceData[13] = this._materialData.uvRectangle.x;
-                this._materialData.materialSourceData[14] = this._materialData.uvRectangle.y; //保留
+                this._materialData.materialSourceData[14] = -this._materialData.uvRectangle.y; //保留
                 this._materialData.materialSourceData[15] = this._materialData.uvRectangle.width; //保留
                 this._materialData.materialSourceData[16] = this._materialData.uvRectangle.height; //保留
                 this._materialData.materialSourceData[17] = this._materialData.gamma; //保留refraction

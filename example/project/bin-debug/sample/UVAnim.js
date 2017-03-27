@@ -11,7 +11,7 @@ var UVAnim = (function () {
         this.init();
     }
     UVAnim.prototype.init = function () {
-        this.loader = new egret3d.UnitLoader("resource/texture/uv.jpg");
+        this.loader = new egret3d.UnitLoader("resource/elevation/timg.jpg");
         this.loader.addEventListener(egret3d.LoaderEvent3D.LOADER_COMPLETE, this.onLoader, this);
     };
     UVAnim.prototype.onLoader = function (e) {

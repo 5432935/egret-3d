@@ -12,7 +12,7 @@ class UVAnim {
     private loader: egret3d.UnitLoader;
     private init() {
 
-        this.loader = new egret3d.UnitLoader("resource/texture/uv.jpg");
+        this.loader = new egret3d.UnitLoader("resource/elevation/timg.jpg");
         this.loader.addEventListener(egret3d.LoaderEvent3D.LOADER_COMPLETE, this.onLoader, this);
     }
 
