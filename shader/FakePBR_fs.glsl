@@ -149,9 +149,9 @@ void calculateDirectLight(  ){
     vec3 dir ,viewDir = normalize(varying_mvPose.xyz/varying_mvPose.w); 
     for(int i = 0 ; i < max_directLight ; i++){ 
          DirectLight directLight ; 
-         directLight.direction = vec3(uniform_directLightSource[i*9],uniform_directLightSource[i*9+1],uniform_directLightSource[i*9+2]); 
-         directLight.diffuse = vec3(uniform_directLightSource[i*9+3],uniform_directLightSource[i*9+4],uniform_directLightSource[i*9+5]); 
-         directLight.ambient = vec3(uniform_directLightSource[i*9+6],uniform_directLightSource[i*9+7],uniform_directLightSource[i*9+8]); 
+         directLight.direction = vec3(uniform_directLightSource[i*10],uniform_directLightSource[i*10+1],uniform_directLightSource[i*10+2]); 
+         directLight.diffuse = vec3(uniform_directLightSource[i*10+3],uniform_directLightSource[i*10+4],uniform_directLightSource[i*10+5]); 
+         directLight.ambient = vec3(uniform_directLightSource[i*10+6],uniform_directLightSource[i*10+7],uniform_directLightSource[i*10+8]); 
          dir = normalize(directLight.direction) ; 
          light.xyz += fakePBRLight( dir , viewDir , directLight.diffuse , directLight.ambient); 
     }

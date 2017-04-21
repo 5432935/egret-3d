@@ -74,10 +74,10 @@ vec4 calculateDirectLight( MaterialSource materialSource ){
     diffuseColor = vec4(0.0,0.0,0.0,1.0);
     for(int i = 0 ; i < max_directLight ; i++){ 
         DirectLight directLight ; 
-        directLight.direction = (normalMatrix * vec4(uniform_directLightSource[i*9],uniform_directLightSource[i*9+1],uniform_directLightSource[i*9+2],1.0)).xyz; 
-		directLight.diffuse = vec3(uniform_directLightSource[i*9+3],uniform_directLightSource[i*9+4],uniform_directLightSource[i*9+5]); 
-		directLight.ambient = vec3(uniform_directLightSource[i*9+6],uniform_directLightSource[i*9+7],uniform_directLightSource[i*9+8]); 
-		directLight.intensity = uniform_directLightSource[i*9+9] ; 
+        directLight.direction = (normalMatrix * vec4(uniform_directLightSource[i*10],uniform_directLightSource[i*10+1],uniform_directLightSource[i*10+2],1.0)).xyz; 
+		directLight.diffuse = vec3(uniform_directLightSource[i*10+3],uniform_directLightSource[i*10+4],uniform_directLightSource[i*10+5]); 
+		directLight.ambient = vec3(uniform_directLightSource[i*10+6],uniform_directLightSource[i*10+7],uniform_directLightSource[i*10+8]); 
+		directLight.intensity = uniform_directLightSource[i*10+9] ; 
 		dir = normalize(directLight.direction) ; 
 		diffuseColor += LightingBlinnPhong(dir,directLight.diffuse,directLight.ambient,s.Normal,viewDir,directLight.intensity); 
     } 
