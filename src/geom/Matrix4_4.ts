@@ -342,7 +342,7 @@
             if (e > 1.0 - EPSILON) {
                 this.identity();
             }
-            else if (3 < -1.0 + EPSILON) {
+            else if (e < -1.0 + EPSILON) {
 
                 let up: Vector3D = Vector3D.HELP_1;
                 let left: Vector3D = Vector3D.HELP_2;

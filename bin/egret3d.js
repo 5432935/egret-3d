@@ -5633,7 +5633,7 @@ var egret3d;
             if (e > 1.0 - EPSILON) {
                 this.identity();
             }
-            else if (3 < -1.0 + EPSILON) {
+            else if (e < -1.0 + EPSILON) {
                 var up = egret3d.Vector3D.HELP_1;
                 var left = egret3d.Vector3D.HELP_2;
                 var invlen = 0;
@@ -39363,7 +39363,6 @@ var egret3d;
                 clip.name = clipData.name;
             }
             proAnimation.addPropertyAnim(clip);
-            console.log(clip);
             if (this.autoPlayAnimation) {
                 //proAnimation.play(clipData.name);
                 this.addAutoAnimation(proAnimation, 1, false, false, clipData.name);
