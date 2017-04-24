@@ -24,5 +24,5 @@ void main() {
 			}
 		}
 	}
-	diffuseColor.xyz = diffuseColor.xyz * shadowColor; 
+	outColor.xyz = outColor.xyz * shadowColor; 
 }

@@ -452,10 +452,7 @@
                 //    this.addMethodShaders(this._passUsage.fragmentShader, ["normalMap_fragment"]);
                 //else
                 //    this.addMethodShaders(this._passUsage.fragmentShader, ["specularMap_fragment"]);
-                //shadow
-                shaderList = this._fs_shader_methods[ShaderPhaseType.shadow_fragment];
-                if (shaderList && shaderList.length > 0)
-                    this.addMethodShaders(this._passUsage.fragmentShader, shaderList);
+                
                 //specular
                 shaderList = this._fs_shader_methods[ShaderPhaseType.specular_fragment];
                 if (shaderList && shaderList.length > 0)
@@ -479,6 +476,11 @@
                 else {
                     this.addMethodShaders(this._passUsage.fragmentShader, ["end_fs"]);
                 }
+
+                //shadow
+                shaderList = this._fs_shader_methods[ShaderPhaseType.shadow_fragment];
+                if (shaderList && shaderList.length > 0)
+                    this.addMethodShaders(this._passUsage.fragmentShader, shaderList);
 
                 //multi_end_fragment
                 shaderList = this._fs_shader_methods[ShaderPhaseType.multi_end_fragment];

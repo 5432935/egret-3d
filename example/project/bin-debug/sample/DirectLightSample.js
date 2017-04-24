@@ -17,15 +17,25 @@ var DirectLightSample = (function () {
         var img = e.target.data;
         var geom = new egret3d.SphereGeometry(200, 30, 30);
         var mat = new egret3d.TextureMaterial(img);
-        var earth = new egret3d.Mesh(geom, mat);
+        var earth = this.earth = new egret3d.Mesh(geom, mat);
         StageMgr.Instance().view3d.addChild3D(earth);
         this.light = new egret3d.DirectLight(this._lightDir);
         this.light.diffuse = 0xffffff;
-        this.light.intensity = 0.1;
-        this.light.ambient = 0xffffffff;
+        this.light.intensity = 0.7;
+        this.light.rotationX = 0.1;
         var group = new egret3d.LightGroup();
         group.addLight(this.light);
         earth.material.lightGroup = group;
+        earth.material.castShadow = true;
+        earth.material.shadowColor = 0x000000;
+        var planeGeo = new egret3d.PlaneGeometry(1000, 1000);
+        var planeMat = new egret3d.TextureMaterial();
+        var plane = new egret3d.Mesh(planeGeo, planeMat);
+        plane.y = -150;
+        plane.material.acceptShadow = true;
+        plane.material.shadowColor = 0x000000;
+        // plane.material.lightGroup = group;
+        StageMgr.Instance().view3d.addChild3D(plane);
         this.InitCameraCtl();
         StageMgr.Instance().stage3d.addEventListener(egret3d.Event3D.ENTER_FRAME, this.update, this);
     };
@@ -33,23 +43,26 @@ var DirectLightSample = (function () {
         this.cameraCtl = new egret3d.LookAtController(StageMgr.Instance().view3d.camera3D, new egret3d.Object3D());
         this.cameraCtl.distance = 1000;
         this.cameraCtl.rotationX = 0;
+        this.cameraCtl.rotationZ = 30;
     };
     DirectLightSample.prototype.update = function (e) {
         this.cameraCtl.update();
-        if (this.light.intensity >= 0.5) {
-            this._lightIntensity = -0.01;
-        }
-        if (this.light.intensity <= 0.1) {
-            this._lightIntensity = 0.01;
-        }
-        this.light.intensity += this._lightIntensity;
-        if (this.light.dir.x >= 1) {
-            this._rotationX = -0.01;
-        }
-        if (this.light.dir.x <= -1) {
-            this._rotationX = 0.01;
-        }
-        this.light.dir.x += this._rotationX;
+        // if (this.light.intensity >= 0.5) {
+        //     this._lightIntensity = -0.01;
+        // }
+        // if (this.light.intensity <= 0.1) {
+        //     this._lightIntensity = 0.01;
+        // }
+        // this.light.intensity += this._lightIntensity;
+        // this.light.intensity = 1;
+        // if (this.light.dir.x >= 1) {
+        //     this._rotationX = -0.01;
+        // }
+        // if (this.light.dir.x <= -1) {
+        //     this._rotationX = 0.01;
+        // }
+        // this.light.dir.x += this._rotationX;
+        // this.earth.rotationX += 1;
     };
     return DirectLightSample;
 }());

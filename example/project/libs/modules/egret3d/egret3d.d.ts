@@ -1247,13 +1247,9 @@ declare module egret3d {
     }
 }
 declare module egret3d {
-    class ShaderType {
-        static VertexShader: number;
-        static FragmentShader: number;
-    }
     /**
-    * @private
-    */
+* @private
+*/
     enum UniformType {
         uniform1f = 0,
         uniform1fv = 1,
@@ -7001,37 +6997,6 @@ declare module egret3d.GLSL {
     }
 }
 declare module egret3d {
-    class ShaderStore {
-        static lib: {
-            [key: string]: string;
-        };
-    }
-}
-declare module egret3d {
-    class ShaderCache {
-        private static programlib;
-        static addProgram(program: Program3D): void;
-        static removeProgram(_name: string): void;
-        static getProgram(_name: string): Program3D;
-    }
-}
-declare module egret3d {
-    /**
-    * @private
-    * @class egret3d.ShaderGenerator
-    * @classdesc
-    * Shader 生成器
-    */
-    class ShaderGenerator {
-        private static _indexParameters;
-        static createProgram(defdata: IMaterialDefines, _vShaderSourceName: string, _fShaderSourceName: string): string;
-        private static createShader(_source, _type, _name);
-        private static createProgramLogic(vsShader, fsShader);
-        private static generateShaderSource(defdata, _ShaderSourceName);
-        private static _processIncludes(sourceCode, callback);
-    }
-}
-declare module egret3d {
     class ShaderLib {
         static lib: {
             [key: string]: string;
@@ -10831,7 +10796,6 @@ declare module egret3d {
         * @platform Web,Native
         */
         program: WebGLProgram;
-        name: string;
         /**
         * @language zh_CN
         * 构造函数
@@ -10901,8 +10865,6 @@ declare module egret3d {
         * WebGLShader 的引用
         */
         private _shader;
-        type: number;
-        name: string;
         /**
         * @language zh_CN
         * 构造
@@ -24039,22 +24001,6 @@ declare module egret3d {
     class PassUtil {
         static PassAuto: boolean[];
         static CreatPass(pass: PassType, materialData: MaterialData): MaterialPass[];
-    }
-}
-declare module egret3d {
-    /**
-    * @public
-    * @class egret3d.IMaterialDefines
-    * @classdesc
-    * MaterialDefines类接口
-    * @version Egret 3.0
-    * @platform Web,Native
-    */
-    interface IMaterialDefines {
-        isChange(): boolean;
-        keys(): string[];
-        toName(): string;
-        dispose(): void;
     }
 }
 declare module egret3d {

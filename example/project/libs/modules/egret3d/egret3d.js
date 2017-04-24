@@ -2695,10 +2695,10 @@ var egret3d;
         ShaderPhaseType[ShaderPhaseType["normal_fragment"] = 11] = "normal_fragment";
         ShaderPhaseType[ShaderPhaseType["matCap_fragment"] = 12] = "matCap_fragment";
         ShaderPhaseType[ShaderPhaseType["specular_fragment"] = 13] = "specular_fragment";
-        ShaderPhaseType[ShaderPhaseType["shadow_fragment"] = 14] = "shadow_fragment";
-        ShaderPhaseType[ShaderPhaseType["lighting_fragment"] = 15] = "lighting_fragment";
-        ShaderPhaseType[ShaderPhaseType["multi_end_fragment"] = 16] = "multi_end_fragment";
-        ShaderPhaseType[ShaderPhaseType["end_fragment"] = 17] = "end_fragment";
+        ShaderPhaseType[ShaderPhaseType["lighting_fragment"] = 14] = "lighting_fragment";
+        ShaderPhaseType[ShaderPhaseType["multi_end_fragment"] = 15] = "multi_end_fragment";
+        ShaderPhaseType[ShaderPhaseType["end_fragment"] = 16] = "end_fragment";
+        ShaderPhaseType[ShaderPhaseType["shadow_fragment"] = 17] = "shadow_fragment";
     })(egret3d.ShaderPhaseType || (egret3d.ShaderPhaseType = {}));
     var ShaderPhaseType = egret3d.ShaderPhaseType;
 })(egret3d || (egret3d = {}));
@@ -11928,7 +11928,7 @@ var egret3d;
             positionEndPass_vs: "varying vec4 varying_position ;\nvoid main(){\n\t\toutPosition = uniform_ProjectionMatrix * outPosition ; \n\t\tvarying_position = outPosition.xyzw; \n}",
             rimlight_fs: "uniform float uniform_rimData[6] ;\nvoid main(){\n    float rim = 1.0 - clamp(dot (vec3(0.0,0.0,1.0), normal ) ,0.0,1.0);  \n    vec3 emission = vec3(uniform_rimData[0],uniform_rimData[1],uniform_rimData[2]) * pow(rim, uniform_rimData[4]);  \n    outColor.xyz += emission * uniform_rimData[3] * uniform_rimData[5] ;\n}",
             secondaryUV_vs: "attribute vec2 attribute_uv1;\nvarying vec2 varying_uv1 ;\nvoid main(void){\n\tvarying_uv1 = attribute_uv1 ; \n}",
-            shadowMapping_fs: "uniform sampler2D shadowMapTexture;\nuniform vec4 uniform_ShadowColor;\nvarying vec4 varying_ShadowCoord;\nfloat unpackDepth(vec4 rgbaDepth){\n    vec4 bitShift = vec4( 1.0 , 1.0/256.0 , 1.0/(256.0*256.0) , 1.0/(256.0*256.0*256.0) );\n    float depth = dot(rgbaDepth,bitShift);\n    return depth ;\n}\nvoid main() {\n\tvec3 shadowColor = vec3(1.0,1.0,1.0); \n\tfloat offset = uniform_ShadowColor.w; \n\tvec2 sample = varying_ShadowCoord.xy / varying_ShadowCoord.w * 0.5 + 0.5; \n\tif (sample.x >=0.0 && sample.x <= 1.0 && sample.y >=0.0 && sample.y <= 1.0) {\n\t\tvec4 sampleDepth = texture2D(shadowMapTexture, sample).xyzw; \n\t\tfloat depth = varying_ShadowCoord.z;\n\t\n\t\tif (sampleDepth.z != 0.0) {\n\t\t\tif( sampleDepth.z < depth - offset) { \n\t\t\t\tshadowColor = uniform_ShadowColor.xyz; \n\t\t\t}\n\t\t}\n\t}\n\tdiffuseColor.xyz = diffuseColor.xyz * shadowColor; \n}\n",
+            shadowMapping_fs: "uniform sampler2D shadowMapTexture;\nuniform vec4 uniform_ShadowColor;\nvarying vec4 varying_ShadowCoord;\nfloat unpackDepth(vec4 rgbaDepth){\n    vec4 bitShift = vec4( 1.0 , 1.0/256.0 , 1.0/(256.0*256.0) , 1.0/(256.0*256.0*256.0) );\n    float depth = dot(rgbaDepth,bitShift);\n    return depth ;\n}\nvoid main() {\n\tvec3 shadowColor = vec3(1.0,1.0,1.0); \n\tfloat offset = uniform_ShadowColor.w; \n\tvec2 sample = varying_ShadowCoord.xy / varying_ShadowCoord.w * 0.5 + 0.5; \n\tif (sample.x >=0.0 && sample.x <= 1.0 && sample.y >=0.0 && sample.y <= 1.0) {\n\t\tvec4 sampleDepth = texture2D(shadowMapTexture, sample).xyzw; \n\t\tfloat depth = varying_ShadowCoord.z;\n\t\n\t\tif (sampleDepth.z != 0.0) {\n\t\t\tif( sampleDepth.z < depth - offset) { \n\t\t\t\tshadowColor = uniform_ShadowColor.xyz; \n\t\t\t}\n\t\t}\n\t}\n\toutColor.xyz = outColor.xyz * shadowColor; \n}\n",
             shadowMapping_vs: "uniform mat4 uniform_ShadowMatrix;\nuniform mat4 uniform_ModelMatrix;\nvarying vec4 varying_ShadowCoord;\nvoid main() {\n\tvarying_ShadowCoord = uniform_ShadowMatrix * uniform_ModelMatrix * vec4(e_position, 1.0);\n}",
             shadowPass_fs: "uniform sampler2D diffuseTexture;\nvec4 diffuseColor ;\nvarying vec2 varying_uv0;\nvarying vec4 varying_color;\nvarying vec4 varying_pos;\nfloat unpackDepth(vec4 rgbaDepth){\n    vec4 bitShift = vec4( 1.0 , 1.0/256.0 , 1.0/(256.0*256.0) , 1.0/(256.0*256.0*256.0) );\n    float depth = dot(rgbaDepth,bitShift);\n    return depth ;\n}\nvoid main() {\n\tdiffuseColor = varying_color ;\n    if( diffuseColor.w == 0.0 ){\n\t\tdiscard;\n\t}\n\tdiffuseColor = texture2D(diffuseTexture , varying_uv0 );\n    if( diffuseColor.w <= 0.3 ){\n\t\t\tdiscard;\n\t}\n    gl_FragColor = vec4(varying_pos.zzz, 1.0);\n}\n",
             shadowPass_skeleton_vs: "attribute vec3 attribute_position;\nattribute vec3 attribute_normal;\nattribute vec4 attribute_color;\nattribute vec2 attribute_uv0;\nattribute vec4 attribute_boneIndex;\nattribute vec4 attribute_boneWeight;\nuniform mat4 uniform_ModelMatrix ;\nuniform mat4 uniform_ViewMatrix ;\nuniform mat4 uniform_ProjectionMatrix ;\nvec3 e_position = vec3(0.0, 0.0, 0.0);\nvec4 e_boneIndex = vec4(0.0, 0.0, 0.0, 0.0);\nvec4 e_boneWeight = vec4(0.0, 0.0, 0.0, 0.0);\nvec4 outPosition = vec4(0.0, 0.0, 0.0, 0.0);\nconst int bonesNumber = 0;\nuniform vec4 uniform_PoseMatrix[bonesNumber];\nvarying vec2 varying_uv0;\nvarying vec4 varying_color;\nvarying vec4 varying_pos;\nmat4 buildMat4(int index){\n  vec4 quat = uniform_PoseMatrix[index * 2 + 0];\n  vec4 translation = uniform_PoseMatrix[index * 2 + 1];\n  float xy2 = 2.0 * quat.x * quat.y;\n  float xz2 = 2.0 * quat.x * quat.z;\n  float xw2 = 2.0 * quat.x * quat.w;\n  float yz2 = 2.0 * quat.y * quat.z;\n  float yw2 = 2.0 * quat.y * quat.w;\n  float zw2 = 2.0 * quat.z * quat.w;\n  float xx = quat.x * quat.x;\n  float yy = quat.y * quat.y;\n  float zz = quat.z * quat.z;\n  float ww = quat.w * quat.w;\n  mat4 matrix = mat4(\n\t   xx - yy - zz + ww, xy2 + zw2, xz2 - yw2, 0,\n\t   xy2 - zw2, -xx + yy - zz + ww, yz2 + xw2, 0,\n\t   xz2 + yw2, yz2 - xw2, -xx - yy + zz + ww, 0,\n\t   translation.x, translation.y, translation.z, 1\n   );\n   return matrix;\n}\nvoid main(void){\n\te_boneIndex = attribute_boneIndex;\n\te_boneWeight = attribute_boneWeight;\n\tvec4 temp_position = vec4(attribute_position, 1.0) ;\n\tmat4 m0 = buildMat4(int(e_boneIndex.x));\n\tmat4 m1 = buildMat4(int(e_boneIndex.y));\n\tmat4 m2 = buildMat4(int(e_boneIndex.z));\n\tmat4 m3 = buildMat4(int(e_boneIndex.w));\n\toutPosition = m0 * temp_position * e_boneWeight.x;\n\toutPosition += m1 * temp_position * e_boneWeight.y;\n\toutPosition += m2 * temp_position * e_boneWeight.z;\n\toutPosition += m3 * temp_position * e_boneWeight.w;\n\te_position = outPosition.xyz;\n\t\n    mat4 mvMatrix = mat4(uniform_ViewMatrix * uniform_ModelMatrix); \n    \n\tvarying_color = attribute_color; \n\tvarying_uv0 = attribute_uv0 ;\n\tvarying_pos = uniform_ProjectionMatrix * uniform_ViewMatrix * uniform_ModelMatrix * vec4(e_position, 1.0);\n\tgl_Position = varying_pos;\n}",
@@ -46834,10 +46834,6 @@ var egret3d;
                 //    this.addMethodShaders(this._passUsage.fragmentShader, ["normalMap_fragment"]);
                 //else
                 //    this.addMethodShaders(this._passUsage.fragmentShader, ["specularMap_fragment"]);
-                //shadow
-                shaderList = this._fs_shader_methods[egret3d.ShaderPhaseType.shadow_fragment];
-                if (shaderList && shaderList.length > 0)
-                    this.addMethodShaders(this._passUsage.fragmentShader, shaderList);
                 //specular
                 shaderList = this._fs_shader_methods[egret3d.ShaderPhaseType.specular_fragment];
                 if (shaderList && shaderList.length > 0)
@@ -46859,6 +46855,10 @@ var egret3d;
                 else {
                     this.addMethodShaders(this._passUsage.fragmentShader, ["end_fs"]);
                 }
+                //shadow
+                shaderList = this._fs_shader_methods[egret3d.ShaderPhaseType.shadow_fragment];
+                if (shaderList && shaderList.length > 0)
+                    this.addMethodShaders(this._passUsage.fragmentShader, shaderList);
                 //multi_end_fragment
                 shaderList = this._fs_shader_methods[egret3d.ShaderPhaseType.multi_end_fragment];
                 if (shaderList && shaderList.length > 0)
