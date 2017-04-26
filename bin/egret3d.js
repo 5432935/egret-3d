@@ -48788,9 +48788,9 @@ var egret3d;
             * @platform Web,Native
             */
             set: function (color) {
-                this.materialData.shadowColor[0] = color >> 16 & 0xff / 255.0;
-                this.materialData.shadowColor[1] = color >> 8 & 0xff / 255.0;
-                this.materialData.shadowColor[2] = color & 0xff / 255.0;
+                this.materialData.shadowColor[0] = (color >> 16 & 0xff) / 255.0;
+                this.materialData.shadowColor[1] = (color >> 8 & 0xff) / 255.0;
+                this.materialData.shadowColor[2] = (color & 0xff) / 255.0;
             },
             enumerable: true,
             configurable: true
