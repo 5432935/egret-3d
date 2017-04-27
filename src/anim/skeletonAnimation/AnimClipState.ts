@@ -64,7 +64,7 @@
             this._nextframe = this._frame + 1;
 
             if (this._nextframe >= this.totalFrame) {
-                this._nextframe = 0;
+                this._nextframe = this.loop ? 0 : this.totalFrame - 1;
             }
 
             if (!this._end) {

@@ -14546,7 +14546,7 @@ var egret3d;
             this._weight = (this._frameTime - this._frame);
             this._nextframe = this._frame + 1;
             if (this._nextframe >= this.totalFrame) {
-                this._nextframe = 0;
+                this._nextframe = this.loop ? 0 : this.totalFrame - 1;
             }
             if (!this._end) {
                 // 根据播放速度计算出最后一帧
