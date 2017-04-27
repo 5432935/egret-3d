@@ -14550,8 +14550,8 @@ var egret3d;
             }
             if (!this._end) {
                 // 根据播放速度计算出最后一帧
-                var endFrame = this.speed < 0 ? 0 : this.totalFrame - 1;
-                if (this._frame == endFrame && this._frame != this._lastframe) {
+                // var endFrame: number = this.speed < 0 ? 0 : this.totalFrame - 1;
+                if ((this.speed < 0 && this._frame > this._lastframe) || (this.speed > 0 && this._frame < this._lastframe)) {
                     if (this.loop) {
                         this.animation.dispatchCycle();
                     }
