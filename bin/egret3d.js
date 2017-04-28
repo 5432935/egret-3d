@@ -14820,6 +14820,8 @@ var egret3d;
                 this._lerpBPose = new egret3d.SkeletonPose();
                 this.gpuSkeletonPose.initSkeletonPose(this._animState[name].clip.getSkeletonPose(0), this._lerpBPose);
             }
+            // 防止第一帧显示错误
+            this.update(0, 0);
         };
         //先算出交换动作后的时间起始点
         //获取融合时间轴上的 指定时间的 a clip
