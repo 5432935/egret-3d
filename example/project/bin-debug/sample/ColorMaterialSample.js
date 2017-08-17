@@ -12,7 +12,8 @@ var ColorMaterialSample = (function () {
     }
     ColorMaterialSample.prototype.init = function () {
         var geom = new egret3d.CubeGeometry(128, 128, 128);
-        var mat = new egret3d.ColorMaterial(0x00ff00);
+        var mat = new egret3d.ColorMaterial(0xffaa00);
+        mat.diffuseTexture = null;
         var cube = new egret3d.Mesh(geom, mat);
         StageMgr.Instance().view3d.addChild3D(cube);
         this.InitCameraCtl();

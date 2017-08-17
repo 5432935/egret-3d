@@ -12,7 +12,7 @@ class ColorMaterialSample {
     private init() {
 
         let geom: egret3d.CubeGeometry = new egret3d.CubeGeometry(128, 128, 128);
-        let mat: egret3d.ColorMaterial = new egret3d.ColorMaterial(0x00ff00);
+        let mat: egret3d.ColorMaterial = new egret3d.ColorMaterial(0xffaa00);
         let cube: egret3d.Mesh = new egret3d.Mesh(geom, mat);
         StageMgr.Instance().view3d.addChild3D(cube);
 
